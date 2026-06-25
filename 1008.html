@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MURO暮若 ｜ 商品編號 1008 商品身分證</title>
-<style>
+<!doctype html><html lang='zh-Hant'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>MURO暮若 ｜ 商品編號 1008 商品身分證</title><style>
   :root{
     --plum:#7d5a6e; --plum-deep:#5c4051; --nude:#d9b8a8; --nude-soft:#f3e3da;
     --bg:#faf4f0; --card:#ffffff; --ink:#3a2f33; --muted:#8a7a80; --line:#ecdfd9;
@@ -21,19 +15,19 @@
   .idtag{position:absolute;top:26px;right:30px;background:rgba(255,255,255,.16);
     border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:30px;
     font-size:13px;letter-spacing:1px;font-weight:600;}
-  .pname{font-size:25px;font-weight:800;margin-top:14px;letter-spacing:.5px;}
-  .psub{font-size:14px;opacity:.9;margin-top:6px;}
-  .price{margin-top:18px;display:flex;align-items:baseline;gap:12px;}
-  .price .now{font-size:30px;font-weight:800;color:#ffe7c4;}
-  .price .now small{font-size:15px;font-weight:600;}
+  .pname{font-size:25px;font-weight:800;margin:14px 0 6px;letter-spacing:.5px;}
+  .psub{font-size:14px;opacity:.9;}
+  .price{display:flex;align-items:baseline;gap:12px;margin-top:18px;}
+  .price .now{font-size:30px;font-weight:800;color:#fff;}
+  .price .now small{font-size:15px;font-weight:600;opacity:.85;margin-right:2px;}
   .price .old{font-size:15px;text-decoration:line-through;opacity:.7;}
-  .price .off{background:var(--gold);color:#3a2f33;font-size:12px;font-weight:700;
-    padding:3px 9px;border-radius:6px;}
+  .price .off{font-size:13px;background:var(--gold);color:#3a2f33;font-weight:700;
+    padding:3px 11px;border-radius:20px;}
   .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
-  .specs div{background:#fff;padding:14px 10px;text-align:center;}
-  .specs .k{font-size:11px;color:var(--muted);letter-spacing:1px;}
-  .specs .v{font-size:14px;font-weight:700;margin-top:3px;color:var(--plum-deep);}
-  .sec{padding:22px 34px;border-top:1px solid var(--line);}
+  .specs>div{background:#fff;padding:16px 10px;text-align:center;}
+  .specs .k{font-size:12px;color:var(--muted);margin-bottom:4px;}
+  .specs .v{font-size:15px;font-weight:700;color:var(--plum-deep);}
+  .sec{padding:22px 30px;border-top:1px solid var(--line);}
   .sec h2{font-size:16px;color:var(--plum-deep);display:flex;align-items:center;gap:9px;
     letter-spacing:1px;margin-bottom:14px;}
   .sec h2::before{content:"";width:6px;height:18px;background:var(--accent);border-radius:4px;}
@@ -46,6 +40,9 @@
     padding:14px 16px;background:var(--nude-soft);}
   .sizebox .lbl{font-weight:800;color:var(--plum-deep);font-size:16px;}
   .sizebox .rng{font-size:14px;margin-top:4px;}
+  .sztable{width:100%;border-collapse:collapse;margin-top:14px;font-size:13.5px;}
+  .sztable th,.sztable td{border:1px solid var(--line);padding:8px 10px;text-align:center;}
+  .sztable th{background:var(--nude-soft);color:var(--plum-deep);font-weight:700;}
   .pts{list-style:none;display:grid;gap:11px;}
   .pts li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;}
   .pts li b{color:var(--plum-deep);}
@@ -61,76 +58,13 @@
   .tags{display:flex;flex-wrap:wrap;gap:10px;}
   .tags span{background:#fff;border:1px solid var(--accent);color:var(--accent);
     padding:7px 15px;border-radius:30px;font-size:13.5px;font-weight:600;}
-  .foot{padding:16px 34px 24px;font-size:11.5px;color:var(--muted);text-align:center;
-    border-top:1px solid var(--line);line-height:1.6;}
-  @media(max-width:560px){.specs{grid-template-columns:repeat(2,1fr);}
-    .pain .row{grid-template-columns:1fr;text-align:center;}.idtag{position:static;display:inline-block;margin-top:10px;}}
-</style>
-</head>
-<body>
-<div class="card">
-  <div class="head">
-    <div class="brand">M U R O ・ 暮 若</div>
-    <span class="idtag">商品編號 1008</span>
-    <div class="pname">V領網眼無鋼圈內衣</div>
-    <div class="psub">無痕｜軟支撐｜透氣不悶・大尺碼包覆</div>
-    <div class="price"><div class="now"><small>NT$</small>399</div><div class="old">NT$499</div><div class="off">8 折優惠價</div></div>
-  </div>
-  <div class="specs">
-    <div><div class="k">罩杯</div><div class="v">3/4 罩杯</div></div>
-    <div><div class="k">鋼圈</div><div class="v">無鋼圈</div></div>
-    <div><div class="k">剪裁</div><div class="v">V領網眼</div></div>
-    <div><div class="k">尺碼</div><div class="v">S–3XL</div></div>
-  </div>
-  <div class="sec">
-    <h2>顏色 ｜ 5 色可選</h2>
-    <div class="colors">
-      <div class="swatch"><span class="dot" style="background:#2f2b2c;"></span>黑色</div>
-      <div class="swatch"><span class="dot" style="background:#c69b7b;"></span>深膚</div>
-      <div class="swatch"><span class="dot" style="background:#d8b193;"></span>暖膚</div>
-      <div class="swatch"><span class="dot" style="background:#8d7f93;"></span>灰紫</div>
-      <div class="swatch"><span class="dot" style="background:#ecc4c4;"></span>淺粉</div>
-    </div>
-  </div>
-  <div class="sec">
-    <h2>尺寸 ｜ S–3XL 六碼齊全</h2>
-    <div class="sizes">
-      <div class="sizebox"><div class="lbl">尺碼</div><div class="rng">S／M／L／XL／2XL／3XL</div></div>
-    </div>
-  </div>
-  <div class="sec">
-    <h2>核心賣點</h2>
-    <ul class="pts">
-      <li><span class="ico">1</span><span><b>網眼透氣</b>：網眼設計，悶熱季更透氣。</span></li>
-      <li><span class="ico">2</span><span><b>V領剪裁</b>：線條俐落，領口穿搭更好搭。</span></li>
-      <li><span class="ico">3</span><span><b>無鋼圈軟支撐</b>：減少壓迫保有穩定。</span></li>
-      <li><span class="ico">4</span><span><b>大尺碼包覆</b>：罩杯版型包覆性佳。</span></li>
-      <li><span class="ico">5</span><span><b>無痕貼合</b>：搭T恤不易顯痕。</span></li>
-    </ul>
-  </div>
-  <div class="sec">
-    <h2>解決什麼痛點</h2>
-    <div class="pain">
-      <div class="row"><span class="p">悶熱不透氣</span><span class="arrow">&rarr;</span><span class="s">網眼透氣</span></div>
-      <div class="row"><span class="p">鋼圈壓迫</span><span class="arrow">&rarr;</span><span class="s">無鋼圈軟支撐</span></div>
-      <div class="row"><span class="p">大尺碼包覆不足</span><span class="arrow">&rarr;</span><span class="s">大罩杯版型</span></div>
-      <div class="row"><span class="p">顯內衣痕</span><span class="arrow">&rarr;</span><span class="s">無痕貼合</span></div>
-      <div class="row"><span class="p">領口外露</span><span class="arrow">&rarr;</span><span class="s">V領剪裁</span></div>
-    </div>
-  </div>
-  <div class="sec">
-    <h2>適合場景</h2>
-    <div class="tags">
-      <span>日常穿著</span>
-      <span>夏季</span>
-      <span>大尺碼需求</span>
-      <span>居家</span>
-      <span>通勤</span>
-    </div>
-  </div>
-  <div class="foot">
-    MURO暮若 ｜ 商品編號 1008 ｜ 上架日 5/5 ・ 已上架<br>3/4 罩杯　無鋼圈　V領網眼透氣　S–3XL
-  </div>
-</div>
-</body>
-</html>
+  .reviews{display:grid;gap:12px;}
+  .review{background:var(--nude-soft);border-radius:14px;padding:14px 16px;font-size:14px;}
+  .review .stars{color:var(--gold);font-size:14px;letter-spacing:2px;}
+  .review .txt{margin-top:6px;color:var(--ink);}
+  .review .by{margin-top:6px;font-size:12px;color:var(--muted);}
+  .rating-line{font-size:14px;color:var(--muted);margin-bottom:12px;}
+  .rating-line b{color:var(--plum-deep);font-size:16px;}
+  .foot{padding:20px 30px;background:var(--nude-soft);font-size:12.5px;color:var(--muted);
+    border-top:1px solid var(--line);line-height:1.9;}
+</style></head><body><div class='card'><div class='head'><div class='brand'>M U R O ・ 暮 若</div><span class='idtag'>商品編號 1008</span><div class='pname'>V領網眼無鋼圈內衣</div><div class='psub'>無痕｜軟支撐｜透氣不悶・大尺碼包覆</div><div class='price'><div class='now'><small>NT$</small>399</div><div class='old'>NT$499</div><div class='off'>8 折優惠價</div></div></div><div class='specs'><div><div class='k'>罩杯</div><div class='v'>3/4 罩杯</div></div><div><div class='k'>鋼圈</div><div class='v'>無鋼圈</div></div><div><div class='k'>剪裁</div><div class='v'>V領網眼</div></div><div><div class='k'>尺碼</div><div class='v'>S–3XL</div></div></div><div class='sec'><h2>顏色 ｜ 4 色可選</h2><div class='colors'><div class='swatch'><span class='dot' style='background:#2f2b2c;'></span>黑色</div><div class='swatch'><span class='dot' style='background:#c69b7b;'></span>深膚</div><div class='swatch'><span class='dot' style='background:#d8b193;'></span>暖膚</div><div class='swatch'><span class='dot' style='background:#8d7f93;'></span>灰紫</div></div></div><div class='sec'><h2>尺寸 ｜ S–3XL 六碼齊全</h2><div class='sizes'><div class='sizebox'><div class='lbl'>尺碼</div><div class='rng'>S／M／L／XL／2XL／3XL</div></div></div></div><div class='sec'><h2>核心賣點</h2><ul class='pts'><li><span class='ico'>1</span><span><b>網眼透氣</b>：網眼設計，悶熱季更透氣。</span></li><li><span class='ico'>2</span><span><b>V領剪裁</b>：線條俐落，領口穿搭更好搭。</span></li><li><span class='ico'>3</span><span><b>無鋼圈軟支撐</b>：減少壓迫保有穩定。</span></li><li><span class='ico'>4</span><span><b>大尺碼包覆</b>：罩杯版型包覆性佳。</span></li><li><span class='ico'>5</span><span><b>無痕貼合</b>：搭T恤不易顯痕。</span></li></ul></div><div class='sec'><h2>解決什麼痛點</h2><div class='pain'><div class='row'><div class='p'>悶熱不透氣</div><div class='arrow'>→</div><div class='s'>網眼透氣</div></div><div class='row'><div class='p'>鋼圈壓迫</div><div class='arrow'>→</div><div class='s'>無鋼圈軟支撐</div></div><div class='row'><div class='p'>大尺碼包覆不足</div><div class='arrow'>→</div><div class='s'>大罩杯版型</div></div><div class='row'><div class='p'>顯內衣痕</div><div class='arrow'>→</div><div class='s'>無痕貼合</div></div><div class='row'><div class='p'>領口外露</div><div class='arrow'>→</div><div class='s'>V領剪裁</div></div></div></div><div class='sec'><h2>適合場景</h2><div class='tags'><span>日常穿著</span><span>夏季</span><span>大尺碼需求</span><span>居家</span><span>通勤</span></div></div><div class='foot'>MURO暮若 ｜ 商品編號 1008 ｜ 上架日 5/5 ・ 已上架<br>3/4 罩杯　無鋼圈　V領網眼透氣　S–3XL</div></div></body></html>
