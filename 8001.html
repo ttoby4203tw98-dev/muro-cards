@@ -1,136 +1,79 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MURO暮若 ｜ 商品編號 8001 商品身分證</title>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MURO暮若 ｜ 8001 塑身褲資訊卡（最終版）</title>
 <style>
-  :root{
-    --plum:#7d5a6e; --plum-deep:#5c4051; --nude:#d9b8a8; --nude-soft:#f3e3da;
-    --bg:#faf4f0; --card:#ffffff; --ink:#3a2f33; --muted:#8a7a80; --line:#ecdfd9;
-    --accent:#a86d82; --gold:#c9a25f;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-    background:var(--bg);color:var(--ink);line-height:1.7;padding:24px;}
-  .card{max-width:760px;margin:0 auto;background:var(--card);border-radius:22px;
-    overflow:hidden;box-shadow:0 18px 50px rgba(92,64,81,.18);}
-  .head{background:linear-gradient(135deg,var(--plum),var(--plum-deep));color:#fff;
-    padding:30px 34px 26px;position:relative;}
-  .brand{font-size:13px;letter-spacing:4px;opacity:.85;}
-  .idtag{position:absolute;top:26px;right:30px;background:rgba(255,255,255,.16);
-    border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:30px;
-    font-size:13px;letter-spacing:1px;font-weight:600;}
-  .pname{font-size:25px;font-weight:800;margin-top:14px;letter-spacing:.5px;}
-  .psub{font-size:14px;opacity:.9;margin-top:6px;}
-  .price{margin-top:18px;display:flex;align-items:baseline;gap:12px;}
-  .price .now{font-size:30px;font-weight:800;color:#ffe7c4;}
-  .price .now small{font-size:15px;font-weight:600;}
-  .price .old{font-size:15px;text-decoration:line-through;opacity:.7;}
-  .price .off{background:var(--gold);color:#3a2f33;font-size:12px;font-weight:700;
-    padding:3px 9px;border-radius:6px;}
-  .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
-  .specs div{background:#fff;padding:14px 10px;text-align:center;}
-  .specs .k{font-size:11px;color:var(--muted);letter-spacing:1px;}
-  .specs .v{font-size:14px;font-weight:700;margin-top:3px;color:var(--plum-deep);}
-  .sec{padding:22px 34px;border-top:1px solid var(--line);}
-  .sec h2{font-size:16px;color:var(--plum-deep);display:flex;align-items:center;gap:9px;
-    letter-spacing:1px;margin-bottom:14px;}
-  .sec h2::before{content:"";width:6px;height:18px;background:var(--accent);border-radius:4px;}
-  .colors{display:flex;flex-wrap:wrap;gap:14px;}
-  .swatch{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;}
-  .dot{width:46px;height:46px;border-radius:50%;border:2px solid #fff;
-    box-shadow:0 2px 8px rgba(0,0,0,.15),0 0 0 1px var(--line);}
-  .sizes{display:flex;gap:14px;flex-wrap:wrap;}
-  .sizebox{flex:1;min-width:170px;border:1px solid var(--line);border-radius:14px;
-    padding:14px 16px;background:var(--nude-soft);}
-  .sizebox .lbl{font-weight:800;color:var(--plum-deep);font-size:16px;}
-  .sizebox .rng{font-size:14px;margin-top:4px;}
-  .pts{list-style:none;display:grid;gap:11px;}
-  .pts li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;}
-  .pts li b{color:var(--plum-deep);}
-  .ico{flex:none;width:24px;height:24px;border-radius:50%;background:var(--nude-soft);
-    color:var(--accent);display:flex;align-items:center;justify-content:center;
-    font-size:13px;font-weight:800;margin-top:1px;}
-  .pain{display:grid;gap:10px;}
-  .pain .row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;
-    background:var(--nude-soft);border-radius:12px;padding:12px 14px;font-size:14px;}
-  .pain .p{color:var(--muted);}
-  .pain .arrow{color:var(--accent);font-weight:800;font-size:16px;}
-  .pain .s{font-weight:700;color:var(--plum-deep);}
-  .tags{display:flex;flex-wrap:wrap;gap:10px;}
-  .tags span{background:#fff;border:1px solid var(--accent);color:var(--accent);
-    padding:7px 15px;border-radius:30px;font-size:13.5px;font-weight:600;}
-  .foot{padding:16px 34px 24px;font-size:11.5px;color:var(--muted);text-align:center;
-    border-top:1px solid var(--line);line-height:1.6;}
-  @media(max-width:560px){.specs{grid-template-columns:repeat(2,1fr);}
-    .pain .row{grid-template-columns:1fr;text-align:center;}.idtag{position:static;display:inline-block;margin-top:10px;}}
-</style>
-</head>
-<body>
+ :root{--g:#5a6e6a;--gd:#3f504c;--soft:#e7efe9;--ink:#3a2f33;--muted:#8a7a80;--line:#ecdfd9;--accent:#6d9186;--gold:#c9a25f;}
+ *{box-sizing:border-box;margin:0;padding:0;}
+ body{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;background:#f4f7f5;color:var(--ink);line-height:1.7;padding:24px;}
+ .card{max-width:820px;margin:0 auto;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 18px 50px rgba(60,80,74,.18);}
+ .head{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;padding:28px 32px;position:relative;}
+ .brand{font-size:12px;letter-spacing:4px;opacity:.85;}
+ .cat{position:absolute;top:26px;right:28px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:30px;font-size:12px;font-weight:600;}
+ .pname{font-size:24px;font-weight:800;margin-top:12px;} .psub{font-size:14px;opacity:.9;margin-top:5px;}
+ .price{margin-top:16px;display:flex;align-items:baseline;gap:12px;}
+ .now{font-size:29px;font-weight:800;color:#ffe7c4;} .now small{font-size:14px;} .old{font-size:15px;text-decoration:line-through;opacity:.7;}
+ .off{background:var(--gold);color:#3a2f33;font-size:12px;font-weight:700;padding:3px 9px;border-radius:6px;}
+ .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
+ .specs div{background:#fff;padding:13px 8px;text-align:center;} .specs .k{font-size:11px;color:var(--muted);} .specs .v{font-size:13.5px;font-weight:700;color:var(--gd);margin-top:3px;}
+ .sec{padding:20px 32px;border-top:1px solid var(--line);}
+ .sec h2{font-size:16px;color:var(--gd);display:flex;align-items:center;gap:9px;margin-bottom:13px;}
+ .sec h2::before{content:"";width:6px;height:18px;background:var(--accent);border-radius:4px;}
+ .step{font-size:11px;color:#fff;background:var(--accent);border-radius:20px;padding:2px 9px;}
+ .tags{display:flex;flex-wrap:wrap;gap:9px;} .tags span{background:#fff;border:1px solid var(--accent);color:var(--accent);padding:6px 14px;border-radius:30px;font-size:13px;font-weight:600;}
+ .lead{font-size:14px;} .lead b{color:var(--gd);}
+ .pts{list-style:none;display:grid;gap:10px;} .pts li{display:flex;gap:10px;font-size:14px;} .pts li b{color:var(--gd);}
+ .ico{flex:none;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+ table{width:100%;border-collapse:collapse;font-size:12.5px;} th,td{border:1px solid var(--line);padding:7px 6px;text-align:center;}
+ thead th,tbody th{background:var(--soft);color:var(--gd);font-weight:700;} .corner{background:var(--g)!important;color:#fff!important;}
+ td.s1{background:#e3efdc;color:#3f6b32;font-weight:700;} td.s2{background:#dde7f4;color:#2f4f7a;font-weight:700;} td.s3{background:#f6e9d6;color:#8a6a2f;font-weight:700;} td.s4{background:#efe0e6;color:#84416a;font-weight:700;} td.no{background:#efeae7;color:#a99;}
+ .shape th{text-align:left;white-space:nowrap;} .shape td.tip{text-align:left;color:#4a3f43;}
+ td.fit{background:#e3efdc;color:#3f6b32;font-weight:700;white-space:nowrap;} td.warn{background:#f6ecd6;color:#8a6a2f;font-weight:700;white-space:nowrap;} 
+ .todo{background:#fdf3e3;border:1px dashed #d9b877;color:#8a6a2f;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:600;}
+ .revs{display:grid;gap:10px;} .rev{background:var(--soft);border-radius:12px;padding:11px 14px;font-size:13.5px;}
+ .rev .stars{color:var(--gold);letter-spacing:2px;} .rev .txt{margin-top:3px;} .rev .who{margin-top:4px;font-size:11.5px;color:var(--muted);}
+ .note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.7;}
+ .foot{padding:14px 32px 22px;font-size:11.5px;color:var(--muted);text-align:center;border-top:1px solid var(--line);}
+ .foot a{color:var(--accent);}
+</style></head><body>
 <div class="card">
-  <div class="head">
-    <div class="brand">M U R O ・ 暮 若</div>
-    <span class="idtag">商品編號 8001</span>
-    <div class="pname">高腰收腹提臀鯊魚褲</div>
-    <div class="psub">軟骨防捲腰｜無痕無縫｜薄款・四季可穿</div>
-    <div class="price"><div class="now"><small>NT$</small>399</div><div class="old">NT$469</div><div class="off">85 折優惠價</div></div>
-  </div>
-  <div class="specs">
-    <div><div class="k">功能</div><div class="v">收腹提臀</div></div>
-    <div><div class="k">腰頭</div><div class="v">軟骨防捲</div></div>
-    <div><div class="k">車縫</div><div class="v">無痕無縫</div></div>
-    <div><div class="k">厚度</div><div class="v">薄款</div></div>
-  </div>
-  <div class="sec">
-    <h2>顏色 ｜ 2 色可選</h2>
-    <div class="colors">
-      <div class="swatch"><span class="dot" style="background:#d9b29a;"></span>膚色</div>
-      <div class="swatch"><span class="dot" style="background:#2f2b2c;"></span>黑色</div>
-    </div>
-  </div>
-  <div class="sec">
-    <h2>尺寸 ｜ 4 碼涵蓋 40～80 公斤</h2>
-    <div class="sizes">
-      <div class="sizebox"><div class="lbl">M 碼</div><div class="rng">適穿 40～50 公斤</div></div>
-      <div class="sizebox"><div class="lbl">L 碼</div><div class="rng">適穿 50～60 公斤</div></div>
-      <div class="sizebox"><div class="lbl">XL 碼</div><div class="rng">適穿 60～70 公斤</div></div>
-      <div class="sizebox"><div class="lbl">2XL 碼</div><div class="rng">適穿 70～80 公斤</div></div>
-    </div>
-  </div>
-  <div class="sec">
-    <h2>核心賣點</h2>
-    <ul class="pts">
-      <li><span class="ico">1</span><span><b>高腰收腹</b>：高腰版型包覆小腹，腰線俐落，搭短上衣也安心。</span></li>
-      <li><span class="ico">2</span><span><b>軟骨防捲腰</b>：腰頭加入軟支撐條，活動、久坐都不易下捲外翻。</span></li>
-      <li><span class="ico">3</span><span><b>提臀剪裁</b>：臀部立體剪裁，修飾臀型線條。</span></li>
-      <li><span class="ico">4</span><span><b>無痕無縫</b>：一體無縫車製，穿合身褲裙不顯褲痕。</span></li>
-      <li><span class="ico">5</span><span><b>薄款四季</b>：尼龍薄料親膚，悶熱季節也好穿，可單穿可打底。</span></li>
-    </ul>
-  </div>
-  <div class="sec">
-    <h2>解決什麼痛點</h2>
-    <div class="pain">
-      <div class="row"><span class="p">小腹凸出、腰線不俐落</span><span class="arrow">&rarr;</span><span class="s">高腰收腹版型</span></div>
-      <div class="row"><span class="p">褲頭下捲、外翻</span><span class="arrow">&rarr;</span><span class="s">軟骨防捲腰頭</span></div>
-      <div class="row"><span class="p">臀部扁塌</span><span class="arrow">&rarr;</span><span class="s">提臀立體剪裁</span></div>
-      <div class="row"><span class="p">緊身褲裙顯內褲痕</span><span class="arrow">&rarr;</span><span class="s">無痕無縫車製</span></div>
-      <div class="row"><span class="p">厚重悶熱不透氣</span><span class="arrow">&rarr;</span><span class="s">薄款尼龍親膚</span></div>
-    </div>
-  </div>
-  <div class="sec">
-    <h2>適合場景</h2>
-    <div class="tags">
-      <span>日常打底</span>
-      <span>上班通勤</span>
-      <span>洋裝・裙裝內搭</span>
-      <span>運動瑜珈</span>
-      <span>產後雕塑</span>
-    </div>
-  </div>
-  <div class="foot">
-    MURO暮若 ｜ 商品編號 8001 ｜ 上架日 5/17 ・ 已上架<br>面料：尼龍　高腰無縫　四季通用
-  </div>
-</div>
-</body>
-</html>
+ <div class="head"><div class="brand">M U R O ・ 暮 若</div><span class="cat">塑身褲 ｜ 商品編號 8001</span>
+  <div class="pname">收腹提臀塑形褲（高腰鯊魚褲）</div>
+  <div class="psub">高腰鯊魚褲｜軟骨防捲腰｜收腹提臀・中塑無痕</div>
+  <div class="price"><div class="now"><small>NT$</small>399</div><div class="old">NT$469</div><div class="off">優惠價</div></div></div>
+ <div class="specs">
+  <div><div class="k">版型</div><div class="v">高腰鯊魚褲</div></div>
+  <div><div class="k">塑形強度</div><div class="v">中塑</div></div>
+  <div><div class="k">材質</div><div class="v">尼龍高彈</div></div>
+  <div><div class="k">尺碼制</div><div class="v">依體重</div></div>
+ </div>
+ <div class="sec"><h2><span class="step">1</span>適合場景</h2>
+  <div class="tags"><span>日常顯瘦打底</span><span>洋裝・裙裝內搭</span><span>運動</span><span>久坐上班</span><span>產後日常雕塑</span></div></div>
+ <div class="sec"><h2><span class="step">2</span>版型／類型 ｜ 高腰鯊魚褲（壓力打底褲）</h2>
+  <p class="lead"><b>塑形強度：中塑</b>（高彈微壓，日常顯瘦、久穿舒適，非醫療級重壓）。主打<b>收腹提臀＋修飾腿型</b>，無痕一片式可外穿可打底。<b>尺碼制：依體重</b>——直播問客人「體重」即可選碼。</p></div>
+ <div class="sec"><h2><span class="step">3</span>塑形機能</h2>
+  <ul class="pts">
+   <li><span class="ico">1</span><span><b>高腰收腹</b>：包覆小腹、腰線俐落。</span></li>
+   <li><span class="ico">2</span><span><b>軟骨防捲腰</b>：腰頭記憶軟骨，活動久坐不下捲。</span></li>
+   <li><span class="ico">3</span><span><b>3D 立體提臀</b>：翹臀線條、修飾臀型。</span></li>
+   <li><span class="ico">4</span><span><b>高彈微壓修腿</b>：均勻加壓、視覺拉長腿部。</span></li>
+   <li><span class="ico">5</span><span><b>無痕一片式</b>：外穿不顯褲痕、告別尷尬線。</span></li>
+  </ul></div>
+ <div class="sec"><h2><span class="step">4</span>適合身形</h2>
+  <table class="shape"><thead><tr><th>身形／需求</th><th>適合度</th><th>建議</th></tr></thead><tbody><tr><th>蘋果型（腹部脂肪）</th><td class="fit">◎ 很適合</td><td class="tip">高腰包覆小腹，收腹效果直接。</td></tr><tr><th>西洋梨型（臀腿）</th><td class="fit">◎ 很適合</td><td class="tip">壓力修飾大腿＋3D 提臀，最對症。</td></tr><tr><th>日常想顯瘦</th><td class="fit">◎ 很適合</td><td class="tip">中塑打底、久穿舒適不勒。</td></tr><tr><th>久坐上班／產後日常</th><td class="ok">○ 適合</td><td class="tip">高腰支撐；產後日常雕塑可，醫療級束腹另選。</td></tr><tr><th>需要強力雕塑（正式場合）</th><td class="warn">△ 斟酌</td><td class="tip">此款為中塑日常款；要重壓雕塑建議改強塑連體。</td></tr><tr><th>孕婦</th><td class="no">✗ 不建議</td><td class="tip">塑身壓力款孕期不建議穿著。</td></tr></tbody></table>
+  <div class="note">◎很適合／○適合／△斟酌／✗不建議。</div></div>
+ <div class="sec"><h2><span class="step">5</span>選碼建議 ｜ 尺碼表</h2>
+  <div class="todo">⚠ 此款蝦皮尚無 cm 尺碼表（腰圍/臀圍/褲長），標記「待補」由賣家補上。目前以體重快查表為準。</div></div>
+ <div class="sec"><h2><span class="step">5</span>選碼建議 ｜ 身高 × 體重 快查表</h2>
+  <table><thead><tr><th class="corner">身高＼體重kg</th><th>40</th><th>45</th><th>50</th><th>55</th><th>60</th><th>65</th><th>70</th><th>75</th><th>80</th><th>85</th><th>90</th><th>95</th><th>100</th></tr></thead><tbody><tr><th>140</th><td class="s1">M</td><td class="s1">M</td><td class="s1">M</td><td class="s2">L</td><td class="s2">L</td><td class="s3">XL</td><td class="s3">XL</td><td class="s4">2XL</td><td class="s4">2XL</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>150</th><td class="s1">M</td><td class="s1">M</td><td class="s1">M</td><td class="s2">L</td><td class="s2">L</td><td class="s3">XL</td><td class="s3">XL</td><td class="s4">2XL</td><td class="s4">2XL</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>160</th><td class="s1">M</td><td class="s1">M</td><td class="s1">M</td><td class="s2">L</td><td class="s2">L</td><td class="s3">XL</td><td class="s3">XL</td><td class="s4">2XL</td><td class="s4">2XL</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>170</th><td class="s1">M</td><td class="s1">M</td><td class="s1">M</td><td class="s2">L</td><td class="s2">L</td><td class="s3">XL</td><td class="s3">XL</td><td class="s4">2XL</td><td class="s4">2XL</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>180</th><td class="s1">M</td><td class="s1">M</td><td class="s1">M</td><td class="s2">L</td><td class="s2">L</td><td class="s3">XL</td><td class="s3">XL</td><td class="s4">2XL</td><td class="s4">2XL</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>190</th><td class="s1">M</td><td class="s1">M</td><td class="s1">M</td><td class="s2">L</td><td class="s2">L</td><td class="s3">XL</td><td class="s3">XL</td><td class="s4">2XL</td><td class="s4">2XL</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr></tbody></table>
+  <div class="note">M(綠)40–50・L(藍)50–60・XL(橘)60–70・2XL(紫)70–80・灰=不適合。塑身褲「寧鬆勿過緊」，臨界或要久穿選大一碼。身高 185cm＋ 褲長可能偏短。80kg 以上超出此款。</div></div>
+ <div class="sec"><h2><span class="step">6</span>功能賣點</h2>
+  <ul class="pts">
+   <li><span class="ico">1</span><span><b>收腹提臀</b>：高腰收小腹、3D 提臀。</span></li>
+   <li><span class="ico">2</span><span><b>軟骨防捲腰</b>：不下捲、不外翻。</span></li>
+   <li><span class="ico">3</span><span><b>無痕修腿</b>：一片式無痕、微壓顯瘦。</span></li>
+   <li><span class="ico">4</span><span><b>薄透氣中塑</b>：日常久穿舒適、可當打底。</span></li>
+  </ul></div>
+ <div class="sec"><h2><span class="step">7</span>顧客 5 星好評</h2>
+  <div class="revs"><div class="rev"><div class="stars">★★★★★</div><div class="txt">收腹效果不錯，緊度飽滿、不勒肉，還有明顯的翹臀，會再回購！</div><div class="who">— n***0（黑色・M）</div></div><div class="rev"><div class="stars">★★★★★</div><div class="txt">效果真的很好，很舒適，身材變好，價格不貴，可多買幾件替換穿。</div><div class="who">— s***6（黑色・M）</div></div><div class="rev"><div class="stars">★★★★★</div><div class="txt">穿了真的有塑住、有控制，整個身型變好變瘦了，腿超直！運動搭配效果更佳。</div><div class="who">— 買家真實回饋</div></div></div>
+  <div class="note">評分 4.9／5（747 則評價，2000+ 已售）。摘自蝦皮真實評價。</div></div>
+ <div class="foot">MURO暮若 ｜ 塑身褲 ・ 商品編號 8001 ｜ 分類依據：<a href="https://ttoby4203tw98-dev.github.io/muro-cards/shapewear-rules.html">塑身褲/衣分類規則庫</a> ｜ 資料來源：蝦皮賣場</div>
+</div></body></html>
