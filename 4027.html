@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MURO暮若 ｜ 4027 下身資訊卡（最終版）</title>
+<style>
+  :root{
+    --plum:#7d5a6e; --plum-deep:#5c4051; --nude:#d9b8a8; --nude-soft:#f3e3da;
+    --bg:#faf4f0; --card:#ffffff; --ink:#3a2f33; --muted:#8a7a80; --line:#ecdfd9;
+    --accent:#a86d82; --gold:#c9a25f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;padding:24px;}
+  .card{max-width:760px;margin:0 auto;background:var(--card);border-radius:22px;
+    overflow:hidden;box-shadow:0 18px 50px rgba(92,64,81,.18);}
+  .head{background:linear-gradient(135deg,var(--plum),var(--plum-deep));color:#fff;
+    padding:30px 34px 26px;position:relative;}
+  .brand{font-size:13px;letter-spacing:4px;opacity:.85;}
+  .idtag{position:absolute;top:26px;right:30px;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:30px;
+    font-size:13px;letter-spacing:1px;font-weight:600;}
+  .pname{font-size:25px;font-weight:800;margin-top:14px;letter-spacing:.5px;}
+  .psub{font-size:14px;opacity:.9;margin-top:6px;}
+  .price{margin-top:18px;display:flex;align-items:baseline;gap:12px;}
+  .price .now{font-size:30px;font-weight:800;color:#ffe7c4;}
+  .price .now small{font-size:15px;font-weight:600;}
+  .price .old{font-size:15px;text-decoration:line-through;opacity:.7;}
+  .price .off{background:var(--gold);color:#3a2f33;font-size:12px;font-weight:700;
+    padding:3px 9px;border-radius:6px;}
+  .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
+  .specs div{background:#fff;padding:14px 10px;text-align:center;}
+  .specs .k{font-size:11px;color:var(--muted);letter-spacing:1px;}
+  .specs .v{font-size:14px;font-weight:700;margin-top:3px;color:var(--plum-deep);}
+  .sec{padding:22px 34px;border-top:1px solid var(--line);}
+  .sec h2{font-size:16px;color:var(--plum-deep);display:flex;align-items:center;gap:9px;
+    letter-spacing:1px;margin-bottom:14px;}
+  .sec h2::before{content:"";width:6px;height:18px;background:var(--accent);border-radius:4px;}
+  .num{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+  .colors{display:flex;flex-wrap:wrap;gap:14px;}
+  .swatch{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;}
+  .dot{width:46px;height:46px;border-radius:50%;border:2px solid #fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.15),0 0 0 1px var(--line);}
+  .pts{list-style:none;display:grid;gap:11px;}
+  .pts li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;}
+  .pts li b{color:var(--plum-deep);}
+  .ico{flex:none;width:24px;height:24px;border-radius:50%;background:var(--nude-soft);
+    color:var(--accent);display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:800;margin-top:1px;}
+  .tags{display:flex;flex-wrap:wrap;gap:10px;}
+  .tags span{background:#fff;border:1px solid var(--accent);color:var(--accent);
+    padding:7px 15px;border-radius:30px;font-size:13.5px;font-weight:600;}
+  .sztbl{width:100%;border-collapse:collapse;font-size:13px;}
+  .sztbl th,.sztbl td{border:1px solid var(--line);padding:7px 8px;text-align:center;}
+  .sztbl th{background:var(--nude-soft);color:var(--plum-deep);font-weight:700;}
+  .fit{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .fit th,.fit td{border:1px solid var(--line);padding:8px 10px;text-align:left;}
+  .fit th{background:var(--nude-soft);color:var(--plum-deep);}
+  .warn{background:#fff7ec;border:1px solid #e8c88f;color:#8a6420;border-radius:12px;
+    padding:12px 14px;font-size:13.5px;margin-bottom:14px;}
+  .note{font-size:12px;color:var(--muted);margin-top:10px;}
+  .revs{display:grid;gap:11px;}
+  .rev{background:var(--nude-soft);border-radius:12px;padding:12px 14px;font-size:13.5px;}
+  .foot{padding:16px 34px 24px;font-size:11.5px;color:var(--muted);text-align:center;
+    border-top:1px solid var(--line);line-height:1.6;}
+  .foot a{color:var(--accent);}
+  @media(max-width:560px){.specs{grid-template-columns:repeat(2,1fr);}
+    .idtag{position:static;display:inline-block;margin-top:10px;}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <div class="brand">M U R O ・ 暮 若</div>
+    <span class="idtag">下身 ｜ 商品編號 4027</span>
+    <div class="pname">高腰A字短褲（顯瘦休閒短褲）</div>
+    <div class="psub">高腰A字｜薄款彈力・清爽不悶熱｜小個子友善百搭熱褲</div>
+    <div class="price">
+      <span class="now">NT$450</span>
+      <span class="off">賣場券 9.3 折</span>
+    </div>
+  </div>
+  <div class="specs">
+    <div><div class="k">版型</div><div class="v">高腰A字</div></div>
+    <div><div class="k">長度</div><div class="v">短褲</div></div>
+    <div><div class="k">材質</div><div class="v">棉＋合成纖維</div></div>
+    <div><div class="k">尺碼制</div><div class="v">依體重 S–5XL</div></div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">1</span>適合場景</h2>
+    <div class="tags">
+      <span>日常休閒</span><span>逛街出遊</span><span>旅行</span><span>夏季</span><span>小個子友善</span><span>大尺碼友善</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">2</span>版型 ｜ 高腰A字短褲</h2>
+    <div class="warn">⚠ 上架狀態注意：此款蝦皮目前顯示「未上架」，前台無法直接下單。卡片先備妥，重新上架後即可直接使用。</div>
+    <p style="font-size:14px;">高腰剪裁拉長比例、A字褲型修飾腰臀與大腿線條，俐落不厚重；薄款彈力面料保留活動空間、清爽不悶熱。<b>尺碼制：依體重（S–5XL）</b>，直播間問客人「體重」即可選碼，最大到 100kg、大尺碼友善。腰圍／臀圍／褲長 cm 數據蝦皮尚未提供，標記待補。</p>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">3</span>版型機能</h2>
+    <ul class="pts">
+      <li><span class="ico">1</span><span><b>高腰顯腿長</b>：比例上移、小個子友善。</span></li>
+      <li><span class="ico">2</span><span><b>A字遮肉</b>：修飾腰臀與大腿線條、不貼腿。</span></li>
+      <li><span class="ico">3</span><span><b>薄款彈力</b>：清爽不悶熱、活動不緊繃。</span></li>
+      <li><span class="ico">4</span><span><b>S–5XL 全尺碼</b>：40–100kg 都有對應尺碼。</span></li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">4</span>適合身形</h2>
+    <table class="fit">
+      <tr><th>身形／需求</th><th>適合度</th><th>建議</th></tr>
+      <tr><td>大腿有肉、怕短褲貼腿</td><td>◎ 很適合</td><td>A字版型自然遮肉顯瘦。</td></tr>
+      <tr><td>小個子想拉比例</td><td>◎ 很適合</td><td>高腰＋短褲長，腿長視覺直接加分。</td></tr>
+      <tr><td>大尺碼（80–100kg）</td><td>◎ 很適合</td><td>4XL／5XL 有對應區間，依體重選碼。</td></tr>
+      <tr><td>需要精準腰圍 cm</td><td>△ 斟酌</td><td>cm 尺碼表待補，先依體重選碼或聊聊詢問。</td></tr>
+    </table>
+    <div class="note">◎很適合／○適合／△斟酌／✗不建議。</div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">5</span>選碼建議 ｜ 尺碼表</h2>
+    <div class="warn">⚠ 尺碼表待補：此款蝦皮尚無腰圍／臀圍／褲長 cm 尺碼表，已標記待補由賣家補上。目前以官方「依體重」區間為準：S【40–49】M【49–54】L【54–59】XL【59–64】2XL【64–72.5】3XL【72.5–80】4XL【80–90】5XL【90–100】KG。</div>
+    <table class="sztbl">
+      <tr><th>身高＼體重kg</th><th>40</th><th>45</th><th>50</th><th>55</th><th>60</th><th>65</th><th>70</th><th>75</th><th>80</th><th>85</th><th>90</th><th>95</th><th>100</th></tr>
+      <tr><th>140</th><td>S</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>2XL</td><td>2XL</td><td>3XL</td><td>4XL</td><td>4XL</td><td>5XL</td><td>5XL</td><td>5XL</td></tr>
+      <tr><th>150</th><td>S</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>2XL</td><td>2XL</td><td>3XL</td><td>4XL</td><td>4XL</td><td>5XL</td><td>5XL</td><td>5XL</td></tr>
+      <tr><th>160</th><td>S</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>2XL</td><td>2XL</td><td>3XL</td><td>4XL</td><td>4XL</td><td>5XL</td><td>5XL</td><td>5XL</td></tr>
+      <tr><th>170</th><td>S</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>2XL</td><td>2XL</td><td>3XL</td><td>4XL</td><td>4XL</td><td>5XL</td><td>5XL</td><td>5XL</td></tr>
+      <tr><th>180</th><td>S</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>2XL</td><td>2XL</td><td>3XL</td><td>4XL</td><td>4XL</td><td>5XL</td><td>5XL</td><td>5XL</td></tr>
+      <tr><th>190</th><td>S</td><td>S</td><td>M</td><td>L</td><td>XL</td><td>2XL</td><td>2XL</td><td>3XL</td><td>4XL</td><td>4XL</td><td>5XL</td><td>5XL</td><td>5XL</td></tr>
+    </table>
+    <div class="note">體重落在區間交界（如 59kg、64kg）建議選大一碼，寧鬆勿過緊。100kg 以上超出此款區間。</div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">6</span>顏色 ｜ 2 色可選</h2>
+    <div class="colors">
+      <div class="swatch"><span class="dot" style="background:#2f2b2c;"></span>黑色</div>
+      <div class="swatch"><span class="dot" style="background:#f5f3ef;"></span>白色</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">7</span>顧客 5 星好評</h2>
+    <div class="revs">
+      <div class="rev">此款為新上架商品，蝦皮尚無評價（0 則）。待累積真實好評後再補上，不使用編造評價。</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    MURO暮若 ｜ 下身 ・ 商品編號 4027 ｜ 分類依據：<a href="https://ttoby4203tw98-dev.github.io/muro-cards/bottoms-rules.html">下身分類規則庫</a> ｜ 資料來源：蝦皮賣場<br>
+    高腰A字　薄款彈力　依體重 S–5XL　2 色 ｜ ⚠ cm 尺碼表待補 ｜ ⚠ 蝦皮目前顯示未上架
+  </div>
+</div>
+</body>
+</html>

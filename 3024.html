@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MURO暮若 ｜ 3024 上衣資訊卡（最終版）</title>
+<style>
+  :root{
+    --plum:#7d5a6e; --plum-deep:#5c4051; --nude:#d9b8a8; --nude-soft:#f3e3da;
+    --bg:#faf4f0; --card:#ffffff; --ink:#3a2f33; --muted:#8a7a80; --line:#ecdfd9;
+    --accent:#a86d82; --gold:#c9a25f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;padding:24px;}
+  .card{max-width:760px;margin:0 auto;background:var(--card);border-radius:22px;
+    overflow:hidden;box-shadow:0 18px 50px rgba(92,64,81,.18);}
+  .head{background:linear-gradient(135deg,var(--plum),var(--plum-deep));color:#fff;
+    padding:30px 34px 26px;position:relative;}
+  .brand{font-size:13px;letter-spacing:4px;opacity:.85;}
+  .idtag{position:absolute;top:26px;right:30px;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:30px;
+    font-size:13px;letter-spacing:1px;font-weight:600;}
+  .pname{font-size:25px;font-weight:800;margin-top:14px;letter-spacing:.5px;}
+  .psub{font-size:14px;opacity:.9;margin-top:6px;}
+  .price{margin-top:18px;display:flex;align-items:baseline;gap:12px;}
+  .price .now{font-size:30px;font-weight:800;color:#ffe7c4;}
+  .price .now small{font-size:15px;font-weight:600;}
+  .price .old{font-size:15px;text-decoration:line-through;opacity:.7;}
+  .price .off{background:var(--gold);color:#3a2f33;font-size:12px;font-weight:700;
+    padding:3px 9px;border-radius:6px;}
+  .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
+  .specs div{background:#fff;padding:14px 10px;text-align:center;}
+  .specs .k{font-size:11px;color:var(--muted);letter-spacing:1px;}
+  .specs .v{font-size:14px;font-weight:700;margin-top:3px;color:var(--plum-deep);}
+  .sec{padding:22px 34px;border-top:1px solid var(--line);}
+  .sec h2{font-size:16px;color:var(--plum-deep);display:flex;align-items:center;gap:9px;
+    letter-spacing:1px;margin-bottom:14px;}
+  .sec h2::before{content:"";width:6px;height:18px;background:var(--accent);border-radius:4px;}
+  .num{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+  .colors{display:flex;flex-wrap:wrap;gap:14px;}
+  .swatch{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;}
+  .dot{width:46px;height:46px;border-radius:50%;border:2px solid #fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.15),0 0 0 1px var(--line);}
+  .pts{list-style:none;display:grid;gap:11px;}
+  .pts li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;}
+  .pts li b{color:var(--plum-deep);}
+  .ico{flex:none;width:24px;height:24px;border-radius:50%;background:var(--nude-soft);
+    color:var(--accent);display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:800;margin-top:1px;}
+  .tags{display:flex;flex-wrap:wrap;gap:10px;}
+  .tags span{background:#fff;border:1px solid var(--accent);color:var(--accent);
+    padding:7px 15px;border-radius:30px;font-size:13.5px;font-weight:600;}
+  .sztbl{width:100%;border-collapse:collapse;font-size:13px;}
+  .sztbl th,.sztbl td{border:1px solid var(--line);padding:7px 8px;text-align:center;}
+  .sztbl th{background:var(--nude-soft);color:var(--plum-deep);font-weight:700;}
+  .fit{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .fit th,.fit td{border:1px solid var(--line);padding:8px 10px;text-align:left;}
+  .fit th{background:var(--nude-soft);color:var(--plum-deep);}
+  .warn{background:#fff7ec;border:1px solid #e8c88f;color:#8a6420;border-radius:12px;
+    padding:12px 14px;font-size:13.5px;margin-bottom:14px;}
+  .note{font-size:12px;color:var(--muted);margin-top:10px;}
+  .revs{display:grid;gap:11px;}
+  .rev{background:var(--nude-soft);border-radius:12px;padding:12px 14px;font-size:13.5px;}
+  .foot{padding:16px 34px 24px;font-size:11.5px;color:var(--muted);text-align:center;
+    border-top:1px solid var(--line);line-height:1.6;}
+  .foot a{color:var(--accent);}
+  @media(max-width:560px){.specs{grid-template-columns:repeat(2,1fr);}
+    .idtag{position:static;display:inline-block;margin-top:10px;}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <div class="brand">M U R O ・ 暮 若</div>
+    <span class="idtag">上衣 ｜ 商品編號 3024</span>
+    <div class="pname">天絲圓領短袖T恤（萊賽爾白T）</div>
+    <div class="psub">天絲萊賽爾｜正肩版型・親膚透氣｜百搭素色基本款</div>
+    <div class="price">
+      <span class="now">NT$480</span>
+      <span class="off">賣場券 9.3 折</span>
+    </div>
+  </div>
+  <div class="specs">
+    <div><div class="k">衣型</div><div class="v">圓領短袖T恤</div></div>
+    <div><div class="k">剪裁</div><div class="v">正肩・合身百搭</div></div>
+    <div><div class="k">材質</div><div class="v">萊賽爾（天絲）</div></div>
+    <div><div class="k">尺碼制</div><div class="v">均碼（單一尺寸）</div></div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">1</span>適合場景</h2>
+    <div class="tags">
+      <span>上班通勤</span><span>日常休閒</span><span>約會出遊</span><span>旅行</span><span>夏季</span><span>四季打底</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">2</span>衣型／剪裁 ｜ 圓領正肩短袖T</h2>
+    <p style="font-size:14px;">素色圓領短袖T恤，<b>正肩剪裁</b>自然修飾肩線、看起來俐落有精神；圓領簡約耐看、不挑人不退流行。蝦皮分類為「大尺碼上衣」，本款<b>僅一個尺寸（均碼）</b>，以顏色選款：直播間問客人「要什麼顏色」即可。衣長／胸圍／肩寬等 cm 剪裁數據蝦皮尚未提供，標記待補。</p>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">3</span>面料機能</h2>
+    <ul class="pts">
+      <li><span class="ico">1</span><span><b>天絲萊賽爾</b>：觸感柔滑細緻、垂墜有質感。</span></li>
+      <li><span class="ico">2</span><span><b>親膚透氣</b>：不悶熱、無厚重感，夏天穿最舒服。</span></li>
+      <li><span class="ico">3</span><span><b>正肩修飾</b>：肩線自然俐落、穿起來有精神。</span></li>
+      <li><span class="ico">4</span><span><b>素色百搭</b>：牛仔褲、寬褲、短裙、西裝褲都好搭。</span></li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">4</span>適合身形</h2>
+    <table class="fit">
+      <tr><th>身形／需求</th><th>適合度</th><th>建議</th></tr>
+      <tr><td>日常想要一件好白T</td><td>◎ 很適合</td><td>天絲面料、質感與舒適度直接有感。</td></tr>
+      <tr><td>肩線不明顯／溜肩</td><td>◎ 很適合</td><td>正肩剪裁修飾肩線。</td></tr>
+      <tr><td>怕悶熱、易流汗</td><td>◎ 很適合</td><td>萊賽爾透氣親膚、夏季日常首選。</td></tr>
+      <tr><td>需要精準尺寸（胸圍/衣長）</td><td>△ 斟酌</td><td>本款為均碼且 cm 尺寸表待補，在意尺寸請先聊聊詢問。</td></tr>
+    </table>
+    <div class="note">◎很適合／○適合／△斟酌／✗不建議。</div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">5</span>選碼建議 ｜ 尺碼表</h2>
+    <div class="warn">⚠ 尺碼表待補：此款蝦皮僅提供「均碼（單一尺寸）」，尚無衣長／胸圍／肩寬 cm 尺碼表，已標記待補由賣家補上。以下快查表僅依「均碼」規格呈現，未提供的數據不自行填寫。</div>
+    <table class="sztbl">
+      <tr><th>身高＼體重kg</th><th>40</th><th>45</th><th>50</th><th>55</th><th>60</th><th>65</th><th>70</th><th>75</th><th>80</th><th>85</th><th>90</th><th>95</th><th>100</th></tr>
+      <tr><th>140</th><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><th>150</th><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><th>160</th><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><th>170</th><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><th>180</th><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><th>190</th><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    </table>
+    <div class="note">F＝均碼（本款僅一個尺寸）。「—」＝均碼上衣包容度有限，體重 85kg 以上或在意胸圍／衣長者，建議先透過聊聊確認實際尺寸再下單，寧問勿賭。</div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">6</span>顏色 ｜ 5 色可選</h2>
+    <div class="colors">
+      <div class="swatch"><span class="dot" style="background:#2f2b2c;"></span>黑色</div>
+      <div class="swatch"><span class="dot" style="background:#f5f3ef;"></span>白色</div>
+      <div class="swatch"><span class="dot" style="background:#c4c4c6;"></span>銀灰</div>
+      <div class="swatch"><span class="dot" style="background:#e9e5c9;"></span>奶青</div>
+      <div class="swatch"><span class="dot" style="background:#7c3b3f;"></span>酒紅</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2><span class="num">7</span>顧客 5 星好評</h2>
+    <div class="revs">
+      <div class="rev">此款為新上架商品，蝦皮尚無評價（0 則）。待累積真實好評後再補上，不使用編造評價。</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    MURO暮若 ｜ 上衣 ・ 商品編號 3024 ｜ 分類依據：<a href="https://ttoby4203tw98-dev.github.io/muro-cards/tops-rules.html">上衣分類規則庫</a> ｜ 資料來源：蝦皮賣場<br>
+    圓領短袖　正肩　萊賽爾天絲　均碼　5 色 ｜ ⚠ cm 尺碼表待補
+  </div>
+</div>
+</body>
+</html>
