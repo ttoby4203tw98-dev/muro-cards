@@ -61,6 +61,22 @@
   .tags{display:flex;flex-wrap:wrap;gap:10px;}
   .tags span{background:#fff;border:1px solid var(--accent);color:var(--accent);
     padding:7px 15px;border-radius:30px;font-size:13.5px;font-weight:600;}
+  .sztbl{width:100%;border-collapse:collapse;font-size:13px;}
+  .sztbl th,.sztbl td{border:1px solid var(--line);padding:7px 8px;text-align:center;}
+  .sztbl th{background:var(--nude-soft);color:var(--plum-deep);font-weight:700;}
+  .hw{width:100%;border-collapse:collapse;font-size:12px;}
+  .hw th,.hw td{border:1px solid var(--line);padding:6px 5px;text-align:center;}
+  .hw thead th,.hw tbody th{background:var(--nude-soft);color:var(--plum-deep);font-weight:700;}
+  .hw .corner{background:var(--plum);color:#fff;}
+  .hw td.ok{background:#e3efdc;color:#3f6b32;font-weight:700;}
+  .hw td.no{background:#efeae7;color:#a99;}
+  .todo{background:#fdf3e3;border:1px dashed #d9b877;color:#8a6a2f;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:600;}
+  .note{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6;}
+  .revs{display:grid;gap:11px;}
+  .rev{background:var(--nude-soft);border-radius:12px;padding:12px 14px;font-size:13.5px;}
+  .rev .stars{color:var(--gold);font-size:13px;letter-spacing:2px;}
+  .rev .txt{margin-top:4px;color:var(--ink);}
+  .rev .who{margin-top:5px;font-size:11.5px;color:var(--muted);}
   .foot{padding:16px 34px 24px;font-size:11.5px;color:var(--muted);text-align:center;
     border-top:1px solid var(--line);line-height:1.6;}
   @media(max-width:560px){.specs{grid-template-columns:repeat(2,1fr);}
@@ -100,6 +116,8 @@
       <div class="sizebox"><div class="lbl">XL 碼</div><div class="rng">適穿 64～75 公斤</div></div>
     </div>
   </div>
+  
+  <div class="sec"><h2>選碼建議 ｜ 身高 × 體重 快查表</h2><table class="hw"><thead><tr><th class="corner">身高＼體重kg</th><th>40</th><th>45</th><th>50</th><th>55</th><th>60</th><th>65</th><th>70</th><th>75</th><th>80</th><th>85</th><th>90</th><th>95</th><th>100</th></tr></thead><tbody><tr><th>140</th><td class="ok">M</td><td class="ok">M</td><td class="ok">M</td><td class="ok">L</td><td class="ok">L</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>150</th><td class="ok">M</td><td class="ok">M</td><td class="ok">M</td><td class="ok">L</td><td class="ok">L</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>160</th><td class="ok">M</td><td class="ok">M</td><td class="ok">M</td><td class="ok">L</td><td class="ok">L</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>170</th><td class="ok">M</td><td class="ok">M</td><td class="ok">M</td><td class="ok">L</td><td class="ok">L</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>180</th><td class="ok">M</td><td class="ok">M</td><td class="ok">M</td><td class="ok">L</td><td class="ok">L</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr><tr><th>190</th><td class="ok">M</td><td class="ok">M</td><td class="ok">M</td><td class="ok">L</td><td class="ok">L</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td><td class="no">不適合</td></tr></tbody></table><div class="note">綠＝建議尺碼、灰＝不適合。此為依體重的快速對照；想更精準請補上 cm 尺碼表。臨界值想合身選小碼、想寬鬆選大碼。</div></div>
   <div class="sec">
     <h2>核心賣點</h2>
     <ul class="pts">
@@ -130,8 +148,9 @@
       <span>四季可穿</span>
     </div>
   </div>
+  
   <div class="foot">
-    MURO暮若 ｜ 商品編號 2001 ｜ 上架日 3/6 ・ 已上架<br>高腰三角　收腹提臀　7A 抗菌褲底　奶皮無痕
+    MURO暮若 ｜ 商品編號 2001 ｜ 上架日 3/6 ・ 已上架<br>高腰三角　收腹提臀　7A 抗菌褲底　奶皮無痕<br>分類依據：<a href="https://ttoby4203tw98-dev.github.io/muro-cards/panty-rules.html" style="color:#a86d82;">內褲分類規則庫</a>
   </div>
 </div>
 </body>
