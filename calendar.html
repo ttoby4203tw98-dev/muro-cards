@@ -310,11 +310,15 @@ document.getElementById('todayBtn').onclick=function(){cur=new Date();cur.setDat
 function loadOptions(){
   fetch(OPT_URL).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
     var rows=parseCSV(t);
+    // 防呆：標題列必須是「事項／人員」，否則代表「選項」分頁不存在（Google 會回傳主資料表），一律忽略
+    if(!rows.length)return;
+    var h0=(rows[0][0]||'').trim(),h1=(rows[0][1]||'').trim();
+    if(h0.indexOf('事項')===-1||h1.indexOf('人員')===-1)return;
     var types=[],people=[];
     for(var i=1;i<rows.length;i++){
       var a=(rows[i][0]||'').trim(),b=(rows[i][1]||'').trim();
-      if(a)types.push(a);
-      if(b)people.push(b);
+      if(a&&!/\d{4}[\/\-]/.test(a)&&types.indexOf(a)===-1)types.push(a);
+      if(b&&people.indexOf(b)===-1)people.push(b);
     }
     if(types.length)TYPES=types;
     if(people.length)PEOPLE=people;
