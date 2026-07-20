@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暮若行事曆</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{
+    --plum:#4a2c3a; --plum2:#6b3f52; --rose:#9c5c6e;
+    --gold:#d6a680; --cream:#faf6f2; --ink:#372a30; --ink2:#8a7580; --line:#eee2da;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+  .top{background:linear-gradient(160deg,var(--plum),var(--plum2) 60%,var(--rose));color:#f6eee8;
+    padding:calc(env(safe-area-inset-top,0px) + 22px) 18px 18px;border-radius:0 0 22px 22px;}
+  .top-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .brand{font-size:20px;font-weight:800;letter-spacing:2px;}
+  .brand small{font-size:11px;letter-spacing:3px;opacity:.7;margin-left:8px;font-weight:600;}
+  .nav{display:flex;align-items:center;gap:8px;}
+  .nav button{border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;
+    border-radius:10px;font-size:15px;padding:6px 12px;cursor:pointer;}
+  .nav .month-label{font-size:18px;font-weight:800;letter-spacing:1px;min-width:110px;text-align:center;}
+  .wrap{max-width:760px;margin:0 auto;padding:14px 10px 40px;}
+  .cal{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 6px 18px rgba(74,44,58,.07);}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);background:#f6ede7;}
+  .week div{text-align:center;font-size:12px;font-weight:700;color:var(--ink2);padding:8px 0;letter-spacing:1px;}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);}
+  .cell{min-height:86px;border-top:1px solid var(--line);border-right:1px solid var(--line);padding:4px 3px;cursor:pointer;position:relative;}
+  .cell:nth-child(7n){border-right:none;}
+  .cell.dim{background:#fbf8f5;}
+  .cell.dim .dnum{color:#c9bcc2;}
+  .dnum{font-size:13px;font-weight:700;width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;margin:0 auto 2px;}
+  .cell.today .dnum{background:var(--plum2);color:#fff;}
+  .cell.sel{outline:2px solid var(--rose);outline-offset:-2px;border-radius:8px;}
+  .chip{display:block;font-size:10px;line-height:1.5;border-radius:4px;padding:0 4px;margin:2px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .more{display:block;font-size:10px;color:var(--ink2);text-align:center;margin-top:1px;}
+  .c-off{background:#F9E3E8;color:#A4344F;}
+  .c-am{background:#FAEEDA;color:#9A6A1F;}
+  .c-mid{background:#DFF2EC;color:#1F7A5C;}
+  .c-pm{background:#E4E9F7;color:#3D549E;}
+  .c-live{background:#FDE8DC;color:#C2510F;}
+  .c-event{background:#EBE4F5;color:#6A45A0;}
+  .c-other{background:#EFEBE9;color:#6f625f;}
+  .legend{display:flex;flex-wrap:wrap;gap:6px;margin:12px 4px 0;}
+  .legend span{font-size:11px;border-radius:99px;padding:3px 10px;font-weight:700;}
+  .detail{background:#fff;border:1px solid var(--line);border-radius:16px;margin-top:14px;padding:16px 18px;box-shadow:0 4px 14px rgba(74,44,58,.06);}
+  .detail h3{font-size:15px;color:var(--plum2);margin-bottom:8px;letter-spacing:1px;}
+  .detail .row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed var(--line);font-size:14px;}
+  .detail .row:first-of-type{border-top:none;}
+  .detail .who{font-weight:800;min-width:64px;}
+  .detail .what{border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700;}
+  .detail .note{color:var(--ink2);font-size:12px;margin-left:auto;text-align:right;}
+  .empty{color:var(--ink2);font-size:13px;padding:6px 0;}
+  .status{font-size:11px;color:var(--ink2);text-align:center;margin-top:12px;}
+  .status a{color:var(--rose);}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-inner">
+    <div class="brand">暮若行事曆<small>MURO</small></div>
+    <div class="nav">
+      <button id="prev">‹</button>
+      <div class="month-label" id="mlabel"></div>
+      <button id="next">›</button>
+      <button id="todayBtn" style="font-size:13px;">今天</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="cal">
+    <div class="week"><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div></div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="legend">
+    <span class="c-off">休假</span><span class="c-am">早班</span><span class="c-mid">中班</span>
+    <span class="c-pm">晚班</span><span class="c-live">直播</span><span class="c-event">活動</span>
+  </div>
+
+  <div class="detail" id="detail">
+    <h3 id="dtitle">選一個日期看細節</h3>
+    <div id="dlist" class="empty">點上面月曆的任一天。</div>
+  </div>
+
+  <div class="status" id="status">資料載入中…</div>
+</div>
+
+<script>
+var SHEET_ID='1SsIRULQjX5dQJgnEzfijQuZV5lfJKHmwHy2CJvG_XwE';
+var CSV_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv';
+
+var events={}; // 'YYYY-MM-DD' -> [{name,what,note}]
+var cur=new Date(); cur.setDate(1);
+var selKey=null;
+
+function cls(what){
+  if(/休/.test(what))return 'c-off';
+  if(/早/.test(what))return 'c-am';
+  if(/中/.test(what))return 'c-mid';
+  if(/晚/.test(what))return 'c-pm';
+  if(/直播/.test(what))return 'c-live';
+  if(/活動|檔期|節/.test(what))return 'c-event';
+  return 'c-other';
+}
+function pad(n){return (n<10?'0':'')+n;}
+function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+
+function parseCSV(text){
+  var rows=[],row=[],cur='',q=false;
+  for(var i=0;i<text.length;i++){
+    var c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else{ if(c==='"')q=true;
+      else if(c===','){row.push(cur);cur='';}
+      else if(c==='\n'||c==='\r'){ if(cur!==''||row.length){row.push(cur);rows.push(row);row=[];cur='';} }
+      else cur+=c; }
+  }
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows;
+}
+
+function normDate(s){
+  s=(s||'').trim();
+  var m=s.match(/(\d{4})[\/\-年\.](\d{1,2})[\/\-月\.](\d{1,2})/);
+  if(m)return m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]);
+  return null;
+}
+
+function load(){
+  fetch(CSV_URL).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    var rows=parseCSV(t); events={};
+    for(var i=1;i<rows.length;i++){
+      var d=normDate(rows[i][0]); if(!d)continue;
+      var name=(rows[i][1]||'').trim(), what=(rows[i][2]||'').trim(), note=(rows[i][3]||'').trim();
+      if(!name&&!what)continue;
+      (events[d]=events[d]||[]).push({name:name,what:what,note:note});
+    }
+    document.getElementById('status').textContent='資料來源：暮若行事曆試算表（自動更新）';
+    render();
+  }).catch(function(){
+    document.getElementById('status').innerHTML='⚠️ 讀不到班表資料——請把「暮若行事曆」試算表的共用設成「知道連結的使用者：檢視者」。';
+    render();
+  });
+}
+
+function render(){
+  var y=cur.getFullYear(),mo=cur.getMonth();
+  document.getElementById('mlabel').textContent=y+' 年 '+(mo+1)+' 月';
+  var first=new Date(y,mo,1);
+  var startOffset=(first.getDay()+6)%7; // Monday first
+  var start=new Date(y,mo,1-startOffset);
+  var g=document.getElementById('grid'); g.innerHTML='';
+  var todayKey=key(new Date());
+  for(var i=0;i<42;i++){
+    var d=new Date(start); d.setDate(start.getDate()+i);
+    var k=key(d);
+    var cell=document.createElement('div');
+    cell.className='cell'+(d.getMonth()!==mo?' dim':'')+(k===todayKey?' today':'')+(k===selKey?' sel':'');
+    var html='<div class="dnum">'+d.getDate()+'</div>';
+    var evs=events[k]||[];
+    var show=evs.slice(0,3);
+    for(var j=0;j<show.length;j++){
+      html+='<span class="chip '+cls(show[j].what)+'">'+show[j].name+(show[j].what?'·'+show[j].what:'')+'</span>';
+    }
+    if(evs.length>3)html+='<span class="more">+'+(evs.length-3)+'</span>';
+    cell.innerHTML=html;
+    (function(kk){cell.onclick=function(){selKey=kk;render();showDetail(kk);};})(k);
+    g.appendChild(cell);
+  }
+}
+
+function showDetail(k){
+  var p=k.split('-');
+  var d=new Date(+p[0],+p[1]-1,+p[2]);
+  var w=['日','一','二','三','四','五','六'][d.getDay()];
+  document.getElementById('dtitle').textContent=(+p[1])+' 月 '+(+p[2])+' 日（'+w+'）';
+  var evs=events[k]||[];
+  var el=document.getElementById('dlist');
+  if(!evs.length){el.className='empty';el.textContent='這天沒有排班或活動。';return;}
+  el.className='';
+  el.innerHTML=evs.map(function(e){
+    return '<div class="row"><span class="who">'+e.name+'</span>'+
+      '<span class="what '+cls(e.what)+'">'+(e.what||'—')+'</span>'+
+      (e.note?'<span class="note">'+e.note+'</span>':'')+'</div>';
+  }).join('');
+}
+
+document.getElementById('prev').onclick=function(){cur.setMonth(cur.getMonth()-1);render();};
+document.getElementById('next').onclick=function(){cur.setMonth(cur.getMonth()+1);render();};
+document.getElementById('todayBtn').onclick=function(){cur=new Date();cur.setDate(1);selKey=key(new Date());render();showDetail(selKey);};
+
+render();
+load();
+</script>
+</body>
+</html>
