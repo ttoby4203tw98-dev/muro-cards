@@ -36,15 +36,19 @@
   .cell.sel{outline:2px solid var(--rose);outline-offset:-2px;border-radius:8px;}
   .chip{display:block;font-size:10px;line-height:1.5;border-radius:4px;padding:0 4px;margin:2px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .more{display:block;font-size:10px;color:var(--ink2);text-align:center;margin-top:1px;}
-  .c-off{background:#F9E3E8;color:#A4344F;}
-  .c-leave{background:#FCEFC7;color:#8a6a10;}
-  .c-sick{background:#E0EAF3;color:#3E6389;}
-  .c-am{background:#FAEEDA;color:#9A6A1F;}
-  .c-mid{background:#DFF2EC;color:#1F7A5C;}
-  .c-pm{background:#E4E9F7;color:#3D549E;}
-  .c-live{background:#FDE8DC;color:#C2510F;}
-  .c-event{background:#EBE4F5;color:#6A45A0;}
-  .c-other{background:#EFEBE9;color:#6f625f;}
+  /* 每個人一個顏色 */
+  .c-p0{background:#F9E3E8;color:#A4344F;}   /* 思維 玫紅 */
+  .c-p1{background:#E4E9F7;color:#3D549E;}   /* 小羅 藍 */
+  .c-p2{background:#EBE4F5;color:#6A45A0;}   /* 曉慧 紫 */
+  .c-p3{background:#EFEBE9;color:#4A4442;}   /* Naby 岩灰 */
+  .c-p4{background:#DFF2EC;color:#1F7A5C;}   /* 諾諾 綠 */
+  .c-p5{background:#FBE3F0;color:#B0407E;}   /* 番茄 桃粉 */
+  .c-p6{background:#FAEEDA;color:#9A6A1F;}   /* 安琪 杏 */
+  .c-p7{background:#FDE8DC;color:#C2510F;}   /* 吃吃 橘 */
+  .c-p8{background:#E0EAF3;color:#3E6389;}   /* 全體 靛灰 */
+  .c-p9{background:#FCEFC7;color:#8a6a10;}
+  .c-p10{background:#E2F2F8;color:#20718D;}
+  .c-p11{background:#EAE7DC;color:#6E6A55;}
   .legend{display:flex;flex-wrap:wrap;gap:6px;margin:12px 4px 0;}
   .legend span{font-size:11px;border-radius:99px;padding:3px 10px;font-weight:700;}
   .detail{background:#fff;border:1px solid var(--line);border-radius:16px;margin-top:14px;padding:16px 18px;box-shadow:0 4px 14px rgba(74,44,58,.06);}
@@ -96,9 +100,7 @@
     <div class="grid" id="grid"></div>
   </div>
 
-  <div class="legend">
-    <span class="c-off">休假</span><span class="c-leave">事假</span><span class="c-sick">病假</span><span class="c-event">活動日-禁休</span>
-  </div>
+  <div class="legend" id="legend"></div>
 
   <div class="detail" id="detail">
     <div class="detail-head">
@@ -144,16 +146,16 @@ var events={}; // 'YYYY-MM-DD' -> [{name,what,note}]
 var cur=new Date(); cur.setDate(1);
 var selKey=null, fWhat=null, fWho=null;
 
-function cls(what){
-  if(/事假|請假/.test(what))return 'c-leave';
-  if(/病假/.test(what))return 'c-sick';
-  if(/休/.test(what))return 'c-off';
-  if(/早/.test(what))return 'c-am';
-  if(/中/.test(what))return 'c-mid';
-  if(/晚/.test(what))return 'c-pm';
-  if(/直播/.test(what))return 'c-live';
-  if(/活動|檔期|節/.test(what))return 'c-event';
-  return 'c-other';
+function cls(name){ // 顏色跟著「人」走
+  var i=PEOPLE.indexOf(name);
+  if(i<0){ i=0; for(var j=0;j<name.length;j++)i=(i*31+name.charCodeAt(j))>>>0; }
+  return 'c-p'+(i%12);
+}
+function renderLegend(){
+  var lg=document.getElementById('legend');lg.innerHTML='';
+  PEOPLE.forEach(function(p){
+    var s=document.createElement('span');s.className=cls(p);s.textContent=p;lg.appendChild(s);
+  });
 }
 function pad(n){return (n<10?'0':'')+n;}
 function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -212,7 +214,7 @@ function render(){
     var evs=events[k]||[];
     var show=evs.slice(0,3);
     for(var j=0;j<show.length;j++){
-      html+='<span class="chip '+cls(show[j].what)+'">'+show[j].what+'-'+show[j].name+'</span>';
+      html+='<span class="chip '+cls(show[j].name)+'">'+show[j].what+'-'+show[j].name+'</span>';
     }
     if(evs.length>3)html+='<span class="more">+'+(evs.length-3)+'</span>';
     cell.innerHTML=html;
@@ -235,7 +237,7 @@ function showDetail(k){
   evs.forEach(function(e){
     var row=document.createElement('div');row.className='row';
     row.innerHTML='<span class="who">'+e.name+'</span>'+
-      '<span class="what '+cls(e.what)+'">'+(e.what||'—')+'</span>'+
+      '<span class="what '+cls(e.name)+'">'+(e.what||'—')+'</span>'+
       (e.note?'<span class="note">'+e.note+'</span>':'');
     if(SCRIPT_URL){
       var del=document.createElement('button');del.className='delbtn';del.textContent='✕';
@@ -316,9 +318,11 @@ function loadOptions(){
     }
     if(types.length)TYPES=types;
     if(people.length)PEOPLE=people;
+    renderLegend();render();if(selKey)showDetail(selKey);
   }).catch(function(){});
 }
 
+renderLegend();
 render();
 load();
 loadOptions();
