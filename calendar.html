@@ -37,6 +37,7 @@
   .chip{display:block;font-size:10px;line-height:1.5;border-radius:4px;padding:0 4px;margin:2px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .more{display:block;font-size:10px;color:var(--ink2);text-align:center;margin-top:1px;}
   .c-off{background:#F9E3E8;color:#A4344F;}
+  .c-leave{background:#FCEFC7;color:#8a6a10;}
   .c-am{background:#FAEEDA;color:#9A6A1F;}
   .c-mid{background:#DFF2EC;color:#1F7A5C;}
   .c-pm{background:#E4E9F7;color:#3D549E;}
@@ -46,15 +47,32 @@
   .legend{display:flex;flex-wrap:wrap;gap:6px;margin:12px 4px 0;}
   .legend span{font-size:11px;border-radius:99px;padding:3px 10px;font-weight:700;}
   .detail{background:#fff;border:1px solid var(--line);border-radius:16px;margin-top:14px;padding:16px 18px;box-shadow:0 4px 14px rgba(74,44,58,.06);}
-  .detail h3{font-size:15px;color:var(--plum2);margin-bottom:8px;letter-spacing:1px;}
+  .detail-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .detail h3{font-size:15px;color:var(--plum2);letter-spacing:1px;}
+  .addbtn{border:none;background:var(--plum2);color:#fff;border-radius:10px;font-size:13px;font-weight:700;padding:7px 14px;cursor:pointer;}
   .detail .row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed var(--line);font-size:14px;}
   .detail .row:first-of-type{border-top:none;}
-  .detail .who{font-weight:800;min-width:64px;}
+  .detail .who{font-weight:800;min-width:60px;}
   .detail .what{border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700;}
   .detail .note{color:var(--ink2);font-size:12px;margin-left:auto;text-align:right;}
+  .delbtn{border:none;background:none;color:#c9b3bd;font-size:16px;cursor:pointer;padding:2px 6px;margin-left:4px;}
   .empty{color:var(--ink2);font-size:13px;padding:6px 0;}
   .status{font-size:11px;color:var(--ink2);text-align:center;margin-top:12px;}
-  .status a{color:var(--rose);}
+  /* 新增表單 */
+  .overlay{position:fixed;inset:0;background:rgba(55,42,48,.45);display:none;align-items:flex-end;justify-content:center;z-index:50;}
+  .overlay.show{display:flex;}
+  .sheet-form{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:520px;padding:20px 20px calc(env(safe-area-inset-bottom,0px) + 22px);}
+  .sheet-form h4{font-size:16px;color:var(--plum2);margin-bottom:12px;letter-spacing:1px;}
+  .flabel{font-size:12px;font-weight:700;color:var(--ink2);margin:12px 0 6px;}
+  .optrow{display:flex;flex-wrap:wrap;gap:8px;}
+  .opt{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 15px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink);}
+  .opt.on{border-color:var(--plum2);background:var(--plum2);color:#fff;}
+  .sheet-form input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:2px;}
+  .form-actions{display:flex;gap:10px;margin-top:18px;}
+  .form-actions button{flex:1;border-radius:12px;font-size:15px;font-weight:800;padding:12px 0;cursor:pointer;border:none;}
+  .btn-ok{background:var(--plum2);color:#fff;}
+  .btn-cancel{background:#f0e8e3;color:var(--ink2);}
+  .form-msg{font-size:12px;color:#A4344F;margin-top:8px;display:none;}
 </style>
 </head>
 <body>
@@ -78,27 +96,54 @@
   </div>
 
   <div class="legend">
-    <span class="c-off">休假</span><span class="c-am">早班</span><span class="c-mid">中班</span>
-    <span class="c-pm">晚班</span><span class="c-live">直播</span><span class="c-event">活動</span>
+    <span class="c-off">休假</span><span class="c-leave">請假</span><span class="c-am">早班</span><span class="c-mid">中班</span>
+    <span class="c-pm">晚班</span><span class="c-live">直播</span><span class="c-event">活動日</span>
   </div>
 
   <div class="detail" id="detail">
-    <h3 id="dtitle">選一個日期看細節</h3>
-    <div id="dlist" class="empty">點上面月曆的任一天。</div>
+    <div class="detail-head">
+      <h3 id="dtitle">選一個日期</h3>
+      <button class="addbtn" id="addBtn" style="display:none;">＋ 新增</button>
+    </div>
+    <div id="dlist" class="empty">點上面月曆的任一天，可以看當天細節、新增休假或班表。</div>
   </div>
 
   <div class="status" id="status">資料載入中…</div>
 </div>
 
+<!-- 新增紀錄表單 -->
+<div class="overlay" id="overlay">
+  <div class="sheet-form">
+    <h4 id="ftitle">新增紀錄</h4>
+    <div class="flabel">事項</div>
+    <div class="optrow" id="whatRow"></div>
+    <div class="flabel">人員</div>
+    <div class="optrow" id="whoRow"></div>
+    <div class="flabel">備註（可留空）</div>
+    <input type="text" id="fnote" placeholder="例如：晚上8點開播">
+    <div class="form-msg" id="fmsg"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" id="fcancel">取消</button>
+      <button class="btn-ok" id="fok">確定新增</button>
+    </div>
+  </div>
+</div>
+
 <script>
 var SHEET_ID='1SsIRULQjX5dQJgnEzfijQuZV5lfJKHmwHy2CJvG_XwE';
 var CSV_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv';
+var SCRIPT_URL='';   // ← Apps Script 網頁應用程式網址（設定好後由 Claude 填入）
+var TOKEN='muro2026';
+
+var TYPES=['休假','請假','早班','中班','晚班','直播','活動日-禁休'];
+var PEOPLE=['思維','小羅','曉慧','Naby','諾諾','番茄','安琪','吃吃','全體'];
 
 var events={}; // 'YYYY-MM-DD' -> [{name,what,note}]
 var cur=new Date(); cur.setDate(1);
-var selKey=null;
+var selKey=null, fWhat=null, fWho=null;
 
 function cls(what){
+  if(/請假/.test(what))return 'c-leave';
   if(/休/.test(what))return 'c-off';
   if(/早/.test(what))return 'c-am';
   if(/中/.test(what))return 'c-mid';
@@ -111,19 +156,18 @@ function pad(n){return (n<10?'0':'')+n;}
 function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 
 function parseCSV(text){
-  var rows=[],row=[],cur='',q=false;
+  var rows=[],row=[],curr='',q=false;
   for(var i=0;i<text.length;i++){
     var c=text[i];
-    if(q){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){curr+='"';i++;} else q=false; } else curr+=c; }
     else{ if(c==='"')q=true;
-      else if(c===','){row.push(cur);cur='';}
-      else if(c==='\n'||c==='\r'){ if(cur!==''||row.length){row.push(cur);rows.push(row);row=[];cur='';} }
-      else cur+=c; }
+      else if(c===','){row.push(curr);curr='';}
+      else if(c==='\n'||c==='\r'){ if(curr!==''||row.length){row.push(curr);rows.push(row);row=[];curr='';} }
+      else curr+=c; }
   }
-  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  if(curr!==''||row.length){row.push(curr);rows.push(row);}
   return rows;
 }
-
 function normDate(s){
   s=(s||'').trim();
   var m=s.match(/(\d{4})[\/\-年\.](\d{1,2})[\/\-月\.](\d{1,2})/);
@@ -132,7 +176,7 @@ function normDate(s){
 }
 
 function load(){
-  fetch(CSV_URL).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+  fetch(CSV_URL+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
     var rows=parseCSV(t); events={};
     for(var i=1;i<rows.length;i++){
       var d=normDate(rows[i][0]); if(!d)continue;
@@ -140,10 +184,10 @@ function load(){
       if(!name&&!what)continue;
       (events[d]=events[d]||[]).push({name:name,what:what,note:note});
     }
-    document.getElementById('status').textContent='資料來源：暮若行事曆試算表（自動更新）';
-    render();
+    document.getElementById('status').textContent=SCRIPT_URL?'✅ 可直接在此新增／刪除，資料即時同步':'資料來源：暮若行事曆試算表';
+    render(); if(selKey)showDetail(selKey);
   }).catch(function(){
-    document.getElementById('status').innerHTML='⚠️ 讀不到班表資料——請把「暮若行事曆」試算表的共用設成「知道連結的使用者：檢視者」。';
+    document.getElementById('status').textContent='⚠️ 讀不到班表資料——請把「暮若行事曆」試算表的共用設成「知道連結的使用者：檢視者」。';
     render();
   });
 }
@@ -152,7 +196,7 @@ function render(){
   var y=cur.getFullYear(),mo=cur.getMonth();
   document.getElementById('mlabel').textContent=y+' 年 '+(mo+1)+' 月';
   var first=new Date(y,mo,1);
-  var startOffset=(first.getDay()+6)%7; // Monday first
+  var startOffset=(first.getDay()+6)%7;
   var start=new Date(y,mo,1-startOffset);
   var g=document.getElementById('grid'); g.innerHTML='';
   var todayKey=key(new Date());
@@ -165,7 +209,7 @@ function render(){
     var evs=events[k]||[];
     var show=evs.slice(0,3);
     for(var j=0;j<show.length;j++){
-      html+='<span class="chip '+cls(show[j].what)+'">'+show[j].name+(show[j].what?'·'+show[j].what:'')+'</span>';
+      html+='<span class="chip '+cls(show[j].what)+'">'+show[j].what+'-'+show[j].name+'</span>';
     }
     if(evs.length>3)html+='<span class="more">+'+(evs.length-3)+'</span>';
     cell.innerHTML=html;
@@ -179,15 +223,79 @@ function showDetail(k){
   var d=new Date(+p[0],+p[1]-1,+p[2]);
   var w=['日','一','二','三','四','五','六'][d.getDay()];
   document.getElementById('dtitle').textContent=(+p[1])+' 月 '+(+p[2])+' 日（'+w+'）';
+  document.getElementById('addBtn').style.display='inline-block';
   var evs=events[k]||[];
   var el=document.getElementById('dlist');
-  if(!evs.length){el.className='empty';el.textContent='這天沒有排班或活動。';return;}
+  if(!evs.length){el.className='empty';el.textContent='這天沒有排班或活動，點右上「＋ 新增」加一筆。';return;}
   el.className='';
-  el.innerHTML=evs.map(function(e){
-    return '<div class="row"><span class="who">'+e.name+'</span>'+
+  el.innerHTML='';
+  evs.forEach(function(e){
+    var row=document.createElement('div');row.className='row';
+    row.innerHTML='<span class="who">'+e.name+'</span>'+
       '<span class="what '+cls(e.what)+'">'+(e.what||'—')+'</span>'+
-      (e.note?'<span class="note">'+e.note+'</span>':'')+'</div>';
-  }).join('');
+      (e.note?'<span class="note">'+e.note+'</span>':'');
+    if(SCRIPT_URL){
+      var del=document.createElement('button');del.className='delbtn';del.textContent='✕';
+      del.onclick=function(ev){ev.stopPropagation();removeRec(k,e);};
+      row.appendChild(del);
+    }
+    el.appendChild(row);
+  });
+}
+
+/* ---------- 新增 / 刪除 ---------- */
+function buildOpts(){
+  var wr=document.getElementById('whatRow');wr.innerHTML='';
+  TYPES.forEach(function(t){
+    var b=document.createElement('button');b.className='opt';b.textContent=t;
+    b.onclick=function(){fWhat=t;[].forEach.call(wr.children,function(x){x.classList.remove('on');});b.classList.add('on');};
+    wr.appendChild(b);
+  });
+  var pr=document.getElementById('whoRow');pr.innerHTML='';
+  PEOPLE.forEach(function(t){
+    var b=document.createElement('button');b.className='opt';b.textContent=t;
+    b.onclick=function(){fWho=t;[].forEach.call(pr.children,function(x){x.classList.remove('on');});b.classList.add('on');};
+    pr.appendChild(b);
+  });
+}
+document.getElementById('addBtn').onclick=function(){
+  if(!SCRIPT_URL){
+    document.getElementById('status').textContent='⚠️ 新增功能還沒開通：需要先完成 Apps Script 設定（問 Toby）。';
+    return;
+  }
+  if(!selKey)return;
+  fWhat=null;fWho=null;buildOpts();
+  document.getElementById('fnote').value='';
+  document.getElementById('fmsg').style.display='none';
+  var p=selKey.split('-');
+  document.getElementById('ftitle').textContent='新增紀錄　'+(+p[1])+'/'+(+p[2]);
+  document.getElementById('overlay').classList.add('show');
+};
+document.getElementById('fcancel').onclick=function(){document.getElementById('overlay').classList.remove('show');};
+document.getElementById('overlay').onclick=function(e){if(e.target===this)this.classList.remove('show');};
+
+document.getElementById('fok').onclick=function(){
+  var msg=document.getElementById('fmsg');
+  if(!fWhat||!fWho){msg.textContent='事項和人員都要選喔';msg.style.display='block';return;}
+  var note=document.getElementById('fnote').value.trim();
+  var rec={name:fWho,what:fWhat,note:note};
+  post({action:'add',date:selKey,name:fWho,what:fWhat,note:note});
+  (events[selKey]=events[selKey]||[]).push(rec);   // 先顯示，背景寫入
+  document.getElementById('overlay').classList.remove('show');
+  render();showDetail(selKey);
+  setTimeout(load,2500);
+};
+
+function removeRec(k,e){
+  post({action:'delete',date:k,name:e.name,what:e.what});
+  events[k]=(events[k]||[]).filter(function(x){return x!==e;});
+  render();showDetail(k);
+  setTimeout(load,2500);
+}
+
+function post(data){
+  data.token=TOKEN;
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
 }
 
 document.getElementById('prev').onclick=function(){cur.setMonth(cur.getMonth()-1);render();};
