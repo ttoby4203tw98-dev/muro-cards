@@ -7,6 +7,7 @@
 <style>
   :root{--orange:#E8541A;--ink:#1A1A1A;--gray:#777;--bg:#F7F5F3;}
   *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{font-family:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;}
   .wrap{max-width:900px;margin:0 auto;padding:0 18px 50px;}
   header{background:linear-gradient(135deg,#C43D0F,#E8541A 60%,#F07B33);color:#fff;padding:38px 18px 34px;}
@@ -14,13 +15,18 @@
   .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);border-radius:99px;padding:3px 14px;font-size:13px;letter-spacing:1px;}
   header h1{font-size:30px;margin-top:12px;letter-spacing:2px;}
   .meta{margin-top:10px;font-size:14px;opacity:.9;display:flex;gap:18px;flex-wrap:wrap;}
-  .audience-bar{display:flex;flex-wrap:wrap;gap:8px;background:#fff;border-radius:14px;padding:14px 16px;margin-top:-16px;box-shadow:0 4px 14px rgba(0,0,0,.06);position:relative;}
-  .audience-bar span{font-size:13px;background:#FBEDE6;color:#B4400F;border-radius:99px;padding:4px 12px;font-weight:600;}
+  .toc{background:#fff;border-radius:14px;padding:16px 20px;margin-top:-16px;box-shadow:0 4px 14px rgba(0,0,0,.06);position:relative;}
+  .toc-title{font-size:13px;font-weight:700;color:var(--gray);letter-spacing:2px;margin-bottom:8px;}
+  .toc a{display:inline-block;font-size:14px;font-weight:600;color:#B4400F;background:#FBEDE6;border-radius:99px;padding:5px 14px;margin:3px 4px 3px 0;text-decoration:none;}
   .context-section{background:#fff;border-radius:14px;padding:22px 24px;margin-top:20px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
   .context-section h2{font-size:19px;color:var(--orange);margin-bottom:10px;}
   .context-section p{font-size:15px;}
   .source{margin-top:10px;font-size:12px;color:var(--gray);}
-  .source a{color:#a06;color:#996;color:var(--gray);}
+  .source a{color:var(--gray);}
+  .hot-item{border-left:4px solid var(--orange);background:#FFF8F4;border-radius:0 10px 10px 0;padding:12px 16px;margin-top:12px;}
+  .hot-item b{font-size:15px;}
+  .hot-item p{font-size:14px;margin-top:4px;}
+  .hot-link{display:inline-block;margin-top:6px;font-size:13px;color:#B4400F;font-weight:700;}
   .section-title{font-size:23px;margin:36px 0 6px;text-align:center;letter-spacing:2px;}
   .section-sub{text-align:center;font-size:13px;color:var(--gray);margin-bottom:18px;}
   .pain-card{background:#fff;border-radius:12px;box-shadow:0 3px 12px rgba(0,0,0,.06);margin-top:18px;overflow:hidden;border:1px solid #f0e7e1;}
@@ -40,6 +46,9 @@
   .danger-item{background:#fff;border-radius:10px;padding:14px 18px;margin-top:10px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
   .danger-title{font-weight:700;font-size:15px;color:#B4400F;margin-bottom:4px;}
   .danger-desc{font-size:14px;}
+  .today-live{background:linear-gradient(135deg,#FFF3ED,#FFEAD9);border:1px solid #F0C4A8;border-radius:14px;padding:22px 24px;margin-top:24px;}
+  .today-live h2{font-size:20px;color:#B4400F;margin-bottom:10px;}
+  .today-live li{font-size:15px;margin:8px 0 0 1.3em;}
   footer{margin-top:40px;text-align:center;font-size:12px;color:var(--gray);}
 </style>
 </head>
@@ -58,40 +67,58 @@
 
 <div class="wrap">
 
-  <section class="audience-bar">
-    <span>👩 女性 70%</span>
-    <span>👵 45歲以上 60%・35-44歲 30%</span>
-    <span>🛒 蝦皮購物</span>
-    <span>💬 重實用・需要具體理由才買</span>
-    <span>🎉 本期重點節日：父親節 8/8・七夕 8/19・中元節 8/27</span>
+  <nav class="toc">
+    <div class="toc-title">本期內容</div>
+    <a href="#hot">🔥 台灣熱搜 2 則</a>
+    <a href="#weather">🌤 氣候背景</a>
+    <a href="#consume">💰 消費環境</a>
+    <a href="#pains">😣 5 大痛點</a>
+    <a href="#danger">⚠️ 雷區提醒</a>
+    <a href="#today">🎯 今日直播建議</a>
+  </nav>
+
+  <section class="context-section" id="hot">
+    <h2>🔥 台灣熱搜報導（2 則）</h2>
+    <div class="hot-item">
+      <b>① 10 縣市大雨特報，明天起回到 32～36 度爆熱</b>
+      <p>今天全台 10 個縣市發大雨特報，下到晚上；明天太平洋高壓回來，雨停、直接進入連日 32～36 度的高溫。</p>
+      <p><b>跟我們的關係：</b>今晚雨天在家滑手機的人多，是開播的好時機；明天起的爆熱，涼感商品直接對上。</p>
+      <span class="hot-link"><a href="https://tw.news.yahoo.com/2026%E5%B9%B47%E6%9C%8820%E6%97%A5-%E6%98%9F%E6%9C%9F-%E6%97%A9%E5%A0%B1%E9%A0%AD%E6%A2%9D-224942427.html" class="hot-link">來源：Yahoo奇摩 7/20 早報</a></span>
+    </div>
+    <div class="hot-item">
+      <b>② 藝人林逸欣父親因攝護腺癌過世，中年男性健康登上熱搜</b>
+      <p>這兩天全台熱搜第一是林逸欣醫生爸爸因攝護腺癌末期過世的新聞，很多人開始關心家裡男人的健康——爸爸們有病都不說，等發現常常太晚。</p>
+      <p><b>跟我們的關係：</b>父親節前這個話題會一直發酵。直播聊到爸爸禮物時，可以帶「關心他身體」的角度（提醒健檢、送實用的照顧型商品），有共鳴又不消費新聞。</p>
+      <span class="hot-link"><a href="https://www.ettoday.net/news/hot-news.htm" class="hot-link">來源：ETtoday 熱門新聞 7/20</a></span>
+    </div>
   </section>
 
-  <section class="context-section">
+  <section class="context-section" id="weather">
     <h2>🌤 本期氣候背景</h2>
-    <p>中央氣象署預測今年 6～8 月台灣氣溫「正常至偏高溫」，7、8 月降雨偏少、進入盛夏，受太平洋副熱帶高壓影響，各地晴朗炎熱，白天高溫普遍 34～36 度以上。同時 7、8 月是颱風高峰期，氣候平均 7 月約 3.7 個、8 月約 5.5 個颱風生成，侵台機率各約 0.8～0.9 個——7 月上旬強颱「巴威」剛掃過台灣，帶來全台強降雨，接下來一個多月仍要隨時防颱。一句話：接下來是「爆熱＋隨時可能來一個颱風」的天氣。</p>
-    <div class="source">來源：<a href="https://news.ltn.com.tw/news/life/breakingnews/5460287">自由時報／氣象署 6-8 月預測（2026-06-04）</a>・<a href="https://news.pts.org.tw/article/816278">公視新聞／強颱巴威報導（2026-07）</a></div>
+    <p>一句話：接下來就是「爆熱＋隨時來一個颱風」。氣象署預測 7、8 月偏高溫、雨少，白天普遍 34～36 度；但 8 月平均會有 5 個以上颱風生成、約 1 個侵台，7 月初的強颱巴威就是預演。防颱和抗熱，兩件事都要準備。</p>
+    <div class="source">來源：<a href="https://news.ltn.com.tw/news/life/breakingnews/5460287">自由時報／氣象署 6-8 月預測（2026-06-04）</a>・<a href="https://news.pts.org.tw/article/816278">公視新聞／強颱巴威（2026-07）</a></div>
   </section>
 
-  <section class="context-section">
+  <section class="context-section" id="consume">
     <h2>💰 消費環境概況</h2>
-    <p>主計總處公布 6 月 CPI 年增率 2.6%，創 17 個月新高，連兩個月超過 2% 通膨警戒線：蔬菜因豪雨大漲 10.5%、油料費漲 19.45%、外食費與房租持續上漲；官方預估 7 月因颱風豪雨遞延效應，物價漲幅仍會高於 2%。對 45+ 的家庭採購主力來說，「菜變貴、吃飯變貴、什麼都在漲」是每天有感的事，消費更保守、更要求「買了要真的有用、要耐用」。同時 8 月是蝦皮強檔月：8/8 成雙節撞上父親節、8/18 會員日、8/25 商城日，觀眾「等檔期、比價格」的心態會更明顯。</p>
-    <div class="source">來源：<a href="https://www.cna.com.tw/news/afe/202607070297.aspx">中央社／6月CPI年增2.6%（2026-07-07）</a>・<a href="https://huanqiaoguide.com/investment-tips/budget-benefits/shopee-sale-calendar/">蝦皮活動檔期整理（2026）</a></div>
+    <p>6 月物價年漲 2.6%，是 17 個月來最高：菜貴一成、外食和房租一直漲，7 月預估還是超過 2%。大家買東西更保守，「有用、耐用、價格合理」才掏錢。另外 8 月是蝦皮強檔月：8/8 成雙節剛好撞父親節、8/18 會員日、8/25 商城日，觀眾會等檔期、比價格。</p>
+    <div class="source">來源：<a href="https://www.cna.com.tw/news/afe/202607070297.aspx">中央社／6月CPI 2.6%（2026-07-07）</a>・<a href="https://huanqiaoguide.com/investment-tips/budget-benefits/shopee-sale-calendar/">蝦皮檔期整理（2026）</a></div>
   </section>
 
-  <section class="pain-points">
+  <section class="pain-points" id="pains">
     <h2 class="section-title">5 大市場痛點</h2>
-    <div class="section-sub">依「氣候 × 物價 × 節日 × 受眾特質」推導，選品與台詞可直接用於直播</div>
+    <div class="section-sub">氣候 × 物價 × 節日 × 受眾，台詞可直接照唸</div>
 
     <div class="pain-card">
       <div class="pain-header">
         <span class="pain-number">痛點 01</span>
-        <h3>父親節快到了，爸爸嘴上說「不用買」，但總不能真的空手</h3>
+        <h3>父親節（8/8）要到了，爸爸都說「不用買」，但總不能空手</h3>
       </div>
       <div class="pain-body">
         <div class="field"><div class="field-label">😣 痛點描述</div>
-          <div class="field-content">8/8 父親節（今年在星期六，全家聚餐潮）。45+ 女性是家裡「準備節日」的人：要張羅聚餐、要幫孩子出主意送阿公的禮物。男人的禮物最難買——問他要什麼永遠說「不用啦」，買貴的被唸浪費，買錯的被放到過期。她需要的是「實用、天天用得到、價格說得過去」的選項。</div></div>
+          <div class="field-content">今年父親節是星期六，聚餐潮一定有。給男人買禮物最難：問他要什麼都說不用，買貴被唸，買錯被冰。她要的是「實用、天天用、價格說得過去」的選項。</div></div>
         <div class="field"><div class="field-label">🎬 情境舉例</div>
-          <div class="field-content">「去年買按摩椅墊給我先生，被唸了一個月說浪費錢，結果現在每天晚上都他在坐。」——買對了嘴硬也會用，這就是給爸爸買東西的真相。</div></div>
+          <div class="field-content">「去年買按摩椅墊給我先生，被唸一個月說浪費錢，結果現在每天晚上都他在坐。」</div></div>
         <div class="field"><div class="field-label">🛍 選品方向</div>
           <div class="field-content tags">
             <span class="tag">男士涼感衣・冰絲家居服</span>
@@ -100,7 +127,7 @@
             <span class="tag">男士內著多件組</span>
           </div></div>
         <div class="field"><div class="field-label">🎙 直播訴求角度</div>
-          <div class="field-content highlight-box">「姐妹們，8/8 父親節就剩兩個禮拜！爸爸那種人你問他要什麼，他一定說不用買——但你買件涼感衣給他，這種 36 度的天氣他天天穿，嘴上不說，身體很誠實。這種禮物不會出錯：天天用得到、價格不會被唸，聚餐當天直接帶去，面子裡子都有了。」</div></div>
+          <div class="field-content highlight-box">「8/8 父親節剩兩個多禮拜！爸爸問他要什麼一定說不用買——但你買件涼感衣，這種 36 度的天他天天穿，嘴上不說，身體很誠實。天天用得到、價格不會被唸，聚餐當天帶去，面子裡子都有。」</div></div>
         <div class="source">資料來源：<a href="https://publicholidays.tw/zh/fathers-day/">PublicHolidays.tw／2026父親節 8/8（六）</a></div>
       </div>
     </div>
@@ -108,13 +135,13 @@
     <div class="pain-card">
       <div class="pain-header">
         <span class="pain-number">痛點 02</span>
-        <h3>熱到睡不好、冷氣不敢開整晚——電費單一來心更煩</h3>
+        <h3>熱到睡不好，冷氣又不敢開整晚</h3>
       </div>
       <div class="pain-body">
         <div class="field"><div class="field-label">😣 痛點描述</div>
-          <div class="field-content">氣象署預測 7、8 月偏高溫、降雨偏少，等於連續一個多月的悶熱夜。45+ 族群本來就淺眠、半夜容易熱醒；又碰上夏月電價與物價齊漲，「冷氣開整晚捨不得、不開睡不著」是這個受眾最真實的兩難。她們要的不是「涼感黑科技」，是「讓冷氣可以調高一兩度、睡得下去」的實際方案。</div></div>
+          <div class="field-content">接下來一個多月都是悶熱夜。45+ 本來就淺眠，半夜熱醒；又碰上夏季電價，「開整晚捨不得、不開睡不著」。她要的不是黑科技，是讓冷氣調高一兩度也睡得著的辦法。</div></div>
         <div class="field"><div class="field-label">🎬 情境舉例</div>
-          <div class="field-content">「半夜兩點熱醒，摸枕頭整顆是汗，想開冷氣又想到上個月電費……最後開電扇繼續躺，隔天整個人沒睡飽。」</div></div>
+          <div class="field-content">「半夜兩點熱醒，枕頭整顆是汗，想開冷氣又想到電費，最後開電扇繼續躺，隔天沒睡飽。」</div></div>
         <div class="field"><div class="field-label">🛍 選品方向</div>
           <div class="field-content tags">
             <span class="tag">涼感床包・涼感墊</span>
@@ -123,7 +150,7 @@
             <span class="tag">吸濕排汗枕頭套</span>
           </div></div>
         <div class="field"><div class="field-label">🎙 直播訴求角度</div>
-          <div class="field-content highlight-box">「這一波熱要熱到八月底，你冷氣每調高一度，電費就省一截。這件冰絲睡衣配涼感床包，冷氣 27 度睡起來像 25 度——不是要你不開冷氣，是讓你開得少一點、睡得好一點，一個夏天省下來的電費就把它買回來了。」</div></div>
+          <div class="field-content highlight-box">「這波熱要熱到八月底，冷氣每調高一度，電費就省一截。冰絲睡衣配涼感床包，27 度睡起來像 25 度——不是叫你不開冷氣，是開少一點、睡好一點，省下的電費就把它買回來了。」</div></div>
         <div class="source">資料來源：<a href="https://news.ltn.com.tw/news/life/breakingnews/5460287">自由時報／氣象署：6-8月偏高溫（2026-06-04）</a></div>
       </div>
     </div>
@@ -131,13 +158,13 @@
     <div class="pain-card">
       <div class="pain-header">
         <span class="pain-number">痛點 03</span>
-        <h3>什麼都在漲，買東西更怕「買錯、買貴、不耐用」</h3>
+        <h3>什麼都在漲，更怕買錯、買貴、不耐用</h3>
       </div>
       <div class="pain-body">
         <div class="field"><div class="field-label">😣 痛點描述</div>
-          <div class="field-content">6 月 CPI 年增 2.6% 創 17 個月新高，蔬菜漲一成、外食漲不停，家庭主婦是第一線感受者。錢包縮水不代表不買，而是「每一筆都要花得有理由」：多件組合、一件多用、耐洗耐穿變成關鍵字；反過來說，說不出具體用途的東西，再便宜她也不掏錢。</div></div>
+          <div class="field-content">物價 17 個月新高，主婦最有感。不是不買，是每一筆都要有理由：多件組、一件多用、耐洗耐穿才會下手；講不出用途的東西，再便宜也不掏錢。</div></div>
         <div class="field"><div class="field-label">🎬 情境舉例</div>
-          <div class="field-content">「去市場買三樣菜快三百塊，回家跟先生說菜多貴他還不信。現在買衣服我都想：這件能穿幾年？能不能配我現在的褲子？不行就不買。」</div></div>
+          <div class="field-content">「買三樣菜快三百塊。現在買衣服都會想：能穿幾年？能配我現在的褲子嗎？不行就不買。」</div></div>
         <div class="field"><div class="field-label">🛍 選品方向</div>
           <div class="field-content tags">
             <span class="tag">基本款多件組（內著・上衣）</span>
@@ -146,7 +173,7 @@
             <span class="tag">大容量收納整理用品</span>
           </div></div>
         <div class="field"><div class="field-label">🎙 直播訴求角度</div>
-          <div class="field-content highlight-box">「現在什麼都在漲，我不會叫你多買，我教你怎麼買：這種基本款三件組，一件平均下來不到 X 百，機洗不變形，一年四季都穿得到——把錢花在天天用得到的東西上，這才叫會過日子，不是省，是精。」</div></div>
+          <div class="field-content highlight-box">「現在什麼都在漲，我不叫你多買，我教你怎麼買：基本款三件組一件不到 X 百，機洗不變形，四季都穿得到。錢花在天天用的東西上，不是省，是精。」</div></div>
         <div class="source">資料來源：<a href="https://www.cna.com.tw/news/afe/202607070297.aspx">中央社／6月CPI 2.6%、蔬菜+10.5%（2026-07-07）</a></div>
       </div>
     </div>
@@ -154,13 +181,13 @@
     <div class="pain-card">
       <div class="pain-header">
         <span class="pain-number">痛點 04</span>
-        <h3>颱風一個接一個：曬不乾、發霉味、家裡亂成一團</h3>
+        <h3>颱風一個接一個：曬不乾、霉味、家裡亂</h3>
       </div>
       <div class="pain-body">
         <div class="field"><div class="field-label">😣 痛點描述</div>
-          <div class="field-content">強颱巴威 7 月上旬剛掃過，氣候平均 8 月還有 5 個以上颱風生成、近 1 個侵台。颱風前要收東西、備乾糧，颱風中衣服曬不乾、屋裡潮，颱風後大掃除——每一個環節都是 45+ 主婦在扛。「衣服有霉味」「陽台雜物被吹倒」「檔期買的東西沒地方收」是七八月的固定劇本。</div></div>
+          <div class="field-content">巴威剛走，8 月平均還有 5 個颱風生成、約 1 個侵台。颱風前收東西、颱風中衣服曬不乾、颱風後大掃除，全是主婦在扛。</div></div>
         <div class="field"><div class="field-label">🎬 情境舉例</div>
-          <div class="field-content">「上次颱風連下三天雨，全家的衣服掛滿客廳，收進來都有一股味道，重洗兩次才敢穿。」</div></div>
+          <div class="field-content">「上次颱風連下三天雨，衣服掛滿客廳，收進來都一股味道，重洗兩次才敢穿。」</div></div>
         <div class="field"><div class="field-label">🛍 選品方向</div>
           <div class="field-content tags">
             <span class="tag">速乾衣物・快乾毛巾</span>
@@ -169,7 +196,7 @@
             <span class="tag">室內曬衣架</span>
           </div></div>
         <div class="field"><div class="field-label">🎙 直播訴求角度</div>
-          <div class="field-content highlight-box">「氣象署說八月平均還有五個颱風在排隊！上一個巴威你們家陽台還好嗎？這種速乾材質，颱風天室內晾一個晚上就乾，不會有那個悶味——趁還沒有颱風警報，先把家裡準備好，到時候別人在搶，你在家翹腳。」</div></div>
+          <div class="field-content highlight-box">「八月平均還有五個颱風在排隊！上次巴威你們家陽台還好嗎？這種速乾材質，颱風天室內晾一晚就乾，沒有悶味——趁沒有警報先準備好，到時候別人在搶，你在家翹腳。」</div></div>
         <div class="source">資料來源：<a href="https://news.pts.org.tw/article/816278">公視新聞／強颱巴威（2026-07）</a>・<a href="https://news.ltn.com.tw/news/life/breakingnews/5460287">自由時報／7-8月颱風氣候平均（2026-06-04）</a></div>
       </div>
     </div>
@@ -177,13 +204,13 @@
     <div class="pain-card">
       <div class="pain-header">
         <span class="pain-number">痛點 05</span>
-        <h3>七夕＋中元月連發：拜拜採買是體力活，太陽底下站一小時誰受得了</h3>
+        <h3>中元普渡是體力活，大熱天採買、搬貨、站著拜</h3>
       </div>
       <div class="pain-body">
         <div class="field"><div class="field-label">😣 痛點描述</div>
-          <div class="field-content">8/19 七夕、8/27 中元節（8/13 鬼門開），對 45+ 女性來說，中元普渡是八月的大事：提前採買供品、搬上搬下、大熱天在戶外擺桌祭拜。重物搬運、日曬、流汗弄花妝容——這是「儀式感背後的勞動」。誰能讓這件事輕鬆一點、涼快一點，誰就講進她心裡。</div></div>
+          <div class="field-content">8/19 七夕、8/27 中元（8/13 鬼門開）。中元普渡是八月大事：提前採買、搬上搬下、太陽下擺桌拜拜。誰能讓這件事輕鬆一點、涼快一點，誰就講進她心裡。</div></div>
         <div class="field"><div class="field-label">🎬 情境舉例</div>
-          <div class="field-content">「中元拜拜光飲料罐頭就搬三趟，樓下到樓上手都快斷了。站在太陽下拜完一輪，衣服整件濕透。」</div></div>
+          <div class="field-content">「拜拜光飲料罐頭就搬三趟，手都快斷了。太陽下拜完一輪，衣服整件濕透。」</div></div>
         <div class="field"><div class="field-label">🛍 選品方向</div>
           <div class="field-content tags">
             <span class="tag">摺疊購物推車</span>
@@ -192,32 +219,42 @@
             <span class="tag">保冷袋・保冷提籃</span>
           </div></div>
         <div class="field"><div class="field-label">🎙 直播訴求角度</div>
-          <div class="field-content highlight-box">「八月中鬼門開，中元普渡的東西你是不是又要自己搬？這台摺疊推車收起來比雨傘大不了多少，一次拉 30 公斤上樓不用求人。拜拜當天再配這件吸汗透氣的，太陽下站一小時，不會整件貼在身上——今年普渡，讓自己輕鬆一點。」</div></div>
+          <div class="field-content highlight-box">「八月中鬼門開，普渡的東西又要自己搬？這台摺疊推車收起來比雨傘大不了多少，一次拉 30 公斤不用求人。再配件吸汗透氣的，太陽下站一小時不會整件貼在身上——今年普渡讓自己輕鬆一點。」</div></div>
         <div class="source">資料來源：<a href="https://www.flowerdj.com/x/asp/ChineseValentinesDay.asp">花之鄉／2026七夕 8/19</a>・<a href="https://holidays-calendar.net/calendar_zh_tw/taiwan_zh_tw.html">2026台灣節日曆</a></div>
       </div>
     </div>
 
   </section>
 
-  <section class="danger-zone">
+  <section class="danger-zone" id="danger">
     <h2>⚠️ 本期雷區提醒</h2>
-    <p class="danger-intro">在「爆熱＋物價漲＋民俗月」的這個時間點，以下選品方向容易踩雷：</p>
+    <p class="danger-intro">爆熱＋物價漲＋民俗月，這三種現在別碰：</p>
     <div class="danger-item">
       <div class="danger-title">雷區一：提前上秋冬裝、厚外套</div>
-      <div class="danger-desc">氣象署預測 8 月整月偏高溫，白天 35 度上下，觀眾看到長袖厚外套只會滑掉。45+ 受眾是「有需要才買」的人，不吃「提前囤明年」這一套——秋裝至少等 9 月中白露之後再試水溫。</div>
+      <div class="danger-desc">8 月整月 35 度上下，觀眾看到長袖厚外套直接滑掉。這群人「有需要才買」，不吃提前囤貨這套。秋裝等 9 月中之後再試。</div>
     </div>
     <div class="danger-item">
-      <div class="danger-title">雷區二：親水、玩水類商品硬推到八月中以後</div>
-      <div class="danger-desc">8/13 鬼門開之後，45+ 客群普遍忌諱玩水、戲水（民俗月不去海邊溪邊），泳裝、玩水用品的需求會明顯降溫。要清相關庫存請趕在 8 月上旬前，民俗月硬推只會冷場，甚至讓部分觀眾反感。</div>
+      <div class="danger-title">雷區二：8 月中以後推玩水商品</div>
+      <div class="danger-desc">8/13 鬼門開，45+ 客群忌諱玩水，泳裝、戲水用品需求會明顯降溫，硬推只會冷場甚至反感。要清庫存趕在 8 月上旬前。</div>
     </div>
     <div class="danger-item">
-      <div class="danger-title">雷區三：說不出用途的高單價「精緻小物」</div>
-      <div class="danger-desc">CPI 連兩月破警戒線、外食蔬菜都在漲的當下，「好看但講不出實際用途」的裝飾性商品最難成交。這個受眾現在每一筆都在算——高單價可以賣，但必須給出「天天用得到＋耐用＋省到別的錢」的具體理由，否則她寧可不買。</div>
+      <div class="danger-title">雷區三：講不出用途的高單價小物</div>
+      <div class="danger-desc">物價漲的時候，「好看但不知道要幹嘛」的東西最難賣。高單價可以賣，但要給出「天天用＋耐用＋幫你省別的錢」的具體理由。</div>
     </div>
   </section>
 
+  <section class="today-live" id="today">
+    <h2>🎯 今日直播建議（7/20 一）</h2>
+    <ul>
+      <li><b>今晚是好時機：</b>10 縣市下大雨，大家在家滑手機，開播流量通常比較好。開場先聊雨：「你們那邊也下很大嗎？」馬上有互動。</li>
+      <li><b>主推涼感系列：</b>明天起連日 32～36 度，今晚先卡位——「明天開始連續一個月的熱，今天先把涼感的準備起來」。</li>
+      <li><b>順帶鋪墊父親節：</b>倒數 19 天，今晚先預告「這週開始幫爸爸準備」，配合熱搜的男性健康話題講「關心他身體」，下週正式進入父親節主打。</li>
+      <li><b>雨天加碼收納：</b>下雨在家看家裡哪都亂，收納品今晚順帶一波剛剛好。</li>
+    </ul>
+  </section>
+
   <footer>
-    <p>本報告由 AI 自動生成，所有資料來源均標注於各段落。資料時效：2026年7月20日</p>
+    <p>本報告由 AI 自動生成，資料來源標注於各段落。資料時效：2026年7月20日</p>
     <p>MURO 暮若 · 市場痛點日報 · 每日 09:00 自動更新</p>
   </footer>
 
