@@ -1,5 +1,6 @@
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MURO 內衣分類規則庫</title>
 <style>
  body{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;background:#faf4f0;color:#3a2f33;padding:24px;line-height:1.7;}
@@ -17,57 +18,67 @@
  thead th{background:#7d5a6e;color:#fff;}
  tbody th{background:#f3e3da;color:#5c4051;white-space:nowrap;}
  .note{font-size:12px;color:#8a7a80;margin-top:10px;line-height:1.7;}
+
+@media(max-width:640px){
+ body{padding:12px;}
+ .head{padding:20px 18px;}
+ .head h1{font-size:19px;}
+ .sec{padding:16px 14px;}
+ .flow{font-size:13px;}
+ table,tbody,tr{display:block;width:100%;}
+ thead{display:none;}
+ tbody tr{border:1px solid #ecdfd9;border-radius:12px;margin-top:10px;overflow:hidden;}
+ tbody th,tbody td{display:block;width:100%;box-sizing:border-box;}
+ tbody th{white-space:normal;padding:9px 12px;font-size:14px;border:none;}
+ tbody td{border:none;border-top:1px dashed #f0e4de;padding:8px 12px;font-size:13.5px;}
+ tbody td::before{content:attr(data-l) "：";font-weight:700;color:#a86d82;}
+ tbody td[data-l=""]::before,tbody td:not([data-l])::before{content:"";}
+}
 </style></head><body>
 <div class="card">
- <div class="head"><div class="b">M U R O ・ 暮 若</div>
- <h1>內衣分類規則庫</h1>
- <p>卡片模板與每日 3 點排程共用的推論依據</p></div>
-
- <div class="sec"><h2>資訊卡動線</h2>
-  <div class="flow">內衣 → 適合場景 → 罩杯包覆 → 款式類型（帶出承托力＋尺碼制）→ 適合身型(胸型) → 選碼建議(尺碼表＋身高體重表) → 功能賣點 → 顧客好評</div>
-  <div class="note">推論鏈：罩杯包覆 ＋ 款式類型 一旦確定 → 承托力、尺碼制(通杯/分杯)、適合胸型、怎麼選碼 全部跟著定。</div>
- </div>
-
- <div class="sec"><h2>一、主分類：罩杯包覆</h2>
-  <table><thead><tr><th>罩杯包覆</th><th>包覆度</th><th>特性</th><th>最適合胸型</th></tr></thead><tbody>
-   <tr><th>全罩杯</th><td>最高</td><td>承托穩定、包覆完整</td><td>大胸、豐滿、需穩定</td></tr>
-   <tr><th>3/4 罩杯</th><td>中高</td><td>集中托高、最百搭（MURO 主力）</td><td>多數胸型、外擴、想集中</td></tr>
-   <tr><th>半罩杯／1-2罩</th><td>中</td><td>上薄、露事業線、性感</td><td>中小胸、低領穿搭</td></tr>
-   <tr><th>三角杯 bralette</th><td>低</td><td>輕薄無定型、舒適造型</td><td>小胸、居家、造型</td></tr>
-  </tbody></table>
- </div>
-
- <div class="sec"><h2>二、款式類型 → 承托力／尺碼制／適合胸型／選碼</h2>
-  <table><thead><tr><th>款式類型</th><th>承托力</th><th>尺碼制（怎麼問）</th><th>最適合胸型</th><th>斟酌</th><th>選碼邏輯</th></tr></thead><tbody>
-   <tr><th>無鋼圈軟支撐・薄杯</th><td>輕–中</td><td>通杯（問下圍/體重）</td><td>中小胸、外擴、標準</td><td>大胸、明顯下垂</td><td>看下圍；大胸加大或改款</td></tr>
-   <tr><th>果凍條軟支撐</th><td>中</td><td>通杯</td><td>標準、外擴、想集中</td><td>大胸</td><td>看下圍；深V適低領</td></tr>
-   <tr><th>大罩杯・調整型</th><td>中–強</td><td>分杯（CD通杯 36/80…）</td><td>大胸、豐滿、外擴</td><td>小胸（空杯）</td><td>下圍＋罩杯；大胸顯小</td></tr>
-   <tr><th>鋼圈/浮雕・聚攏提拉（後扣）</th><td>強</td><td>分杯（75A/80B…）</td><td>大胸、下垂、要托高</td><td>—</td><td>下圍＋罩杯</td></tr>
-   <tr><th>前扣・調整型（通杯 ABC）</th><td>強</td><td>分杯（M–3XL 通杯 ABC）</td><td>大胸、下垂、熟齡</td><td>—</td><td>下圍＋罩杯；寬肩帶</td></tr>
-   <tr><th>固定杯・抹胸/背心式（套頭）</th><td>輕</td><td>通杯（下圍）</td><td>小胸、日常、露背露肩</td><td>大胸（承托不足）</td><td>看下圍；防走光</td></tr>
-   <tr><th>三角杯／法式蕾絲</th><td>輕</td><td>字母碼 S–XL</td><td>小胸、造型、大胸顯小</td><td>需托高者</td><td>看身型</td></tr>
-   <tr><th>帶胸墊背心（打底）</th><td>輕(打底)</td><td>依體重</td><td>各胸型日常打底</td><td>需支撐者</td><td>看體重</td></tr>
-  </tbody></table>
- </div>
-
- <div class="sec"><h2>三、胸型 → 通則</h2>
-  <table><thead><tr><th>胸型</th><th>建議款式方向</th><th>選碼重點</th></tr></thead><tbody>
-   <tr><th>標準／半球</th><td>3/4罩・無鋼圈皆宜</td><td>依下圍</td></tr>
-   <tr><th>小胸／扁平</th><td>薄杯・三角杯・固定杯，集中托高</td><td>依下圍，可選合身</td></tr>
-   <tr><th>大胸／豐滿</th><td>全罩・大罩杯・鋼圈聚攏（分杯）</td><td>下圍＋罩杯，選大碼</td></tr>
-   <tr><th>外擴／副乳明顯</th><td>收副乳・調整型・集中</td><td>想集中選合身，下圍大選大碼</td></tr>
-   <tr><th>下垂</th><td>提拉・鋼圈托高（承托強）</td><td>承托款優先</td></tr>
-   <tr><th>大小胸（不對稱）</th><td>軟杯包容</td><td>以較大側選碼</td></tr>
-  </tbody></table>
- </div>
-
- <div class="sec"><h2>四、選碼問法（尺碼制決定）</h2>
-  <table><thead><tr><th>尺碼制</th><th>直播問法</th></tr></thead><tbody>
-   <tr><th>通杯款</th><td>問「下胸圍 cm 或 體重」，對照該款尺碼表</td></tr>
-   <tr><th>分杯款</th><td>一定問「下圍＋罩杯（例如 75B）」，否則不準</td></tr>
-  </tbody></table>
-  <div class="note">臨界值：要合身集中選小碼、要寬鬆舒適選大碼；骨架大／肋骨圍寬 → 大一碼。尺碼表一律以蝦皮商品詳情圖為準；沒有 cm 表則標「待補」。</div>
- </div>
-
- <div class="foot" style="padding:16px 32px 24px;font-size:11.5px;color:#8a7a80;text-align:center;border-top:1px solid #ecdfd9;">MURO暮若 內衣分類規則庫 ｜ 供資訊卡與每日排程共用</div>
+<div class="head"><div class="b">M U R O ・ 暮 若</div>
+<h1>內衣分類規則庫</h1>
+<p>卡片模板與每日 3 點排程共用的推論依據</p></div>
+<div class="sec"><h2>資訊卡動線</h2>
+<div class="flow">內衣 → 適合場景 → 罩杯包覆 → 款式類型（帶出承托力＋尺碼制）→ 適合身型(胸型) → 選碼建議(尺碼表＋身高體重表) → 功能賣點 → 顧客好評</div>
+<div class="note">推論鏈：罩杯包覆 ＋ 款式類型 一旦確定 → 承托力、尺碼制(通杯/分杯)、適合胸型、怎麼選碼 全部跟著定。</div>
+</div>
+<div class="sec"><h2>一、主分類：罩杯包覆</h2>
+<table><thead><tr><th>罩杯包覆</th><th>包覆度</th><th>特性</th><th>最適合胸型</th></tr></thead><tbody>
+<tr><th>全罩杯</th><td data-l="包覆度">最高</td><td data-l="特性">承托穩定、包覆完整</td><td data-l="最適合胸型">大胸、豐滿、需穩定</td></tr>
+<tr><th>3/4 罩杯</th><td data-l="包覆度">中高</td><td data-l="特性">集中托高、最百搭（MURO 主力）</td><td data-l="最適合胸型">多數胸型、外擴、想集中</td></tr>
+<tr><th>半罩杯／1-2罩</th><td data-l="包覆度">中</td><td data-l="特性">上薄、露事業線、性感</td><td data-l="最適合胸型">中小胸、低領穿搭</td></tr>
+<tr><th>三角杯 bralette</th><td data-l="包覆度">低</td><td data-l="特性">輕薄無定型、舒適造型</td><td data-l="最適合胸型">小胸、居家、造型</td></tr>
+</tbody></table>
+</div>
+<div class="sec"><h2>二、款式類型 → 承托力／尺碼制／適合胸型／選碼</h2>
+<table><thead><tr><th>款式類型</th><th>承托力</th><th>尺碼制（怎麼問）</th><th>最適合胸型</th><th>斟酌</th><th>選碼邏輯</th></tr></thead><tbody>
+<tr><th>無鋼圈軟支撐・薄杯</th><td data-l="承托力">輕–中</td><td data-l="尺碼制（怎麼問）">通杯（問下圍/體重）</td><td data-l="最適合胸型">中小胸、外擴、標準</td><td data-l="斟酌">大胸、明顯下垂</td><td data-l="選碼邏輯">看下圍；大胸加大或改款</td></tr>
+<tr><th>果凍條軟支撐</th><td data-l="承托力">中</td><td data-l="尺碼制（怎麼問）">通杯</td><td data-l="最適合胸型">標準、外擴、想集中</td><td data-l="斟酌">大胸</td><td data-l="選碼邏輯">看下圍；深V適低領</td></tr>
+<tr><th>大罩杯・調整型</th><td data-l="承托力">中–強</td><td data-l="尺碼制（怎麼問）">分杯（CD通杯 36/80…）</td><td data-l="最適合胸型">大胸、豐滿、外擴</td><td data-l="斟酌">小胸（空杯）</td><td data-l="選碼邏輯">下圍＋罩杯；大胸顯小</td></tr>
+<tr><th>鋼圈/浮雕・聚攏提拉（後扣）</th><td data-l="承托力">強</td><td data-l="尺碼制（怎麼問）">分杯（75A/80B…）</td><td data-l="最適合胸型">大胸、下垂、要托高</td><td data-l="斟酌">—</td><td data-l="選碼邏輯">下圍＋罩杯</td></tr>
+<tr><th>前扣・調整型（通杯 ABC）</th><td data-l="承托力">強</td><td data-l="尺碼制（怎麼問）">分杯（M–3XL 通杯 ABC）</td><td data-l="最適合胸型">大胸、下垂、熟齡</td><td data-l="斟酌">—</td><td data-l="選碼邏輯">下圍＋罩杯；寬肩帶</td></tr>
+<tr><th>固定杯・抹胸/背心式（套頭）</th><td data-l="承托力">輕</td><td data-l="尺碼制（怎麼問）">通杯（下圍）</td><td data-l="最適合胸型">小胸、日常、露背露肩</td><td data-l="斟酌">大胸（承托不足）</td><td data-l="選碼邏輯">看下圍；防走光</td></tr>
+<tr><th>三角杯／法式蕾絲</th><td data-l="承托力">輕</td><td data-l="尺碼制（怎麼問）">字母碼 S–XL</td><td data-l="最適合胸型">小胸、造型、大胸顯小</td><td data-l="斟酌">需托高者</td><td data-l="選碼邏輯">看身型</td></tr>
+<tr><th>帶胸墊背心（打底）</th><td data-l="承托力">輕(打底)</td><td data-l="尺碼制（怎麼問）">依體重</td><td data-l="最適合胸型">各胸型日常打底</td><td data-l="斟酌">需支撐者</td><td data-l="選碼邏輯">看體重</td></tr>
+</tbody></table>
+</div>
+<div class="sec"><h2>三、胸型 → 通則</h2>
+<table><thead><tr><th>胸型</th><th>建議款式方向</th><th>選碼重點</th></tr></thead><tbody>
+<tr><th>標準／半球</th><td data-l="建議款式方向">3/4罩・無鋼圈皆宜</td><td data-l="選碼重點">依下圍</td></tr>
+<tr><th>小胸／扁平</th><td data-l="建議款式方向">薄杯・三角杯・固定杯，集中托高</td><td data-l="選碼重點">依下圍，可選合身</td></tr>
+<tr><th>大胸／豐滿</th><td data-l="建議款式方向">全罩・大罩杯・鋼圈聚攏（分杯）</td><td data-l="選碼重點">下圍＋罩杯，選大碼</td></tr>
+<tr><th>外擴／副乳明顯</th><td data-l="建議款式方向">收副乳・調整型・集中</td><td data-l="選碼重點">想集中選合身，下圍大選大碼</td></tr>
+<tr><th>下垂</th><td data-l="建議款式方向">提拉・鋼圈托高（承托強）</td><td data-l="選碼重點">承托款優先</td></tr>
+<tr><th>大小胸（不對稱）</th><td data-l="建議款式方向">軟杯包容</td><td data-l="選碼重點">以較大側選碼</td></tr>
+</tbody></table>
+</div>
+<div class="sec"><h2>四、選碼問法（尺碼制決定）</h2>
+<table><thead><tr><th>尺碼制</th><th>直播問法</th></tr></thead><tbody>
+<tr><th>通杯款</th><td data-l="直播問法">問「下胸圍 cm 或 體重」，對照該款尺碼表</td></tr>
+<tr><th>分杯款</th><td data-l="直播問法">一定問「下圍＋罩杯（例如 75B）」，否則不準</td></tr>
+</tbody></table>
+<div class="note">臨界值：要合身集中選小碼、要寬鬆舒適選大碼；骨架大／肋骨圍寬 → 大一碼。尺碼表一律以蝦皮商品詳情圖為準；沒有 cm 表則標「待補」。</div>
+</div>
+<div class="foot" style="padding:16px 32px 24px;font-size:11.5px;color:#8a7a80;text-align:center;border-top:1px solid #ecdfd9;">MURO暮若 內衣分類規則庫 ｜ 供資訊卡與每日排程共用</div>
 </div></body></html>
