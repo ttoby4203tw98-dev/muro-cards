@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暮若商品庫</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{
+    --plum:#4a2c3a; --plum2:#6b3f52; --rose:#9c5c6e; --gold:#d6a680;
+    --cream:#faf6f2; --ink:#372a30; --ink2:#8a7580; --line:#eee2da;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+  .top{background:linear-gradient(160deg,var(--plum),var(--plum2) 60%,var(--rose));color:#f6eee8;
+    padding:calc(env(safe-area-inset-top,0px) + 26px) 20px 24px;border-radius:0 0 24px 24px;text-align:center;}
+  .top h1{font-size:22px;font-weight:800;letter-spacing:3px;}
+  .top h1 small{font-size:11px;letter-spacing:3px;opacity:.7;margin-left:8px;}
+  .top p{font-size:13px;opacity:.85;margin-top:6px;}
+  .wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(74,44,58,.07);margin-top:14px;}
+  .searchrow{display:flex;gap:10px;}
+  #sku{flex:1;border:2px solid var(--plum2);border-radius:14px;padding:13px 16px;font-size:22px;font-weight:800;
+    letter-spacing:3px;text-align:center;color:var(--plum);background:#fffdfb;}
+  #sku:focus{outline:none;border-color:var(--rose);}
+  #go{border:none;border-radius:14px;background:var(--plum2);color:#fff;font-size:17px;font-weight:800;
+    letter-spacing:2px;padding:0 22px;cursor:pointer;}
+  #msg{margin-top:10px;font-size:14px;font-weight:700;text-align:center;border-radius:10px;padding:10px;display:none;}
+  #msg.warn{display:block;background:#FCF3D7;color:#8a6a10;}
+  #msg.bad{display:block;background:#FBE4E4;color:#A4344F;}
+  .grp h2{font-size:15px;color:var(--plum2);letter-spacing:1px;margin-bottom:10px;}
+  .grp h2 span{font-size:12px;color:var(--ink2);font-weight:600;margin-left:6px;}
+  .skurow{display:flex;flex-wrap:wrap;gap:8px;}
+  .skuchip{border:1.5px solid var(--line);background:#fffdfb;border-radius:10px;padding:7px 13px;
+    font-size:15px;font-weight:800;color:var(--plum2);cursor:pointer;text-decoration:none;letter-spacing:1px;}
+  .skuchip:active{background:var(--plum2);color:#fff;}
+  .rulechip{display:inline-block;background:#FBF6EF;border:1px dashed var(--gold);border-radius:99px;
+    padding:7px 15px;font-size:14px;font-weight:700;color:#9A6A1F;text-decoration:none;margin:0 8px 8px 0;}
+  .empty{color:var(--ink2);font-size:13px;}
+  footer{text-align:center;margin-top:22px;font-size:12px;color:#b9a8b0;line-height:2;}
+  footer a{color:var(--rose);}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>暮若商品庫<small>MURO</small></h1>
+  <p>輸入 MURO 商品編號，直接開資訊卡</p>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="searchrow">
+      <input id="sku" type="text" inputmode="text" autocomplete="off" placeholder="例如 1001">
+      <button id="go">開卡</button>
+    </div>
+    <div id="msg"></div>
+  </div>
+
+  <div id="groups"></div>
+
+  <div class="card grp">
+    <h2>📚 分類規則庫</h2>
+    <div>
+      <a class="rulechip" href="bra-rules.html">內衣</a>
+      <a class="rulechip" href="panty-rules.html">內褲</a>
+      <a class="rulechip" href="tops-rules.html">上衣</a>
+      <a class="rulechip" href="bottoms-rules.html">下身</a>
+      <a class="rulechip" href="shapewear-rules.html">塑身</a>
+      <a class="rulechip" href="socks-rules.html">襪子</a>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://docs.google.com/spreadsheets/d/1WJcHeXKPIrPa95JcyditMIP1fNI-ot1GvJb096Ly-Qc/edit" target="_blank" rel="noopener">開啟完整商品庫試算表 ↗</a><br>
+    <a href="team.html">← 回團隊首頁</a>
+  </footer>
+</div>
+
+<script>
+var CATS={'1':'內衣','2':'內褲','3':'上衣','4':'下身','5':'外搭','6':'連裝','7':'其他','8':'塑身','9':'配件','C':'C 系列'};
+// 後備清單（GitHub 讀取失敗時使用；讀取成功會自動換成最新清單）
+var FALLBACK=['1001','1003','1005','1006','1007','1008','1009','1010','1011','1012','1013','1014','1015','1016','1017','1021','1022',
+'2001','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2014','2017',
+'3001','3002','3003','3004','3005','3006','3007','3008','3009','3010','3011','3012','3013','3014','3017','3018','3019','3020','3021','3022','3023','3024',
+'4001','4002','4003','4004','4006','4007','4008','4009','4013','4015','4016','4017','4018','4019','4022','4023','4024','4025','4026','4027',
+'8001','8002','8003','C001','C006'];
+var SKUS=FALLBACK.slice();
+
+function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
+function hideMsg(){var m=document.getElementById('msg');m.className='';m.style.display='none';}
+
+function openSku(s){
+  s=(s||'').trim().toUpperCase();
+  if(!s){showMsg('warn','先輸入商品編號');return;}
+  hideMsg();
+  var url=s+'.html';
+  if(SKUS.indexOf(s)!==-1){location.href=url;return;}
+  // 清單裡沒有 → 實際確認一次檔案存不存在（可能是剛新增的卡）
+  showMsg('warn','查詢中…');
+  fetch(url,{method:'HEAD'}).then(function(r){
+    if(r.ok){location.href=url;}
+    else{showMsg('bad','找不到編號 '+s+' 的資訊卡，確認一下編號有沒有打對');}
+  }).catch(function(){showMsg('bad','查詢失敗，請確認網路後再試');});
+}
+
+function render(){
+  var g=document.getElementById('groups');g.innerHTML='';
+  var by={};
+  SKUS.forEach(function(s){var p=s[0];(by[p]=by[p]||[]).push(s);});
+  Object.keys(by).sort().forEach(function(p){
+    var card=document.createElement('div');card.className='card grp';
+    card.innerHTML='<h2>'+(CATS[p]||p+' 系列')+'<span>'+by[p].length+' 款</span></h2>';
+    var row=document.createElement('div');row.className='skurow';
+    by[p].sort().forEach(function(s){
+      var a=document.createElement('a');a.className='skuchip';a.textContent=s;a.href=s+'.html';
+      row.appendChild(a);
+    });
+    card.appendChild(row);
+    g.appendChild(card);
+  });
+}
+
+// 從 GitHub 讀最新卡片清單（之後新增的卡會自動出現，不用改這頁）
+fetch('https://api.github.com/repos/ttoby4203tw98-dev/muro-cards/contents/')
+.then(function(r){if(!r.ok)throw 0;return r.json();})
+.then(function(list){
+  var skus=list.map(function(f){return f.name;})
+    .filter(function(n){return /^([0-9]{4}|C[0-9]{3})\.html$/.test(n);})
+    .map(function(n){return n.replace('.html','');});
+  if(skus.length){SKUS=skus;render();}
+}).catch(function(){});
+
+document.getElementById('go').onclick=function(){openSku(document.getElementById('sku').value);};
+document.getElementById('sku').addEventListener('keydown',function(e){if(e.key==='Enter')openSku(this.value);});
+render();
+</script>
+</body>
+</html>
