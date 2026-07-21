@@ -170,6 +170,7 @@ var OPT_URL=CSV_URL+'&sheet='+encodeURIComponent('選項');
 var events={}; // 'YYYY-MM-DD' -> [{name,what,note}]
 var cur=new Date(); cur.setDate(1);
 var selKey=null, fWhat=null, fWho=null;
+var pending=[]; // 剛送出的新增/刪除，避免被 Google 的延遲蓋掉
 
 function pidx(name){
   var i=PEOPLE.indexOf(name);
@@ -216,6 +217,16 @@ function load(){
       if(!name&&!what)continue;
       (events[d]=events[d]||[]).push({name:name,what:what,note:note});
     }
+    // 套用 90 秒內的暫存操作（Google 資料有時慢幾秒才更新）
+    var nowTs=Date.now();
+    pending=pending.filter(function(p){return nowTs-p.ts<90000;});
+    pending.forEach(function(p){
+      var list=events[p.date]=events[p.date]||[];
+      var hit=-1;
+      for(var x=0;x<list.length;x++){if(list[x].name===p.name&&list[x].what===p.what){hit=x;break;}}
+      if(p.op==='add'&&hit===-1)list.push({name:p.name,what:p.what,note:p.note||''});
+      if(p.op==='del'&&hit>-1)list.splice(hit,1);
+    });
     document.getElementById('status').textContent=SCRIPT_URL?'✅ 可直接在此新增／刪除，資料即時同步':'資料來源：暮若行事曆試算表';
     render(); if(selKey)showDetail(selKey);
   }).catch(function(){
@@ -319,17 +330,19 @@ document.getElementById('fok').onclick=function(){
   var note=document.getElementById('fnote').value.trim();
   var rec={name:fWho,what:fWhat,note:note};
   post({action:'add',date:selKey,name:fWho,what:fWhat,note:note});
+  pending.push({op:'add',date:selKey,name:fWho,what:fWhat,note:note,ts:Date.now()});
   (events[selKey]=events[selKey]||[]).push(rec);   // 先顯示，背景寫入
   document.getElementById('overlay').classList.remove('show');
   render();showDetail(selKey);
-  setTimeout(load,2500);
+  setTimeout(load,10000);
 };
 
 function removeRec(k,e){
   post({action:'delete',date:k,name:e.name,what:e.what});
+  pending.push({op:'del',date:k,name:e.name,what:e.what,ts:Date.now()});
   events[k]=(events[k]||[]).filter(function(x){return x!==e;});
   render();showDetail(k);
-  setTimeout(load,2500);
+  setTimeout(load,10000);
 }
 
 function post(data){
