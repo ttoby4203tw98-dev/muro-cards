@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暮若作戰卡</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{
+    --plum:#4a2c3a; --plum2:#6b3f52; --rose:#9c5c6e; --gold:#d6a680;
+    --cream:#faf6f2; --ink:#372a30; --ink2:#8a7580; --line:#eee2da;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+  .top{background:linear-gradient(160deg,var(--plum),var(--plum2) 60%,var(--rose));color:#f6eee8;
+    padding:calc(env(safe-area-inset-top,0px) + 26px) 20px 22px;border-radius:0 0 24px 24px;text-align:center;}
+  .top h1{font-size:22px;font-weight:800;letter-spacing:3px;}
+  .top h1 small{font-size:11px;letter-spacing:3px;opacity:.7;margin-left:8px;}
+  .top p{font-size:13px;opacity:.85;margin-top:6px;}
+  .wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(74,44,58,.07);margin-top:14px;}
+  .flabel{font-size:13px;font-weight:800;color:var(--plum2);letter-spacing:1px;margin:14px 0 6px;}
+  .flabel:first-child{margin-top:0;}
+  .hint{font-size:12px;color:var(--ink2);margin:-2px 0 6px;line-height:1.6;}
+  input[type=date]{border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:15px;background:#fff;color:var(--ink);}
+  .optrow{display:flex;flex-wrap:wrap;gap:8px;}
+  .opt{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 16px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink);}
+  .opt.on{border-color:var(--plum2);background:var(--plum2);color:#fff;}
+  textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.7;
+    font-family:inherit;resize:vertical;min-height:64px;background:#fffdfb;}
+  textarea:focus{outline:2px solid var(--rose);border-color:var(--rose);}
+  .rules{background:#FBF6EF;border:1px dashed var(--gold);border-radius:12px;padding:12px 14px;}
+  .rules div{font-size:13px;line-height:1.8;}
+  .rules b{color:#9A6A1F;}
+  .review{background:#F4EEF2;border-radius:14px;padding:12px 14px;margin-top:14px;}
+  .review .flabel{color:#7a4b62;margin-top:8px;}
+  .savebtn{width:100%;border:none;border-radius:14px;background:var(--plum2);color:#fff;
+    font-size:18px;font-weight:800;letter-spacing:3px;padding:15px 0;margin-top:16px;cursor:pointer;}
+  .savebtn:disabled{opacity:.5;}
+  #msg{margin-top:10px;font-size:14px;font-weight:700;text-align:center;border-radius:10px;padding:10px;display:none;}
+  #msg.good{display:block;background:#E6F4EC;color:#146C48;}
+  #msg.warn{display:block;background:#FCF3D7;color:#8a6a10;}
+  #msg.bad{display:block;background:#FBE4E4;color:#A4344F;}
+  .hist h2{font-size:15px;color:var(--plum2);letter-spacing:1px;margin-bottom:8px;}
+  .hrow{padding:10px 4px;border-top:1px dashed var(--line);font-size:14px;cursor:pointer;display:flex;gap:8px;align-items:baseline;}
+  .hrow:first-of-type{border-top:none;}
+  .hdate{font-weight:800;color:var(--plum2);white-space:nowrap;}
+  .hslot{font-size:12px;background:#F4EAF0;color:#7a4b62;border-radius:6px;padding:1px 8px;white-space:nowrap;}
+  .hsum{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .empty{color:var(--ink2);font-size:13px;}
+  footer{text-align:center;margin-top:22px;font-size:12px;color:#b9a8b0;}
+  footer a{color:var(--rose);}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>暮若作戰卡<small>MURO</small></h1>
+  <p>開播前 5 分鐘全隊對一次・下播後 3 行復盤・一場一張</p>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="flabel">📅 日期 / 時段</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <input type="date" id="fdate">
+      <div class="optrow" id="slotRow"></div>
+    </div>
+
+    <div class="flabel">一、這場的策略（一句話）</div>
+    <div class="hint">範例：今天衝新客，前 30 分鐘全押引流款 ／ 今天清庫存，利潤款只帶不推 ／ 今天測新品，看留言反應決定要不要進貨</div>
+    <textarea id="fstrategy" rows="2"></textarea>
+
+    <div class="flabel">二、主打什麼、為什麼是今天</div>
+    <div class="hint">範例：主打防曬外套——這週連續 36 度，昨天留言一直有人問 ／ 主打福袋——月底了，衝客單</div>
+    <textarea id="ffocus" rows="3"></textarea>
+
+    <div class="flabel">三、留下來的理由（鉤子）</div>
+    <div class="hint">範例：整點抽獎 ／ 滿千折百只有今天 ／ 9 點半秒殺 39 元福利品</div>
+    <textarea id="fhook" rows="2"></textarea>
+
+    <div class="flabel">四、這場要特別注意的 2-3 件事</div>
+    <div class="hint">不是 SOP，是「這一場」特有的：昨天卡住的點、庫存風險、容易被問倒的問題、要避開的話題⋯⋯</div>
+    <textarea id="fnotes" rows="3"></textarea>
+
+    <div class="flabel">五、臨場應變原則（不用填，出狀況照這個反應）</div>
+    <div class="rules">
+      <div><b>流量突然湧入</b>：不管講到哪，先重講一次自己是誰＋今天福利，再回來</div>
+      <div><b>在線一直掉</b>：不戀戰：換品、發券或拉互動，二選一馬上做</div>
+      <div><b>這個品講不動</b>：2 分鐘內切下一個，原因下播再檢討，直播中不糾結</div>
+      <div><b>出事故（錯價/斷線）</b>：先止血（下架/補位）再查原因，主播繼續撐場不解釋太多</div>
+      <div><b>觀眾問倒了</b>：誠實說「這個我下播確認後回覆你」，不要現場瞎掰</div>
+    </div>
+
+    <div class="review">
+      <div class="flabel" style="margin-top:0;">六、下播後 3 行（5 分鐘內填完）</div>
+      <div class="flabel">策略奏效了嗎？</div>
+      <textarea id="fr1" rows="2"></textarea>
+      <div class="flabel">臨場發生什麼？</div>
+      <textarea id="fr2" rows="2"></textarea>
+      <div class="flabel">下場策略調不調？</div>
+      <textarea id="fr3" rows="2"></textarea>
+      <div class="hint" style="margin-top:6px;">提示：策略「一半奏效」最常見，寫清楚哪一半有用，下場才知道留什麼、丟什麼。</div>
+    </div>
+
+    <button class="savebtn" id="save">儲存作戰卡</button>
+    <div id="msg"></div>
+  </div>
+
+  <div class="card hist">
+    <h2>🗂 歷史場次（點一下載入）</h2>
+    <div id="hlist" class="empty">載入中…</div>
+  </div>
+
+  <footer><a href="team.html">← 回團隊首頁</a></footer>
+</div>
+
+<script>
+var SHEET_ID='1SsIRULQjX5dQJgnEzfijQuZV5lfJKHmwHy2CJvG_XwE';
+var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1bOiU8Q8J0NWhAbYJzGTueqUWaEKFhzraBMapcGLBq95QMg/exec';
+var TOKEN='muro2026';
+var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('作戰卡');
+
+var SLOTS=['早場','下午場','晚場','加開場'];
+var slot='晚場';
+var cards={}; // 'date|slot' -> {..}
+
+function pad(n){return (n<10?'0':'')+n;}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+
+function buildSlots(){
+  var r=document.getElementById('slotRow');r.innerHTML='';
+  SLOTS.forEach(function(s){
+    var b=document.createElement('button');b.className='opt'+(s===slot?' on':'');b.textContent=s;
+    b.onclick=function(){slot=s;[].forEach.call(r.children,function(x){x.classList.remove('on');});b.classList.add('on');fill();};
+    r.appendChild(b);
+  });
+}
+function parseCSV(text){
+  var rows=[],row=[],cur='',q=false;
+  for(var i=0;i<text.length;i++){var c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=c;}
+    else{if(c==='"')q=true;else if(c===','){row.push(cur);cur='';}
+      else if(c==='\n'||c==='\r'){if(cur!==''||row.length){row.push(cur);rows.push(row);row=[];cur='';}}
+      else cur+=c;}}
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows;
+}
+function normDate(s){s=(s||'').trim();var m=s.match(/(\d{4})[\/\-年\.](\d{1,2})[\/\-月\.](\d{1,2})/);
+  return m?m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]):null;}
+
+function load(){
+  fetch(CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    var rows=parseCSV(t);cards={};
+    if(rows.length&&(rows[0][0]||'').indexOf('日期')===-1){renderHist();return;} // 分頁尚未建立
+    for(var i=1;i<rows.length;i++){
+      var d=normDate(rows[i][0]);if(!d)continue;
+      cards[d+'|'+(rows[i][1]||'').trim()]={
+        date:d,slot:(rows[i][1]||'').trim(),strategy:rows[i][2]||'',focus:rows[i][3]||'',
+        hook:rows[i][4]||'',notes:rows[i][5]||'',r1:rows[i][6]||'',r2:rows[i][7]||'',r3:rows[i][8]||''};
+    }
+    renderHist();fill();
+  }).catch(function(){renderHist();});
+}
+function fill(){
+  var c=cards[document.getElementById('fdate').value+'|'+slot]||{};
+  ['strategy','focus','hook','notes','r1','r2','r3'].forEach(function(k){
+    document.getElementById('f'+k).value=c[k]||'';
+  });
+}
+function renderHist(){
+  var el=document.getElementById('hlist');
+  var keys=Object.keys(cards).sort().reverse().slice(0,12);
+  if(!keys.length){el.className='empty';el.textContent='還沒有作戰卡，填好上面第一張按儲存就有了。';return;}
+  el.className='';el.innerHTML='';
+  keys.forEach(function(k){
+    var c=cards[k];
+    var row=document.createElement('div');row.className='hrow';
+    row.innerHTML='<span class="hdate">'+c.date.slice(5).replace('-','/')+'</span>'+
+      '<span class="hslot">'+(c.slot||'—')+'</span>'+
+      '<span class="hsum">'+(c.strategy||'（未填策略）')+'</span>';
+    row.onclick=function(){
+      document.getElementById('fdate').value=c.date;
+      slot=c.slot||'晚場';buildSlots();fill();
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    el.appendChild(row);
+  });
+}
+function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
+
+document.getElementById('save').onclick=function(){
+  var date=document.getElementById('fdate').value;
+  if(!date){showMsg('warn','先選日期');return;}
+  var payload={token:TOKEN,action:'card_save',date:date,slot:slot,
+    strategy:document.getElementById('fstrategy').value.trim(),
+    focus:document.getElementById('ffocus').value.trim(),
+    hook:document.getElementById('fhook').value.trim(),
+    notes:document.getElementById('fnotes').value.trim(),
+    r1:document.getElementById('fr1').value.trim(),
+    r2:document.getElementById('fr2').value.trim(),
+    r3:document.getElementById('fr3').value.trim()};
+  var btn=document.getElementById('save');btn.disabled=true;
+  showMsg('warn','儲存中…');
+  fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
+  .then(function(r){return r.text();})
+  .then(function(t){
+    if(t==='ok'||t==='updated'){
+      showMsg('good','✅ 已儲存　'+date+'（'+slot+'）');
+      cards[date+'|'+slot]=payload;renderHist();
+    }else{showMsg('bad','儲存失敗，請確認寫入服務已更新到最新版');}
+  })
+  .catch(function(){showMsg('bad','連不上寫入服務，請確認網路後再試');})
+  .finally(function(){btn.disabled=false;});
+};
+
+document.getElementById('fdate').value=todayStr();
+document.getElementById('fdate').onchange=fill;
+buildSlots();
+load();
+</script>
+</body>
+</html>
