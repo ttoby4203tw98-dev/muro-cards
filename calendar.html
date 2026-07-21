@@ -217,9 +217,9 @@ function load(){
       if(!name&&!what)continue;
       (events[d]=events[d]||[]).push({name:name,what:what,note:note});
     }
-    // 套用 90 秒內的暫存操作（Google 資料有時慢幾秒才更新）
+    // 套用 10 分鐘內的暫存操作（Google 資料有時慢幾秒才更新）
     var nowTs=Date.now();
-    pending=pending.filter(function(p){return nowTs-p.ts<90000;});
+    pending=pending.filter(function(p){return nowTs-p.ts<600000;});
     pending.forEach(function(p){
       var list=events[p.date]=events[p.date]||[];
       var hit=-1;
@@ -377,6 +377,7 @@ renderLegend();
 render();
 load();
 loadOptions();
+setInterval(load,60000);
 </script>
 </body>
 </html>
