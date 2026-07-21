@@ -36,13 +36,27 @@
   .cell.sel{outline:2px solid var(--rose);outline-offset:-2px;border-radius:8px;}
   .chip{display:block;font-size:10px;line-height:1.5;border-radius:4px;padding:0 4px;margin:2px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .more{display:block;font-size:10px;color:var(--ink2);text-align:center;margin-top:1px;}
-  .dots{display:none;flex-wrap:wrap;gap:3px;justify-content:center;margin-top:4px;}
-  .dots i{width:7px;height:7px;border-radius:50%;display:block;}
-  .dots b{font-size:9px;color:var(--ink2);font-weight:700;line-height:7px;}
+  /* 手機版迷你標籤：實色底＋白字，顏色跟人走 */
+  .mchip{display:none;font-size:10px;line-height:1.6;border-radius:4px;padding:0 3px;margin:2px 1px 0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;color:#fff;text-align:center;}
+  .s-p0{background:#C2185B;}  /* 思維 玫紅 */
+  .s-p1{background:#1E56C9;}  /* 小羅 藍 */
+  .s-p2{background:#7B3FBF;}  /* 曉慧 紫 */
+  .s-p3{background:#37474F;}  /* Naby 岩黑 */
+  .s-p4{background:#148F62;}  /* 諾諾 綠 */
+  .s-p5{background:#D6308A;}  /* 番茄 桃 */
+  .s-p6{background:#C77800;}  /* 安琪 琥珀 */
+  .s-p7{background:#E05716;}  /* 吃吃 橘 */
+  .s-p8{background:#33698C;}  /* 全體 靛灰 */
+  .s-p9{background:#A08A00;}
+  .s-p10{background:#0E7C9E;}
+  .s-p11{background:#7A6F52;}
+  .mmore{display:none;font-size:9px;color:var(--ink2);text-align:center;font-weight:700;}
   @media (max-width:640px){
-    .cell{min-height:56px;padding:4px 1px;}
+    .cell{min-height:70px;padding:3px 1px;}
     .chip,.more{display:none;}
-    .dots{display:flex;}
+    .mchip{display:block;}
+    .mmore{display:block;}
     .dnum{font-size:12px;width:22px;height:22px;line-height:22px;}
     .week div{font-size:11px;}
     .nav .month-label{font-size:16px;min-width:96px;}
@@ -157,11 +171,13 @@ var events={}; // 'YYYY-MM-DD' -> [{name,what,note}]
 var cur=new Date(); cur.setDate(1);
 var selKey=null, fWhat=null, fWho=null;
 
-function cls(name){ // 顏色跟著「人」走
+function pidx(name){
   var i=PEOPLE.indexOf(name);
   if(i<0){ i=0; for(var j=0;j<name.length;j++)i=(i*31+name.charCodeAt(j))>>>0; }
-  return 'c-p'+(i%12);
+  return i%12;
 }
+function cls(name){return 'c-p'+pidx(name);}   // 淡色（電腦版標籤）
+function scls(name){return 's-p'+pidx(name);}  // 實色（手機版標籤）
 function renderLegend(){
   var lg=document.getElementById('legend');lg.innerHTML='';
   PEOPLE.forEach(function(p){
@@ -228,10 +244,12 @@ function render(){
       html+='<span class="chip '+cls(show[j].name)+'">'+show[j].what+'-'+show[j].name+'</span>';
     }
     if(evs.length>3)html+='<span class="more">+'+(evs.length-3)+'</span>';
-    if(evs.length){
-      html+='<div class="dots">'+evs.slice(0,4).map(function(e){return '<i class="'+cls(e.name)+'"></i>';}).join('')+
-        (evs.length>4?'<b>+'+(evs.length-4)+'</b>':'')+'</div>';
-    }
+    // 手機版迷你標籤：顯示人名（全體事件顯示事項簡稱）
+    evs.slice(0,3).forEach(function(e){
+      var label=(e.name==='全體')?e.what.replace('活動日-','').slice(0,3):e.name;
+      html+='<span class="mchip '+scls(e.name)+'">'+label+'</span>';
+    });
+    if(evs.length>3)html+='<span class="mmore">+'+(evs.length-3)+'</span>';
     cell.innerHTML=html;
     (function(kk){cell.onclick=function(){selKey=kk;render();showDetail(kk);};})(k);
     g.appendChild(cell);
