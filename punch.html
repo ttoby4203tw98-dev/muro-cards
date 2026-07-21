@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暮若打卡</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{
+    --plum:#4a2c3a; --plum2:#6b3f52; --rose:#9c5c6e;
+    --cream:#faf6f2; --ink:#372a30; --ink2:#8a7580; --line:#eee2da;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+  .top{background:linear-gradient(160deg,var(--plum),var(--plum2) 60%,var(--rose));color:#f6eee8;
+    padding:calc(env(safe-area-inset-top,0px) + 28px) 20px 26px;border-radius:0 0 24px 24px;text-align:center;}
+  .top h1{font-size:22px;font-weight:800;letter-spacing:3px;}
+  .top h1 small{font-size:11px;letter-spacing:3px;opacity:.7;margin-left:8px;}
+  #clock{font-size:38px;font-weight:800;margin-top:10px;letter-spacing:2px;font-variant-numeric:tabular-nums;}
+  #dateline{font-size:13px;opacity:.8;margin-top:2px;}
+  .wrap{max-width:520px;margin:0 auto;padding:18px 16px 40px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(74,44,58,.07);margin-top:14px;}
+  .flabel{font-size:13px;font-weight:800;color:var(--ink2);letter-spacing:1px;margin-bottom:10px;}
+  .optrow{display:flex;flex-wrap:wrap;gap:9px;}
+  .opt{border:none;border-radius:99px;padding:9px 18px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;opacity:.45;}
+  .opt.on{opacity:1;box-shadow:0 3px 10px rgba(74,44,58,.25);transform:scale(1.05);}
+  .s-p0{background:#C2185B;}.s-p1{background:#1E56C9;}.s-p2{background:#7B3FBF;}.s-p3{background:#37474F;}
+  .s-p4{background:#148F62;}.s-p5{background:#D6308A;}.s-p6{background:#C77800;}.s-p7{background:#E05716;}
+  .s-p8{background:#33698C;}.s-p9{background:#A08A00;}.s-p10{background:#0E7C9E;}.s-p11{background:#7A6F52;}
+  .btnrow{display:flex;gap:12px;margin-top:16px;}
+  .punch{flex:1;border:none;border-radius:16px;font-size:19px;font-weight:800;padding:18px 0;cursor:pointer;color:#fff;letter-spacing:2px;}
+  .punch:disabled{opacity:.4;}
+  .b-in{background:#148F62;}
+  .b-out{background:var(--plum2);}
+  #msg{margin-top:14px;font-size:15px;font-weight:700;text-align:center;border-radius:12px;padding:12px;display:none;}
+  #msg.good{display:block;background:#E6F4EC;color:#146C48;}
+  #msg.warn{display:block;background:#FCF3D7;color:#8a6a10;}
+  #msg.bad{display:block;background:#FBE4E4;color:#A4344F;}
+  .today h2{font-size:15px;color:var(--plum2);letter-spacing:1px;margin-bottom:10px;}
+  .trow{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:15px;}
+  .trow:first-of-type{border-top:none;}
+  .tname{font-weight:800;min-width:64px;}
+  .tin,.tout{font-size:13px;border-radius:6px;padding:2px 9px;font-weight:700;}
+  .tin{background:#E6F4EC;color:#146C48;}
+  .tout{background:#F0E7EE;color:#6b3f52;}
+  .tmiss{font-size:13px;color:#c9b3bd;}
+  .empty{color:var(--ink2);font-size:14px;}
+  footer{text-align:center;margin-top:22px;font-size:12px;color:#b9a8b0;}
+  footer a{color:var(--rose);}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>暮若打卡<small>MURO</small></h1>
+  <div id="clock">--:--:--</div>
+  <div id="dateline"></div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="flabel">我是誰</div>
+    <div class="optrow" id="whoRow"></div>
+    <div class="btnrow">
+      <button class="punch b-in" id="btnIn">上班打卡</button>
+      <button class="punch b-out" id="btnOut">下班打卡</button>
+    </div>
+    <div id="msg"></div>
+  </div>
+
+  <div class="card today">
+    <h2>📋 今日打卡狀況</h2>
+    <div id="tlist" class="empty">載入中…</div>
+  </div>
+
+  <footer><a href="team.html">← 回團隊首頁</a></footer>
+</div>
+
+<script>
+var SHEET_ID='1SsIRULQjX5dQJgnEzfijQuZV5lfJKHmwHy2CJvG_XwE';
+var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1bOiU8Q8J0NWhAbYJzGTueqUWaEKFhzraBMapcGLBq95QMg/exec';
+var TOKEN='muro2026';
+var PUNCH_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('打卡');
+var OPT_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('選項');
+
+var PEOPLE=['思維','小羅','曉慧','Naby','諾諾','番茄','安琪','吃吃'];
+var who=null;
+
+function pidx(n){var i=PEOPLE.indexOf(n);if(i<0){i=0;for(var j=0;j<n.length;j++)i=(i*31+n.charCodeAt(j))>>>0;}return i%12;}
+function pad(n){return (n<10?'0':'')+n;}
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+
+function tick(){
+  var d=new Date();
+  document.getElementById('clock').textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  var w=['日','一','二','三','四','五','六'][d.getDay()];
+  document.getElementById('dateline').textContent=d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日（星期'+w+'）';
+}
+setInterval(tick,1000);tick();
+
+function buildWho(){
+  var r=document.getElementById('whoRow');r.innerHTML='';
+  PEOPLE.forEach(function(n){
+    var b=document.createElement('button');b.className='opt s-p'+pidx(n);b.textContent=n;
+    b.onclick=function(){who=n;[].forEach.call(r.children,function(x){x.classList.remove('on');});b.classList.add('on');hideMsg();};
+    r.appendChild(b);
+  });
+}
+function hideMsg(){document.getElementById('msg').className='';document.getElementById('msg').style.display='none';}
+function showMsg(cls,text){var m=document.getElementById('msg');m.className=cls;m.textContent=text;}
+
+function parseCSV(text){
+  var rows=[],row=[],cur='',q=false;
+  for(var i=0;i<text.length;i++){var c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=c;}
+    else{if(c==='"')q=true;else if(c===','){row.push(cur);cur='';}
+      else if(c==='\n'||c==='\r'){if(cur!==''||row.length){row.push(cur);rows.push(row);row=[];cur='';}}
+      else cur+=c;}}
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows;
+}
+function normDate(s){s=(s||'').trim();var m=s.match(/(\d{4})[\/\-年\.](\d{1,2})[\/\-月\.](\d{1,2})/);
+  return m?m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]):null;}
+
+function loadToday(){
+  fetch(PUNCH_CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    var rows=parseCSV(t);
+    if(rows.length&&(rows[0][0]||'').indexOf('日期')===-1){renderToday({});return;} // 分頁尚未建立
+    var tk=todayKey(),rec={};
+    for(var i=1;i<rows.length;i++){
+      if(normDate(rows[i][0])!==tk)continue;
+      var n=(rows[i][1]||'').trim(),ty=(rows[i][2]||'').trim(),tm=(rows[i][3]||'').trim();
+      rec[n]=rec[n]||{};
+      if(ty==='上班')rec[n].in=tm; else if(ty==='下班')rec[n].out=tm;
+    }
+    renderToday(rec);
+  }).catch(function(){renderToday({});});
+}
+function renderToday(rec){
+  var el=document.getElementById('tlist');
+  var names=Object.keys(rec);
+  if(!names.length){el.className='empty';el.textContent='今天還沒有人打卡。';return;}
+  el.className='';
+  el.innerHTML=names.map(function(n){
+    return '<div class="trow"><span class="tname">'+n+'</span>'+
+      (rec[n].in?'<span class="tin">上班 '+rec[n].in+'</span>':'<span class="tmiss">未打上班卡</span>')+
+      (rec[n].out?'<span class="tout">下班 '+rec[n].out+'</span>':'')+
+      '</div>';
+  }).join('');
+}
+
+function punch(type){
+  if(!who){showMsg('warn','先選一下你是誰再打卡喔');return;}
+  document.getElementById('btnIn').disabled=true;
+  document.getElementById('btnOut').disabled=true;
+  showMsg('warn','打卡中…');
+  fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({token:TOKEN,action:'punch',name:who,type:type})})
+  .then(function(r){return r.text();})
+  .then(function(t){
+    if(t.indexOf('ok')===0){showMsg('good','✅ '+who+'　'+type+'打卡成功　'+t.slice(3));}
+    else if(t.indexOf('dup')===0){showMsg('warn','⚠️ '+who+' 今天已經打過'+type+'卡了（'+t.slice(4)+'）');}
+    else{showMsg('bad','打卡失敗，請再試一次');}
+    loadToday();
+  })
+  .catch(function(){showMsg('bad','連不上打卡服務，請確認網路後再試');})
+  .finally(function(){
+    document.getElementById('btnIn').disabled=false;
+    document.getElementById('btnOut').disabled=false;
+  });
+}
+document.getElementById('btnIn').onclick=function(){punch('上班');};
+document.getElementById('btnOut').onclick=function(){punch('下班');};
+
+// 人員名單可由試算表「選項」分頁（B欄）維護
+fetch(OPT_CSV).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+  var rows=parseCSV(t);
+  if(!rows.length)return;
+  if(((rows[0][0]||'').indexOf('事項')===-1)&&((rows[0][1]||'').indexOf('人員')===-1))return;
+  var ppl=[];
+  for(var i=1;i<rows.length;i++){var b=(rows[i][1]||'').trim();
+    if(b&&b!=='全體'&&ppl.indexOf(b)===-1)ppl.push(b);}
+  if(ppl.length){PEOPLE=ppl;buildWho();}
+}).catch(function(){});
+
+buildWho();
+loadToday();
+setInterval(loadToday,60000);
+</script>
+</body>
+</html>
