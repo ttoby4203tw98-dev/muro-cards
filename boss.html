@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f9f9f7">
+<title>暮若 MURO · 經營儀表板</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface-1:#fcfcfb;
+  --page:#f9f9f7;
+  --text-1:#0b0b0b;
+  --text-2:#52514e;
+  --muted:#898781;
+  --grid:#e1e0d9;
+  --axis:#c3c2b7;
+  --border:rgba(11,11,11,0.10);
+  --shadow:0 1px 2px rgba(11,11,11,.05), 0 8px 24px rgba(11,11,11,.05);
+  --s1:#2a78d6;  /* 入賬 / 收入 */
+  --s2:#eb6834;  /* 支出 */
+  --s3:#1baf7a;  /* 損益 / 淨額 */
+  --s4:#eda100;
+  --good:#006300;
+  --bad:#d03b3b;
+  --wash:rgba(11,11,11,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface-1:#1a1a19; --page:#0d0d0d; --text-1:#ffffff; --text-2:#c3c2b7;
+    --muted:#898781; --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --good:#0ca30c; --bad:#e66767; --wash:rgba(255,255,255,.06);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:#1a1a19; --page:#0d0d0d; --text-1:#ffffff; --text-2:#c3c2b7;
+  --muted:#898781; --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  --good:#0ca30c; --bad:#e66767; --wash:rgba(255,255,255,.06);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--page); color:var(--text-1);
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+.app{max-width:520px;margin:0 auto;min-height:100vh;background:var(--page);padding-bottom:86px}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--page) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.hd{display:flex;align-items:center;gap:10px;padding:14px 16px 12px}
+.brand{font-size:17px;font-weight:650;letter-spacing:.04em}
+.brand small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.14em;margin-top:1px}
+.hd .sp{flex:1}
+.iconbtn{
+  width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface-1);
+  color:var(--text-2);font-size:15px;cursor:pointer;display:grid;place-items:center;line-height:1
+}
+.iconbtn:active{transform:scale(.94)}
+.updated{font-size:11px;color:var(--muted);padding:0 16px 10px;letter-spacing:.02em}
+
+/* ---------- segmented ---------- */
+.seg{display:flex;gap:4px;background:var(--wash);border-radius:11px;padding:3px}
+.seg button{
+  flex:1;border:0;background:transparent;color:var(--text-2);font:inherit;font-size:13px;font-weight:550;
+  padding:7px 4px;border-radius:9px;cursor:pointer;white-space:nowrap
+}
+.seg button[aria-selected="true"]{background:var(--surface-1);color:var(--text-1);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+
+/* ---------- layout ---------- */
+main{padding:14px 16px 8px;display:flex;flex-direction:column;gap:14px}
+.card{
+  background:var(--surface-1);border:1px solid var(--border);border-radius:16px;padding:15px 15px 13px;
+  box-shadow:var(--shadow)
+}
+.card>h3{
+  margin:0 0 2px;font-size:14px;font-weight:620;letter-spacing:.01em;display:flex;align-items:center;gap:8px
+}
+.card>h3 .sp{flex:1}
+.sub{font-size:11.5px;color:var(--muted);margin:0 0 12px}
+.tablebtn{
+  border:1px solid var(--border);background:transparent;color:var(--text-2);font:inherit;font-size:11px;
+  padding:3px 9px;border-radius:99px;cursor:pointer
+}
+.tablebtn[aria-pressed="true"]{background:var(--wash);color:var(--text-1)}
+
+/* ---------- hero ---------- */
+.hero{padding:18px 15px 15px}
+.hero .lab{font-size:12px;color:var(--muted);letter-spacing:.06em}
+.hero .val{font-size:clamp(38px,12vw,50px);font-weight:680;letter-spacing:-.02em;line-height:1.06;margin:6px 0 0}
+.hero .val .cur{font-size:.42em;font-weight:600;color:var(--text-2);margin-right:.18em;vertical-align:.28em}
+.hero .row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:8px}
+.delta{font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.delta.up{color:var(--good)} .delta.down{color:var(--bad)}
+.delta .n{font-size:11.5px;font-weight:500;color:var(--muted)}
+
+/* ---------- stat tiles ---------- */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tiles.t3{grid-template-columns:repeat(3,1fr)}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:12px 12px 11px;box-shadow:var(--shadow)}
+.tile .lab{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px;letter-spacing:.02em}
+.tile .dot{width:8px;height:8px;border-radius:99px;flex:none}
+.tile .val{font-size:20px;font-weight:640;letter-spacing:-.01em;margin-top:5px;line-height:1.2}
+.tile .val small{font-size:11px;font-weight:550;color:var(--text-2);margin-right:2px}
+.tile .d{font-size:11px;margin-top:3px;color:var(--muted)}
+.tile .d b{font-weight:600}
+.tiles.t3 .val{font-size:17px;white-space:nowrap}
+.tiles.t3 .d{font-size:10px;white-space:nowrap}
+.tiles.t3 .delta{font-size:10.5px}
+.tiles.t3 .delta .n{font-size:10px}
+.tiles.t3 .lab{font-size:11px}
+
+/* ---------- wallet ---------- */
+.wallet .top{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.wallet .badge{
+  font-size:10.5px;font-weight:650;letter-spacing:.06em;padding:3px 8px;border-radius:7px;
+  background:var(--wash);color:var(--text-2);flex:none;margin-top:2px
+}
+.wallet .bal{font-size:11.5px;color:var(--muted)}
+.wallet .balv{font-size:24px;font-weight:650;letter-spacing:-.01em;line-height:1.2}
+.wrow{display:flex;gap:0;border-top:1px solid var(--border);padding-top:11px;margin-top:2px}
+.wrow>div{flex:1;min-width:0}
+.wrow .k{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.wrow .v{font-size:16px;font-weight:620;margin-top:3px;letter-spacing:-.01em}
+.bar-mini{display:flex;gap:2px;height:6px;border-radius:99px;overflow:hidden;margin-top:12px}
+.bar-mini i{display:block;height:100%}
+
+/* ---------- charts ---------- */
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 10px;padding:0;list-style:none}
+.legend li{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-2)}
+.legend .sw{width:10px;height:10px;border-radius:3px;flex:none}
+.legend .sw.line{height:3px;border-radius:99px;width:14px}
+
+#tip{
+  position:fixed;z-index:99;pointer-events:none;opacity:0;transform:translate(-50%,-118%);
+  background:var(--surface-1);border:1px solid var(--border);border-radius:11px;padding:8px 10px;
+  box-shadow:0 6px 24px rgba(0,0,0,.16);font-size:12px;min-width:104px;transition:opacity .1s
+}
+#tip .t{font-weight:620;margin-bottom:5px;font-size:11.5px;color:var(--text-1)}
+#tip .r{display:flex;align-items:center;gap:7px;margin-top:3px;color:var(--text-2);white-space:nowrap}
+#tip .r .sw{width:8px;height:8px;border-radius:2px;flex:none}
+#tip .r b{margin-left:auto;font-weight:620;color:var(--text-1);font-variant-numeric:tabular-nums}
+
+/* ---------- table view ---------- */
+table.dv{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+table.dv th,table.dv td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums}
+table.dv th:first-child,table.dv td:first-child{text-align:left;font-variant-numeric:normal}
+table.dv th{color:var(--muted);font-weight:550;font-size:11px}
+[hidden]{display:none!important}
+
+/* ---------- list ---------- */
+.list{margin:0;padding:0;list-style:none}
+.list li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.list li:last-child{border-bottom:0;padding-bottom:2px}
+.list .rank{width:19px;height:19px;border-radius:6px;background:var(--wash);color:var(--text-2);font-size:10.5px;font-weight:650;display:grid;place-items:center;flex:none}
+.list .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .num{font-variant-numeric:tabular-nums;font-weight:600;font-size:13px}
+.list .sm{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;width:58px;text-align:right;flex:none}
+.pill{font-size:10.5px;padding:2px 7px;border-radius:99px;background:var(--wash);color:var(--text-2);flex:none}
+
+/* ---------- chips ---------- */
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;margin:0 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{
+  flex:none;border:1px solid var(--border);background:transparent;color:var(--text-2);font:inherit;
+  font-size:12.5px;font-weight:550;padding:6px 13px;border-radius:99px;cursor:pointer;white-space:nowrap
+}
+.chips button[aria-selected="true"]{background:var(--text-1);color:var(--surface-1);border-color:var(--text-1)}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:11px 8px;margin-top:2px}
+.kv .k{font-size:11px;color:var(--muted);white-space:nowrap}
+.kv .v{font-size:16px;font-weight:640;letter-spacing:-.01em;margin-top:2px;white-space:nowrap}
+.kv .v small{font-size:10.5px;font-weight:550;color:var(--text-2);margin-right:2px}
+.src{font-size:10.5px;color:var(--muted);margin:2px 0 0;line-height:1.6}
+.src a{color:var(--s1);text-decoration:none}
+
+/* ---------- tabbar ---------- */
+nav.tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:color-mix(in srgb,var(--page) 90%,transparent);
+  backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom)
+}
+nav.tabbar .in{max-width:520px;margin:0 auto;display:flex}
+nav.tabbar button{
+  flex:1;border:0;background:transparent;font:inherit;padding:9px 0 11px;cursor:pointer;
+  color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px
+}
+nav.tabbar button[aria-selected="true"]{color:var(--s1)}
+nav.tabbar svg{width:22px;height:22px}
+nav.tabbar span{font-size:10.5px;font-weight:600;letter-spacing:.04em}
+
+.note{font-size:11px;color:var(--muted);text-align:center;padding:6px 20px 4px;line-height:1.6}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div class="hd">
+    <div class="brand">暮若 MURO<small>BOSS DASHBOARD</small></div>
+    <div class="sp"></div>
+    <button class="iconbtn" id="themeBtn" title="切換深色模式" aria-label="切換深色模式">◐</button>
+  </div>
+  <div class="updated" id="updated"></div>
+</header>
+
+<main id="view"></main>
+
+<p class="note">直播數據：已串接 Google 試算表「直播數據」真實資料<br>財務／銷售／買家／商品：打樣假資料，待接來源</p>
+</div>
+
+<nav class="tabbar" role="tablist" aria-label="主分頁">
+  <div class="in">
+    <button role="tab" data-tab="fin" aria-selected="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17V9m5 8V5m5 12v-6m5 6V8"/><path d="M2.5 21h19"/></svg>
+      <span>財務</span>
+    </button>
+    <button role="tab" data-tab="data" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9v9z"/><path d="M12 3a9 9 0 0 1 9 9h-9z" opacity=".45"/></svg>
+      <span>數據</span>
+    </button>
+  </div>
+</nav>
+
+<div id="tip" role="status" aria-live="off"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   暮若 MURO — 老闆版儀表板（打樣）
+   所有數字皆為假資料，集中在 DB 物件，之後接真實資料只需替換 DB。
+   ============================================================ */
+
+const DB = {
+  updated: "2026/07/26 09:40",
+
+  /* ---------- 財務．總表 ---------- */
+  finance: {
+    day: {
+      unit: "日", note: "近 14 日",
+      cats: ["7/13","7/14","7/15","7/16","7/17","7/18","7/19","7/20","7/21","7/22","7/23","7/24","7/25","7/26"],
+      in:  [318000,286000,402000,355000,610000,528000,441000,372000,309000,468000,721000,595000,512000,486000],
+      out: [231000,204000,268000,249000,372000,331000,296000,258000,224000,301000,428000,362000,330000,318000],
+      prevLabel: "昨日"
+    },
+    month: {
+      unit: "月", note: "近 12 個月",
+      cats: ["8月","9月","10月","11月","12月","1月","2月","3月","4月","5月","6月","7月"],
+      in:  [8420000,9110000,10240000,12880000,15320000,11260000,8940000,10480000,11720000,12960000,13840000,12310000],
+      out: [6180000,6620000,7310000,8940000,10480000,8020000,6540000,7420000,8210000,8980000,9460000,8360000],
+      prevLabel: "上月"
+    },
+    quarter: {
+      unit: "季", note: "近 8 季",
+      cats: ["24Q4","25Q1","25Q2","25Q3","25Q4","26Q1","26Q2","26Q3"],
+      in:  [24800000,21400000,26300000,27700000,38440000,30680000,38520000,12310000],
+      out: [18200000,15900000,19100000,20200000,26400000,21980000,26650000,8360000],
+      prevLabel: "上季"
+    }
+  },
+
+  /* ---------- 財務．錢包 ---------- */
+  wallets: {
+    twd: {
+      name:"台幣錢包", code:"TWD", cur:"NT$", balance: 4286500,
+      rows:[
+        {k:"入賬", v: 12310000, c:"var(--s1)"},
+        {k:"支出", v: 8360000,  c:"var(--s2)"},
+        {k:"下發", v: 2140000,  c:"var(--s4)"}
+      ],
+      recent:[
+        {d:"07/25", t:"蝦皮撥款結算", a: 862400, k:"入賬"},
+        {d:"07/24", t:"下發｜主播抽成 6 位", a:-318000, k:"下發"},
+        {d:"07/23", t:"廣告投放扣款", a:-146200, k:"支出"},
+        {d:"07/22", t:"蝦皮撥款結算", a: 704900, k:"入賬"},
+        {d:"07/21", t:"物流月結", a:-238600, k:"支出"}
+      ]
+    },
+    cny: {
+      name:"人民幣錢包", code:"CNY", cur:"¥", balance: 186400,
+      rows:[
+        {k:"入資", v: 620000, c:"var(--s1)"},
+        {k:"支出", v: 548300, c:"var(--s2)"},
+        {k:"退款", v: 42800,  c:"var(--s4)"}
+      ],
+      recent:[
+        {d:"07/24", t:"入資｜台幣換匯撥入", a: 200000, k:"入資"},
+        {d:"07/23", t:"供應商貨款｜義烏", a:-168400, k:"支出"},
+        {d:"07/22", t:"退款｜瑕疵補償", a: 18600, k:"退款"},
+        {d:"07/20", t:"供應商貨款｜廣州", a:-142900, k:"支出"},
+        {d:"07/18", t:"打樣費", a:-26800, k:"支出"}
+      ]
+    },
+    corp: {
+      name:"公司錢包", code:"CORP", cur:"NT$", balance: 9640000,
+      rows:[
+        {k:"收入", v: 12310000, c:"var(--s1)"},
+        {k:"支出", v: 10500000, c:"var(--s2)"}
+      ],
+      recent:[
+        {d:"07/25", t:"營業收入轉入", a: 862400, k:"收入"},
+        {d:"07/20", t:"薪資發放", a:-1284000, k:"支出"},
+        {d:"07/15", t:"辦公室租金", a:-96000, k:"支出"},
+        {d:"07/10", t:"稅務預繳", a:-412000, k:"支出"},
+        {d:"07/05", t:"營業收入轉入", a: 1148600, k:"收入"}
+      ]
+    }
+  },
+
+  /* ---------- 數據．銷售 ---------- */
+  sales: {
+    gmv: 12310000, gmvPrev: 13840000,
+    orders: 8642, ordersPrev: 9310,
+    aov: 1424, aovPrev: 1487,
+    refund: 3.8, refundPrev: 4.6,
+    trendCats: ["7/13","7/14","7/15","7/16","7/17","7/18","7/19","7/20","7/21","7/22","7/23","7/24","7/25","7/26"],
+    trend:     [318,286,402,355,610,528,441,372,309,468,721,595,512,486],
+    channels: [
+      {n:"蝦皮直播", v: 7140000},
+      {n:"蝦皮商城", v: 3280000},
+      {n:"官網",     v: 1220000},
+      {n:"其他通路", v: 670000}
+    ]
+  },
+
+  /* ---------- 數據．直播（來源：Google 試算表「直播數據」） ---------- */
+  live: {"source":"Google 試算表「直播數據」","months":["1月","2月","3月","4月","5月","6月","7月"],"monthly":{"1月":{"n":34,"sales":627484,"hours":97.4,"views":1034727,"orders":1015,"cart":5776,"ad":0,"avg":18455,"perHr":6443,"aov":618,"cvr":0,"roi":null,"stay":93},"2月":{"n":14,"sales":282971,"hours":37.1,"views":609303,"orders":586,"cart":3743,"ad":0,"avg":20212,"perHr":7627,"aov":483,"cvr":0,"roi":null,"stay":130},"3月":{"n":39,"sales":279198,"hours":87.5,"views":445956,"orders":444,"cart":2973,"ad":34570,"avg":7159,"perHr":3192,"aov":629,"cvr":2.88,"roi":8.1,"stay":122},"4月":{"n":76,"sales":921817,"hours":141.2,"views":935951,"orders":966,"cart":7147,"ad":85417,"avg":12129,"perHr":6527,"aov":954,"cvr":3.62,"roi":10.8,"stay":141},"5月":{"n":55,"sales":734255,"hours":118.8,"views":812240,"orders":779,"cart":6706,"ad":89246,"avg":13350,"perHr":6179,"aov":943,"cvr":2.72,"roi":8.2,"stay":169},"6月":{"n":35,"sales":1376024,"hours":114.8,"views":1042543,"orders":1579,"cart":10437,"ad":87073,"avg":39315,"perHr":11990,"aov":871,"cvr":3.9,"roi":15.8,"stay":156},"7月":{"n":66,"sales":1290869,"hours":215.1,"views":1509072,"orders":1427,"cart":10035,"ad":96733,"avg":19559,"perHr":6000,"aov":905,"cvr":3.14,"roi":13.3,"stay":166}},"hosts":{"Naby":{"n":147,"sales":4002464,"hours":408.7,"views":3399373,"orders":4451,"cart":31644,"ad":310077,"avg":27228,"perHr":9793,"aov":899,"cvr":3.46,"roi":12.9,"stay":168,"byMonth":{"3月":{"n":22,"sales":208894,"hours":53.7,"views":314241,"orders":342,"cart":2322,"ad":22447,"avg":9495,"perHr":3889,"aov":611,"cvr":3.09,"roi":9.3,"stay":114},"4月":{"n":39,"sales":793447,"hours":81.5,"views":686354,"orders":810,"cart":5993,"ad":58789,"avg":20345,"perHr":9738,"aov":980,"cvr":3.74,"roi":13.5,"stay":131},"5月":{"n":36,"sales":691865,"hours":94.9,"views":698820,"orders":721,"cart":6275,"ad":77842,"avg":19218,"perHr":7289,"aov":960,"cvr":2.69,"roi":8.9,"stay":173},"6月":{"n":31,"sales":1369391,"hours":108.4,"views":1009936,"orders":1570,"cart":10361,"ad":87052,"avg":44174,"perHr":12636,"aov":872,"cvr":3.9,"roi":15.7,"stay":161},"7月":{"n":19,"sales":938867,"hours":70.2,"views":690022,"orders":1008,"cart":6693,"ad":63946,"avg":49414,"perHr":13372,"aov":931,"cvr":3.51,"roi":14.7,"stay":237}},"best":{"m":"6月","sid":"6/18","sales":106046}},"安琪":{"n":16,"sales":124920,"hours":51.9,"views":261849,"orders":139,"cart":1224,"ad":9859,"avg":7808,"perHr":2408,"aov":899,"cvr":2.43,"roi":12.7,"stay":97,"byMonth":{"7月":{"n":16,"sales":124920,"hours":51.9,"views":261849,"orders":139,"cart":1224,"ad":9859,"avg":7808,"perHr":2408,"aov":899,"cvr":2.43,"roi":12.7,"stay":97}},"best":{"m":"7月","sid":"7/18","sales":27328}},"番茄":{"n":17,"sales":118225,"hours":55.8,"views":311156,"orders":133,"cart":1173,"ad":11427,"avg":6954,"perHr":2120,"aov":889,"cvr":2.43,"roi":10.3,"stay":111,"byMonth":{"7月":{"n":17,"sales":118225,"hours":55.8,"views":311156,"orders":133,"cart":1173,"ad":11427,"avg":6954,"perHr":2120,"aov":889,"cvr":2.43,"roi":10.3,"stay":111}},"best":{"m":"7月","sid":"7/18","sales":24014}},"吃吃":{"n":14,"sales":108857,"hours":37.3,"views":246045,"orders":147,"cart":945,"ad":11500,"avg":7776,"perHr":2920,"aov":741,"cvr":3.8,"roi":9.5,"stay":111,"byMonth":{"7月":{"n":14,"sales":108857,"hours":37.3,"views":246045,"orders":147,"cart":945,"ad":11500,"avg":7776,"perHr":2920,"aov":741,"cvr":3.8,"roi":9.5,"stay":111}},"best":{"m":"7月","sid":"7/18","sales":30207}}},"ctrls":{"諾諾":{"n":130,"sales":3602330,"hours":364.1,"views":3044025,"orders":3899,"cart":28057,"ad":279895,"avg":27710,"perHr":9894,"aov":924,"cvr":3.42,"roi":12.9,"stay":173},"小羅":{"n":4,"sales":8680,"hours":9.5,"views":63487,"orders":14,"cart":175,"ad":1969,"avg":2170,"perHr":910,"aov":620,"cvr":1.71,"roi":4.4,"stay":72}},"top":[{"m":"6月","sid":"6/18","dur":29558,"host":"Naby","ctrl":"諾諾","sales":106046,"ad":8475,"coin":8125,"stay":12840,"views":56144,"cvr":0,"cart":761,"orders":111},{"m":"6月","sid":"6/30","dur":10529,"host":"Naby","ctrl":"諾諾","sales":98109,"ad":2653,"coin":2539,"stay":8400,"views":44269,"cvr":0,"cart":564,"orders":104},{"m":"6月","sid":"6/19","dur":28402,"host":"Naby","ctrl":"諾諾","sales":95180,"ad":5498,"coin":5308,"stay":15240,"views":48376,"cvr":0,"cart":584,"orders":117},{"m":"6月","sid":"6/24","dur":8870,"host":"Naby","ctrl":"諾諾","sales":91569,"ad":2344,"coin":2234,"stay":6840,"views":36172,"cvr":0,"cart":458,"orders":103},{"m":"7月","sid":"7/06","dur":12164,"host":"Naby","ctrl":"諾諾","sales":83007,"ad":3413,"coin":3198,"stay":9900,"views":34251,"cvr":0,"cart":486,"orders":85},{"m":"6月","sid":"6/28","dur":11508,"host":"Naby","ctrl":"諾諾","sales":81319,"ad":3051,"coin":2926,"stay":8160,"views":41296,"cvr":0,"cart":572,"orders":99},{"m":"7月","sid":"7/24","dur":16051,"host":"Naby","ctrl":"諾諾","sales":77897,"ad":3463,"coin":3343,"stay":18240,"views":32548,"cvr":0,"cart":337,"orders":58},{"m":"6月","sid":"6/20","dur":27557,"host":"Naby","ctrl":"諾諾","sales":75492,"ad":4085,"coin":3965,"stay":10200,"views":47555,"cvr":0,"cart":591,"orders":106},{"m":"6月","sid":"6/26","dur":11133,"host":"Naby","ctrl":"諾諾","sales":68736,"ad":2933,"coin":2848,"stay":7740,"views":53531,"cvr":0,"cart":480,"orders":63},{"m":"7月","sid":"7/11","dur":13141,"host":"Naby","ctrl":"諾諾","sales":65319,"ad":3344,"coin":3202,"stay":10200,"views":52884,"cvr":0,"cart":456,"orders":81},{"m":"7月","sid":"7/05","dur":13324,"host":"Naby","ctrl":"諾諾","sales":59287,"ad":3087,"coin":2952,"stay":17520,"views":38173,"cvr":0,"cart":548,"orders":72},{"m":"6月","sid":"6/18","dur":28867,"host":"Naby","ctrl":"諾諾","sales":58044,"ad":7048,"coin":6868,"stay":10620,"views":66004,"cvr":0,"cart":502,"orders":69}]},
+
+  /* ---------- 數據．買家 ---------- */
+  buyers: {
+    total: 6820, totalPrev: 6310,
+    newRate: 38, repeatRate: 62,
+    aov: 1424, repeatCycle: 41,
+    mix: {cats:["3月","4月","5月","6月","7月"], neu:[2810,2960,3120,2740,2592], old:[3240,3520,3880,4180,4228]},
+    age: [
+      {n:"25–34 歲", v: 862},
+      {n:"35–44 歲", v: 2184},
+      {n:"45–54 歲", v: 2456},
+      {n:"55 歲以上", v: 1044},
+      {n:"24 歲以下", v: 274}
+    ],
+    spend: [
+      {n:"NT$ 500 以下", v: 1180},
+      {n:"500–1,000", v: 1960},
+      {n:"1,000–2,000", v: 2240},
+      {n:"2,000–5,000", v: 1120},
+      {n:"5,000 以上", v: 320}
+    ]
+  },
+
+  /* ---------- 數據．商品 ---------- */
+  products: {
+    skuActive: 284, skuActivePrev: 262,
+    turnover: 5.2, turnoverPrev: 4.6,
+    stockValue: 3860000,
+    deadStock: 412000,
+    top: [
+      {n:"涼感親膚天絲床包四件組", v: 1842000, q: 1284},
+      {n:"石墨烯冰絲涼被", v: 1246000, q: 962},
+      {n:"日本抗菌廚房濕紙巾 x30", v: 864000, q: 3120},
+      {n:"無痕加高衣架 50入", v: 692000, q: 2410},
+      {n:"多功能折疊收納箱", v: 548000, q: 1180},
+      {n:"抗UV遮陽外套（女）", v: 486000, q: 742}
+    ],
+    slow: [
+      {n:"羊毛保暖襪 3 入", d: 148, v: 96000},
+      {n:"厚棉法蘭絨毯", d: 132, v: 142000},
+      {n:"聖誕限定禮盒", d: 121, v: 88000},
+      {n:"加厚防寒手套", d: 96, v: 86000}
+    ]
+  }
+};
+
+/* ============================================================
+   工具
+   ============================================================ */
+const $ = (s,r=document)=>r.querySelector(s);
+const el = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+const sum = a=>a.reduce((x,y)=>x+y,0);
+
+function fmtC(n){ // 緊湊：萬 / 億
+  const s = n<0?"-":""; n = Math.abs(n);
+  if(n>=1e8) return s+(n/1e8).toFixed(2).replace(/\.?0+$/,"")+"億";
+  if(n>=1e4) return s+(n/1e4).toFixed(n>=1e6?0:1).replace(/\.0$/,"")+"萬";
+  return s+Math.round(n).toLocaleString("en-US");
+}
+const fmtN = n=>Math.round(n).toLocaleString("en-US");
+function pct(cur,prev){ if(!prev) return null; return (cur-prev)/Math.abs(prev)*100; }
+function deltaHTML(cur,prev,label,goodUp=true){
+  const p = pct(cur,prev); if(p===null) return "";
+  const up = p>=0, good = goodUp?up:!up;
+  return `<span class="delta ${good?"up":"down"}">${up?"▲":"▼"} ${Math.abs(p).toFixed(1)}%</span> <span class="n">vs ${label}</span>`;
+}
+function niceMax(v){
+  if(v<=0) return 1;
+  const e = Math.pow(10, Math.floor(Math.log10(v)));
+  const f = v/e;
+  const m = f<=1?1:f<=1.2?1.2:f<=1.5?1.5:f<=2?2:f<=2.5?2.5:f<=3?3:f<=4?4:f<=5?5:f<=6?6:f<=8?8:10;
+  return m*e;
+}
+function roundTopPath(x,y,w,h,r){
+  r = Math.max(0, Math.min(r, w/2, h));
+  if(h<=0.4) return "";
+  return `M${x},${y+h} L${x},${y+r} Q${x},${y} ${x+r},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h} Z`;
+}
+function roundRightPath(x,y,w,h,r){
+  r = Math.max(0, Math.min(r, w, h/2));
+  if(w<=0.4) return "";
+  return `M${x},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h-r} Q${x+w},${y+h} ${x+w-r},${y+h} L${x},${y+h} Z`;
+}
+const SVGNS="http://www.w3.org/2000/svg";
+function sv(t,a){const e=document.createElementNS(SVGNS,t); for(const k in a) e.setAttribute(k,a[k]); return e;}
+function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || v; }
+
+/* ---------- tooltip ---------- */
+const tip = $("#tip");
+function showTip(x,y,title,rows){
+  tip.innerHTML = `<div class="t">${title}</div>` + rows.map(r=>
+    `<div class="r">${r.c?`<span class="sw" style="background:${r.c}"></span>`:""}${r.k}<b>${r.v}</b></div>`).join("");
+  tip.style.left = x+"px"; tip.style.top = y+"px"; tip.style.opacity = 1;
+}
+function hideTip(){ tip.style.opacity = 0; }
+document.addEventListener("scroll", hideTip, true);
+
+/* ============================================================
+   圖表：直向長條（可群組 / 堆疊）
+   ============================================================ */
+function columnChart(host, o){
+  host.innerHTML="";
+  const W = host.clientWidth || 320, H = o.height||190;
+  const PL = o.padLeft ?? 46, PR = 10, PT = 14, PB = 24;
+  const n = o.cats.length, S = o.series;
+  const stacked = !!o.stacked;
+  const vals = stacked ? o.cats.map((_,i)=>sum(S.map(s=>s.data[i]))) : S.flatMap(s=>s.data);
+  const max = niceMax(Math.max(...vals,1));
+  const pw = W-PL-PR, ph = H-PT-PB;
+  const y = v => PT + ph - (v/max)*ph;
+  const band = pw/n;
+
+  const svg = sv("svg",{viewBox:`0 0 ${W} ${H}`, height:H, role:"img","aria-label":o.aria||o.title||"長條圖"});
+
+  // gridlines + y ticks
+  for(let i=0;i<=3;i++){
+    const v = max*i/3, yy = y(v);
+    svg.appendChild(sv("line",{x1:PL,x2:W-PR,y1:yy,y2:yy,stroke:i?cssVar("--grid"):cssVar("--axis"),"stroke-width":1}));
+    const t = sv("text",{x:PL-7,y:yy+3.5,"text-anchor":"end","font-size":9.5,fill:cssVar("--muted")});
+    t.textContent = i? fmtC(v) : "0"; svg.appendChild(t);
+  }
+
+  const hit = sv("g",{});
+  o.cats.forEach((c,i)=>{
+    const bx = PL + band*i;
+    if(stacked){
+      const bw = Math.min(24, band-10);
+      const x = bx + (band-bw)/2;
+      let acc = 0;
+      S.forEach((s,si)=>{
+        const v = s.data[i];
+        const y0 = y(acc), y1 = y(acc+v);
+        let h = y0-y1;
+        const gap = si<S.length-1 ? 2 : 0;
+        const topMost = si===S.length-1;
+        const d = topMost ? roundTopPath(x,y1,bw,h,4) : `M${x},${y1+ (0)} h${bw} v${h-gap} h${-bw} Z`;
+        if(d) svg.appendChild(sv("path",{d, fill:s.color}));
+        acc += v;
+      });
+    } else {
+      const bw = Math.min(22, Math.max(5,(band-10)/S.length - 2));
+      const gw = bw*S.length + 2*(S.length-1);
+      S.forEach((s,si)=>{
+        const x = bx + (band-gw)/2 + si*(bw+2);
+        const v = s.data[i], y1 = y(v), h = PT+ph-y1;
+        const d = roundTopPath(x,y1,bw,h,4);
+        if(d) svg.appendChild(sv("path",{d, fill:s.color}));
+      });
+    }
+    // x label（密集時隔一顯示）
+    const step = n>9 ? Math.ceil(n/7) : 1;
+    if(i%step===0 || i===n-1){
+      const t = sv("text",{x:bx+band/2,y:H-7,"text-anchor":"middle","font-size":9.5,fill:cssVar("--muted")});
+      t.textContent = c; svg.appendChild(t);
+    }
+    // hit area
+    const r = sv("rect",{x:bx,y:PT,width:band,height:ph,fill:"transparent"});
+    r.addEventListener("pointerenter",ev=>{
+      const b = r.getBoundingClientRect();
+      showTip(b.left+b.width/2, b.top+18, c, S.map(s=>({c:s.color,k:s.name,v:(o.prefix||"")+fmtC(s.data[i])+(o.suffix||"")})));
+    });
+    r.addEventListener("pointerleave",hideTip);
+    hit.appendChild(r);
+  });
+  svg.appendChild(hit);
+  host.appendChild(svg);
+}
+
+/* ============================================================
+   圖表：折線（含區域淡色 + 端點 + 十字準星）
+   ============================================================ */
+function lineChart(host,o){
+  host.innerHTML="";
+  const W = host.clientWidth||320, H=o.height||180;
+  const PL=o.padLeft ?? 44, PR=14, PT=14, PB=24;
+  const S=o.series, n=o.cats.length;
+  const max = niceMax(Math.max(...S.flatMap(s=>s.data),1));
+  const pw=W-PL-PR, ph=H-PT-PB;
+  const X = i => n===1?PL+pw/2:PL + pw*i/(n-1);
+  const Y = v => PT+ph-(v/max)*ph;
+  const svg = sv("svg",{viewBox:`0 0 ${W} ${H}`,height:H,role:"img","aria-label":o.aria||o.title||"折線圖"});
+
+  for(let i=0;i<=3;i++){
+    const v=max*i/3, yy=Y(v);
+    svg.appendChild(sv("line",{x1:PL,x2:W-PR,y1:yy,y2:yy,stroke:i?cssVar("--grid"):cssVar("--axis"),"stroke-width":1}));
+    const t=sv("text",{x:PL-7,y:yy+3.5,"text-anchor":"end","font-size":9.5,fill:cssVar("--muted")});
+    t.textContent = i?fmtC(v):"0"; svg.appendChild(t);
+  }
+  const cross = sv("line",{x1:0,x2:0,y1:PT,y2:PT+ph,stroke:cssVar("--axis"),"stroke-width":1,opacity:0});
+  svg.appendChild(cross);
+
+  S.forEach(s=>{
+    const pts = s.data.map((v,i)=>[X(i),Y(v)]);
+    if(o.area!==false && S.length===1){
+      const d = `M${pts[0][0]},${PT+ph} ` + pts.map(p=>`L${p[0]},${p[1]}`).join(" ") + ` L${pts[n-1][0]},${PT+ph} Z`;
+      svg.appendChild(sv("path",{d,fill:s.color,opacity:.10}));
+    }
+    svg.appendChild(sv("path",{d:"M"+pts.map(p=>p.join(",")).join(" L"),fill:"none",stroke:s.color,"stroke-width":2,"stroke-linejoin":"round","stroke-linecap":"round"}));
+    const last = pts[n-1];
+    svg.appendChild(sv("circle",{cx:last[0],cy:last[1],r:5.5,fill:cssVar("--surface-1")}));
+    svg.appendChild(sv("circle",{cx:last[0],cy:last[1],r:4,fill:s.color}));
+  });
+
+  // 端點直接標值（單一數列）
+  if(S.length===1){
+    const s=S[0], last=[X(n-1),Y(s.data[n-1])];
+    const ly = last[1]-PT < 16 ? last[1]+17 : last[1]-11;
+    const t=sv("text",{x:last[0]-2,y:ly,"text-anchor":"end","font-size":10.5,"font-weight":620,fill:cssVar("--text-1")});
+    t.textContent=(o.prefix||"")+fmtC(s.data[n-1])+(o.suffix||""); svg.appendChild(t);
+  }
+
+  const step = n>9?Math.ceil(n/5):1;
+  o.cats.forEach((c,i)=>{
+    if(i%step===0||i===n-1){
+      const t=sv("text",{x:X(i),y:H-7,"text-anchor":i===0?"start":i===n-1?"end":"middle","font-size":9.5,fill:cssVar("--muted")});
+      t.textContent=c; svg.appendChild(t);
+    }
+  });
+
+  const ov = sv("rect",{x:PL-6,y:PT,width:pw+12,height:ph,fill:"transparent"});
+  ov.addEventListener("pointermove",ev=>{
+    const b=svg.getBoundingClientRect(), sc=W/b.width;
+    const px=(ev.clientX-b.left)*sc;
+    let i=Math.round((px-PL)/(pw/(n-1||1))); i=Math.max(0,Math.min(n-1,i));
+    cross.setAttribute("x1",X(i)); cross.setAttribute("x2",X(i)); cross.setAttribute("opacity",1);
+    showTip(b.left + X(i)/sc, b.top + PT/sc + 10, o.cats[i],
+      S.map(s=>({c:s.color,k:s.name,v:(o.prefix||"")+fmtC(s.data[i])+(o.suffix||"")})));
+  });
+  ov.addEventListener("pointerleave",()=>{cross.setAttribute("opacity",0);hideTip();});
+  svg.appendChild(ov);
+  host.appendChild(svg);
+}
+
+/* ============================================================
+   圖表：橫向長條（排行用，值標在尾端）
+   ============================================================ */
+function hbarChart(host,o){
+  host.innerHTML="";
+  const W=host.clientWidth||320;
+  const items=o.items, rowH=34, H=items.length*rowH+6;
+  const max=Math.max(...items.map(d=>d.v),1);
+  const valW = o.prefix ? 88 : 64, pw = W-valW;
+  const svg=sv("svg",{viewBox:`0 0 ${W} ${H}`,height:H,role:"img","aria-label":o.aria||"排行長條圖"});
+  items.forEach((d,i)=>{
+    const yTop=i*rowH;
+    const t=sv("text",{x:0,y:yTop+12,"font-size":11.5,fill:cssVar("--text-2")});
+    t.textContent=d.n; svg.appendChild(t);
+    const bh=10, by=yTop+18;
+    svg.appendChild(sv("rect",{x:0,y:by,width:pw,height:bh,rx:5,fill:cssVar("--wash")}));
+    const w=Math.max(3,pw*d.v/max);
+    const p=sv("path",{d:roundRightPath(0,by,w,bh,4),fill:o.color||cssVar("--s1")});
+    svg.appendChild(p);
+    const vt=sv("text",{x:W,y:by+9,"text-anchor":"end","font-size":11.5,"font-weight":620,fill:cssVar("--text-1")});
+    vt.textContent=(o.prefix||"")+fmtC(d.v)+(o.suffix||""); svg.appendChild(vt);
+    const hit=sv("rect",{x:0,y:yTop,width:W,height:rowH,fill:"transparent"});
+    hit.addEventListener("pointerenter",()=>{
+      const b=hit.getBoundingClientRect();
+      const rows=[{c:o.color||cssVar("--s1"),k:o.metric||"數值",v:(o.prefix||"")+fmtN(d.v)+(o.suffix||"")}];
+      if(d.q!=null) rows.push({k:o.qLabel||"件數",v:fmtN(d.q)+(o.qUnit||"")});
+      if(o.share) rows.push({k:"佔比",v:(d.v/sum(items.map(x=>x.v))*100).toFixed(1)+"%"});
+      showTip(b.left+b.width/2,b.top+14,d.n,rows);
+    });
+    hit.addEventListener("pointerleave",hideTip);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+
+/* ============================================================
+   卡片組裝
+   ============================================================ */
+const charts = []; // {host, fn, opts} 供 resize 重繪
+
+function chartCard(title, sub, opts, renderer, tableData){
+  const card = el("div","card");
+  const h = el("h3","",`<span>${title}</span><span class="sp"></span>`);
+  const btn = el("button","tablebtn","表格"); btn.setAttribute("aria-pressed","false");
+  h.appendChild(btn); card.appendChild(h);
+  if(sub) card.appendChild(el("p","sub",sub));
+  if(opts.series && opts.series.length>1){
+    const lg=el("ul","legend");
+    opts.series.forEach(s=>lg.appendChild(el("li","",`<span class="sw ${opts.lineLegend?"line":""}" style="background:${s.color}"></span>${s.name}`)));
+    card.appendChild(lg);
+  }
+  const host = el("div","chart"); card.appendChild(host);
+  const tbl = el("div"); tbl.hidden = true; card.appendChild(tbl);
+  btn.onclick = ()=>{ const on = tbl.hidden; tbl.hidden=!on; btn.setAttribute("aria-pressed",String(on)); host.hidden=on; if(!on) redraw(); };
+  tbl.appendChild(buildTable(tableData));
+  charts.push({host, renderer, opts});
+  return card;
+}
+function buildTable(td){
+  const t = el("table","dv");
+  t.innerHTML = `<thead><tr>${td.head.map(h=>`<th>${h}</th>`).join("")}</tr></thead>`+
+    `<tbody>${td.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
+  return t;
+}
+function tile(lab,val,extra,color,unit){
+  const t=el("div","tile");
+  t.innerHTML = `<div class="lab">${color?`<span class="dot" style="background:${color}"></span>`:""}${lab}</div>`+
+    `<div class="val">${unit?`<small>${unit}</small>`:""}${val}</div>`+
+    (extra?`<div class="d">${extra}</div>`:"");
+  return t;
+}
+function redraw(){ charts.forEach(c=>{ if(!c.host.hidden) c.renderer(c.host,c.opts); }); }
+
+/* ============================================================
+   財務頁
+   ============================================================ */
+let finPeriod = "month";
+
+function viewFinance(){
+  charts.length=0;
+  const v = $("#view"); v.innerHTML="";
+  const f = DB.finance[finPeriod];
+  const tIn=sum(f.in), tOut=sum(f.out);
+  const cIn=f.in.at(-1), cOut=f.out.at(-1), cNet=cIn-cOut;
+  const pIn=f.in.at(-2), pOut=f.out.at(-2), pNet=pIn-pOut;
+  const netArr = f.in.map((x,i)=>x-f.out[i]);
+
+  // 期間切換
+  const segWrap = el("div","");
+  const seg = el("div","seg");
+  [["day","日"],["month","月"],["quarter","季"]].forEach(([k,l])=>{
+    const b=el("button","",l); b.setAttribute("aria-selected",String(k===finPeriod));
+    b.onclick=()=>{finPeriod=k; viewFinance();};
+    seg.appendChild(b);
+  });
+  segWrap.appendChild(seg); v.appendChild(segWrap);
+
+  // Hero：損益（本期）
+  const hero=el("div","card hero");
+  hero.innerHTML =
+    `<div class="lab">本${f.unit}損益</div>`+
+    `<div class="val"><span class="cur">NT$</span>${fmtC(cNet)}</div>`+
+    `<div class="row">${deltaHTML(cNet,pNet,f.prevLabel)}</div>`;
+  v.appendChild(hero);
+
+  // 入賬 / 支出
+  const tl=el("div","tiles");
+  tl.appendChild(tile(`本${f.unit}入賬`, fmtC(cIn), deltaHTML(cIn,pIn,f.prevLabel), "var(--s1)", "NT$"));
+  tl.appendChild(tile(`本${f.unit}支出`, fmtC(cOut), deltaHTML(cOut,pOut,f.prevLabel,false), "var(--s2)", "NT$"));
+  v.appendChild(tl);
+
+  // 入賬 vs 支出
+  v.appendChild(chartCard(`入賬 vs 支出`, `${f.note}．單位 NT$`, {
+    cats:f.cats, prefix:"NT$ ",
+    series:[{name:"入賬",color:cssVar("--s1"),data:f.in},{name:"支出",color:cssVar("--s2"),data:f.out}]
+  }, columnChart, {
+    head:[f.unit,"入賬","支出","損益"],
+    rows:f.cats.map((c,i)=>[c,fmtN(f.in[i]),fmtN(f.out[i]),fmtN(netArr[i])])
+  }));
+
+  // 損益趨勢
+  v.appendChild(chartCard("損益趨勢", `${f.note}．入賬減支出`, {
+    cats:f.cats, prefix:"NT$ ", lineLegend:true,
+    series:[{name:"損益",color:cssVar("--s3"),data:netArr}]
+  }, lineChart, {
+    head:[f.unit,"損益","利潤率"],
+    rows:f.cats.map((c,i)=>[c,fmtN(netArr[i]),(netArr[i]/f.in[i]*100).toFixed(1)+"%"])
+  }));
+
+  // 累計摘要
+  const sm=el("div","card");
+  sm.innerHTML=`<h3>${f.note}累計</h3><p class="sub">期間合計與利潤率</p>`;
+  const t3=el("div","tiles t3");
+  t3.appendChild(tile("入賬合計",fmtC(tIn),"","var(--s1)","NT$"));
+  t3.appendChild(tile("支出合計",fmtC(tOut),"","var(--s2)","NT$"));
+  t3.appendChild(tile("損益合計",fmtC(tIn-tOut),`利潤率 <b>${((tIn-tOut)/tIn*100).toFixed(1)}%</b>`,"var(--s3)","NT$"));
+  sm.appendChild(t3); v.appendChild(sm);
+
+  // 三個錢包
+  v.appendChild(walletCard(DB.wallets.twd));
+  v.appendChild(walletCard(DB.wallets.cny));
+  v.appendChild(walletCard(DB.wallets.corp));
+
+  redraw();
+}
+
+function walletCard(w){
+  const c=el("div","card wallet");
+  c.innerHTML = `<div class="top"><span class="badge">${w.code}</span>`+
+    `<div style="flex:1"><div class="bal">${w.name}．目前餘額</div>`+
+    `<div class="balv">${w.cur} ${fmtN(w.balance)}</div></div></div>`;
+  const row=el("div","wrow");
+  w.rows.forEach(r=>{
+    const d=el("div");
+    d.innerHTML=`<div class="k"><span class="dot" style="width:8px;height:8px;border-radius:99px;display:inline-block;background:${r.c}"></span>${r.k}</div>`+
+      `<div class="v">${w.cur} ${fmtC(r.v)}</div>`;
+    row.appendChild(d);
+  });
+  c.appendChild(row);
+  const tot=sum(w.rows.map(r=>r.v));
+  const mini=el("div","bar-mini");
+  w.rows.forEach(r=>{ const i=el("i"); i.style.flex=String(r.v/tot); i.style.background=r.c; mini.appendChild(i); });
+  c.appendChild(mini);
+
+  const det=el("details"); det.style.marginTop="12px";
+  det.innerHTML=`<summary style="cursor:pointer;font-size:12px;color:var(--text-2);list-style:none">近期異動 ▾</summary>`;
+  const ul=el("ul","list"); ul.style.marginTop="6px";
+  w.recent.forEach(r=>{
+    const li=el("li");
+    li.innerHTML=`<span class="sm">${r.d}</span><span class="nm">${r.t}</span>`+
+      `<span class="pill">${r.k}</span>`+
+      `<span class="num" style="color:${r.a>=0?"var(--good)":"var(--text-1)"}">${r.a>=0?"+":"−"}${fmtN(Math.abs(r.a))}</span>`;
+    ul.appendChild(li);
+  });
+  det.appendChild(ul); c.appendChild(det);
+  return c;
+}
+
+/* ============================================================
+   數據頁
+   ============================================================ */
+let dataTab = "sales";
+
+function viewData(){
+  charts.length=0;
+  const v=$("#view"); v.innerHTML="";
+  const seg=el("div","seg");
+  [["sales","銷售"],["live","直播"],["buyers","買家"],["products","商品"]].forEach(([k,l])=>{
+    const b=el("button","",l); b.setAttribute("aria-selected",String(k===dataTab));
+    b.onclick=()=>{dataTab=k; viewData();};
+    seg.appendChild(b);
+  });
+  v.appendChild(seg);
+
+  ({sales:secSales, live:secLive, buyers:secBuyers, products:secProducts})[dataTab](v);
+  redraw();
+}
+
+function secSales(v){
+  const s=DB.sales;
+  const hero=el("div","card hero");
+  hero.innerHTML=`<div class="lab">本月成交金額 GMV</div>`+
+    `<div class="val"><span class="cur">NT$</span>${fmtC(s.gmv)}</div>`+
+    `<div class="row">${deltaHTML(s.gmv,s.gmvPrev,"上月")}</div>`;
+  v.appendChild(hero);
+
+  const t=el("div","tiles t3");
+  t.appendChild(tile("訂單數",fmtN(s.orders),deltaHTML(s.orders,s.ordersPrev,"上月")));
+  t.appendChild(tile("客單價",fmtN(s.aov),deltaHTML(s.aov,s.aovPrev,"上月"),null,"NT$"));
+  t.appendChild(tile("退貨率",s.refund+"%",deltaHTML(s.refund,s.refundPrev,"上月",false)));
+  v.appendChild(t);
+
+  v.appendChild(chartCard("每日成交金額","近 14 日．單位 千元",{
+    cats:s.trendCats, suffix:" 千", lineLegend:true,
+    series:[{name:"成交金額",color:cssVar("--s1"),data:s.trend}]
+  }, lineChart, {head:["日期","成交金額(千)"],rows:s.trendCats.map((c,i)=>[c,fmtN(s.trend[i])])}));
+
+  const tot=sum(s.channels.map(c=>c.v));
+  v.appendChild(chartCard("通路佔比","本月成交金額來源",{
+    items:s.channels, color:cssVar("--s1"), prefix:"NT$ ", metric:"成交金額", share:true
+  }, hbarChart, {head:["通路","成交金額","佔比"],rows:s.channels.map(c=>[c.n,fmtN(c.v),(c.v/tot*100).toFixed(1)+"%"])}));
+}
+
+let liveMonth = "7月";
+let liveHost  = null;
+
+const fmtDur = s => `${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
+
+function secLive(v){
+  const L=DB.live, MS=L.months;
+  const M=L.monthly[liveMonth], iM=MS.indexOf(liveMonth), P=iM>0?L.monthly[MS[iM-1]]:null;
+
+  // 月份切換
+  const chips=el("div","chips");
+  MS.forEach(m=>{const b=el("button","",m);b.setAttribute("aria-selected",String(m===liveMonth));
+    b.onclick=()=>{liveMonth=m;viewData();};chips.appendChild(b);});
+  v.appendChild(chips);
+  requestAnimationFrame(()=>{const s=chips.querySelector('[aria-selected="true"]'); if(s) s.scrollIntoView({block:"nearest",inline:"center"});});
+
+  // Hero：該月直播銷售額
+  const hero=el("div","card hero");
+  hero.innerHTML=`<div class="lab">${liveMonth}直播銷售額</div>`+
+    `<div class="val"><span class="cur">NT$</span>${fmtC(M.sales)}</div>`+
+    `<div class="row">${P?deltaHTML(M.sales,P.sales,MS[iM-1]):""}</div>`;
+  v.appendChild(hero);
+
+  const t=el("div","tiles t3");
+  t.appendChild(tile("開播場次",M.n+" 場",P?deltaHTML(M.n,P.n,MS[iM-1]):""));
+  t.appendChild(tile("平均每場",fmtC(M.avg),P?deltaHTML(M.avg,P.avg,MS[iM-1]):"",null,"NT$"));
+  t.appendChild(tile("每小時產值",fmtC(M.perHr),P?deltaHTML(M.perHr,P.perHr,MS[iM-1]):"",null,"NT$"));
+  v.appendChild(t);
+  const t2=el("div","tiles t3");
+  t2.appendChild(tile("觀看人次",fmtC(M.views),P&&P.views?deltaHTML(M.views,P.views,MS[iM-1]):""));
+  t2.appendChild(tile("下單轉換率",M.cvr?M.cvr+"%":"—",M.cvr&&P&&P.cvr?deltaHTML(M.cvr,P.cvr,MS[iM-1]):""));
+  t2.appendChild(tile("廣告 ROI",M.roi?M.roi+"x":"—",M.roi&&P&&P.roi?deltaHTML(M.roi,P.roi,MS[iM-1]):""));
+  v.appendChild(t2);
+  const t3=el("div","tiles t3");
+  t3.appendChild(tile("平均停留",fmtDur(M.stay)));
+  t3.appendChild(tile("客單價",fmtN(M.aov),"",null,"NT$"));
+  t3.appendChild(tile("直播時數",M.hours+" 小時"));
+  v.appendChild(t3);
+
+  // 月度銷售額
+  v.appendChild(chartCard("月度直播銷售額","1–7 月．單位 NT$",{
+    cats:MS, prefix:"NT$ ",
+    series:[{name:"銷售額",color:cssVar("--s1"),data:MS.map(m=>L.monthly[m].sales)}]
+  }, columnChart, {head:["月份","場次","銷售額","平均每場","每小時產值"],
+    rows:MS.map(m=>[m,L.monthly[m].n,fmtN(L.monthly[m].sales),fmtN(L.monthly[m].avg),fmtN(L.monthly[m].perHr)])}));
+
+  // 場次 vs 平均每場
+  v.appendChild(chartCard("開播場次","1–7 月．單位 場",{
+    cats:MS,
+    series:[{name:"場次",color:cssVar("--s2"),data:MS.map(m=>L.monthly[m].n)}]
+  }, columnChart, {head:["月份","場次","平均每場"],rows:MS.map(m=>[m,L.monthly[m].n,fmtN(L.monthly[m].avg)])}));
+  v.appendChild(chartCard("平均每場銷售額","單位 NT$",{
+    cats:MS, prefix:"NT$ ", lineLegend:true,
+    series:[{name:"平均每場",color:cssVar("--s3"),data:MS.map(m=>L.monthly[m].avg)}]
+  }, lineChart, {head:["月份","平均每場","客單價"],rows:MS.map(m=>[m,fmtN(L.monthly[m].avg),fmtN(L.monthly[m].aov)])}));
+
+  // ===== 主播 =====
+  const names=Object.keys(L.hosts);
+  if(!liveHost || !L.hosts[liveHost]) liveHost = names[0];
+
+  v.appendChild(chartCard("主播銷售排行","3–7 月累計．單位 NT$",{
+    items:names.map(n=>({n, v:L.hosts[n].sales, q:L.hosts[n].n})),
+    color:cssVar("--s1"), prefix:"NT$ ", metric:"累計銷售額", qLabel:"場次", qUnit:" 場", share:true
+  }, hbarChart, {head:["主播","場次","累計銷售額","平均每場","每小時產值"],
+    rows:names.map(n=>[n,L.hosts[n].n,fmtN(L.hosts[n].sales),fmtN(L.hosts[n].avg),fmtN(L.hosts[n].perHr)])}));
+
+  v.appendChild(hostCard());
+
+  // 中控排行
+  const cn=Object.keys(L.ctrls);
+  v.appendChild(chartCard("中控銷售排行","1–7 月累計．單位 NT$",{
+    items:cn.map(n=>({n, v:L.ctrls[n].sales, q:L.ctrls[n].n})),
+    color:cssVar("--s3"), prefix:"NT$ ", metric:"累計銷售額", qLabel:"場次", qUnit:" 場", share:true
+  }, hbarChart, {head:["中控","場次","累計銷售額","平均每場"],
+    rows:cn.map(n=>[n,L.ctrls[n].n,fmtN(L.ctrls[n].sales),fmtN(L.ctrls[n].avg)])}));
+
+  // 單場 TOP
+  const c=el("div","card");
+  c.innerHTML=`<h3>單場銷售排行</h3><p class="sub">全期間 TOP 10</p>`;
+  const ul=el("ul","list");
+  L.top.slice(0,10).forEach((r,i)=>{
+    const li=el("li");
+    li.innerHTML=`<span class="rank">${i+1}</span>`+
+      `<span class="nm">${r.m} ${r.sid}<br><span style="font-size:11px;color:var(--muted)">主播 ${r.host}．中控 ${r.ctrl||"—"}．訂單 ${fmtN(r.orders)}</span></span>`+
+      `<span class="num">${fmtC(r.sales)}</span>`;
+    ul.appendChild(li);
+  });
+  c.appendChild(ul); v.appendChild(c);
+
+  const note=el("p","src",
+    `資料來源：<a href="https://docs.google.com/spreadsheets/d/13-FWJbDjUXmcvTSBRCfk3-OBv3NuUCtlqsX5gqawNu8/edit" target="_blank" rel="noopener">Google 試算表「直播數據」</a>（1–7 月分頁，共 319 場）。`+
+    `主播／中控欄位自 3 月起才有填寫，故主播分析僅涵蓋 3–7 月。`);
+  v.appendChild(note);
+}
+
+function hostCard(){
+  const L=DB.live, h=L.hosts[liveHost], names=Object.keys(L.hosts);
+  const c=el("div","card");
+  c.innerHTML=`<h3>主播個人表現</h3><p class="sub">點主播名稱切換．3–7 月累計</p>`;
+  const chips=el("div","chips");
+  names.forEach(n=>{const b=el("button","",n);b.setAttribute("aria-selected",String(n===liveHost));
+    b.onclick=()=>{liveHost=n;viewData();};chips.appendChild(b);});
+  c.appendChild(chips);
+  requestAnimationFrame(()=>{const s=chips.querySelector('[aria-selected="true"]'); if(s) s.scrollIntoView({block:"nearest",inline:"center"});});
+
+  const kv=el("div","kv");
+  const rows=[
+    ["開播場次", h.n+" 場"],
+    ["累計銷售", `<small>NT$</small>${fmtC(h.sales)}`],
+    ["平均每場", `<small>NT$</small>${fmtC(h.avg)}`],
+    ["每小時產值", `<small>NT$</small>${fmtC(h.perHr)}`],
+    ["下單轉換率", h.cvr?h.cvr+"%":"—"],
+    ["客單價", `<small>NT$</small>${fmtN(h.aov)}`],
+    ["廣告 ROI", h.roi?h.roi+"x":"—"],
+    ["平均停留", fmtDur(h.stay)],
+    ["直播時數", h.hours+" 小時"]
+  ];
+  rows.forEach(([k,val])=>{const d=el("div");d.innerHTML=`<div class="k">${k}</div><div class="v">${val}</div>`;kv.appendChild(d);});
+  c.appendChild(kv);
+
+  const hm=Object.keys(h.byMonth);
+  const host=el("div","chart"); host.style.marginTop="14px";
+  c.appendChild(el("p","sub",`月度銷售額（${hm[0]}–${hm[hm.length-1]}）`)).style.marginTop="14px";
+  c.appendChild(host);
+  charts.push({host, renderer:columnChart, opts:{
+    cats:hm, prefix:"NT$ ", height:150,
+    series:[{name:liveHost+" 銷售額",color:cssVar("--s1"),data:hm.map(m=>h.byMonth[m].sales)}]
+  }});
+
+  const b=el("p","src");
+  b.innerHTML=`最佳單場：<b style="color:var(--text-1)">${h.best.m} ${h.best.sid}</b>，銷售 NT$ ${fmtN(h.best.sales)}`;
+  c.appendChild(b);
+  return c;
+}
+
+function secBuyers(v){
+  const B=DB.buyers;
+  const hero=el("div","card hero");
+  hero.innerHTML=`<div class="lab">本月下單買家數</div>`+
+    `<div class="val">${fmtN(B.total)}</div>`+
+    `<div class="row">${deltaHTML(B.total,B.totalPrev,"上月")}</div>`;
+  v.appendChild(hero);
+
+  const t=el("div","tiles t3");
+  t.appendChild(tile("回購率",B.repeatRate+"%","新客 "+B.newRate+"%","var(--s3)"));
+  t.appendChild(tile("客單價",fmtN(B.aov),"",null,"NT$"));
+  t.appendChild(tile("回購週期",B.repeatCycle+" 天","平均間隔"));
+  v.appendChild(t);
+
+  v.appendChild(chartCard("新客 vs 回購","近 5 個月．人數",{
+    cats:B.mix.cats, stacked:true,
+    series:[{name:"新客",color:cssVar("--s2"),data:B.mix.neu},{name:"回購",color:cssVar("--s1"),data:B.mix.old}]
+  }, columnChart, {head:["月份","新客","回購","回購佔比"],
+    rows:B.mix.cats.map((c,i)=>[c,fmtN(B.mix.neu[i]),fmtN(B.mix.old[i]),
+      (B.mix.old[i]/(B.mix.old[i]+B.mix.neu[i])*100).toFixed(1)+"%"])}));
+
+  v.appendChild(chartCard("年齡分布","本月下單買家．人數",{
+    items:B.age, color:cssVar("--s1"), metric:"買家數", share:true
+  }, hbarChart, {head:["年齡層","人數","佔比"],
+    rows:B.age.map(a=>[a.n,fmtN(a.v),(a.v/sum(B.age.map(x=>x.v))*100).toFixed(1)+"%"])}));
+
+  v.appendChild(chartCard("客單價分布","本月訂單．筆數",{
+    items:B.spend, color:cssVar("--s3"), metric:"訂單數", share:true
+  }, hbarChart, {head:["金額級距","訂單數","佔比"],
+    rows:B.spend.map(a=>[a.n,fmtN(a.v),(a.v/sum(B.spend.map(x=>x.v))*100).toFixed(1)+"%"])}));
+}
+
+function secProducts(v){
+  const P=DB.products;
+  const hero=el("div","card hero");
+  hero.innerHTML=`<div class="lab">庫存市值</div>`+
+    `<div class="val"><span class="cur">NT$</span>${fmtC(P.stockValue)}</div>`+
+    `<div class="row"><span class="delta down">滯銷 ${fmtC(P.deadStock)}</span> <span class="n">佔庫存 ${(P.deadStock/P.stockValue*100).toFixed(1)}%</span></div>`;
+  v.appendChild(hero);
+
+  const t=el("div","tiles");
+  t.appendChild(tile("在售 SKU",fmtN(P.skuActive),deltaHTML(P.skuActive,P.skuActivePrev,"上月")));
+  t.appendChild(tile("庫存週轉",P.turnover+" 次",deltaHTML(P.turnover,P.turnoverPrev,"上月")));
+  v.appendChild(t);
+
+  v.appendChild(chartCard("熱銷排行","本月成交金額 TOP 6",{
+    items:P.top, color:cssVar("--s1"), prefix:"NT$ ", metric:"成交金額", share:true
+  }, hbarChart, {head:["商品","成交金額","件數"],rows:P.top.map(p=>[p.n,fmtN(p.v),fmtN(p.q)])}));
+
+  const c=el("div","card");
+  c.innerHTML=`<h3>滯銷提醒</h3><p class="sub">超過 90 天未動銷．依庫存金額排序</p>`;
+  const ul=el("ul","list");
+  P.slow.forEach(s=>{
+    const li=el("li");
+    li.innerHTML=`<span class="nm">${s.n}</span><span class="pill">${s.d} 天</span>`+
+      `<span class="num">NT$ ${fmtC(s.v)}</span>`;
+    ul.appendChild(li);
+  });
+  c.appendChild(ul); v.appendChild(c);
+}
+
+/* ============================================================
+   啟動
+   ============================================================ */
+let tab="fin";
+function render(){ (tab==="fin"?viewFinance:viewData)(); window.scrollTo({top:0}); }
+document.querySelectorAll("nav.tabbar button").forEach(b=>{
+  b.onclick=()=>{
+    tab=b.dataset.tab;
+    document.querySelectorAll("nav.tabbar button").forEach(x=>x.setAttribute("aria-selected",String(x===b)));
+    render();
+  };
+});
+$("#themeBtn").onclick=()=>{
+  const cur=document.documentElement.getAttribute("data-theme");
+  document.documentElement.setAttribute("data-theme", cur==="dark"?"light":"dark");
+  render();
+};
+$("#updated").textContent = "資料更新於 "+DB.updated+"　·　直播數據為實際資料";
+
+let rt;
+window.addEventListener("resize",()=>{clearTimeout(rt); rt=setTimeout(redraw,120);});
+render();
+</script>
+</body>
+</html>
