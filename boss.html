@@ -221,12 +221,16 @@ nav.tabbar span{font-size:10.5px;font-weight:600;letter-spacing:.04em}
 
 <main id="view"></main>
 
-<p class="note">直播數據：已串接 Google 試算表「直播數據」真實資料<br>財務／銷售／買家／商品：打樣假資料，待接來源</p>
+<p class="note">財務・直播：Google 試算表自動更新　·　成本：即時試算<br>銷售・買家・商品：蝦皮賣家中心匯出　·　全程本地更新</p>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="主分頁">
   <div class="in">
-    <button role="tab" data-tab="fin" aria-selected="true">
+    <button role="tab" data-tab="home" aria-selected="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg>
+      <span>總覽</span>
+    </button>
+    <button role="tab" data-tab="fin" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17V9m5 8V5m5 12v-6m5 6V8"/><path d="M2.5 21h19"/></svg>
       <span>財務</span>
     </button>
@@ -234,11 +238,16 @@ nav.tabbar span{font-size:10.5px;font-weight:600;letter-spacing:.04em}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9v9z"/><path d="M12 3a9 9 0 0 1 9 9h-9z" opacity=".45"/></svg>
       <span>數據</span>
     </button>
+    <button role="tab" data-tab="cost" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M8 6.5h8"/><path d="M8 11h2m3 0h3M8 15h2m3 0h3M8 19h2"/></svg>
+      <span>成本</span>
+    </button>
   </div>
 </nav>
 
 <div id="tip" role="status" aria-live="off"></div>
 
+<script src="data.js?v=20260806155719"></script>
 <script>
 "use strict";
 /* ============================================================
@@ -246,145 +255,7 @@ nav.tabbar span{font-size:10.5px;font-weight:600;letter-spacing:.04em}
    所有數字皆為假資料，集中在 DB 物件，之後接真實資料只需替換 DB。
    ============================================================ */
 
-const DB = {
-  updated: "2026/07/26 09:40",
-
-  /* ---------- 財務．總表 ---------- */
-  finance: {
-    day: {
-      unit: "日", note: "近 14 日",
-      cats: ["7/13","7/14","7/15","7/16","7/17","7/18","7/19","7/20","7/21","7/22","7/23","7/24","7/25","7/26"],
-      in:  [318000,286000,402000,355000,610000,528000,441000,372000,309000,468000,721000,595000,512000,486000],
-      out: [231000,204000,268000,249000,372000,331000,296000,258000,224000,301000,428000,362000,330000,318000],
-      prevLabel: "昨日"
-    },
-    month: {
-      unit: "月", note: "近 12 個月",
-      cats: ["8月","9月","10月","11月","12月","1月","2月","3月","4月","5月","6月","7月"],
-      in:  [8420000,9110000,10240000,12880000,15320000,11260000,8940000,10480000,11720000,12960000,13840000,12310000],
-      out: [6180000,6620000,7310000,8940000,10480000,8020000,6540000,7420000,8210000,8980000,9460000,8360000],
-      prevLabel: "上月"
-    },
-    quarter: {
-      unit: "季", note: "近 8 季",
-      cats: ["24Q4","25Q1","25Q2","25Q3","25Q4","26Q1","26Q2","26Q3"],
-      in:  [24800000,21400000,26300000,27700000,38440000,30680000,38520000,12310000],
-      out: [18200000,15900000,19100000,20200000,26400000,21980000,26650000,8360000],
-      prevLabel: "上季"
-    }
-  },
-
-  /* ---------- 財務．錢包 ---------- */
-  wallets: {
-    twd: {
-      name:"台幣錢包", code:"TWD", cur:"NT$", balance: 4286500,
-      rows:[
-        {k:"入賬", v: 12310000, c:"var(--s1)"},
-        {k:"支出", v: 8360000,  c:"var(--s2)"},
-        {k:"下發", v: 2140000,  c:"var(--s4)"}
-      ],
-      recent:[
-        {d:"07/25", t:"蝦皮撥款結算", a: 862400, k:"入賬"},
-        {d:"07/24", t:"下發｜主播抽成 6 位", a:-318000, k:"下發"},
-        {d:"07/23", t:"廣告投放扣款", a:-146200, k:"支出"},
-        {d:"07/22", t:"蝦皮撥款結算", a: 704900, k:"入賬"},
-        {d:"07/21", t:"物流月結", a:-238600, k:"支出"}
-      ]
-    },
-    cny: {
-      name:"人民幣錢包", code:"CNY", cur:"¥", balance: 186400,
-      rows:[
-        {k:"入資", v: 620000, c:"var(--s1)"},
-        {k:"支出", v: 548300, c:"var(--s2)"},
-        {k:"退款", v: 42800,  c:"var(--s4)"}
-      ],
-      recent:[
-        {d:"07/24", t:"入資｜台幣換匯撥入", a: 200000, k:"入資"},
-        {d:"07/23", t:"供應商貨款｜義烏", a:-168400, k:"支出"},
-        {d:"07/22", t:"退款｜瑕疵補償", a: 18600, k:"退款"},
-        {d:"07/20", t:"供應商貨款｜廣州", a:-142900, k:"支出"},
-        {d:"07/18", t:"打樣費", a:-26800, k:"支出"}
-      ]
-    },
-    corp: {
-      name:"公司錢包", code:"CORP", cur:"NT$", balance: 9640000,
-      rows:[
-        {k:"收入", v: 12310000, c:"var(--s1)"},
-        {k:"支出", v: 10500000, c:"var(--s2)"}
-      ],
-      recent:[
-        {d:"07/25", t:"營業收入轉入", a: 862400, k:"收入"},
-        {d:"07/20", t:"薪資發放", a:-1284000, k:"支出"},
-        {d:"07/15", t:"辦公室租金", a:-96000, k:"支出"},
-        {d:"07/10", t:"稅務預繳", a:-412000, k:"支出"},
-        {d:"07/05", t:"營業收入轉入", a: 1148600, k:"收入"}
-      ]
-    }
-  },
-
-  /* ---------- 數據．銷售 ---------- */
-  sales: {
-    gmv: 12310000, gmvPrev: 13840000,
-    orders: 8642, ordersPrev: 9310,
-    aov: 1424, aovPrev: 1487,
-    refund: 3.8, refundPrev: 4.6,
-    trendCats: ["7/13","7/14","7/15","7/16","7/17","7/18","7/19","7/20","7/21","7/22","7/23","7/24","7/25","7/26"],
-    trend:     [318,286,402,355,610,528,441,372,309,468,721,595,512,486],
-    channels: [
-      {n:"蝦皮直播", v: 7140000},
-      {n:"蝦皮商城", v: 3280000},
-      {n:"官網",     v: 1220000},
-      {n:"其他通路", v: 670000}
-    ]
-  },
-
-  /* ---------- 數據．直播（來源：Google 試算表「直播數據」） ---------- */
-  live: {"source":"Google 試算表「直播數據」","months":["1月","2月","3月","4月","5月","6月","7月"],"monthly":{"1月":{"n":34,"sales":627484,"hours":97.4,"views":1034727,"orders":1015,"cart":5776,"ad":0,"avg":18455,"perHr":6443,"aov":618,"cvr":0,"roi":null,"stay":93},"2月":{"n":14,"sales":282971,"hours":37.1,"views":609303,"orders":586,"cart":3743,"ad":0,"avg":20212,"perHr":7627,"aov":483,"cvr":0,"roi":null,"stay":130},"3月":{"n":39,"sales":279198,"hours":87.5,"views":445956,"orders":444,"cart":2973,"ad":34570,"avg":7159,"perHr":3192,"aov":629,"cvr":2.88,"roi":8.1,"stay":122},"4月":{"n":76,"sales":921817,"hours":141.2,"views":935951,"orders":966,"cart":7147,"ad":85417,"avg":12129,"perHr":6527,"aov":954,"cvr":3.62,"roi":10.8,"stay":141},"5月":{"n":55,"sales":734255,"hours":118.8,"views":812240,"orders":779,"cart":6706,"ad":89246,"avg":13350,"perHr":6179,"aov":943,"cvr":2.72,"roi":8.2,"stay":169},"6月":{"n":35,"sales":1376024,"hours":114.8,"views":1042543,"orders":1579,"cart":10437,"ad":87073,"avg":39315,"perHr":11990,"aov":871,"cvr":3.9,"roi":15.8,"stay":156},"7月":{"n":66,"sales":1290869,"hours":215.1,"views":1509072,"orders":1427,"cart":10035,"ad":96733,"avg":19559,"perHr":6000,"aov":905,"cvr":3.14,"roi":13.3,"stay":166}},"hosts":{"Naby":{"n":147,"sales":4002464,"hours":408.7,"views":3399373,"orders":4451,"cart":31644,"ad":310077,"avg":27228,"perHr":9793,"aov":899,"cvr":3.46,"roi":12.9,"stay":168,"byMonth":{"3月":{"n":22,"sales":208894,"hours":53.7,"views":314241,"orders":342,"cart":2322,"ad":22447,"avg":9495,"perHr":3889,"aov":611,"cvr":3.09,"roi":9.3,"stay":114},"4月":{"n":39,"sales":793447,"hours":81.5,"views":686354,"orders":810,"cart":5993,"ad":58789,"avg":20345,"perHr":9738,"aov":980,"cvr":3.74,"roi":13.5,"stay":131},"5月":{"n":36,"sales":691865,"hours":94.9,"views":698820,"orders":721,"cart":6275,"ad":77842,"avg":19218,"perHr":7289,"aov":960,"cvr":2.69,"roi":8.9,"stay":173},"6月":{"n":31,"sales":1369391,"hours":108.4,"views":1009936,"orders":1570,"cart":10361,"ad":87052,"avg":44174,"perHr":12636,"aov":872,"cvr":3.9,"roi":15.7,"stay":161},"7月":{"n":19,"sales":938867,"hours":70.2,"views":690022,"orders":1008,"cart":6693,"ad":63946,"avg":49414,"perHr":13372,"aov":931,"cvr":3.51,"roi":14.7,"stay":237}},"best":{"m":"6月","sid":"6/18","sales":106046}},"安琪":{"n":16,"sales":124920,"hours":51.9,"views":261849,"orders":139,"cart":1224,"ad":9859,"avg":7808,"perHr":2408,"aov":899,"cvr":2.43,"roi":12.7,"stay":97,"byMonth":{"7月":{"n":16,"sales":124920,"hours":51.9,"views":261849,"orders":139,"cart":1224,"ad":9859,"avg":7808,"perHr":2408,"aov":899,"cvr":2.43,"roi":12.7,"stay":97}},"best":{"m":"7月","sid":"7/18","sales":27328}},"番茄":{"n":17,"sales":118225,"hours":55.8,"views":311156,"orders":133,"cart":1173,"ad":11427,"avg":6954,"perHr":2120,"aov":889,"cvr":2.43,"roi":10.3,"stay":111,"byMonth":{"7月":{"n":17,"sales":118225,"hours":55.8,"views":311156,"orders":133,"cart":1173,"ad":11427,"avg":6954,"perHr":2120,"aov":889,"cvr":2.43,"roi":10.3,"stay":111}},"best":{"m":"7月","sid":"7/18","sales":24014}},"吃吃":{"n":14,"sales":108857,"hours":37.3,"views":246045,"orders":147,"cart":945,"ad":11500,"avg":7776,"perHr":2920,"aov":741,"cvr":3.8,"roi":9.5,"stay":111,"byMonth":{"7月":{"n":14,"sales":108857,"hours":37.3,"views":246045,"orders":147,"cart":945,"ad":11500,"avg":7776,"perHr":2920,"aov":741,"cvr":3.8,"roi":9.5,"stay":111}},"best":{"m":"7月","sid":"7/18","sales":30207}}},"ctrls":{"諾諾":{"n":130,"sales":3602330,"hours":364.1,"views":3044025,"orders":3899,"cart":28057,"ad":279895,"avg":27710,"perHr":9894,"aov":924,"cvr":3.42,"roi":12.9,"stay":173},"小羅":{"n":4,"sales":8680,"hours":9.5,"views":63487,"orders":14,"cart":175,"ad":1969,"avg":2170,"perHr":910,"aov":620,"cvr":1.71,"roi":4.4,"stay":72}},"top":[{"m":"6月","sid":"6/18","dur":29558,"host":"Naby","ctrl":"諾諾","sales":106046,"ad":8475,"coin":8125,"stay":12840,"views":56144,"cvr":0,"cart":761,"orders":111},{"m":"6月","sid":"6/30","dur":10529,"host":"Naby","ctrl":"諾諾","sales":98109,"ad":2653,"coin":2539,"stay":8400,"views":44269,"cvr":0,"cart":564,"orders":104},{"m":"6月","sid":"6/19","dur":28402,"host":"Naby","ctrl":"諾諾","sales":95180,"ad":5498,"coin":5308,"stay":15240,"views":48376,"cvr":0,"cart":584,"orders":117},{"m":"6月","sid":"6/24","dur":8870,"host":"Naby","ctrl":"諾諾","sales":91569,"ad":2344,"coin":2234,"stay":6840,"views":36172,"cvr":0,"cart":458,"orders":103},{"m":"7月","sid":"7/06","dur":12164,"host":"Naby","ctrl":"諾諾","sales":83007,"ad":3413,"coin":3198,"stay":9900,"views":34251,"cvr":0,"cart":486,"orders":85},{"m":"6月","sid":"6/28","dur":11508,"host":"Naby","ctrl":"諾諾","sales":81319,"ad":3051,"coin":2926,"stay":8160,"views":41296,"cvr":0,"cart":572,"orders":99},{"m":"7月","sid":"7/24","dur":16051,"host":"Naby","ctrl":"諾諾","sales":77897,"ad":3463,"coin":3343,"stay":18240,"views":32548,"cvr":0,"cart":337,"orders":58},{"m":"6月","sid":"6/20","dur":27557,"host":"Naby","ctrl":"諾諾","sales":75492,"ad":4085,"coin":3965,"stay":10200,"views":47555,"cvr":0,"cart":591,"orders":106},{"m":"6月","sid":"6/26","dur":11133,"host":"Naby","ctrl":"諾諾","sales":68736,"ad":2933,"coin":2848,"stay":7740,"views":53531,"cvr":0,"cart":480,"orders":63},{"m":"7月","sid":"7/11","dur":13141,"host":"Naby","ctrl":"諾諾","sales":65319,"ad":3344,"coin":3202,"stay":10200,"views":52884,"cvr":0,"cart":456,"orders":81},{"m":"7月","sid":"7/05","dur":13324,"host":"Naby","ctrl":"諾諾","sales":59287,"ad":3087,"coin":2952,"stay":17520,"views":38173,"cvr":0,"cart":548,"orders":72},{"m":"6月","sid":"6/18","dur":28867,"host":"Naby","ctrl":"諾諾","sales":58044,"ad":7048,"coin":6868,"stay":10620,"views":66004,"cvr":0,"cart":502,"orders":69}]},
-
-  /* ---------- 數據．買家 ---------- */
-  buyers: {
-    total: 6820, totalPrev: 6310,
-    newRate: 38, repeatRate: 62,
-    aov: 1424, repeatCycle: 41,
-    mix: {cats:["3月","4月","5月","6月","7月"], neu:[2810,2960,3120,2740,2592], old:[3240,3520,3880,4180,4228]},
-    age: [
-      {n:"25–34 歲", v: 862},
-      {n:"35–44 歲", v: 2184},
-      {n:"45–54 歲", v: 2456},
-      {n:"55 歲以上", v: 1044},
-      {n:"24 歲以下", v: 274}
-    ],
-    spend: [
-      {n:"NT$ 500 以下", v: 1180},
-      {n:"500–1,000", v: 1960},
-      {n:"1,000–2,000", v: 2240},
-      {n:"2,000–5,000", v: 1120},
-      {n:"5,000 以上", v: 320}
-    ]
-  },
-
-  /* ---------- 數據．商品 ---------- */
-  products: {
-    skuActive: 284, skuActivePrev: 262,
-    turnover: 5.2, turnoverPrev: 4.6,
-    stockValue: 3860000,
-    deadStock: 412000,
-    top: [
-      {n:"涼感親膚天絲床包四件組", v: 1842000, q: 1284},
-      {n:"石墨烯冰絲涼被", v: 1246000, q: 962},
-      {n:"日本抗菌廚房濕紙巾 x30", v: 864000, q: 3120},
-      {n:"無痕加高衣架 50入", v: 692000, q: 2410},
-      {n:"多功能折疊收納箱", v: 548000, q: 1180},
-      {n:"抗UV遮陽外套（女）", v: 486000, q: 742}
-    ],
-    slow: [
-      {n:"羊毛保暖襪 3 入", d: 148, v: 96000},
-      {n:"厚棉法蘭絨毯", d: 132, v: 142000},
-      {n:"聖誕限定禮盒", d: 121, v: 88000},
-      {n:"加厚防寒手套", d: 96, v: 86000}
-    ]
-  }
-};
+/* 資料由 data.js 提供（update.py 自動產生，勿手改） */
 
 /* ============================================================
    工具
@@ -501,6 +372,53 @@ function columnChart(host, o){
       const b = r.getBoundingClientRect();
       showTip(b.left+b.width/2, b.top+18, c, S.map(s=>({c:s.color,k:s.name,v:(o.prefix||"")+fmtC(s.data[i])+(o.suffix||"")})));
     });
+    r.addEventListener("pointerleave",hideTip);
+    hit.appendChild(r);
+  });
+  svg.appendChild(hit);
+  host.appendChild(svg);
+}
+
+/* ============================================================
+   圖表：直向長條（支援正負值，賺綠虧紅，含零基準線）
+   ============================================================ */
+function columnChartSigned(host,o){
+  host.innerHTML="";
+  const W=host.clientWidth||320, H=o.height||190;
+  const PL=o.padLeft ?? 46, PR=10, PT=16, PB=24;
+  const data=o.series[0].data, n=o.cats.length;
+  const hi=Math.max(0,...data), lo=Math.min(0,...data);
+  const top=niceMax(hi||1), bot=-niceMax(Math.abs(lo)||1);
+  const span=(top-bot)||1;
+  const pw=W-PL-PR, ph=H-PT-PB;
+  const y=v=>PT+ph*(top-v)/span;
+  const band=pw/n;
+  const svg=sv("svg",{viewBox:`0 0 ${W} ${H}`,height:H,role:"img","aria-label":o.aria||o.title||"損益長條圖"});
+
+  // y ticks：top / 0 / bot
+  [top,0,bot].forEach(v=>{
+    const yy=y(v), zero=v===0;
+    svg.appendChild(sv("line",{x1:PL,x2:W-PR,y1:yy,y2:yy,stroke:zero?cssVar("--axis"):cssVar("--grid"),"stroke-width":zero?1.2:1}));
+    const t=sv("text",{x:PL-7,y:yy+3.5,"text-anchor":"end","font-size":9.5,fill:cssVar("--muted")});
+    t.textContent=v===0?"0":fmtC(v); svg.appendChild(t);
+  });
+
+  const y0=y(0);
+  const hit=sv("g",{});
+  o.cats.forEach((c,i)=>{
+    const v=data[i], bw=Math.min(22,band-10), x=PL+band*i+(band-bw)/2;
+    const yv=y(v), color=v>=0?(o.upColor||cssVar("--s3")):(o.downColor||cssVar("--bad"));
+    const yTop=Math.min(yv,y0), h=Math.abs(yv-y0);
+    const d=v>=0?roundTopPath(x,yTop,bw,h,4):`M${x},${yTop} h${bw} v${h-4} q0,4 -4,4 h${-(bw-8)} q-4,0 -4,-4 Z`;
+    if(h>0.4) svg.appendChild(sv("path",{d,fill:color}));
+    const step=n>9?Math.ceil(n/7):1;
+    if(i%step===0||i===n-1){
+      const t=sv("text",{x:PL+band*i+band/2,y:H-7,"text-anchor":"middle","font-size":9.5,fill:cssVar("--muted")});
+      t.textContent=c; svg.appendChild(t);
+    }
+    const r=sv("rect",{x:PL+band*i,y:PT,width:band,height:ph,fill:"transparent"});
+    r.addEventListener("pointerenter",()=>{const b=r.getBoundingClientRect();
+      showTip(b.left+b.width/2,b.top+18,c,[{c:color,k:o.series[0].name,v:(o.prefix||"")+fmtC(v)+(o.suffix||"")}]);});
     r.addEventListener("pointerleave",hideTip);
     hit.appendChild(r);
   });
@@ -663,7 +581,7 @@ function viewFinance(){
   // 期間切換
   const segWrap = el("div","");
   const seg = el("div","seg");
-  [["day","日"],["month","月"],["quarter","季"]].forEach(([k,l])=>{
+  [["month","月"],["quarter","季"]].forEach(([k,l])=>{
     const b=el("button","",l); b.setAttribute("aria-selected",String(k===finPeriod));
     b.onclick=()=>{finPeriod=k; viewFinance();};
     seg.appendChild(b);
@@ -684,6 +602,25 @@ function viewFinance(){
   tl.appendChild(tile(`本${f.unit}支出`, fmtC(cOut), deltaHTML(cOut,pOut,f.prevLabel,false), "var(--s2)", "NT$"));
   v.appendChild(tl);
 
+  // 蝦皮進帳（即時金流，錢包實際淨入帳）
+  if(DB.income){
+    const I=DB.income;
+    const ic=el("div","card");
+    ic.innerHTML=`<h3>蝦皮進帳<span class="sp"></span><span class="pill">錢包淨入帳</span></h3>`+
+      `<p class="sub">錢包實際入帳（已扣成交手續費、服務費、金流費）</p>`;
+    const it=el("div","tiles t3");
+    it.appendChild(tile(`${I.monthLabel}累計`, fmtC(I.mtd), "本月淨進帳", "var(--s1)", "NT$"));
+    it.appendChild(tile("最近一日", fmtC(I.latest), I.latestDate, "var(--s3)", "NT$"));
+    it.appendChild(tile("訂單數", fmtN(I.orders), "最新一批"));
+    ic.appendChild(it);
+    v.appendChild(ic);
+    if(I.trendCats&&I.trendCats.length>1)
+      v.appendChild(chartCard("每日進帳","錢包入帳金額．單位 NT$",{
+        cats:I.trendCats, prefix:"NT$ ",
+        series:[{name:"進帳",color:cssVar("--s1"),data:I.trend}]
+      }, columnChart, {head:["日期","進帳"],rows:I.trendCats.map((c,i)=>[c,fmtN(I.trend[i])])}));
+  }
+
   // 入賬 vs 支出
   v.appendChild(chartCard(`入賬 vs 支出`, `${f.note}．單位 NT$`, {
     cats:f.cats, prefix:"NT$ ",
@@ -693,13 +630,13 @@ function viewFinance(){
     rows:f.cats.map((c,i)=>[c,fmtN(f.in[i]),fmtN(f.out[i]),fmtN(netArr[i])])
   }));
 
-  // 損益趨勢
-  v.appendChild(chartCard("損益趨勢", `${f.note}．入賬減支出`, {
-    cats:f.cats, prefix:"NT$ ", lineLegend:true,
+  // 損益趨勢（賺綠虧紅，零基準線）
+  v.appendChild(chartCard("損益趨勢", `${f.note}．入賬減支出（賺綠虧紅）`, {
+    cats:f.cats, prefix:"NT$ ",
     series:[{name:"損益",color:cssVar("--s3"),data:netArr}]
-  }, lineChart, {
+  }, columnChartSigned, {
     head:[f.unit,"損益","利潤率"],
-    rows:f.cats.map((c,i)=>[c,fmtN(netArr[i]),(netArr[i]/f.in[i]*100).toFixed(1)+"%"])
+    rows:f.cats.map((c,i)=>[c,fmtN(netArr[i]),f.in[i]?(netArr[i]/f.in[i]*100).toFixed(1)+"%":"—"])
   }));
 
   // 累計摘要
@@ -711,10 +648,47 @@ function viewFinance(){
   t3.appendChild(tile("損益合計",fmtC(tIn-tOut),`利潤率 <b>${((tIn-tOut)/tIn*100).toFixed(1)}%</b>`,"var(--s3)","NT$"));
   sm.appendChild(t3); v.appendChild(sm);
 
-  // 三個錢包
+  // 支出結構：銷貨成本 vs 營業費用（逐月）
+  const ex=DB.expense;
+  v.appendChild(chartCard("支出結構","銷貨成本 vs 營業費用．單位 NT$",{
+    cats:ex.cats, prefix:"NT$ ", stacked:true,
+    series:[
+      {name:"銷貨成本",color:cssVar("--s2"),data:ex.cogs},
+      {name:"營業費用",color:cssVar("--s4"),data:ex.opex}
+    ]
+  }, columnChart, {head:["月","銷貨成本","營業費用","合計"],
+    rows:ex.cats.map((c,i)=>[c,fmtN(ex.cogs[i]),fmtN(ex.opex[i]),fmtN(ex.cogs[i]+ex.opex[i])])}));
+
+  // 支出類別排行（創立至今累計）
+  v.appendChild(chartCard("支出類別排行","創立至今累計．單位 NT$",{
+    items:ex.categories.slice(0,10), color:cssVar("--s2"), prefix:"NT$ ", metric:"累計支出", share:true
+  }, hbarChart, {head:["類別","累計支出","佔比"],
+    rows:ex.categories.map(c=>[c.n,fmtN(c.v),(c.v/sum(ex.categories.map(x=>x.v))*100).toFixed(1)+"%"])}));
+
+  // 創立至今累計（股金與總損益）
+  const ov=DB.overall;
+  const ovc=el("div","card");
+  ovc.innerHTML=`<h3>創立至今累計</h3><p class="sub">2025/10 起</p>`;
+  const ot=el("div","tiles t3");
+  ot.appendChild(tile("股東投入",fmtC(ov.equity),"","var(--s4)","NT$"));
+  ot.appendChild(tile("累計淨收",fmtC(ov.netIn),"","var(--s1)","NT$"));
+  ot.appendChild(tile("累計支出",fmtC(ov.netOut),"","var(--s2)","NT$"));
+  ovc.appendChild(ot);
+  const ot2=el("div","tiles"); ot2.style.marginTop="10px";
+  ot2.appendChild(tile("總損益",fmtC(ov.pnl),"投入至今累計","var(--s3)","NT$"));
+  ot2.appendChild(tile("資金水位",fmtC(ov.equity+ov.pnl),"股金 + 總損益","var(--s1)","NT$"));
+  ovc.appendChild(ot2);
+  v.appendChild(ovc);
+
+  // 四個錢包
   v.appendChild(walletCard(DB.wallets.twd));
-  v.appendChild(walletCard(DB.wallets.cny));
   v.appendChild(walletCard(DB.wallets.corp));
+  v.appendChild(walletCard(DB.wallets.cny));
+  v.appendChild(walletCard(DB.wallets.cnyLuo));
+
+  const fsrc=el("p","src");
+  fsrc.innerHTML=`資料來源：<a href="https://docs.google.com/spreadsheets/d/104NQG78559FVX_WP8dnkdTuWtr0LT8bjfB2fgTuKfw4/edit" target="_blank" rel="noopener">Google 試算表「財務數據」</a>。月營收為蝦皮撥款入帳（現金基礎），與成交金額 GMV 不同。`;
+  v.appendChild(fsrc);
 
   redraw();
 }
@@ -723,31 +697,39 @@ function walletCard(w){
   const c=el("div","card wallet");
   c.innerHTML = `<div class="top"><span class="badge">${w.code}</span>`+
     `<div style="flex:1"><div class="bal">${w.name}．目前餘額</div>`+
-    `<div class="balv">${w.cur} ${fmtN(w.balance)}</div></div></div>`;
-  const row=el("div","wrow");
-  w.rows.forEach(r=>{
-    const d=el("div");
-    d.innerHTML=`<div class="k"><span class="dot" style="width:8px;height:8px;border-radius:99px;display:inline-block;background:${r.c}"></span>${r.k}</div>`+
-      `<div class="v">${w.cur} ${fmtC(r.v)}</div>`;
-    row.appendChild(d);
-  });
-  c.appendChild(row);
-  const tot=sum(w.rows.map(r=>r.v));
-  const mini=el("div","bar-mini");
-  w.rows.forEach(r=>{ const i=el("i"); i.style.flex=String(r.v/tot); i.style.background=r.c; mini.appendChild(i); });
-  c.appendChild(mini);
+    `<div class="balv">${w.cur} ${fmtN(w.balance)}</div>`+
+    (w.desc?`<div class="bal" style="margin-top:3px">${w.desc}</div>`:"")+`</div></div>`;
 
-  const det=el("details"); det.style.marginTop="12px";
-  det.innerHTML=`<summary style="cursor:pointer;font-size:12px;color:var(--text-2);list-style:none">近期異動 ▾</summary>`;
-  const ul=el("ul","list"); ul.style.marginTop="6px";
-  w.recent.forEach(r=>{
-    const li=el("li");
-    li.innerHTML=`<span class="sm">${r.d}</span><span class="nm">${r.t}</span>`+
-      `<span class="pill">${r.k}</span>`+
-      `<span class="num" style="color:${r.a>=0?"var(--good)":"var(--text-1)"}">${r.a>=0?"+":"−"}${fmtN(Math.abs(r.a))}</span>`;
-    ul.appendChild(li);
-  });
-  det.appendChild(ul); c.appendChild(det);
+  if(w.rows){
+    const row=el("div","wrow");
+    w.rows.forEach(r=>{
+      const d=el("div");
+      d.innerHTML=`<div class="k"><span class="dot" style="width:8px;height:8px;border-radius:99px;display:inline-block;background:${r.c}"></span>${r.k}</div>`+
+        `<div class="v">${w.cur} ${fmtC(r.v)}</div>`;
+      row.appendChild(d);
+    });
+    c.appendChild(row);
+    const tot=sum(w.rows.map(r=>r.v));
+    const mini=el("div","bar-mini");
+    w.rows.forEach(r=>{ const i=el("i"); i.style.flex=String(r.v/tot); i.style.background=r.c; mini.appendChild(i); });
+    c.appendChild(mini);
+  }
+
+  if(w.recent){
+    const det=el("details"); det.style.marginTop="12px";
+    det.innerHTML=`<summary style="cursor:pointer;font-size:12px;color:var(--text-2);list-style:none">近期異動 ▾</summary>`;
+    const ul=el("ul","list"); ul.style.marginTop="6px";
+    w.recent.forEach(r=>{
+      const li=el("li");
+      li.innerHTML=`<span class="sm">${r.d}</span><span class="nm">${r.t}</span>`+
+        `<span class="pill">${r.k}</span>`+
+        `<span class="num" style="color:${r.a>=0?"var(--good)":"var(--text-1)"}">${r.a>=0?"+":"−"}${fmtN(Math.abs(r.a))}</span>`;
+      ul.appendChild(li);
+    });
+    det.appendChild(ul); c.appendChild(det);
+  } else if(w.note){
+    c.appendChild(el("p","src",w.note)).style.marginTop="10px";
+  }
   return c;
 }
 
@@ -767,37 +749,50 @@ function viewData(){
   });
   v.appendChild(seg);
 
+  if(dataTab!=="live" && !DB.shopeeReal){
+    const bn=el("div","card");
+    bn.style.cssText="border-style:dashed;background:transparent;box-shadow:none";
+    bn.innerHTML=`<div style="font-size:12.5px;color:var(--text-2);line-height:1.6">⚠️ <b>示意資料</b>　此頁數字為打樣示意，把蝦皮匯出的 CSV 放進 shopee/ 後執行更新即為真實數據。</div>`;
+    v.appendChild(bn);
+  }
+
   ({sales:secSales, live:secLive, buyers:secBuyers, products:secProducts})[dataTab](v);
   redraw();
 }
 
 function secSales(v){
   const s=DB.sales;
+  const yc = s.yCvr!=null?s.yCvr:s.cvr;
   const hero=el("div","card hero");
-  hero.innerHTML=`<div class="lab">本月成交金額 GMV</div>`+
-    `<div class="val"><span class="cur">NT$</span>${fmtC(s.gmv)}</div>`+
-    `<div class="row">${deltaHTML(s.gmv,s.gmvPrev,"上月")}</div>`;
+  hero.innerHTML=`<div class="lab">${s.mtdLabel||s.period} 成交金額 GMV</div>`+
+    `<div class="val"><span class="cur">NT$</span>${fmtC(s.mtd||s.gmv)}</div>`+
+    `<div class="row"><span class="n">昨日 ${s.yDate||""}　NT$ ${fmtN(s.yGmv||0)}</span></div>`;
   v.appendChild(hero);
 
   const t=el("div","tiles t3");
-  t.appendChild(tile("訂單數",fmtN(s.orders),deltaHTML(s.orders,s.ordersPrev,"上月")));
-  t.appendChild(tile("客單價",fmtN(s.aov),deltaHTML(s.aov,s.aovPrev,"上月"),null,"NT$"));
-  t.appendChild(tile("退貨率",s.refund+"%",deltaHTML(s.refund,s.refundPrev,"上月",false)));
+  t.appendChild(tile("昨日訂單",fmtN(s.yOrders||0)));
+  t.appendChild(tile("昨日客單",fmtN(s.yAov||0),"每筆訂單",null,"NT$"));
+  t.appendChild(tile("轉換率",(yc!=null?yc+"%":"—"),"訂單轉換"));
   v.appendChild(t);
 
-  v.appendChild(chartCard("每日成交金額","近 14 日．單位 千元",{
-    cats:s.trendCats, suffix:" 千", lineLegend:true,
-    series:[{name:"成交金額",color:cssVar("--s1"),data:s.trend}]
-  }, lineChart, {head:["日期","成交金額(千)"],rows:s.trendCats.map((c,i)=>[c,fmtN(s.trend[i])])}));
+  if(s.trendCats&&s.trendCats.length)
+    v.appendChild(chartCard("每日成交趨勢","每日累積回填．單位 千元",{
+      cats:s.trendCats, suffix:" 千", lineLegend:true,
+      series:[{name:"每日成交",color:cssVar("--s1"),data:s.trend}]
+    }, lineChart, {head:["日期","成交金額(千)"],rows:s.trendCats.map((c,i)=>[c,fmtN(s.trend[i])])}));
 
-  const tot=sum(s.channels.map(c=>c.v));
-  v.appendChild(chartCard("通路佔比","本月成交金額來源",{
+  const tot=sum(s.channels.map(c=>c.v))||1;
+  v.appendChild(chartCard("通路佔比",`${s.period} 成交來源`,{
     items:s.channels, color:cssVar("--s1"), prefix:"NT$ ", metric:"成交金額", share:true
   }, hbarChart, {head:["通路","成交金額","佔比"],rows:s.channels.map(c=>[c.n,fmtN(c.v),(c.v/tot*100).toFixed(1)+"%"])}));
+
+  if(s.refund!=null)
+    v.appendChild(el("p","src",`昨日退貨/退款率 ${s.refund}%．來源：蝦皮賣家數據中心（每日回填累積）`));
 }
 
 let liveMonth = "7月";
 let liveHost  = null;
+let liveHostPeriod = "month";
 
 const fmtDur = s => `${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
 
@@ -852,15 +847,36 @@ function secLive(v){
     series:[{name:"平均每場",color:cssVar("--s3"),data:MS.map(m=>L.monthly[m].avg)}]
   }, lineChart, {head:["月份","平均每場","客單價"],rows:MS.map(m=>[m,fmtN(L.monthly[m].avg),fmtN(L.monthly[m].aov)])}));
 
-  // ===== 主播 =====
+  // ===== 主播（可切 週/月/季） =====
   const names=Object.keys(L.hosts);
   if(!liveHost || !L.hosts[liveHost]) liveHost = names[0];
+  const PM={week:"週",month:"月",quarter:"季"}, PNOW={week:"本週",month:"本月",quarter:"本季"};
+  const bucket=L.latestBucket[liveHostPeriod];
 
-  v.appendChild(chartCard("主播銷售排行","3–7 月累計．單位 NT$",{
-    items:names.map(n=>({n, v:L.hosts[n].sales, q:L.hosts[n].n})),
-    color:cssVar("--s1"), prefix:"NT$ ", metric:"累計銷售額", qLabel:"場次", qUnit:" 場", share:true
-  }, hbarChart, {head:["主播","場次","累計銷售額","平均每場","每小時產值"],
-    rows:names.map(n=>[n,L.hosts[n].n,fmtN(L.hosts[n].sales),fmtN(L.hosts[n].avg),fmtN(L.hosts[n].perHr)])}));
+  // 週/月/季 切換
+  const phead=el("div"); phead.style.margin="2px 0 0";
+  phead.appendChild(el("p","sub","主播表現 · 檢視期間")).style.margin="0 0 8px";
+  const pseg=el("div","seg");
+  [["week","週"],["month","月"],["quarter","季"]].forEach(([k,l])=>{
+    const b=el("button","",l); b.setAttribute("aria-selected",String(k===liveHostPeriod));
+    b.onclick=()=>{liveHostPeriod=k; viewData();};
+    pseg.appendChild(b);
+  });
+  phead.appendChild(pseg); v.appendChild(phead);
+
+  // 主播銷售排行（依所選期間的最新一桶）
+  const rankItems=names.map(n=>{
+    const arr=(L.hostPeriods[n]||{})[liveHostPeriod]||[];
+    const hit=arr.find(x=>x.k===bucket);
+    return {n, v:hit?hit.sales:0, q:hit?hit.n:0};
+  }).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+
+  v.appendChild(chartCard("主播銷售排行",
+    `${PNOW[liveHostPeriod]}（${bucket}${liveHostPeriod==="week"?" 那週":""}）．單位 NT$`,{
+    items:rankItems, color:cssVar("--s1"), prefix:"NT$ ", metric:`${PNOW[liveHostPeriod]}銷售額`,
+    qLabel:"場次", qUnit:" 場", share:true
+  }, hbarChart, {head:["主播",`${PM[liveHostPeriod]}場次`,`${PNOW[liveHostPeriod]}銷售額`],
+    rows:rankItems.map(r=>[r.n,r.q,fmtN(r.v)])}));
 
   v.appendChild(hostCard());
 
@@ -916,13 +932,14 @@ function hostCard(){
   rows.forEach(([k,val])=>{const d=el("div");d.innerHTML=`<div class="k">${k}</div><div class="v">${val}</div>`;kv.appendChild(d);});
   c.appendChild(kv);
 
-  const hm=Object.keys(h.byMonth);
+  const arr=(DB.live.hostPeriods[liveHost]||{})[liveHostPeriod]||[];
+  const PMlab={week:"週",month:"月",quarter:"季"}[liveHostPeriod];
   const host=el("div","chart"); host.style.marginTop="14px";
-  c.appendChild(el("p","sub",`月度銷售額（${hm[0]}–${hm[hm.length-1]}）`)).style.marginTop="14px";
+  c.appendChild(el("p","sub",`${PMlab}度銷售額（${arr.length?arr[0].k+"–"+arr[arr.length-1].k:"—"}）`)).style.marginTop="14px";
   c.appendChild(host);
   charts.push({host, renderer:columnChart, opts:{
-    cats:hm, prefix:"NT$ ", height:150,
-    series:[{name:liveHost+" 銷售額",color:cssVar("--s1"),data:hm.map(m=>h.byMonth[m].sales)}]
+    cats:arr.map(x=>x.k), prefix:"NT$ ", height:150,
+    series:[{name:liveHost+" 銷售額",color:cssVar("--s1"),data:arr.map(x=>x.sales)}]
   }});
 
   const b=el("p","src");
@@ -932,71 +949,246 @@ function hostCard(){
 }
 
 function secBuyers(v){
-  const B=DB.buyers;
+  const B=DB.buyers, pd=B.period||"", cats=B.categories||[];
   const hero=el("div","card hero");
-  hero.innerHTML=`<div class="lab">本月下單買家數</div>`+
-    `<div class="val">${fmtN(B.total)}</div>`+
-    `<div class="row">${deltaHTML(B.total,B.totalPrev,"上月")}</div>`;
+  hero.innerHTML=`<div class="lab">${pd} 下單買家數</div>`+
+    `<div class="val">${fmtN(B.total||0)}</div>`+
+    `<div class="row">${deltaHTML(B.total,B.totalPrev,"上期")||`<span class="n">不重複買家</span>`}</div>`;
   v.appendChild(hero);
 
   const t=el("div","tiles t3");
-  t.appendChild(tile("回購率",B.repeatRate+"%","新客 "+B.newRate+"%","var(--s3)"));
-  t.appendChild(tile("客單價",fmtN(B.aov),"",null,"NT$"));
-  t.appendChild(tile("回購週期",B.repeatCycle+" 天","平均間隔"));
+  t.appendChild(tile("客單價",fmtN(B.aov||0),"每位買家",null,"NT$"));
+  t.appendChild(tile("轉換率",(B.cvr!=null?B.cvr+"%":"—"),"訪客→下單"));
+  t.appendChild(tile("主力品類",cats[0]?cats[0].n:"—","銷售最高"));
   v.appendChild(t);
 
-  v.appendChild(chartCard("新客 vs 回購","近 5 個月．人數",{
-    cats:B.mix.cats, stacked:true,
-    series:[{name:"新客",color:cssVar("--s2"),data:B.mix.neu},{name:"回購",color:cssVar("--s1"),data:B.mix.old}]
-  }, columnChart, {head:["月份","新客","回購","回購佔比"],
-    rows:B.mix.cats.map((c,i)=>[c,fmtN(B.mix.neu[i]),fmtN(B.mix.old[i]),
-      (B.mix.old[i]/(B.mix.old[i]+B.mix.neu[i])*100).toFixed(1)+"%"])}));
+  if(cats.length){
+    const tot=sum(cats.map(c=>c.v))||1;
+    v.appendChild(chartCard("品類銷售佔比",`${pd} 成交金額`,{
+      items:cats, color:cssVar("--s3"), prefix:"NT$ ", metric:"成交金額", share:true
+    }, hbarChart, {head:["品類","成交金額","佔比"],rows:cats.map(c=>[c.n,fmtN(c.v),(c.v/tot*100).toFixed(1)+"%"])}));
+  }
 
-  v.appendChild(chartCard("年齡分布","本月下單買家．人數",{
-    items:B.age, color:cssVar("--s1"), metric:"買家數", share:true
-  }, hbarChart, {head:["年齡層","人數","佔比"],
-    rows:B.age.map(a=>[a.n,fmtN(a.v),(a.v/sum(B.age.map(x=>x.v))*100).toFixed(1)+"%"])}));
+  if(B.trendCats&&B.trendCats.length)
+    v.appendChild(chartCard("買家數趨勢",`${pd}`,{
+      cats:B.trendCats, lineLegend:true,
+      series:[{name:"買家數",color:cssVar("--s1"),data:B.trend}]
+    }, lineChart, {head:["時間","買家數"],rows:B.trendCats.map((c,i)=>[c,fmtN(B.trend[i])])}));
 
-  v.appendChild(chartCard("客單價分布","本月訂單．筆數",{
-    items:B.spend, color:cssVar("--s3"), metric:"訂單數", share:true
-  }, hbarChart, {head:["金額級距","訂單數","佔比"],
-    rows:B.spend.map(a=>[a.n,fmtN(a.v),(a.v/sum(B.spend.map(x=>x.v))*100).toFixed(1)+"%"])}));
+  v.appendChild(el("p","src","資料來源：蝦皮賣家數據中心匯出。新客／回購、年齡分布蝦皮匯出不提供，故未列。"));
 }
 
 function secProducts(v){
-  const P=DB.products;
+  const P=DB.products, pd=P.period||"", top=P.top||[];
+  const champ=top[0]||{n:"—",v:0,q:0};
   const hero=el("div","card hero");
-  hero.innerHTML=`<div class="lab">庫存市值</div>`+
-    `<div class="val"><span class="cur">NT$</span>${fmtC(P.stockValue)}</div>`+
-    `<div class="row"><span class="delta down">滯銷 ${fmtC(P.deadStock)}</span> <span class="n">佔庫存 ${(P.deadStock/P.stockValue*100).toFixed(1)}%</span></div>`;
+  hero.innerHTML=`<div class="lab">${pd} 熱銷冠軍</div>`+
+    `<div class="val"><span class="cur">NT$</span>${fmtC(champ.v)}</div>`+
+    `<div class="row"><span class="n">${champ.n}</span></div>`;
   v.appendChild(hero);
 
-  const t=el("div","tiles");
-  t.appendChild(tile("在售 SKU",fmtN(P.skuActive),deltaHTML(P.skuActive,P.skuActivePrev,"上月")));
-  t.appendChild(tile("庫存週轉",P.turnover+" 次",deltaHTML(P.turnover,P.turnoverPrev,"上月")));
+  const tot=sum(top.map(x=>x.v))||1;
+  const t=el("div","tiles t3");
+  t.appendChild(tile("冠軍銷量",fmtN(champ.q),"件"));
+  t.appendChild(tile("成交商品數",fmtN(P.count||top.length),"款"));
+  t.appendChild(tile("前三名佔比",top.length?(sum(top.slice(0,3).map(x=>x.v))/tot*100).toFixed(0)+"%":"—","銷售集中度"));
   v.appendChild(t);
 
-  v.appendChild(chartCard("熱銷排行","本月成交金額 TOP 6",{
-    items:P.top, color:cssVar("--s1"), prefix:"NT$ ", metric:"成交金額", share:true
-  }, hbarChart, {head:["商品","成交金額","件數"],rows:P.top.map(p=>[p.n,fmtN(p.v),fmtN(p.q)])}));
+  v.appendChild(chartCard("熱銷排行",`${pd} 成交金額 TOP ${Math.min(8,top.length)}`,{
+    items:top, color:cssVar("--s1"), prefix:"NT$ ", metric:"成交金額", qLabel:"件數", qUnit:" 件", share:true
+  }, hbarChart, {head:["商品","成交金額","件數"],rows:top.map(p=>[p.n,fmtN(p.v),fmtN(p.q)])}));
 
-  const c=el("div","card");
-  c.innerHTML=`<h3>滯銷提醒</h3><p class="sub">超過 90 天未動銷．依庫存金額排序</p>`;
-  const ul=el("ul","list");
-  P.slow.forEach(s=>{
-    const li=el("li");
-    li.innerHTML=`<span class="nm">${s.n}</span><span class="pill">${s.d} 天</span>`+
-      `<span class="num">NT$ ${fmtC(s.v)}</span>`;
-    ul.appendChild(li);
-  });
-  c.appendChild(ul); v.appendChild(c);
+  v.appendChild(el("p","src","資料來源：蝦皮賣家數據中心「依商品分布」匯出。庫存市值／週轉／滯銷蝦皮後台無，需另接。"));
+}
+
+/* ============================================================
+   成本試算器
+   ============================================================ */
+const CC = { ...DB.costcalc, cost: DB.costcalc.sample.cost, weight: DB.costcalc.sample.weight };
+
+function ccField(label, key, step, unit){
+  const wrap=el("div");
+  wrap.style.cssText="display:flex;flex-direction:column;gap:5px";
+  wrap.innerHTML=`<label style="font-size:11.5px;color:var(--muted)">${label}</label>`;
+  const inWrap=el("div"); inWrap.style.cssText="display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface-1);border-radius:10px;padding:8px 10px";
+  const inp=el("input");
+  inp.type="number"; inp.value=CC[key]; inp.step=step; inp.inputMode="decimal";
+  inp.style.cssText="border:0;background:transparent;color:var(--text-1);font:inherit;font-size:16px;font-weight:640;width:100%;outline:none;-moz-appearance:textfield";
+  inp.oninput=()=>{ CC[key]=parseFloat(inp.value)||0; renderCostResult(); };
+  inWrap.appendChild(inp);
+  if(unit){ const u=el("span","",unit); u.style.cssText="font-size:11.5px;color:var(--muted);flex:none"; inWrap.appendChild(u); }
+  wrap.appendChild(inWrap);
+  return wrap;
+}
+
+function costClass(rate){
+  for(const c of CC.classes) if(rate>=c.lo && rate<c.hi) return c;
+  return rate<CC.classes[0].lo ? {n:"低於引流",c:"var(--bad)"} : CC.classes[CC.classes.length-1];
+}
+
+function viewCost(){
+  charts.length=0;
+  const v=$("#view"); v.innerHTML="";
+
+  // 輸入卡
+  const inCard=el("div","card");
+  inCard.innerHTML=`<h3>單品成本 · 定價試算</h3><p class="sub">輸入商品成本與參數，自動算出建議售價與各折數利潤</p>`;
+  const g1=el("div"); g1.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:12px";
+  g1.appendChild(ccField("商品成本","cost",1,"¥"));
+  g1.appendChild(ccField("重量","weight",10,"g"));
+  g1.appendChild(ccField("匯率 (¥→NT$)","fx",0.01,""));
+  g1.appendChild(ccField("國際運費","freightPerKg",5,"NT$/kg"));
+  g1.appendChild(ccField("目標利潤率","targetProfit",1,"%"));
+  g1.appendChild(ccField("平台+廣告+稅","feeRate",1,"%"));
+  inCard.appendChild(g1);
+  const hint=el("p","src","平台抽成 25% + 廣告 10% + 稅 8% = 43%（可依實際調整）。運費預設 0，請填入實際國際運費以校準成本。");
+  inCard.appendChild(hint);
+  v.appendChild(inCard);
+
+  // 結果卡（動態）
+  const resCard=el("div","card"); resCard.id="ccRes";
+  v.appendChild(resCard);
+
+  const src=el("p","src");
+  src.innerHTML=`計價邏輯來源：<a href="https://docs.google.com/spreadsheets/d/1xl7lFPEjLcVTVl-K5I5nS1nABxf4texcKFh0-Sof2tY/edit" target="_blank" rel="noopener">Google 試算表「成本計算」</a>。`;
+  v.appendChild(src);
+
+  renderCostResult();
+}
+
+function renderCostResult(){
+  const r=$("#ccRes"); if(!r) return;
+  const totalCost = CC.cost*CC.fx + (CC.weight/1000)*CC.freightPerKg;         // 商品總成本 NT$
+  const space = Math.max(1e-6, 100 - CC.feeRate - CC.targetProfit);            // 剩餘空間 %
+  const price = totalCost / (space/100);                                       // 建議定價 NT$
+  const profitPct = cur => cur<=0?0:(cur - cur*CC.feeRate/100 - totalCost)/cur*100; // 某實收下的利潤率
+  const fullRate = profitPct(price);
+  const cls = costClass(fullRate);
+
+  r.innerHTML =
+    `<h3>建議售價 <span class="sp"></span></h3>`+
+    `<div class="hero" style="padding:6px 0 4px">`+
+      `<div class="val" style="font-size:clamp(34px,11vw,44px)"><span class="cur">NT$</span>${fmtN(Math.round(price))}</div>`+
+      `<div class="row"><span class="delta up">利潤率 ${fullRate.toFixed(1)}%</span> `+
+      `<span class="pill" style="background:${cls.c};color:#fff">${cls.n}</span></div>`+
+    `</div>`;
+
+  const t=el("div","tiles t3"); t.style.marginTop="6px";
+  t.appendChild(tile("商品總成本",fmtN(Math.round(totalCost)),`¥${fmtN(CC.cost)} × ${CC.fx}${CC.freightPerKg?" + 運費":""}`,"var(--s2)","NT$"));
+  t.appendChild(tile("平台+廣告+稅",fmtN(Math.round(price*CC.feeRate/100)),CC.feeRate+"% of 售價","var(--s4)","NT$"));
+  t.appendChild(tile("每件淨利",fmtN(Math.round(price - price*CC.feeRate/100 - totalCost)),"原價售出","var(--s3)","NT$"));
+  r.appendChild(t);
+
+  // 折數 → 實收 / 利潤率 表
+  const discs=[1,0.99,0.98,0.97,0.95,0.93,0.90,0.88,0.85,0.80,0.75];
+  const tbl=el("table","dv"); tbl.style.marginTop="14px";
+  tbl.innerHTML=`<thead><tr><th>折數</th><th>實收</th><th>平台+廣告+稅</th><th>淨利</th><th>利潤率</th></tr></thead>`+
+    `<tbody>${discs.map(d=>{
+      const rec=price*d, fee=rec*CC.feeRate/100, net=rec-fee-totalCost, pr=profitPct(rec);
+      const cc=costClass(pr);
+      return `<tr><td>${d===1?"原價":d.toFixed(2)}</td><td>${fmtN(Math.round(rec))}</td><td>${fmtN(Math.round(fee))}</td>`+
+        `<td style="color:${net>=0?'var(--good)':'var(--bad)'}">${fmtN(Math.round(net))}</td>`+
+        `<td style="color:${cc.c};font-weight:640">${pr.toFixed(1)}%</td></tr>`;
+    }).join("")}</tbody>`;
+  r.appendChild(el("p","sub","不同折數下的實收與利潤率")).style.marginTop="14px";
+  r.appendChild(tbl);
+}
+
+/* ============================================================
+   補齊財務期間標籤（update.py 未輸出 unit/note，避免顯示 undefined）
+   ============================================================ */
+["month","quarter"].forEach(k=>{
+  const o=DB.finance&&DB.finance[k]; if(!o) return;
+  if(!o.unit) o.unit = k==="month"?"月":"季";
+  if(!o.note) o.note = k==="month"?`近 ${o.cats.length} 個月`:`近 ${o.cats.length} 季`;
+});
+
+/* ============================================================
+   總覽（老闆首頁）— 錢包餘額 / 當月損益(可選月)+總損益 / 續航 / 直播
+   ============================================================ */
+let homeMonth=null;
+function viewHome(){
+  charts.length=0;
+  const v=$("#view"); v.innerHTML="";
+  const f=DB.finance.month, cats=f.cats;
+  if(!homeMonth || !cats.includes(homeMonth)) homeMonth=cats.at(-1);
+  const idx=cats.indexOf(homeMonth), isCur=idx===cats.length-1;
+  const cIn=f.in[idx], cOut=f.out[idx], cNet=cIn-cOut;
+  const pIdx=idx-1, hasPrev=pIdx>=0;
+  const pNet=hasPrev?f.in[pIdx]-f.out[pIdx]:null, pl=hasPrev?cats[pIdx]:null;
+  const netArr=f.in.map((x,i)=>x-f.out[i]);
+
+  v.appendChild(el("p","sub",`經營快照（資料更新於 ${DB.updated}）`)).style.margin="2px 0 0";
+
+  // ① 各錢包餘額
+  const W=DB.wallets, wc=el("div","card");
+  wc.innerHTML=`<h3>各錢包餘額<span class="sp"></span></h3><p class="sub">目前結餘</p>`;
+  const wcolor={twd:"var(--s1)",corp:"var(--s3)",cny:"var(--s4)",cnyLuo:"var(--s2)"};
+  const wt=el("div","tiles");
+  ["twd","corp","cny","cnyLuo"].forEach(k=>{const w=W[k]; if(w) wt.appendChild(tile(w.name,fmtN(w.balance),"",wcolor[k],w.cur));});
+  wc.appendChild(wt);
+  v.appendChild(wc);
+
+  // ② 當月損益（可選月份）+ 目前總損益
+  const pc=el("div","card");
+  pc.innerHTML=`<h3>當月損益<span class="sp"></span></h3>`;
+  const chips=el("div","chips");
+  cats.forEach(m=>{const b=el("button","",m); b.setAttribute("aria-selected",String(m===homeMonth));
+    b.onclick=()=>{homeMonth=m; viewHome();}; chips.appendChild(b);});
+  pc.appendChild(chips);
+  requestAnimationFrame(()=>{const s=chips.querySelector('[aria-selected="true"]'); if(s) s.scrollIntoView({block:"nearest",inline:"center"});});
+  const hb=el("div","hero"); hb.style.padding="4px 0 2px";
+  hb.innerHTML=`<div class="lab">${homeMonth}損益${isCur?"（本月至今）":""}</div>`+
+    `<div class="val"><span class="cur">NT$</span>${fmtC(cNet)}</div>`+
+    `<div class="row">${(hasPrev&&!isCur)?deltaHTML(cNet,pNet,pl):`<span class="n">${isCur?"當月累計，未滿月不與上月比較":"入賬減支出"}</span>`}</div>`;
+  pc.appendChild(hb);
+  const ov=DB.overall, t3=el("div","tiles t3"); t3.style.marginTop="10px";
+  t3.appendChild(tile(`${homeMonth}入賬`,fmtC(cIn),"","var(--s1)","NT$"));
+  t3.appendChild(tile(`${homeMonth}支出`,fmtC(cOut),"","var(--s2)","NT$"));
+  t3.appendChild(tile("目前總損益",fmtC(ov.pnl),"創立至今累計",ov.pnl>=0?"var(--s3)":"var(--bad)","NT$"));
+  pc.appendChild(t3);
+  v.appendChild(pc);
+
+  // 損益趨勢（賺綠虧紅）
+  v.appendChild(chartCard("損益趨勢",`${f.note}．入賬減支出（賺綠虧紅）`,{
+    cats, prefix:"NT$ ", height:150,
+    series:[{name:"損益",color:cssVar("--s3"),data:netArr}]
+  }, columnChartSigned, {head:[f.unit,"損益"],rows:cats.map((c,i)=>[c,fmtN(netArr[i])])}));
+
+  // ③ 現金續航 runway（可動用新台幣 = 台幣+公司 ÷ 近3月平均月虧）
+  const cash=(W.twd?W.twd.balance:0)+(W.corp?W.corp.balance:0);
+  // 燒錢速度只採「已完整月份」，排除進行中的當月（未滿月會美化數字）
+  const compl=netArr.slice(0,-1), net3=(compl.length?compl:netArr).slice(-3);
+  const avgNet=sum(net3)/net3.length, losing=avgNet<0, avgLoss=Math.abs(avgNet);
+  const rc=el("div","card");
+  rc.innerHTML=`<h3>現金續航（Runway）<span class="sp"></span></h3>`;
+  const rb=el("div"); rb.style.cssText="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:2px";
+  if(losing){const mo=cash/avgLoss;
+    rb.innerHTML=`<div class="val" style="font-size:30px;font-weight:660;line-height:1.1">約 ${mo.toFixed(1)} 個月</div>`+
+      `<span class="delta ${mo<6?"down":"up"}">${mo<6?"偏緊":"健康"}</span>`;
+  }else{
+    rb.innerHTML=`<div class="val" style="font-size:26px;font-weight:660">現金流為正</div><span class="delta up">無壓力</span>`;
+  }
+  rc.appendChild(rb);
+  rc.appendChild(el("p","src",`可動用新台幣 NT$${fmtN(cash)}（台幣+公司錢包）${losing?` ÷ 近3月平均月虧 NT$${fmtN(avgLoss)}`:""}。人民幣錢包另計。`));
+  v.appendChild(rc);
+
+  // ④⑤ 直播銷售 + 廣告ROI
+  const L=DB.live, lm=L.months.at(-1), M=L.monthly[lm];
+  const t=el("div","tiles");
+  t.appendChild(tile(`${lm}直播銷售`,fmtC(M.sales),lm===cats.at(-1)?"本月至今":"","var(--s3)","NT$"));
+  t.appendChild(tile(`${lm}廣告 ROI`,(M.roi?M.roi+"x":"—"),`花費 NT$${fmtC(M.ad)}`,"var(--s4)"));
+  v.appendChild(t);
+
+  v.appendChild(el("p","src","經營快照．點下方分頁看財務、直播、成本細節。"));
+  redraw();
 }
 
 /* ============================================================
    啟動
    ============================================================ */
-let tab="fin";
-function render(){ (tab==="fin"?viewFinance:viewData)(); window.scrollTo({top:0}); }
+let tab="home";
+function render(){ ({home:viewHome,fin:viewFinance,data:viewData,cost:viewCost})[tab](); window.scrollTo({top:0}); }
 document.querySelectorAll("nav.tabbar button").forEach(b=>{
   b.onclick=()=>{
     tab=b.dataset.tab;
@@ -1009,7 +1201,7 @@ $("#themeBtn").onclick=()=>{
   document.documentElement.setAttribute("data-theme", cur==="dark"?"light":"dark");
   render();
 };
-$("#updated").textContent = "資料更新於 "+DB.updated+"　·　直播數據為實際資料";
+$("#updated").textContent = "資料更新於 "+DB.updated+"　·　財務・直播為實際資料";
 
 let rt;
 window.addEventListener("resize",()=>{clearTimeout(rt); rt=setTimeout(redraw,120);});
