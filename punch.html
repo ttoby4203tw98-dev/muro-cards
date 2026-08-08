@@ -82,7 +82,7 @@ var SHEET_ID='1SsIRULQjX5dQJgnEzfijQuZV5lfJKHmwHy2CJvG_XwE';
 var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1bOiU8Q8J0NWhAbYJzGTueqUWaEKFhzraBMapcGLBq95QMg/exec';
 var TOKEN='muro2026';
 var PUNCH_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('打卡');
-var OPT_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('選項');
+var MAIN_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv';
 
 var PEOPLE=['思維','小羅','曉慧','Naby','諾諾','番茄','安琪','Neveah'];
 var who=null;
@@ -173,14 +173,14 @@ function punch(type){
 document.getElementById('btnIn').onclick=function(){punch('上班');};
 document.getElementById('btnOut').onclick=function(){punch('下班');};
 
-// 人員名單可由試算表「選項」分頁（B欄）維護
-fetch(OPT_CSV).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
-  var rows=parseCSV(t);
-  if(!rows.length)return;
-  if(((rows[0][0]||'').indexOf('事項')===-1)&&((rows[0][1]||'').indexOf('人員')===-1))return;
-  var ppl=[];
-  for(var i=1;i<rows.length;i++){var b=(rows[i][1]||'').trim();
-    if(b&&b!=='全體'&&ppl.indexOf(b)===-1)ppl.push(b);}
+// 人員名單跟行事曆共用：主表中「日期欄=人員」的列
+fetch(MAIN_CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+  var rows=parseCSV(t),ppl=[];
+  for(var i=1;i<rows.length;i++){
+    if((rows[i][0]||'').trim()!=='人員')continue;
+    var n=(rows[i][1]||'').trim();
+    if(n&&n!=='全體'&&ppl.indexOf(n)===-1)ppl.push(n);
+  }
   if(ppl.length){PEOPLE=ppl;buildWho();}
 }).catch(function(){});
 
