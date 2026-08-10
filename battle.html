@@ -29,7 +29,21 @@
   .opt.on{border-color:var(--plum2);background:var(--plum2);color:#fff;}
   textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.7;
     font-family:inherit;resize:vertical;min-height:64px;background:#fffdfb;}
-  textarea:focus{outline:2px solid var(--rose);border-color:var(--rose);}
+  textarea:focus,input:focus{outline:2px solid var(--rose);border-color:var(--rose);}
+
+  /* 排品 · 知識卡 */
+  .plsec{margin-top:6px;}
+  .plcard{background:#fffdfb;border:1px solid var(--line);border-radius:14px;padding:12px 12px 8px;margin-top:10px;}
+  .pl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .pl-no{font-size:12px;font-weight:800;color:#b0813f;background:#faeeda;border-radius:99px;padding:3px 12px;letter-spacing:1px;}
+  .pl-del{border:none;background:none;color:var(--ink2);font-size:12px;cursor:pointer;text-decoration:underline;padding:2px 4px;}
+  .pl-field{margin-top:7px;}
+  .pl-field label{font-size:12px;font-weight:800;color:var(--plum2);display:block;margin-bottom:3px;letter-spacing:.5px;}
+  .pl-field input,.pl-field textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
+  .pl-field textarea{resize:vertical;min-height:56px;line-height:1.65;}
+  .pl-add{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:12px;padding:12px;font-size:14px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:12px;}
+  .pl-add:active{background:#fdf4f7;}
+
   .rules{background:#FBF6EF;border:1px dashed var(--gold);border-radius:12px;padding:12px 14px;}
   .rules div{font-size:13px;line-height:1.8;}
   .rules b{color:#9A6A1F;}
@@ -57,7 +71,7 @@
 
 <div class="top">
   <h1>暮若作戰卡<small>MURO</small></h1>
-  <p>開播前 5 分鐘全隊對一次・下播後 3 行復盤・一場一張</p>
+  <p>開播前全隊對一次・每個品先讀熟知識卡・下播後 3 行復盤</p>
 </div>
 
 <div class="wrap">
@@ -72,9 +86,10 @@
     <div class="hint">範例：今天衝新客，前 30 分鐘全押引流款 ／ 今天清庫存，利潤款只帶不推 ／ 今天測新品，看留言反應決定要不要進貨</div>
     <textarea id="fstrategy" rows="2"></textarea>
 
-    <div class="flabel">二、主打什麼、為什麼是今天</div>
-    <div class="hint">範例：主打防曬外套——這週連續 36 度，昨天留言一直有人問 ／ 主打福袋——月底了，衝客單</div>
-    <textarea id="ffocus" rows="3"></textarea>
+    <div class="flabel">二、這場排品 · 知識卡</div>
+    <div class="hint">照播出順序把品列好，每個品填一張卡。主播開播前先讀熟「知識點」，才講得出東西、答得了問。</div>
+    <div class="plsec" id="plWrap"></div>
+    <button type="button" class="pl-add" id="plAdd">＋ 加一個品</button>
 
     <div class="flabel">三、留下來的理由（鉤子）</div>
     <div class="hint">範例：整點抽獎 ／ 滿千折百只有今天 ／ 9 點半秒殺 39 元福利品</div>
@@ -129,6 +144,48 @@ var cards={}; // 'date|slot' -> {..}
 function pad(n){return (n<10?'0':'')+n;}
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 
+/* ---------- 排品 · 知識卡 ---------- */
+var CN=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+function plCard(data){
+  data=data||{};
+  var d=document.createElement('div');d.className='plcard';
+  d.innerHTML=
+    '<div class="pl-top"><span class="pl-no"></span><button class="pl-del" type="button">刪除</button></div>'+
+    '<div class="pl-field"><label>主題</label><input class="pl-theme" placeholder="這個品今天怎麼切，例：一件抵三件的顯瘦穿搭"></div>'+
+    '<div class="pl-field"><label>商品</label><input class="pl-name" placeholder="品名 / 貨號"></div>'+
+    '<div class="pl-field"><label>贈品</label><input class="pl-gift" placeholder="搭配贈品，沒有就留白"></div>'+
+    '<div class="pl-field"><label>知識點</label><textarea class="pl-know" rows="3" placeholder="主播先讀熟：材質怎麼說、解決什麼痛點、怎麼搭、跟市面差在哪"></textarea></div>';
+  d.querySelector('.pl-theme').value=data.theme||'';
+  d.querySelector('.pl-name').value=data.name||'';
+  d.querySelector('.pl-gift').value=data.gift||'';
+  d.querySelector('.pl-know').value=data.know||'';
+  d.querySelector('.pl-del').onclick=function(){d.parentNode.removeChild(d);renumber();};
+  return d;
+}
+function renumber(){
+  var cs=document.getElementById('plWrap').children;
+  [].forEach.call(cs,function(c,i){c.querySelector('.pl-no').textContent='品 '+(CN[i]||(i+1));});
+}
+function addProduct(data){document.getElementById('plWrap').appendChild(plCard(data));renumber();}
+function readLineup(){
+  var arr=[];
+  [].forEach.call(document.getElementById('plWrap').children,function(c){
+    var o={theme:c.querySelector('.pl-theme').value.trim(),name:c.querySelector('.pl-name').value.trim(),
+      gift:c.querySelector('.pl-gift').value.trim(),know:c.querySelector('.pl-know').value.trim()};
+    if(o.theme||o.name||o.gift||o.know)arr.push(o);
+  });
+  return arr;
+}
+function setLineup(focus){
+  var wrap=document.getElementById('plWrap');wrap.innerHTML='';
+  var arr=null;
+  try{var p=JSON.parse(focus);if(Array.isArray(p))arr=p;}catch(e){}
+  if(arr&&arr.length){arr.forEach(function(x){addProduct(x);});}
+  else if(focus&&focus.trim()){addProduct({know:focus.trim()});} // 舊資料：純文字主打，塞進第一張的知識點
+  else{addProduct({});} // 給一張空卡
+  renumber();
+}
+
 function buildSlots(){
   var r=document.getElementById('slotRow');r.innerHTML='';
   SLOTS.forEach(function(s){
@@ -165,9 +222,10 @@ function load(){
 }
 function fill(){
   var c=cards[document.getElementById('fdate').value+'|'+slot]||{};
-  ['strategy','focus','hook','notes','r1','r2','r3'].forEach(function(k){
+  ['strategy','hook','notes','r1','r2','r3'].forEach(function(k){
     document.getElementById('f'+k).value=c[k]||'';
   });
+  setLineup(c.focus||'');
 }
 function renderHist(){
   var el=document.getElementById('hlist');
@@ -190,12 +248,14 @@ function renderHist(){
 }
 function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
 
+document.getElementById('plAdd').onclick=function(){addProduct({});};
+
 document.getElementById('save').onclick=function(){
   var date=document.getElementById('fdate').value;
   if(!date){showMsg('warn','先選日期');return;}
   var payload={token:TOKEN,action:'card_save',date:date,slot:slot,
     strategy:document.getElementById('fstrategy').value.trim(),
-    focus:document.getElementById('ffocus').value.trim(),
+    focus:JSON.stringify(readLineup()),
     hook:document.getElementById('fhook').value.trim(),
     notes:document.getElementById('fnotes').value.trim(),
     r1:document.getElementById('fr1').value.trim(),
@@ -218,6 +278,7 @@ document.getElementById('save').onclick=function(){
 document.getElementById('fdate').value=todayStr();
 document.getElementById('fdate').onchange=fill;
 buildSlots();
+fill();
 load();
 </script>
 </body>
