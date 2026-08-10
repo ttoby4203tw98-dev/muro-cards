@@ -27,9 +27,7 @@
   .optrow{display:flex;flex-wrap:wrap;gap:8px;}
   .opt{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 16px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink);}
   .opt.on{border-color:var(--plum2);background:var(--plum2);color:#fff;}
-  textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.7;
-    font-family:inherit;resize:vertical;min-height:64px;background:#fffdfb;}
-  textarea:focus,input:focus{outline:2px solid var(--rose);border-color:var(--rose);}
+  input:focus,textarea:focus{outline:2px solid var(--rose);border-color:var(--rose);}
 
   /* 排品 · 知識卡 */
   .plsec{margin-top:6px;}
@@ -51,11 +49,6 @@
   .pl-add{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:12px;padding:12px;font-size:14px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:12px;}
   .pl-add:active{background:#fdf4f7;}
 
-  .rules{background:#FBF6EF;border:1px dashed var(--gold);border-radius:12px;padding:12px 14px;}
-  .rules div{font-size:13px;line-height:1.8;}
-  .rules b{color:#9A6A1F;}
-  .review{background:#F4EEF2;border-radius:14px;padding:12px 14px;margin-top:14px;}
-  .review .flabel{color:#7a4b62;margin-top:8px;}
   .savebtn{width:100%;border:none;border-radius:14px;background:var(--plum2);color:#fff;
     font-size:18px;font-weight:800;letter-spacing:3px;padding:15px 0;margin-top:16px;cursor:pointer;}
   .savebtn:disabled{opacity:.5;}
@@ -78,7 +71,7 @@
 
 <div class="top">
   <h1>暮若作戰卡<small>MURO</small></h1>
-  <p>開播前全隊對一次・每個品先讀熟知識卡・下播後 3 行復盤</p>
+  <p>開播前排好品・每個品先讀熟知識卡</p>
 </div>
 
 <div class="wrap">
@@ -89,42 +82,10 @@
       <div class="optrow" id="slotRow"></div>
     </div>
 
-    <div class="flabel">一、這場的策略（一句話）</div>
-    <div class="hint">範例：今天衝新客，前 30 分鐘全押引流款 ／ 今天清庫存，利潤款只帶不推 ／ 今天測新品，看留言反應決定要不要進貨</div>
-    <textarea id="fstrategy" rows="2"></textarea>
-
-    <div class="flabel">二、這場排品 · 知識卡</div>
+    <div class="flabel">🎬 這場排品 · 知識卡</div>
     <div class="hint">一段一個主題，底下的商品、贈品、知識點都可以按「＋」加好幾個。主播開播前先讀熟知識點。</div>
     <div class="plsec" id="plWrap"></div>
     <button type="button" class="pl-add" id="plAdd">＋ 加一個主題</button>
-
-    <div class="flabel">三、留下來的理由（鉤子）</div>
-    <div class="hint">範例：整點抽獎 ／ 滿千折百只有今天 ／ 9 點半秒殺 39 元福利品</div>
-    <textarea id="fhook" rows="2"></textarea>
-
-    <div class="flabel">四、這場要特別注意的 2-3 件事</div>
-    <div class="hint">不是 SOP，是「這一場」特有的：昨天卡住的點、庫存風險、容易被問倒的問題、要避開的話題⋯⋯</div>
-    <textarea id="fnotes" rows="3"></textarea>
-
-    <div class="flabel">五、臨場應變原則（不用填，出狀況照這個反應）</div>
-    <div class="rules">
-      <div><b>流量突然湧入</b>：不管講到哪，先重講一次自己是誰＋今天福利，再回來</div>
-      <div><b>在線一直掉</b>：不戀戰：換品、發券或拉互動，二選一馬上做</div>
-      <div><b>這個品講不動</b>：2 分鐘內切下一個，原因下播再檢討，直播中不糾結</div>
-      <div><b>出事故（錯價/斷線）</b>：先止血（下架/補位）再查原因，主播繼續撐場不解釋太多</div>
-      <div><b>觀眾問倒了</b>：誠實說「這個我下播確認後回覆你」，不要現場瞎掰</div>
-    </div>
-
-    <div class="review">
-      <div class="flabel" style="margin-top:0;">六、下播後 3 行（5 分鐘內填完）</div>
-      <div class="flabel">策略奏效了嗎？</div>
-      <textarea id="fr1" rows="2"></textarea>
-      <div class="flabel">臨場發生什麼？</div>
-      <textarea id="fr2" rows="2"></textarea>
-      <div class="flabel">下場策略調不調？</div>
-      <textarea id="fr3" rows="2"></textarea>
-      <div class="hint" style="margin-top:6px;">提示：策略「一半奏效」最常見，寫清楚哪一半有用，下場才知道留什麼、丟什麼。</div>
-    </div>
 
     <button class="savebtn" id="save">儲存作戰卡</button>
     <div id="msg"></div>
@@ -182,7 +143,7 @@ function plCard(){
 }
 function fillGroup(card,k,vals){
   var box=card.querySelector('.pl-group[data-k="'+k+'"] .pl-lines');
-  if(!vals||!vals.length){ if(k!=='gifts') box.appendChild(plLine(k,'')); return; } // 商品/知識點至少留一格空的；贈品可全空
+  if(!vals||!vals.length){ if(k!=='gifts') box.appendChild(plLine(k,'')); return; }
   vals.forEach(function(v){box.appendChild(plLine(k,v));});
 }
 function addBlock(data){
@@ -219,9 +180,15 @@ function setLineup(focus){
   var arr=null;
   try{var p=JSON.parse(focus);if(Array.isArray(p))arr=p;}catch(e){}
   if(arr&&arr.length){arr.forEach(function(x){addBlock(x);});}
-  else if(focus&&focus.trim()){addBlock({knows:[focus.trim()]});} // 舊純文字主打
-  else{addBlock({});} // 一段空的
+  else if(focus&&focus.trim()){addBlock({knows:[focus.trim()]});}
+  else{addBlock({});}
   renumber();
+}
+function sumOf(focus){
+  try{var a=JSON.parse(focus);if(Array.isArray(a)&&a.length){
+    var b=a[0];return b.theme || (b.goods&&b.goods[0]) || '（未填排品）';
+  }}catch(e){}
+  return (focus&&focus.trim())?'（排品）':'（未填排品）';
 }
 
 function buildSlots(){
@@ -252,17 +219,13 @@ function load(){
     for(var i=1;i<rows.length;i++){
       var d=normDate(rows[i][0]);if(!d)continue;
       cards[d+'|'+(rows[i][1]||'').trim()]={
-        date:d,slot:(rows[i][1]||'').trim(),strategy:rows[i][2]||'',focus:rows[i][3]||'',
-        hook:rows[i][4]||'',notes:rows[i][5]||'',r1:rows[i][6]||'',r2:rows[i][7]||'',r3:rows[i][8]||''};
+        date:d,slot:(rows[i][1]||'').trim(),focus:rows[i][3]||''};
     }
     renderHist();fill();
   }).catch(function(){renderHist();});
 }
 function fill(){
   var c=cards[document.getElementById('fdate').value+'|'+slot]||{};
-  ['strategy','hook','notes','r1','r2','r3'].forEach(function(k){
-    document.getElementById('f'+k).value=c[k]||'';
-  });
   setLineup(c.focus||'');
 }
 function renderHist(){
@@ -275,7 +238,7 @@ function renderHist(){
     var row=document.createElement('div');row.className='hrow';
     row.innerHTML='<span class="hdate">'+c.date.slice(5).replace('-','/')+'</span>'+
       '<span class="hslot">'+(c.slot||'—')+'</span>'+
-      '<span class="hsum">'+(c.strategy||'（未填策略）')+'</span>';
+      '<span class="hsum">'+sumOf(c.focus)+'</span>';
     row.onclick=function(){
       document.getElementById('fdate').value=c.date;
       slot=c.slot||'晚場';buildSlots();fill();
@@ -292,13 +255,7 @@ document.getElementById('save').onclick=function(){
   var date=document.getElementById('fdate').value;
   if(!date){showMsg('warn','先選日期');return;}
   var payload={token:TOKEN,action:'card_save',date:date,slot:slot,
-    strategy:document.getElementById('fstrategy').value.trim(),
-    focus:JSON.stringify(readLineup()),
-    hook:document.getElementById('fhook').value.trim(),
-    notes:document.getElementById('fnotes').value.trim(),
-    r1:document.getElementById('fr1').value.trim(),
-    r2:document.getElementById('fr2').value.trim(),
-    r3:document.getElementById('fr3').value.trim()};
+    strategy:'', focus:JSON.stringify(readLineup()), hook:'', notes:'', r1:'', r2:'', r3:''};
   var btn=document.getElementById('save');btn.disabled=true;
   showMsg('warn','儲存中…');
   fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
