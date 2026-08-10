@@ -33,14 +33,21 @@
 
   /* 排品 · 知識卡 */
   .plsec{margin-top:6px;}
-  .plcard{background:#fffdfb;border:1px solid var(--line);border-radius:14px;padding:12px 12px 8px;margin-top:10px;}
+  .plcard{background:#fffdfb;border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;margin-top:10px;}
   .pl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
   .pl-no{font-size:12px;font-weight:800;color:#b0813f;background:#faeeda;border-radius:99px;padding:3px 12px;letter-spacing:1px;}
   .pl-del{border:none;background:none;color:var(--ink2);font-size:12px;cursor:pointer;text-decoration:underline;padding:2px 4px;}
   .pl-field{margin-top:7px;}
-  .pl-field label{font-size:12px;font-weight:800;color:var(--plum2);display:block;margin-bottom:3px;letter-spacing:.5px;}
-  .pl-field input,.pl-field textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
-  .pl-field textarea{resize:vertical;min-height:56px;line-height:1.65;}
+  .pl-field>label,.pl-group>label{font-size:12px;font-weight:800;color:var(--plum2);display:block;margin-bottom:4px;letter-spacing:.5px;}
+  .pl-field input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
+  .pl-group{margin-top:9px;}
+  .pl-lines{display:flex;flex-direction:column;gap:6px;}
+  .pl-line{display:flex;gap:6px;align-items:flex-start;}
+  .pl-input{flex:1 1 auto;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
+  textarea.pl-input{resize:vertical;min-height:46px;line-height:1.6;}
+  .pl-x{flex:0 0 auto;width:32px;height:36px;border:1.5px solid var(--line);background:#fff;border-radius:9px;color:var(--ink2);font-size:17px;line-height:1;cursor:pointer;}
+  .pl-x:active{background:#f7edf1;}
+  .pl-addline{border:none;background:none;color:var(--rose);font-size:13px;font-weight:800;cursor:pointer;padding:6px 2px;margin-top:3px;letter-spacing:.5px;}
   .pl-add{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:12px;padding:12px;font-size:14px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:12px;}
   .pl-add:active{background:#fdf4f7;}
 
@@ -87,9 +94,9 @@
     <textarea id="fstrategy" rows="2"></textarea>
 
     <div class="flabel">二、這場排品 · 知識卡</div>
-    <div class="hint">照播出順序把品列好，每個品填一張卡。主播開播前先讀熟「知識點」，才講得出東西、答得了問。</div>
+    <div class="hint">一段一個主題，底下的商品、贈品、知識點都可以按「＋」加好幾個。主播開播前先讀熟知識點。</div>
     <div class="plsec" id="plWrap"></div>
-    <button type="button" class="pl-add" id="plAdd">＋ 加一個品</button>
+    <button type="button" class="pl-add" id="plAdd">＋ 加一個主題</button>
 
     <div class="flabel">三、留下來的理由（鉤子）</div>
     <div class="hint">範例：整點抽獎 ／ 滿千折百只有今天 ／ 9 點半秒殺 39 元福利品</div>
@@ -144,35 +151,66 @@ var cards={}; // 'date|slot' -> {..}
 function pad(n){return (n<10?'0':'')+n;}
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 
-/* ---------- 排品 · 知識卡 ---------- */
+/* ---------- 排品 · 知識卡（主題 + 複數 商品/贈品/知識點）---------- */
 var CN=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
-function plCard(data){
-  data=data||{};
+var PH={goods:'品名 / 貨號', gifts:'贈品，沒有就不用加', knows:'主播先讀熟：材質怎麼說、解決什麼痛點、怎麼搭、跟市面差在哪'};
+
+function plLine(kind,val){
+  var row=document.createElement('div');row.className='pl-line';
+  var el=(kind==='knows')?document.createElement('textarea'):document.createElement('input');
+  el.className='pl-input';el.value=val||'';el.placeholder=PH[kind]||'';
+  if(kind==='knows')el.rows=2;
+  var x=document.createElement('button');x.type='button';x.className='pl-x';x.textContent='×';
+  x.onclick=function(){row.parentNode.removeChild(row);};
+  row.appendChild(el);row.appendChild(x);
+  return row;
+}
+function plCard(){
   var d=document.createElement('div');d.className='plcard';
   d.innerHTML=
-    '<div class="pl-top"><span class="pl-no"></span><button class="pl-del" type="button">刪除</button></div>'+
-    '<div class="pl-field"><label>主題</label><input class="pl-theme" placeholder="這個品今天怎麼切，例：一件抵三件的顯瘦穿搭"></div>'+
-    '<div class="pl-field"><label>商品</label><input class="pl-name" placeholder="品名 / 貨號"></div>'+
-    '<div class="pl-field"><label>贈品</label><input class="pl-gift" placeholder="搭配贈品，沒有就留白"></div>'+
-    '<div class="pl-field"><label>知識點</label><textarea class="pl-know" rows="3" placeholder="主播先讀熟：材質怎麼說、解決什麼痛點、怎麼搭、跟市面差在哪"></textarea></div>';
-  d.querySelector('.pl-theme').value=data.theme||'';
-  d.querySelector('.pl-name').value=data.name||'';
-  d.querySelector('.pl-gift').value=data.gift||'';
-  d.querySelector('.pl-know').value=data.know||'';
+    '<div class="pl-top"><span class="pl-no"></span><button class="pl-del" type="button">刪除整段</button></div>'+
+    '<div class="pl-field"><label>主題</label><input class="pl-theme" placeholder="這一段的切入主題，例：換季保暖 / 一件抵三件"></div>'+
+    '<div class="pl-group" data-k="goods"><label>商品</label><div class="pl-lines"></div><button class="pl-addline" type="button">＋ 加商品</button></div>'+
+    '<div class="pl-group" data-k="gifts"><label>贈品</label><div class="pl-lines"></div><button class="pl-addline" type="button">＋ 加贈品</button></div>'+
+    '<div class="pl-group" data-k="knows"><label>知識點</label><div class="pl-lines"></div><button class="pl-addline" type="button">＋ 加知識點</button></div>';
   d.querySelector('.pl-del').onclick=function(){d.parentNode.removeChild(d);renumber();};
+  [].forEach.call(d.querySelectorAll('.pl-group'),function(g){
+    var k=g.getAttribute('data-k');
+    g.querySelector('.pl-addline').onclick=function(){g.querySelector('.pl-lines').appendChild(plLine(k,''));};
+  });
   return d;
+}
+function fillGroup(card,k,vals){
+  var box=card.querySelector('.pl-group[data-k="'+k+'"] .pl-lines');
+  if(!vals||!vals.length){ if(k!=='gifts') box.appendChild(plLine(k,'')); return; } // 商品/知識點至少留一格空的；贈品可全空
+  vals.forEach(function(v){box.appendChild(plLine(k,v));});
+}
+function addBlock(data){
+  data=data||{};
+  var goods=data.goods,gifts=data.gifts,knows=data.knows;
+  if(!goods && data.name!==undefined){ // 相容舊格式 {theme,name,gift,know}
+    goods=data.name?[data.name]:[]; gifts=data.gift?[data.gift]:[]; knows=data.know?[data.know]:[];
+  }
+  var card=plCard();
+  card.querySelector('.pl-theme').value=data.theme||'';
+  fillGroup(card,'goods',goods);
+  fillGroup(card,'gifts',gifts);
+  fillGroup(card,'knows',knows);
+  document.getElementById('plWrap').appendChild(card);renumber();
 }
 function renumber(){
   var cs=document.getElementById('plWrap').children;
-  [].forEach.call(cs,function(c,i){c.querySelector('.pl-no').textContent='品 '+(CN[i]||(i+1));});
+  [].forEach.call(cs,function(c,i){c.querySelector('.pl-no').textContent='主題 '+(CN[i]||(i+1));});
 }
-function addProduct(data){document.getElementById('plWrap').appendChild(plCard(data));renumber();}
 function readLineup(){
   var arr=[];
-  [].forEach.call(document.getElementById('plWrap').children,function(c){
-    var o={theme:c.querySelector('.pl-theme').value.trim(),name:c.querySelector('.pl-name').value.trim(),
-      gift:c.querySelector('.pl-gift').value.trim(),know:c.querySelector('.pl-know').value.trim()};
-    if(o.theme||o.name||o.gift||o.know)arr.push(o);
+  [].forEach.call(document.getElementById('plWrap').children,function(card){
+    var o={theme:card.querySelector('.pl-theme').value.trim(),goods:[],gifts:[],knows:[]};
+    [].forEach.call(card.querySelectorAll('.pl-group'),function(g){
+      var k=g.getAttribute('data-k');
+      [].forEach.call(g.querySelectorAll('.pl-input'),function(inp){var v=inp.value.trim();if(v)o[k].push(v);});
+    });
+    if(o.theme||o.goods.length||o.gifts.length||o.knows.length)arr.push(o);
   });
   return arr;
 }
@@ -180,9 +218,9 @@ function setLineup(focus){
   var wrap=document.getElementById('plWrap');wrap.innerHTML='';
   var arr=null;
   try{var p=JSON.parse(focus);if(Array.isArray(p))arr=p;}catch(e){}
-  if(arr&&arr.length){arr.forEach(function(x){addProduct(x);});}
-  else if(focus&&focus.trim()){addProduct({know:focus.trim()});} // 舊資料：純文字主打，塞進第一張的知識點
-  else{addProduct({});} // 給一張空卡
+  if(arr&&arr.length){arr.forEach(function(x){addBlock(x);});}
+  else if(focus&&focus.trim()){addBlock({knows:[focus.trim()]});} // 舊純文字主打
+  else{addBlock({});} // 一段空的
   renumber();
 }
 
@@ -210,7 +248,7 @@ function normDate(s){s=(s||'').trim();var m=s.match(/(\d{4})[\/\-年\.](\d{1,2})
 function load(){
   fetch(CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
     var rows=parseCSV(t);cards={};
-    if(rows.length&&(rows[0][0]||'').indexOf('日期')===-1){renderHist();return;} // 分頁尚未建立
+    if(rows.length&&(rows[0][0]||'').indexOf('日期')===-1){renderHist();return;}
     for(var i=1;i<rows.length;i++){
       var d=normDate(rows[i][0]);if(!d)continue;
       cards[d+'|'+(rows[i][1]||'').trim()]={
@@ -248,7 +286,7 @@ function renderHist(){
 }
 function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
 
-document.getElementById('plAdd').onclick=function(){addProduct({});};
+document.getElementById('plAdd').onclick=function(){addBlock({});};
 
 document.getElementById('save').onclick=function(){
   var date=document.getElementById('fdate').value;
