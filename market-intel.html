@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>商品情報週報｜暮若</title>
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{
+    --plum:#4a2c3a; --plum2:#6b3f52; --rose:#9c5c6e;
+    --gold:#d6a680; --cream:#faf6f2; --card:#ffffff;
+    --ink:#372a30; --ink2:#8a7580; --line:#eee2da;
+    --go:#2f7d4f; --go-bg:#e7f3ec; --watch:#b0813f; --watch-bg:#faeeda;
+    --hot:#a85454;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;line-height:1.6}
+  .hero{background:linear-gradient(160deg,var(--plum) 0%,var(--plum2) 55%,var(--rose) 100%);color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 20px) 22px 40px;border-radius:0 0 26px 26px}
+  .back{display:inline-block;color:#f0e3da;text-decoration:none;font-size:13px;opacity:.85;margin-bottom:12px}
+  .hero h1{font-size:24px;font-weight:800;letter-spacing:1.5px}
+  .hero .sub{margin-top:6px;font-size:13px;opacity:.82}
+  .hero .date{margin-top:3px;font-size:12px;opacity:.6}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px 44px}
+  .note{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:-22px;font-size:12.5px;color:var(--ink2);box-shadow:0 6px 18px rgba(74,44,58,.07)}
+  .note b{color:var(--ink)}
+  h2.sec{font-size:15px;color:var(--plum);letter-spacing:1px;margin:26px 4px 10px;font-weight:800}
+  .ovf{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;background:#fff;font-size:12.5px;min-width:560px}
+  th,td{padding:8px 9px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+  th{background:var(--plum);color:#f6eee8;font-weight:700;font-size:12px}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;white-space:nowrap}
+  .go{color:var(--go);background:var(--go-bg)} .watch{color:var(--watch);background:var(--watch-bg)}
+  .hot{color:var(--hot);font-weight:700}
+  .cat{background:#fff;border:1px solid var(--line);border-radius:18px;margin:14px 0;overflow:hidden;box-shadow:0 6px 18px rgba(74,44,58,.06)}
+  .cat-h{padding:13px 16px;color:#fff;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .cat-h b{font-size:16px;letter-spacing:.5px;flex:1}
+  .cat-b{padding:14px 16px}
+  .cost{background:var(--cream);border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+  .cost b{color:var(--plum)}
+  .blk h4{font-size:12px;color:var(--ink2);font-weight:700;margin:10px 0 4px;letter-spacing:.5px}
+  .blk ul{padding-left:17px} .blk li{font-size:13px;margin:2px 0}
+  .kw span{display:inline-block;background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:2px 9px;margin:3px 3px 0 0;font-size:12px}
+  .verdict{background:#faf3ee;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:9px 12px;font-size:13px;margin-top:12px}
+  .warn{background:#fbecec;border-left:3px solid var(--hot);border-radius:0 10px 10px 0;padding:9px 12px;font-size:12.5px;margin-top:10px;color:#8a3b3b;font-weight:600}
+  .rules{display:inline-block;margin-top:11px;font-size:12.5px;color:var(--rose);text-decoration:none;font-weight:700}
+  footer{margin-top:24px;font-size:11.5px;color:#b9a8b0;line-height:1.7;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="wrap" style="padding-bottom:0">
+    <a class="back" href="team.html">‹ 返回團隊</a>
+    <h1>商品情報週報</h1>
+    <div class="sub">6 大類目 · 台灣蝦皮市場 · 受眾 45+ 女性</div>
+    <div class="date" id="reportdate">資料彙整:2026/08/16</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="note">
+    <b>定位:</b>商品面情報(價帶／需求／口碑／毛利空間),接「週一命題」用;與「市場週報(痛點・宏觀方向)」分工。<br>
+    <b>⚠️ 校對:</b>價格與 Trends 為<b>參考級</b>(蝦皮無 API、Trends 估計)。<b>下單前務必蝦皮依銷量實搜校對暢銷價。</b>「到手成本上限」為粗估(匯率 ¥1≈NT$4.4、目標毛利 70%),商品淨價要再更低。
+  </div>
+
+  <h2 class="sec">一頁總表</h2>
+  <div class="ovf">
+  <table>
+    <tr><th>類目</th><th>價帶(NT$)低／中／高</th><th>暢銷落點</th><th>成本上限¥<br>@毛利70%</th><th>需求</th><th>紅海</th><th>建議</th></tr>
+    <tr><td><b>內衣</b></td><td>88–290／300–500／1000–2980</td><td>290–499</td><td><b>¥20–34</b></td><td class="hot">升·高</td><td class="hot">高</td><td><span class="pill watch">觀望·差異化</span></td></tr>
+    <tr><td><b>內褲</b></td><td>25–65／89–189／234+(單件)</td><td>純棉89–189</td><td><b>¥6–13</b></td><td>平·中</td><td class="hot">高</td><td><span class="pill watch">觀望偏做</span></td></tr>
+    <tr><td><b>上衣</b></td><td>99–199／200–400／500–1500+</td><td>99–299</td><td><b>¥7–20</b></td><td class="hot">涼感升·高</td><td class="hot">高</td><td><span class="pill go">做·差異化</span></td></tr>
+    <tr><td><b>下身</b></td><td>內搭199–399／寬褲490–650／1400+</td><td>寬褲490–650</td><td><b>¥33–44</b></td><td class="hot">寬褲升·高</td><td class="hot">高</td><td><span class="pill go">做·差異化</span></td></tr>
+    <tr><td><b>塑身</b></td><td>169–299／349–499／980–4280</td><td>300–500</td><td><b>¥20–34</b></td><td>平升·中</td><td class="hot">高</td><td><span class="pill go">做·先過合規</span></td></tr>
+    <tr><td><b>襪子</b></td><td>棉11–69／機能59–128／壓力149–229</td><td>單50–130</td><td><b>¥3–9</b></td><td class="go">機能升·高</td><td>機能中</td><td><span class="pill go">做·機能款</span></td></tr>
+  </table>
+  </div>
+  <div style="font-size:11.5px;color:var(--ink2);margin:6px 4px 0">低價帶(冰絲內褲¥2–4、平價上衣¥7)在 1688 幾乎買不到能達 70% 毛利的貨 → 這些價位撐不起 70%,要嘛賣高一階、要嘛收 60% 目標。</div>
+
+  <h2 class="sec">各類目展開</h2>
+
+  <div class="cat">
+    <div class="cat-h" style="background:#8a4b6a"><b>內衣</b><span class="pill watch">觀望·差異化</span></div>
+    <div class="cat-b">
+      <div class="cost">價帶 NT$ 88–290／<b>300–500(暢銷)</b>／1000–2980　·　到手成本上限 <b>¥20–34</b> @70%</div>
+      <div class="blk"><h4>痛點 Top5</h4><ul><li>下垂／外擴／走山,一般內衣壓不住</li><li>副乳外溢、包覆不足(要U型美背)</li><li>悶熱不透氣(轉無鋼圈主因)</li><li>壓迫感 vs 支撐力兩難</li><li>大尺碼 D–E 選擇少</li></ul></div>
+      <div class="blk"><h4>雷點／退貨 Top3</h4><ul><li>尺寸不合(最大宗)</li><li>跑杯位移、支撐不足</li><li>衛生用品不可退</li></ul></div>
+      <div class="blk kw"><h4>賣點關鍵字</h4><span>零束縛</span><span>U型美背</span><span>收副乳</span><span>不壓胸</span><span>大罩杯撐得住</span><span>前扣</span><span>大尺碼B–E</span></div>
+      <div class="verdict"><b>判讀:</b>需求穩、受眾對,但價格戰＋退貨高。差異化:大罩杯 D–E＋高包覆收副乳＋涼感,直播試穿破尺寸痛點,守 NT$290–499、避 $99 殺價。</div>
+      <a class="rules" href="bra-rules.html">內衣選品規則 ›</a>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="cat-h" style="background:#8a4b6a"><b>內褲</b><span class="pill watch">觀望偏做</span></div>
+    <div class="cat-b">
+      <div class="cost">價帶 25–65／<b>89–189(純棉)</b>／234+ 單件　·　成本上限 <b>¥6–13</b> @70%</div>
+      <div class="blk"><h4>痛點 Top5</h4><ul><li>悶熱不透氣、私密處易發炎</li><li>勒腰卡臀、勒出肉痕</li><li>小腹遮不住、痕跡外露</li><li>鬆緊帶易鬆垮變形</li><li>尺碼不準、大尺碼少</li></ul></div>
+      <div class="blk"><h4>雷點／退貨 Top3</h4><ul><li>尺寸不合(冰絲買大一號)</li><li>脫膠、捲邊、需手洗</li><li>衛生用品「不能退」→客訴集中</li></ul></div>
+      <div class="blk kw"><h4>賣點關鍵字</h4><span>無痕</span><span>不卡臀不勒肉</span><span>中高腰修飾小腹</span><span>純棉褲底</span><span>抗菌除臭</span><span>大尺碼M–4XL</span><span>MIT</span></div>
+      <div class="verdict"><b>判讀:</b>需求穩、受眾精準,但低價無痕血海。切「大尺碼中高腰・純棉透氣・不勒不捲・MIT」中價帶(單件89–189／5件199–299),明講退換降客訴,避 $30 冰絲戰。</div>
+      <a class="rules" href="panty-rules.html">內褲選品規則 ›</a>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="cat-h" style="background:#3a6ea5"><b>上衣</b><span class="pill go">做·差異化</span></div>
+    <div class="cat-b">
+      <div class="cost">價帶 99–199／<b>200–400(主戰場)</b>／500–1500+　·　成本上限 <b>¥7–20</b> @70%</div>
+      <div class="blk"><h4>痛點 Top5</h4><ul><li>顯瘦／遮肚,怕橫向臃腫</li><li>涼感怕太薄透光(要重磅不透)</li><li>好搭百搭、開小V修飾</li><li>親膚不刺癢(天絲／萊賽爾)</li><li>中大尺碼 L–8XL</li></ul></div>
+      <div class="blk"><h4>雷點／退貨 Top3</h4><ul><li>尺寸不合(最大宗)</li><li>色差:實品與圖落差</li><li>起毛球、縮水、薄透</li></ul></div>
+      <div class="blk kw"><h4>賣點關鍵字</h4><span>顯瘦</span><span>遮肉遮肚</span><span>落肩寬版</span><span>涼感冰絲</span><span>重磅不透</span><span>親膚天絲</span><span>開V領</span><span>L–8XL</span></div>
+      <div class="verdict"><b>判讀:</b>剛需高頻回購,45+ 痛點集中。切「重磅不透／親膚天絲／L–8XL 顯瘦」中價帶($199–350),尺寸表＋實穿影片降退貨,避 $99–299 殺價。</div>
+      <a class="rules" href="tops-rules.html">上衣選品規則 ›</a>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="cat-h" style="background:#3a6ea5"><b>下身</b><span class="pill go">做·差異化</span></div>
+    <div class="cat-b">
+      <div class="cost">價帶 內搭199–399／<b>寬褲490–650(暢銷)</b>／1400+　·　成本上限 <b>¥33–44</b> @70%</div>
+      <div class="blk"><h4>痛點 Top5</h4><ul><li>腰圍不合／會勒(要後腰鬆緊)</li><li>顯瘦但要遮胯寬臀塌</li><li>遮肉 vs 顯厚兩難(要垂墜)</li><li>彈性不足穿著卡</li><li>悶熱不透氣(夏推冰絲)</li></ul></div>
+      <div class="blk"><h4>雷點／退貨 Top3</h4><ul><li>尺寸不合(最大失血點)</li><li>褲長不對(落地／加長)</li><li>色差、下水縮水</li></ul></div>
+      <div class="blk kw"><h4>賣點關鍵字</h4><span>後腰鬆緊</span><span>高腰顯瘦</span><span>遮肉藏肉</span><span>冰絲涼感</span><span>垂墜不顯厚</span><span>闊腿直筒</span><span>中大尺碼</span><span>MIT</span></div>
+      <div class="verdict"><b>判讀:</b>45+ 鬆緊腰需求穩、痛點明確。避 $300 內殺價,鎖 NT$490–650「後腰鬆緊＋垂墜遮肉＋冰絲」款;尺寸表、褲長、實穿影片壓退貨。</div>
+      <a class="rules" href="bottoms-rules.html">下身選品規則 ›</a>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="cat-h" style="background:#b06a2c"><b>塑身</b><span class="pill go">做·先過合規</span></div>
+    <div class="cat-b">
+      <div class="cost">價帶 169–299／<b>349–499(暢銷)</b>／980–4280　·　成本上限 <b>¥20–34</b> @70%</div>
+      <div class="blk"><h4>痛點 Top5</h4><ul><li>坐下捲邊／腰頭下滑(最高頻)</li><li>悶熱不透氣、久穿長疹</li><li>過緊勒到、胃痛</li><li>收腹力道不足或位移</li><li>洗後鬆弛、不耐用</li></ul></div>
+      <div class="blk"><h4>雷點／退貨 Top3</h4><ul><li>版型過緊／尺寸不合</li><li>透氣度不足</li><li>捲邊＋不耐用</li></ul></div>
+      <div class="blk kw"><h4>賣點關鍵字</h4><span>防捲邊</span><span>涼感果凍紗</span><span>高腰無痕</span><span>產後</span><span>久坐小腹</span><span>包小腹平腹</span><span>大尺碼友善</span></div>
+      <div class="warn">⚠️ 合規紅線:塑身／收腹是違規廣告重災區,「纖體、雕塑曲線、瘦身、減脂」宣稱最重罰數十萬~數百萬。只能講物理描述(修飾外觀、視覺顯瘦、穿著支撐);用「彈性纖維」勿講「氨綸／萊卡」。</div>
+      <div class="verdict"><b>判讀:</b>剛需大、客群精準、中價 $300–500 與成本相容。值得做但屬紅海需差異化(防捲邊＋涼感＋大尺碼)。<b>前提:話術先過合規。</b></div>
+      <a class="rules" href="shapewear-rules.html">塑身選品規則 ›</a>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="cat-h" style="background:#2f7d4f"><b>襪子</b><span class="pill go">做·機能款</span></div>
+    <div class="cat-b">
+      <div class="cost">價帶 棉11–69／機能59–128／壓力149–229(雙)　·　成本上限 <b>¥3–9</b>(單雙) @70%</div>
+      <div class="blk"><h4>痛點 Top5</h4><ul><li>襪口鬆緊勒痕(要寬口無痕)</li><li>久站小腿腫脹如灌鉛</li><li>腳汗悶臭、脫鞋尷尬</li><li>冬季腳冰冷(季節性)</li><li>越洗越鬆／越臭、易破</li></ul></div>
+      <div class="blk"><h4>雷點／退貨 Top3</h4><ul><li>壓力襪勒肉、難套穿</li><li>機能名不符實(假抑菌)</li><li>尺寸鬆緊落差、彈性疲乏</li></ul></div>
+      <div class="blk kw"><h4>賣點關鍵字</h4><span>銀離子抑菌</span><span>竹炭除臭</span><span>寬口無痕不勒</span><span>漸進式加壓</span><span>足弓氣墊</span><span>厚底毛巾圈</span><span>MIT</span></div>
+      <div class="verdict"><b>判讀:</b>做機能型——寬口無痕除臭、足弓氣墊壓力,命中勒痕／久站／腳臭三痛點,單雙$80–150或5雙組$299有毛利,直播實測強。發熱襪 10 月再備;避開純棉廉價紅海。</div>
+      <a class="rules" href="socks-rules.html">襪子選品規則 ›</a>
+    </div>
+  </div>
+
+  <footer>
+    <b>本週須人工蝦皮實搜校對:</b>① 各類暢銷款實際成交價＋已售量(依銷量排序前20)② Google Trends 近90天曲線 ③ 賣家數與平均星等。<br>
+    <b>接法:</b>價帶→定售價→算毛利率;成本上限→1688 殺價底線;痛點→命題單＋直播腳本;紅海度→做不做參考。<br>
+    來源:蝦皮／BigGo／feebee／Google Trends(估計)／Dcard／PTT／vocus／pixnet／momo。<br>
+    <span style="opacity:.7">MURO 商品情報週報 · 每週一 07:00 自動更新 · AI 研究彙整,僅供選品參考</span>
+  </footer>
+</div>
+</body>
+</html>
