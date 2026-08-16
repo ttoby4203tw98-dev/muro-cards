@@ -102,7 +102,7 @@ function pidx(n){var i=PEOPLE.indexOf(n);if(i<0){i=0;for(var j=0;j<n.length;j++)
 function pad(n){return (n<10?'0':'')+n;}
 function todayKey(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function dstr(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
-var allPunch=null,recPeriod='7',recWho='全部';
+var allPunch=null,recPeriod='7',recWho=null;
 function periodStart(){var d=new Date();if(recPeriod==='month')return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-01';var g=new Date();g.setDate(d.getDate()-(recPeriod==='30'?29:6));return dstr(g);}
 function buildRecCtrl(){
   var pr=document.getElementById('periodRow');if(!pr)return;pr.innerHTML='';
@@ -130,6 +130,7 @@ function loadRecords(){
 function renderRec(){
   var list=document.getElementById('recList'),stat=document.getElementById('statLine');if(!list)return;
   if(!allPunch){list.className='empty';list.textContent='載入中…';return;}
+  if(!recWho){list.className='empty';list.textContent='點上面的「全部」或某個人，查看打卡紀錄';stat.innerHTML='';return;}
   var start=periodStart();
   var recs=allPunch.filter(function(r){return r.date>=start&&(recWho==='全部'||r.name===recWho);});
   recs.sort(function(a,b){return a.date<b.date?1:(a.date>b.date?-1:(a.name<b.name?-1:1));});

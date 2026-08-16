@@ -77,7 +77,11 @@
 <div class="wrap">
   <div class="card">
     <div class="flabel">📅 選週期</div>
-    <div class="optrow" id="dayRow"></div>
+    <div class="hint">點日曆選任一天，自動抓該天所在那週（週一~週日）</div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <input type="date" id="weekpick">
+      <span id="weekLabel" style="font-weight:800;color:var(--plum2);font-size:15px;"></span>
+    </div>
     <input type="hidden" id="fdate">
     <div class="flabel">🕒 場次</div>
     <div class="optrow" id="slotRow"></div>
@@ -117,17 +121,8 @@ function fmtMD(d){return pad(d.getMonth()+1)+'/'+pad(d.getDate());}
 function dstr(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function weekRange(mon){var s=new Date(mon);s.setDate(mon.getDate()+6);return fmtMD(mon)+'–'+fmtMD(s);}
 function rangeFromStr(ds){var p=(ds||'').split('-');if(p.length<3)return ds||'';return weekRange(new Date(+p[0],+p[1]-1,+p[2]));}
-function selWeek(ds){var r=document.getElementById('dayRow');[].forEach.call(r.children,function(x){x.classList.toggle('on',x.getAttribute('data-d')===ds);});document.getElementById('fdate').value=ds;}
-function buildWeeks(){
-  var r=document.getElementById('dayRow');r.innerHTML='';var tm=mondayOf(new Date());
-  [{o:-1,l:'上週'},{o:0,l:'本週'},{o:1,l:'下週'},{o:2,l:'下下週'}].forEach(function(w){
-    var m=new Date(tm);m.setDate(tm.getDate()+w.o*7);var ds=dstr(m);
-    var b=document.createElement('button');b.className='opt';b.setAttribute('data-d',ds);
-    b.textContent=w.l+' '+weekRange(m);
-    b.onclick=function(){selWeek(this.getAttribute('data-d'));fill();};
-    r.appendChild(b);});
-  selWeek(dstr(tm));
-}
+function setWeekByDate(ds){var p=(ds||todayStr()).split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);var mon=mondayOf(d);document.getElementById('fdate').value=dstr(mon);document.getElementById('weekLabel').textContent='本週期 '+weekRange(mon);}
+function initWeekPick(){var wp=document.getElementById('weekpick');wp.value=todayStr();wp.onchange=function(){setWeekByDate(this.value);fill();};setWeekByDate(todayStr());}
 
 /* ---------- 排品 · 知識卡（主題 + 複數 商品/贈品/知識點）---------- */
 var CN=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
@@ -257,7 +252,7 @@ function renderHist(){
       '<span class="hslot">'+(c.slot||'—')+'</span>'+
       '<span class="hsum">'+sumOf(c.focus)+'</span>';
     row.onclick=function(){
-      selWeek(c.date);
+      document.getElementById('weekpick').value=c.date;setWeekByDate(c.date);
       slot=c.slot||'早班';buildSlots();fill();
       window.scrollTo({top:0,behavior:'smooth'});
     };
@@ -287,7 +282,7 @@ document.getElementById('save').onclick=function(){
   .finally(function(){btn.disabled=false;});
 };
 
-buildWeeks();
+initWeekPick();
 buildSlots();
 fill();
 load();
