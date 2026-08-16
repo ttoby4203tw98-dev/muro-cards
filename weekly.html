@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暮若每週週報</title>
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;
+    --card:#fff;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--on:#2f7d4f;--onbg:#e7f3ec;
+    --orange:#c75b2a;--orbg:#fbeee6;--live:#3a6ea5;--hot:#a85454;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  .hant .s,.hans .t{display:none}
+  .hero{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px 16px;border-radius:0 0 22px 22px}
+  .hero-top{display:flex;align-items:center;gap:10px}
+  .back{color:#f0e3da;text-decoration:none;font-size:13px;opacity:.85}
+  .lang{margin-left:auto;display:flex;background:rgba(255,255,255,.15);border-radius:99px;padding:2px}
+  .lang button{border:none;background:transparent;color:#f6eee8;font-size:12px;padding:4px 12px;border-radius:99px;font-family:inherit;cursor:pointer}
+  .lang button.act{background:#fff;color:var(--plum)}
+  .hero h1{font-size:21px;font-weight:800;letter-spacing:1.5px;margin-top:8px}
+  .hero .date{font-size:12px;opacity:.75;margin-top:3px}
+  .tabs{display:flex;gap:6px;margin-top:14px}
+  .tabs button{flex:1;border:none;background:rgba(255,255,255,.14);color:#f6eee8;font-family:inherit;font-size:12.5px;font-weight:700;padding:8px 4px;border-radius:12px;cursor:pointer;line-height:1.3}
+  .tabs button.act{background:#fff;color:var(--plum)}
+  .wrap{max-width:640px;margin:0 auto;padding:14px 14px 44px}
+  .pane{display:none}.pane.act{display:block}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:11px;box-shadow:0 3px 12px rgba(74,44,58,.05)}
+  .sec h2{font-size:15px;color:var(--orange);margin-bottom:6px}
+  .sec h2.plum{color:var(--plum2)}
+  .sec p{font-size:13.5px;margin:3px 0}
+  .src{font-size:11px;color:var(--ink2);margin-top:6px}
+  .src a{color:var(--ink2)}
+  .pain{border-left:5px solid var(--orange);background:#fff;border:1px solid var(--line);border-left-width:5px;border-radius:0 12px 12px 0;padding:12px 15px;margin-bottom:11px}
+  .pnum{display:inline-block;background:var(--orange);color:#fff;font-size:11px;font-weight:700;border-radius:6px;padding:2px 9px;margin-bottom:5px}
+  .pain h3{font-size:15px;margin:2px 0 7px}
+  .lbl{font-size:11.5px;font-weight:700;color:var(--orange);margin-top:8px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .tag{background:var(--orbg);color:#a3491f;border-radius:99px;padding:3px 11px;font-size:12px;font-weight:600}
+  .say{background:#fff8f4;border:1px dashed #f0a57f;border-radius:10px;padding:9px 12px;font-size:13px;margin-top:5px}
+  .ovf{overflow-x:auto;border-radius:12px;border:1px solid var(--line);margin:8px 0}
+  table{width:100%;border-collapse:collapse;background:#fff;font-size:12px;min-width:560px}
+  th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{background:var(--plum);color:#f6eee8;font-size:11.5px}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11px;font-weight:700}
+  .go{color:var(--on);background:var(--onbg)}.watch{color:#9a6b00;background:#faeeda}
+  td.pb{white-space:normal;line-height:1.9}
+  .lv{display:inline-block;font-size:10px;font-weight:700;color:#fff;border-radius:4px;padding:0 5px;margin-right:5px}
+  .lv-lo{background:#b9aca2}.lv-mid{background:var(--gold);color:#5a3a1a}.lv-hi{background:var(--plum2)}
+  .theme{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 14px;margin-bottom:10px}
+  .th-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .th-name{font-size:15.5px;font-weight:800;color:var(--plum2)}
+  .cov{margin-left:auto;font-size:11px;font-weight:700;color:var(--on);background:var(--onbg);border-radius:99px;padding:2px 8px}
+  .cats{display:flex;gap:4px;margin:8px 0 3px;flex-wrap:wrap}
+  .c{font-size:10.5px;border-radius:9px;padding:1px 8px;border:1px solid var(--line);color:var(--ink2)}
+  .c.on{background:var(--onbg);color:var(--on);border-color:transparent;font-weight:600}
+  .c.off{text-decoration:line-through;opacity:.5}
+  .dep{font-size:12px;margin-top:6px;line-height:1.55}
+  .seg{display:inline-block;font-size:10px;font-weight:700;color:#fff;border-radius:5px;padding:1px 6px;margin-right:4px}
+  .s40{background:var(--live)}.s30{background:var(--on)}
+  .note{font-size:12px;color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:11px}
+  .note b{color:var(--ink)}
+  .full{display:inline-block;margin-top:6px;font-size:12px;color:var(--rose);font-weight:700;text-decoration:none}
+  footer{margin-top:16px;font-size:11px;color:var(--ink2);text-align:center;line-height:1.7}
+</style>
+</head>
+<body class="hant">
+<div class="hero">
+  <div class="hero-top">
+    <a class="back" href="team.html"><span class="t">‹ 返回團隊</span><span class="s">‹ 返回团队</span></a>
+    <div class="lang">
+      <button id="l-t" class="act" onclick="setLang('hant')">繁體</button>
+      <button id="l-s" onclick="setLang('hans')">简体</button>
+    </div>
+  </div>
+  <h1><span class="t">暮若每週週報</span><span class="s">暮若每周周报</span></h1>
+  <div class="date"><span class="t">2026/08/16（日）· 每週一 07:00 更新</span><span class="s">2026/08/16（日）· 每周一 07:00 更新</span></div>
+  <div class="tabs">
+    <button class="tab act" data-p="p1" onclick="setTab('p1',this)"><span class="t">市場痛點</span><span class="s">市场痛点</span></button>
+    <button class="tab" data-p="p2" onclick="setTab('p2',this)"><span class="t">商品情報</span><span class="s">商品情报</span></button>
+    <button class="tab" data-p="p3" onclick="setTab('p3',this)"><span class="t">選品主題·Q3</span><span class="s">选品主题·Q3</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ============ 分頁1 市場痛點 ============ -->
+<div class="pane act" id="p1">
+  <div class="sec"><h2>🔥 <span class="t">台灣熱搜</span><span class="s">台湾热搜</span></h2>
+    <p><b>①</b> <span class="t">主計處:2025 國人平均年所得 76.3 萬創新高,但「數字好看、生活沒鬆」→ 用「該換的換一換、一分錢買該有品質」切入,別炫耀。</span><span class="s">主计处:2025 国人平均年所得 76.3 万创新高,但「数字好看、生活没松」→ 用「该换的换一换、一分钱买该有品质」切入,别炫耀。</span></p>
+    <p><b>②</b> <span class="t">健保署示警冒充健保局的 LINE 詐騙擴散。45+ 正被盯上 → 直播一律走蝦皮官方、絕不私訊,反而建立信任。</span><span class="s">健保署示警冒充健保局的 LINE 诈骗扩散。45+ 正被盯上 → 直播一律走虾皮官方、绝不私讯,反而建立信任。</span></p>
+  </div>
+  <div class="sec"><h2>🌤 <span class="t">氣候背景</span><span class="s">气候背景</span></h2>
+    <p><span class="t">8/16–20 高溫特報 36°C＋午後雷陣雨;8/21–23 連下三天劇烈降雨、防雷擊強風;8/24 後轉晴。</span><span class="s">8/16–20 高温特报 36°C＋午后雷阵雨;8/21–23 连下三天剧烈降雨、防雷击强风;8/24 后转晴。</span></p>
+  </div>
+  <div class="sec"><h2>💰 <span class="t">消費環境</span><span class="s">消费环境</span></h2>
+    <p><span class="t">所得創高但物價硬、詐騙多 → 花錢更看「安心」。檔期:8/18 會員日、8/19 七夕、8/25 商城日、8/27 中元、9/1 開學。</span><span class="s">所得创高但物价硬、诈骗多 → 花钱更看「安心」。档期:8/18 会员日、8/19 七夕、8/25 商城日、8/27 中元、9/1 开学。</span></p>
+  </div>
+
+  <h2 style="text-align:center;font-size:17px;margin:16px 0 4px" class="t">😣 5 大痛點</h2>
+  <h2 style="text-align:center;font-size:17px;margin:16px 0 4px" class="s">😣 5 大痛点</h2>
+
+  <div class="pain"><span class="pnum">01</span>
+    <h3><span class="t">七夕:老夫老妻不送花,「換一件像樣的」剛好</span><span class="s">七夕:老夫老妻不送花,「换一件像样的」刚好</span></h3>
+    <div class="lbl"><span class="t">😣 痛點</span><span class="s">😣 痛点</span></div>
+    <p><span class="t">8/19 七夕。45+ 不流行送花,但願意趁名目犒賞自己:換套穿得出去的、換組睡得舒服的;也幫女兒媳婦挑。</span><span class="s">8/19 七夕。45+ 不流行送花,但愿意趁名目犒赏自己:换套穿得出去的、换组睡得舒服的;也帮女儿媳妇挑。</span></p>
+    <div class="lbl"><span class="t">🛍 選品方向</span><span class="s">🛍 选品方向</span></div>
+    <div class="tags"><span class="tag"><span class="t">舒適無鋼圈內衣</span><span class="s">舒适无钢圈内衣</span></span><span class="tag"><span class="t">冰絲睡衣</span><span class="s">冰丝睡衣</span></span><span class="tag"><span class="t">質感家居服</span><span class="s">质感家居服</span></span></div>
+    <div class="say t">「後天七夕,不用等人家送——姐姐我們自己買。這件穿起來心情就好,對自己好就好。」</div>
+    <div class="say s">「后天七夕,不用等人家送——姐姐我们自己买。这件穿起来心情就好,对自己好就好。」</div>
+  </div>
+
+  <div class="pain"><span class="pnum">02</span>
+    <h3><span class="t">週五起連下三天大雨:衣服曬不乾</span><span class="s">周五起连下三天大雨:衣服晒不干</span></h3>
+    <div class="lbl"><span class="t">😣 痛點</span><span class="s">😣 痛点</span></div>
+    <p><span class="t">8/21–23 劇烈降雨。主婦最痛的是衣服晾不乾、房間返潮、棉被有味道;之前又 36°C,濕熱交替易發霉。</span><span class="s">8/21–23 剧烈降雨。主妇最痛的是衣服晾不干、房间返潮、棉被有味道;之前又 36°C,湿热交替易发霉。</span></p>
+    <div class="lbl"><span class="t">🛍 選品方向</span><span class="s">🛍 选品方向</span></div>
+    <div class="tags"><span class="tag"><span class="t">速乾衣物</span><span class="s">速干衣物</span></span><span class="tag"><span class="t">除濕袋</span><span class="s">除湿袋</span></span><span class="tag"><span class="t">室內曬衣架</span><span class="s">室内晒衣架</span></span></div>
+    <div class="say t">「禮拜五開始連下三天,速乾材質室內晾一晚就乾;除濕袋先放兩包,棉被才不返潮。」</div>
+    <div class="say s">「礼拜五开始连下三天,速干材质室内晾一晚就干;除湿袋先放两包,棉被才不返潮。」</div>
+  </div>
+
+  <div class="pain"><span class="pnum">03</span>
+    <h3><span class="t">中元 8/27 倒數:普渡的東西這週不買來不及</span><span class="s">中元 8/27 倒数:普渡的东西这周不买来不及</span></h3>
+    <div class="lbl"><span class="t">😣 痛點</span><span class="s">😣 痛点</span></div>
+    <p><span class="t">8/27 中元剩十一天。45+ 是張羅普渡的人:供品要搬、太陽下站著拜;後半週下雨,採買只剩前半週。</span><span class="s">8/27 中元剩十一天。45+ 是张罗普渡的人:供品要搬、太阳下站着拜;后半周下雨,采买只剩前半周。</span></p>
+    <div class="lbl"><span class="t">🛍 選品方向</span><span class="s">🛍 选品方向</span></div>
+    <div class="tags"><span class="tag"><span class="t">摺疊購物推車</span><span class="s">折叠购物推车</span></span><span class="tag"><span class="t">防曬袖套遮陽帽</span><span class="s">防晒袖套遮阳帽</span></span><span class="tag"><span class="t">吸汗透氣上衣</span><span class="s">吸汗透气上衣</span></span></div>
+    <div class="say t">「中元剩十一天,禮拜五又下雨,採買只剩這幾天。這台推車一次拉 30 公斤,不用求人。」</div>
+    <div class="say s">「中元剩十一天,礼拜五又下雨,采买只剩这几天。这台推车一次拉 30 公斤,不用求人。」</div>
+  </div>
+
+  <div class="pain"><span class="pnum">04</span>
+    <h3><span class="t">高溫特報最後一波:36°C 悶熱夜</span><span class="s">高温特报最后一波:36°C 闷热夜</span></h3>
+    <div class="lbl"><span class="t">😣 痛點</span><span class="s">😣 痛点</span></div>
+    <p><span class="t">今天到週四六縣市 36°C,晚上悶到睡不好;週五轉雨濕度更高。這夏最後一段熱,涼感需求還在。</span><span class="s">今天到周四六县市 36°C,晚上闷到睡不好;周五转雨湿度更高。这夏最后一段热,凉感需求还在。</span></p>
+    <div class="lbl"><span class="t">🛍 選品方向</span><span class="s">🛍 选品方向</span></div>
+    <div class="tags"><span class="tag"><span class="t">涼感床包</span><span class="s">凉感床包</span></span><span class="tag"><span class="t">冰絲睡衣</span><span class="s">冰丝睡衣</span></span><span class="tag"><span class="t">循環扇</span><span class="s">循环扇</span></span></div>
+    <div class="say t">「六縣市高溫特報 36 度。冰絲睡衣配涼感床包,27 度睡起來像 25 度。」</div>
+    <div class="say s">「六县市高温特报 36 度。冰丝睡衣配凉感床包,27 度睡起来像 25 度。」</div>
+  </div>
+
+  <div class="pain"><span class="pnum">05</span>
+    <h3><span class="t">9/1 開學倒數兩週:阿嬤採買清單開始滾</span><span class="s">9/1 开学倒数两周:阿嬷采买清单开始滚</span></h3>
+    <div class="lbl"><span class="t">😣 痛點</span><span class="s">😣 痛点</span></div>
+    <p><span class="t">兩週後開學。有孫子的姐姐會接到電話:襪子破了、內衣小了。習慣一次買齊一學期、挑好洗耐穿。</span><span class="s">两周后开学。有孙子的姐姐会接到电话:袜子破了、内衣小了。习惯一次买齐一学期、挑好洗耐穿。</span></p>
+    <div class="lbl"><span class="t">🛍 選品方向</span><span class="s">🛍 选品方向</span></div>
+    <div class="tags"><span class="tag"><span class="t">學生純棉內著</span><span class="s">学生纯棉内着</span></span><span class="tag"><span class="t">中筒襪多雙組</span><span class="s">中筒袜多双组</span></span><span class="tag"><span class="t">兒童速乾上衣</span><span class="s">儿童速干上衣</span></span></div>
+    <div class="say t">「再兩週開學,有孫子的舉手!襪子五雙一組,一次買齊洗一輪還有得換。」</div>
+    <div class="say s">「再两周开学,有孙子的举手!袜子五双一组,一次买齐洗一轮还有得换。」</div>
+  </div>
+
+  <div class="sec"><h2>⚠️ <span class="t">雷區提醒</span><span class="s">雷区提醒</span></h2>
+    <p><span class="t"><b>一、</b>任何「私訊/加賴/點連結」話術(詐騙敏感)→ 一律走蝦皮官方。</span><span class="s"><b>一、</b>任何「私讯/加赖/点连结」话术(诈骗敏感)→ 一律走虾皮官方。</span></p>
+    <p><span class="t"><b>二、</b>農曆七月,玩水/喜慶/搬家類需求低且忌諱,等九月。</span><span class="s"><b>二、</b>农历七月,玩水/喜庆/搬家类需求低且忌讳,等九月。</span></p>
+    <p><span class="t"><b>三、</b>8/21–23 豪雨物流塞,別承諾「保證幾號到」,改「出貨我幫你追」。</span><span class="s"><b>三、</b>8/21–23 豪雨物流塞,别承诺「保证几号到」,改「出货我帮你追」。</span></p>
+  </div>
+  <div class="sec"><h2>🎯 <span class="t">本週直播建議</span><span class="s">本周直播建议</span></h2>
+    <p><span class="t">今晚(日)卡位涼感寢具;<b>8/18 會員日×七夕前一天=最強場</b>(內著睡衣「自己買」);8/19 七夕收尾轉中元採買;8/21–23 雨天宅家場推速乾除濕收納。</span><span class="s">今晚(日)卡位凉感寝具;<b>8/18 会员日×七夕前一天=最强场</b>(内着睡衣「自己买」);8/19 七夕收尾转中元采买;8/21–23 雨天宅家场推速干除湿收纳。</span></p>
+  </div>
+  <a class="full" href="daily.html"><span class="t">看痛點週報完整版 ›</span><span class="s">看痛点周报完整版 ›</span></a>
+</div>
+
+<!-- ============ 分頁2 商品情報 ============ -->
+<div class="pane" id="p2">
+  <div class="note"><span class="t"><b>商品面情報</b>(價帶/需求/毛利空間)。價格與 Trends 為<b>參考級</b>,下單前須人工蝦皮依銷量實搜校對。成本上限=暢銷價×(1−70%)÷4.8。</span><span class="s"><b>商品面情报</b>(价带/需求/毛利空间)。价格与 Trends 为<b>参考级</b>,下单前须人工虾皮依销量实搜校对。成本上限=畅销价×(1−70%)÷4.8。</span></div>
+  <div class="ovf"><table>
+    <tr><th><span class="t">類目</span><span class="s">类目</span></th><th><span class="t">價帶(NT$)</span><span class="s">价带(NT$)</span></th><th><span class="t">暢銷</span><span class="s">畅销</span></th><th><span class="t">成本上限¥</span><span class="s">成本上限¥</span></th><th><span class="t">需求</span><span class="s">需求</span></th><th><span class="t">建議</span><span class="s">建议</span></th></tr>
+    <tr><td><span class="t">內衣</span><span class="s">内衣</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$88–290<br><span class="lv lv-mid">中</span>NT$300–500<br><span class="lv lv-hi">高</span>NT$1000–2980</td><td>NT$290–499</td><td>¥18–31</td><td class="t">升·高</td><td class="s">升·高</td><td><span class="pill watch"><span class="t">觀望</span><span class="s">观望</span></span></td></tr>
+    <tr><td><span class="t">內褲</span><span class="s">内裤</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$25–65<br><span class="lv lv-mid">中</span>NT$89–189<br><span class="lv lv-hi">高</span>NT$234+</td><td>NT$89–189</td><td>¥6–12</td><td class="t">平·中</td><td class="s">平·中</td><td><span class="pill watch"><span class="t">觀望</span><span class="s">观望</span></span></td></tr>
+    <tr><td><span class="t">上衣</span><span class="s">上衣</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$99–199<br><span class="lv lv-mid">中</span>NT$200–400<br><span class="lv lv-hi">高</span>NT$500+</td><td>NT$99–299</td><td>¥6–19</td><td class="t">升·高</td><td class="s">升·高</td><td><span class="pill go"><span class="t">做</span><span class="s">做</span></span></td></tr>
+    <tr><td><span class="t">下身</span><span class="s">下身</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$199–399<br><span class="lv lv-mid">中</span>NT$490–650<br><span class="lv lv-hi">高</span>NT$1400+</td><td>NT$490–650</td><td>¥31–41</td><td class="t">升·高</td><td class="s">升·高</td><td><span class="pill go"><span class="t">做</span><span class="s">做</span></span></td></tr>
+    <tr><td><span class="t">塑身</span><span class="s">塑身</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$169–299<br><span class="lv lv-mid">中</span>NT$349–499<br><span class="lv lv-hi">高</span>NT$980+</td><td>NT$300–500</td><td>¥19–31</td><td class="t">平升·中</td><td class="s">平升·中</td><td><span class="pill go"><span class="t">做·合規</span><span class="s">做·合规</span></span></td></tr>
+    <tr><td><span class="t">襪子</span><span class="s">袜子</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$11–69<br><span class="lv lv-mid">中</span>NT$59–128<br><span class="lv lv-hi">高</span>NT$149–229</td><td>NT$50–130</td><td>¥3–8</td><td class="t">機能升</td><td class="s">机能升</td><td><span class="pill go"><span class="t">做·機能</span><span class="s">做·机能</span></span></td></tr>
+  </table></div>
+  <p style="font-size:11.5px;color:var(--ink2)"><span class="t">低價帶(冰絲內褲¥2–4、平價上衣¥6)在 1688 幾乎買不到能達 70% 毛利的貨 → 撐不起 70%,要嘛賣高一階、要嘛收 60% 目標。</span><span class="s">低价带(冰丝内裤¥2–4、平价上衣¥6)在 1688 几乎买不到能达 70% 毛利的货 → 撑不起 70%,要嘛卖高一阶、要嘛收 60% 目标。</span></p>
+  <div class="sec"><h2 class="plum"><span class="t">各欄資料來源與算法</span><span class="s">各栏资料来源与算法</span></h2>
+    <p><b><span class="t">價格帶 低/中/高</span><span class="s">价格带 低/中/高</span></b>：<span class="t">蝦皮同款 ＋ BigGo/feebee 跨平台(momo/Yahoo/PChome),取「實際在賣」的價分低中高。</span><span class="s">虾皮同款 ＋ BigGo/feebee 跨平台(momo/Yahoo/PChome),取「实际在卖」的价分低中高。</span></p>
+    <p><b><span class="t">暢銷價</span><span class="s">畅销价</span></b>：<span class="t">蝦皮依「銷量」排序,取熱賣可比款的成交價落點。</span><span class="s">虾皮依「销量」排序,取热卖可比款的成交价落点。</span></p>
+    <p><b><span class="t">成本上限¥</span><span class="s">成本上限¥</span></b>：<span class="t">計算值 = 暢銷價 ×(1−目標毛利70%)÷ 匯率4.8 = 1688 到手成本上限,超過就別考慮。</span><span class="s">计算值 = 畅销价 ×(1−目标毛利70%)÷ 汇率4.8 = 1688 到手成本上限,超过就别考虑。</span></p>
+    <p><b><span class="t">需求(升/平/降·熱度)</span><span class="s">需求(升/平/降·热度)</span></b>：<span class="t">Google Trends 該品類近90天(估計)＋ 蝦皮同類月銷。</span><span class="s">Google Trends 该品类近90天(估计)＋ 虾皮同类月销。</span></p>
+    <p><b><span class="t">建議(做/觀望)</span><span class="s">建议(做/观望)</span></b>：<span class="t">人腦判讀,綜合「紅海度＋需求＋毛利空間」得出,不是硬數據。</span><span class="s">人脑判读,综合「红海度＋需求＋毛利空间」得出,不是硬数据。</span></p>
+    <p class="src"><span class="t">⚠️ 價格、月銷、Trends 皆為參考級,下單前須人工蝦皮依銷量實搜校對。</span><span class="s">⚠️ 价格、月销、Trends 皆为参考级,下单前须人工虾皮依销量实搜校对。</span></p>
+  </div>
+  <div class="sec"><h2 class="plum"><span class="t">本週商品面判讀</span><span class="s">本周商品面判读</span></h2>
+    <p><span class="t"><b>上衣/下身</b> → 做,切「重磅不透/後腰鬆緊+垂墜遮肉」中價帶避殺價。<b>襪子</b> → 做機能(寬口無痕除臭、足弓氣墊壓力),避純棉紅海。<b>塑身</b> → 做但守合規。<b>內衣/內褲</b> → 觀望,守大尺碼中高腰區隔。</span><span class="s"><b>上衣/下身</b> → 做,切「重磅不透/后腰松紧+垂坠遮肉」中价带避杀价。<b>袜子</b> → 做机能(宽口无痕除臭、足弓气垫压力),避纯棉红海。<b>塑身</b> → 做但守合规。<b>内衣/内裤</b> → 观望,守大尺码中高腰区隔。</span></p>
+  </div>
+  <a class="full" href="market-intel.html"><span class="t">看商品情報完整版 ›</span><span class="s">看商品情报完整版 ›</span></a>
+</div>
+
+<!-- ============ 分頁3 選品主題 ============ -->
+<div class="pane" id="p3">
+  <h2 style="font-size:16px;color:var(--plum2);margin:2px 2px 9px;letter-spacing:1px"><span class="t">Q3 選品主題（盛夏酷熱）</span><span class="s">Q3 选品主题（盛夏酷热）</span></h2>
+  <div class="note"><span class="t"><b>主題=需求屬性大類</b>(不是商品),一題橫跨多品類。<b>主題無高低</b>,週一團隊自選;涵蓋數只是參考。底層:人(受眾結構痛點·專業機構)×時(盛夏酷熱)。</span><span class="s"><b>主题=需求属性大类</b>(不是商品),一题横跨多品类。<b>主题无高低</b>,周一团队自选;涵盖数只是参考。底层:人(受众结构痛点·专业机构)×时(盛夏酷热)。</span></div>
+
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">涼感透氣</span><span class="s">凉感透气</span></span><span class="cov">6/6</span></div>
+    <div class="cats"><span class="c on"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c on"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c on"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c on"><span class="t">下身</span><span class="s">下身</span></span><span class="c on"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c on"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">①潮熱怕悶×酷暑(年度最痛)</span><span class="s">①潮热怕闷×酷暑(年度最痛)</span>　<span class="seg s30">30+</span><span class="t">②久坐悶熱</span><span class="s">②久坐闷热</span></div>
+  </div>
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">吸濕排汗防漏</span><span class="s">吸湿排汗防漏</span></span><span class="cov">6/6</span></div>
+    <div class="cats"><span class="c on"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c on"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c on"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c on"><span class="t">下身</span><span class="s">下身</span></span><span class="c on"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c on"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">⑥尿失禁×大汗</span><span class="s">⑥尿失禁×大汗</span>　<span class="seg s30">30+</span><span class="t">②久坐流汗</span><span class="s">②久坐流汗</span></div>
+  </div>
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">親膚敏感肌</span><span class="s">亲肤敏感肌</span></span><span class="cov">6/6</span></div>
+    <div class="cats"><span class="c on"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c on"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c on"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c on"><span class="t">下身</span><span class="s">下身</span></span><span class="c on"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c on"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">⑤皮膚變薄乾敏×流汗貼身怕癢</span><span class="s">⑤皮肤变薄干敏×流汗贴身怕痒</span>　<span class="seg s30">30+</span><span class="t">敏感肌</span><span class="s">敏感肌</span></div>
+  </div>
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">快乾好整理</span><span class="s">快干好整理</span></span><span class="cov">6/6</span></div>
+    <div class="cats"><span class="c on"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c on"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c on"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c on"><span class="t">下身</span><span class="s">下身</span></span><span class="c on"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c on"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">⑧家務忙、夏天洗曬多</span><span class="s">⑧家务忙、夏天洗晒多</span>　<span class="seg s30">30+</span><span class="t">⑤時間貧窮</span><span class="s">⑤时间贫穷</span></div>
+  </div>
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">無痕不勒</span><span class="s">无痕不勒</span></span><span class="cov">5/6</span></div>
+    <div class="cats"><span class="c on"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c on"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c off"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c on"><span class="t">下身</span><span class="s">下身</span></span><span class="c on"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c on"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">①熱不想被勒、②鬆緊腰</span><span class="s">①热不想被勒、②松紧腰</span>　<span class="seg s30">30+</span><span class="t">②久坐不勒</span><span class="s">②久坐不勒</span></div>
+  </div>
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">顯瘦修飾</span><span class="s">显瘦修饰</span></span><span class="cov">4/6</span></div>
+    <div class="cats"><span class="c on"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c off"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c on"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c on"><span class="t">下身</span><span class="s">下身</span></span><span class="c on"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c off"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">②腰腹肥胖×夏天露肉</span><span class="s">②腰腹肥胖×夏天露肉</span>　<span class="seg s30">30+</span><span class="t">③遮肉又要有型</span><span class="s">③遮肉又要有型</span></div>
+  </div>
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">抗菌除臭</span><span class="s">抗菌除臭</span></span><span class="cov">4/6</span></div>
+    <div class="cats"><span class="c on"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c on"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c on"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c off"><span class="t">下身</span><span class="s">下身</span></span><span class="c off"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c on"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">④久站腳汗、⑥私密悶</span><span class="s">④久站脚汗、⑥私密闷</span>　<span class="seg s30">30+</span><span class="t">②久坐悶</span><span class="s">②久坐闷</span></div>
+  </div>
+  <div class="theme"><div class="th-top"><span class="th-name"><span class="t">防曬遮陽</span><span class="s">防晒遮阳</span></span><span class="cov">3/6</span></div>
+    <div class="cats"><span class="c off"><span class="t">內衣</span><span class="s">内衣</span></span><span class="c off"><span class="t">內褲</span><span class="s">内裤</span></span><span class="c on"><span class="t">上衣</span><span class="s">上衣</span></span><span class="c on"><span class="t">下身</span><span class="s">下身</span></span><span class="c off"><span class="t">塑身</span><span class="s">塑身</span></span><span class="c on"><span class="t">襪</span><span class="s">袜</span></span></div>
+    <div class="dep"><span class="seg s40">40+</span><span class="t">夏日外出×②遮手臂鬆弛</span><span class="s">夏日外出×②遮手臂松弛</span>　<span class="seg s30">30+</span><span class="t">④外出穿搭</span><span class="s">④外出穿搭</span></div>
+  </div>
+  <a class="full" href="themes-q3.html"><span class="t">看主題庫完整版 ›</span><span class="s">看主题库完整版 ›</span></a>
+</div>
+
+<footer><span class="t">MURO 暮若每週週報 · 市場痛點/商品情報/選品主題 · 每週一 07:00 更新</span><span class="s">MURO 暮若每周周报 · 市场痛点/商品情报/选品主题 · 每周一 07:00 更新</span></footer>
+</div>
+
+<script>
+function setLang(l){document.body.className=l;document.getElementById('l-t').classList.toggle('act',l==='hant');document.getElementById('l-s').classList.toggle('act',l==='hans');try{localStorage.setItem('muroLang',l)}catch(e){}}
+function setTab(p,btn){document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('act')});document.getElementById(p).classList.add('act');document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('act')});btn.classList.add('act');window.scrollTo(0,0)}
+try{var sv=localStorage.getItem('muroLang');if(sv)setLang(sv)}catch(e){}
+</script>
+</body>
+</html>
