@@ -46,6 +46,9 @@
   .tout{background:#F0E7EE;color:#6b3f52;}
   .tmiss{font-size:13px;color:#c9b3bd;}
   .empty{color:var(--ink2);font-size:14px;}
+  .fopt{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--ink2);}
+  .fopt.on{border-color:var(--plum2);background:var(--plum2);color:#fff;}
+  #statLine b{color:var(--plum2);}
   footer{text-align:center;margin-top:22px;font-size:12px;color:#b9a8b0;}
   footer a{color:var(--rose);}
 </style>
@@ -74,6 +77,14 @@
     <div id="tlist" class="empty">載入中…</div>
   </div>
 
+  <div class="card today">
+    <h2>🗂 打卡紀錄</h2>
+    <div class="optrow" id="periodRow" style="margin-bottom:8px;"></div>
+    <div class="optrow" id="filterRow" style="margin-bottom:10px;"></div>
+    <div id="statLine" style="font-size:13px;color:var(--ink2);margin-bottom:10px;line-height:1.8;"></div>
+    <div id="recList" class="empty">載入中…</div>
+  </div>
+
   <footer><a href="team.html">← 回團隊首頁</a></footer>
 </div>
 
@@ -90,6 +101,45 @@ var who=null;
 function pidx(n){var i=PEOPLE.indexOf(n);if(i<0){i=0;for(var j=0;j<n.length;j++)i=(i*31+n.charCodeAt(j))>>>0;}return i%12;}
 function pad(n){return (n<10?'0':'')+n;}
 function todayKey(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function dstr(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+var allPunch=null,recPeriod='7',recWho='全部';
+function periodStart(){var d=new Date();if(recPeriod==='month')return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-01';var g=new Date();g.setDate(d.getDate()-(recPeriod==='30'?29:6));return dstr(g);}
+function buildRecCtrl(){
+  var pr=document.getElementById('periodRow');if(!pr)return;pr.innerHTML='';
+  [{v:'7',l:'近7天'},{v:'30',l:'近30天'},{v:'month',l:'本月'}].forEach(function(p){
+    var b=document.createElement('button');b.className='fopt'+(p.v===recPeriod?' on':'');b.textContent=p.l;
+    b.onclick=function(){recPeriod=p.v;[].forEach.call(pr.children,function(x){x.classList.remove('on');});b.classList.add('on');renderRec();};
+    pr.appendChild(b);});
+  var fr=document.getElementById('filterRow');fr.innerHTML='';
+  ['全部'].concat(PEOPLE).forEach(function(n){
+    var b=document.createElement('button');b.className='fopt'+(n===recWho?' on':'');b.textContent=n;
+    b.onclick=function(){recWho=n;[].forEach.call(fr.children,function(x){x.classList.remove('on');});b.classList.add('on');renderRec();};
+    fr.appendChild(b);});
+}
+function loadRecords(){
+  fetch(PUNCH_CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    var rows=parseCSV(t),map={};
+    if(rows.length&&(rows[0][0]||'').indexOf('日期')===-1){allPunch=[];renderRec();return;}
+    for(var i=1;i<rows.length;i++){var d=normDate(rows[i][0]);if(!d)continue;
+      var n=(rows[i][1]||'').trim(),ty=(rows[i][2]||'').trim(),tm=(rows[i][3]||'').trim();
+      var k=n+'|'+d;map[k]=map[k]||{date:d,name:n,in:'',out:''};
+      if(ty==='上班')map[k].in=tm;else if(ty==='下班')map[k].out=tm;}
+    allPunch=Object.keys(map).map(function(k){return map[k];});renderRec();
+  }).catch(function(){allPunch=[];renderRec();});
+}
+function renderRec(){
+  var list=document.getElementById('recList'),stat=document.getElementById('statLine');if(!list)return;
+  if(!allPunch){list.className='empty';list.textContent='載入中…';return;}
+  var start=periodStart();
+  var recs=allPunch.filter(function(r){return r.date>=start&&(recWho==='全部'||r.name===recWho);});
+  recs.sort(function(a,b){return a.date<b.date?1:(a.date>b.date?-1:(a.name<b.name?-1:1));});
+  var days={};recs.forEach(function(r){days[r.name]=days[r.name]||{};days[r.name][r.date]=1;});
+  var names=Object.keys(days).sort();
+  stat.innerHTML=names.length?('本期打卡天數：'+names.map(function(n){return n+' <b>'+Object.keys(days[n]).length+'</b> 天';}).join('　')):'';
+  if(!recs.length){list.className='empty';list.textContent='這段期間沒有打卡紀錄。';return;}
+  list.className='';
+  list.innerHTML=recs.map(function(r){return '<div class="trow"><span class="tname" style="min-width:70px">'+r.date.slice(5).replace('-','/')+'</span><span style="min-width:52px;font-weight:700">'+r.name+'</span>'+(r.in?'<span class="tin">上 '+r.in+'</span>':'<span class="tmiss">缺上班</span>')+(r.out?'<span class="tout">下 '+r.out+'</span>':'<span class="tmiss">缺下班</span>')+'</div>';}).join('');
+}
 
 function tick(){
   var d=new Date();
@@ -162,7 +212,7 @@ function punch(type){
     if(t.indexOf('ok')===0){showMsg('good','✅ '+who+'　'+type+'打卡成功　'+t.slice(3));}
     else if(t.indexOf('dup')===0){showMsg('warn','⚠️ '+who+' 今天已經打過'+type+'卡了（'+t.slice(4)+'）');}
     else{showMsg('bad','打卡失敗，請再試一次');}
-    loadToday();
+    loadToday();loadRecords();
   })
   .catch(function(){showMsg('bad','連不上打卡服務，請確認網路後再試');})
   .finally(function(){
@@ -181,12 +231,15 @@ fetch(MAIN_CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)th
     var n=(rows[i][1]||'').trim();
     if(n&&n!=='全體'&&ppl.indexOf(n)===-1)ppl.push(n);
   }
-  if(ppl.length){PEOPLE=ppl;buildWho();}
+  if(ppl.length){PEOPLE=ppl;buildWho();buildRecCtrl();}
 }).catch(function(){});
 
 buildWho();
 loadToday();
 setInterval(loadToday,60000);
+buildRecCtrl();
+loadRecords();
+setInterval(loadRecords,60000);
 </script>
 </body>
 </html>
