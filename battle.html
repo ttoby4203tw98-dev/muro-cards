@@ -70,17 +70,17 @@
 <body>
 
 <div class="top">
-  <h1>暮若作戰卡<small>MURO</small></h1>
-  <p>開播前排好品・每個品先讀熟知識卡</p>
+  <h1>本週作戰卡<small>MURO</small></h1>
+  <p>選本週哪一天・早班或晚班・排好品先讀熟知識卡</p>
 </div>
 
 <div class="wrap">
   <div class="card">
-    <div class="flabel">📅 日期 / 時段</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-      <input type="date" id="fdate">
-      <div class="optrow" id="slotRow"></div>
-    </div>
+    <div class="flabel">📅 本週日期</div>
+    <div class="optrow" id="dayRow"></div>
+    <input type="hidden" id="fdate">
+    <div class="flabel">🕒 場次</div>
+    <div class="optrow" id="slotRow"></div>
 
     <div class="flabel">🎬 這場排品 · 知識卡</div>
     <div class="hint">一段一個主題，底下的商品、贈品、知識點都可以按「＋」加好幾個。主播開播前先讀熟知識點。</div>
@@ -105,12 +105,25 @@ var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1b
 var TOKEN='muro2026';
 var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('作戰卡');
 
-var SLOTS=['早場','下午場','晚場','加開場'];
-var slot='晚場';
+var SLOTS=['早班','晚班'];
+var slot='早班';
 var cards={}; // 'date|slot' -> {..}
 
 function pad(n){return (n<10?'0':'')+n;}
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+var WD=['一','二','三','四','五','六','日'];
+function mondayOf(d){var x=new Date(d);var g=x.getDay();x.setDate(x.getDate()-((g+6)%7));return x;}
+function selDay(ds){var r=document.getElementById('dayRow');[].forEach.call(r.children,function(x){x.classList.toggle('on',x.getAttribute('data-d')===ds);});document.getElementById('fdate').value=ds;}
+function buildDays(){
+  var r=document.getElementById('dayRow');r.innerHTML='';var mon=mondayOf(new Date());var today=todayStr();var have=false;
+  for(var i=0;i<7;i++){var d=new Date(mon);d.setDate(mon.getDate()+i);
+    var ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    var b=document.createElement('button');b.className='opt';b.setAttribute('data-d',ds);
+    b.textContent='週'+WD[i]+' '+pad(d.getMonth()+1)+'/'+pad(d.getDate());
+    b.onclick=function(){selDay(this.getAttribute('data-d'));fill();};
+    if(ds===today)have=true;r.appendChild(b);}
+  selDay(have?today:r.children[0].getAttribute('data-d'));
+}
 
 /* ---------- 排品 · 知識卡（主題 + 複數 商品/贈品/知識點）---------- */
 var CN=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
@@ -240,8 +253,8 @@ function renderHist(){
       '<span class="hslot">'+(c.slot||'—')+'</span>'+
       '<span class="hsum">'+sumOf(c.focus)+'</span>';
     row.onclick=function(){
-      document.getElementById('fdate').value=c.date;
-      slot=c.slot||'晚場';buildSlots();fill();
+      selDay(c.date);
+      slot=c.slot||'早班';buildSlots();fill();
       window.scrollTo({top:0,behavior:'smooth'});
     };
     el.appendChild(row);
@@ -270,8 +283,7 @@ document.getElementById('save').onclick=function(){
   .finally(function(){btn.disabled=false;});
 };
 
-document.getElementById('fdate').value=todayStr();
-document.getElementById('fdate').onchange=fill;
+buildDays();
 buildSlots();
 fill();
 load();
