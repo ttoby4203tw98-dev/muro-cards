@@ -76,7 +76,7 @@
 
 <div class="wrap">
   <div class="card">
-    <div class="flabel">📅 本週日期</div>
+    <div class="flabel">📅 選週期</div>
     <div class="optrow" id="dayRow"></div>
     <input type="hidden" id="fdate">
     <div class="flabel">🕒 場次</div>
@@ -113,16 +113,20 @@ function pad(n){return (n<10?'0':'')+n;}
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 var WD=['一','二','三','四','五','六','日'];
 function mondayOf(d){var x=new Date(d);var g=x.getDay();x.setDate(x.getDate()-((g+6)%7));return x;}
-function selDay(ds){var r=document.getElementById('dayRow');[].forEach.call(r.children,function(x){x.classList.toggle('on',x.getAttribute('data-d')===ds);});document.getElementById('fdate').value=ds;}
-function buildDays(){
-  var r=document.getElementById('dayRow');r.innerHTML='';var mon=mondayOf(new Date());var today=todayStr();var have=false;
-  for(var i=0;i<7;i++){var d=new Date(mon);d.setDate(mon.getDate()+i);
-    var ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+function fmtMD(d){return pad(d.getMonth()+1)+'/'+pad(d.getDate());}
+function dstr(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function weekRange(mon){var s=new Date(mon);s.setDate(mon.getDate()+6);return fmtMD(mon)+'–'+fmtMD(s);}
+function rangeFromStr(ds){var p=(ds||'').split('-');if(p.length<3)return ds||'';return weekRange(new Date(+p[0],+p[1]-1,+p[2]));}
+function selWeek(ds){var r=document.getElementById('dayRow');[].forEach.call(r.children,function(x){x.classList.toggle('on',x.getAttribute('data-d')===ds);});document.getElementById('fdate').value=ds;}
+function buildWeeks(){
+  var r=document.getElementById('dayRow');r.innerHTML='';var tm=mondayOf(new Date());
+  [{o:-1,l:'上週'},{o:0,l:'本週'},{o:1,l:'下週'},{o:2,l:'下下週'}].forEach(function(w){
+    var m=new Date(tm);m.setDate(tm.getDate()+w.o*7);var ds=dstr(m);
     var b=document.createElement('button');b.className='opt';b.setAttribute('data-d',ds);
-    b.textContent='週'+WD[i]+' '+pad(d.getMonth()+1)+'/'+pad(d.getDate());
-    b.onclick=function(){selDay(this.getAttribute('data-d'));fill();};
-    if(ds===today)have=true;r.appendChild(b);}
-  selDay(have?today:r.children[0].getAttribute('data-d'));
+    b.textContent=w.l+' '+weekRange(m);
+    b.onclick=function(){selWeek(this.getAttribute('data-d'));fill();};
+    r.appendChild(b);});
+  selWeek(dstr(tm));
 }
 
 /* ---------- 排品 · 知識卡（主題 + 複數 商品/贈品/知識點）---------- */
@@ -249,11 +253,11 @@ function renderHist(){
   keys.forEach(function(k){
     var c=cards[k];
     var row=document.createElement('div');row.className='hrow';
-    row.innerHTML='<span class="hdate">'+c.date.slice(5).replace('-','/')+'</span>'+
+    row.innerHTML='<span class="hdate">'+rangeFromStr(c.date)+'</span>'+
       '<span class="hslot">'+(c.slot||'—')+'</span>'+
       '<span class="hsum">'+sumOf(c.focus)+'</span>';
     row.onclick=function(){
-      selDay(c.date);
+      selWeek(c.date);
       slot=c.slot||'早班';buildSlots();fill();
       window.scrollTo({top:0,behavior:'smooth'});
     };
@@ -275,7 +279,7 @@ document.getElementById('save').onclick=function(){
   .then(function(r){return r.text();})
   .then(function(t){
     if(t==='ok'||t==='updated'){
-      showMsg('good','✅ 已儲存　'+date+'（'+slot+'）');
+      showMsg('good','✅ 已儲存　'+rangeFromStr(date)+'（'+slot+'）');
       cards[date+'|'+slot]=payload;renderHist();
     }else{showMsg('bad','儲存失敗，請確認寫入服務已更新到最新版');}
   })
@@ -283,7 +287,7 @@ document.getElementById('save').onclick=function(){
   .finally(function(){btn.disabled=false;});
 };
 
-buildDays();
+buildWeeks();
 buildSlots();
 fill();
 load();
