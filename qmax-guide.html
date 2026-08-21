@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4a2c3a">
+<title>涼感衣的兩個數字｜MURO 暮若</title>
+<style>
+:root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--ok:#2f7d4f;--no:#b34a4a;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+.s{display:none}
+body.cn .t{display:none}
+body.cn .s{display:inline}
+.hero{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 22px) 20px 30px;border-radius:0 0 26px 26px;position:relative}
+.hero h1{font-size:25px;font-weight:800;letter-spacing:1px}
+.hero .sub{margin-top:7px;font-size:13px;opacity:.85}
+.tog{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);right:18px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;font-weight:700;border-radius:99px;padding:5px 13px;cursor:pointer;font-family:inherit}
+.wrap{max-width:520px;margin:0 auto;padding:0 15px 50px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 17px;margin-top:14px;box-shadow:0 4px 14px rgba(74,44,58,.05)}
+.no{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--plum);color:#fff;font-size:13px;font-weight:800;margin-right:8px}
+h2{font-size:19px;font-weight:800;color:var(--plum2);display:flex;align-items:center;margin-bottom:4px}
+h2 small{font-size:13px;font-weight:600;color:var(--ink2);margin-left:auto}
+.lead{font-size:16px;font-weight:700;margin:10px 0 4px}
+.said{background:var(--cream);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:11px 13px;margin:12px 0;font-size:14px;line-height:1.7}
+.how{background:#fbf7f4;border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-top:13px}
+.how .ht{font-size:12px;font-weight:800;color:var(--rose);letter-spacing:1.5px;margin-bottom:8px}
+.how ol{margin:0;padding:0;list-style:none;counter-reset:st}
+.how li{position:relative;padding-left:25px;font-size:13.5px;margin:6px 0;line-height:1.6}
+.how li:before{counter-increment:st;content:counter(st);position:absolute;left:0;top:3px;width:17px;height:17px;border-radius:50%;background:var(--gold);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.unit{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink2)}
+.unit b{color:var(--plum2)}
+.oneline{background:linear-gradient(160deg,var(--plum),var(--plum2));color:#f6eee8;border:none;text-align:center}
+.oneline .big{font-size:17px;font-weight:800;line-height:1.8}
+.oneline .big em{font-style:normal;color:var(--gold)}
+.scale{margin:16px 0 6px}
+.bar{height:11px;border-radius:99px;background:linear-gradient(90deg,#e6ded8,#d6a680 45%,#9c5c6e);margin-bottom:8px}
+.ticks{display:flex;font-size:11.5px;color:var(--ink2);text-align:center}
+.ticks div{flex:1}
+.ticks b{display:block;font-size:13px;color:var(--plum2)}
+.truth{font-size:13.5px;color:var(--ink2);margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.truth b{color:var(--rose)}
+.both{background:linear-gradient(160deg,#fff,#fdf6ef);border:1px solid var(--gold)}
+.row{display:flex;gap:9px;align-items:flex-start;font-size:14px;margin:9px 0}
+.mark{flex:0 0 auto;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;margin-top:2px}
+.m-no{background:var(--no)} .m-ok{background:var(--ok)}
+.fact{font-size:13px;color:var(--ink2);background:var(--cream);border-radius:10px;padding:10px 12px;margin-top:12px}
+.ours{border:2px dashed var(--gold);background:#fffdfa}
+.ours .val{display:flex;gap:10px;margin-top:10px}
+.ours .val div{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;text-align:center}
+.ours .val span{display:block;font-size:11.5px;color:var(--ink2)}
+.ours .val b{font-size:22px;color:var(--plum2)}
+.host{background:#4a2c3a;color:#f0e3da;border:none}
+.host h2{color:var(--gold);font-size:16px}
+.host .ln{font-size:13.5px;margin:8px 0;line-height:1.7}
+.host .ln b{color:#fff}
+.yes{color:#8fd3a8} .nope{color:#f0a5a5}
+footer{text-align:center;font-size:11.5px;color:var(--ink2);margin-top:22px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="hero">
+  <button class="tog" onclick="document.body.classList.toggle('cn');this.textContent=document.body.classList.contains('cn')?'繁體':'简体'">简体</button>
+  <h1><span class="t">涼感衣的兩個數字</span><span class="s">凉感衣的两个数字</span></h1>
+  <div class="sub"><span class="t">30 秒看懂，買之前先看數字，不看形容詞</span><span class="s">30 秒看懂，买之前先看数字，不看形容词</span></div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2><span class="no">1</span><span class="t">Q-max</span><span class="s">Q-max</span><small><span class="t">摸起來有多冰</span><span class="s">摸起来有多冰</span></small></h2>
+    <div class="lead"><span class="t">碰到皮膚那一秒，衣服從身上帶走多少熱。數字越大，摸上去越冰。</span><span class="s">碰到皮肤那一秒，衣服从身上带走多少热。数字越大，摸上去越冰。</span></div>
+    <div class="said"><span class="t">同一個房間、同樣溫度，<b>大理石桌摸起來就是比木頭桌冰</b>——不是溫度不同，是導熱快慢不同。Q-max 量的就是這件事。</span><span class="s">同一个房间、同样温度，<b>大理石桌摸起来就是比木头桌冰</b>——不是温度不同，是导热快慢不同。Q-max 量的就是这件事。</span></div>
+    <div class="how">
+      <div class="ht"><span class="t">怎麼測出來的</span><span class="s">怎么测出来的</span></div>
+      <ol>
+        <li><span class="t">布先放到 <b>20°C</b>（室溫的衣服）</span><span class="s">布先放到 <b>20°C</b>（室温的衣服）</span></li>
+        <li><span class="t">一塊加熱到 <b>35°C</b>（皮膚溫度）的金屬板，啪一下壓上去</span><span class="s">一块加热到 <b>35°C</b>（皮肤温度）的金属板，啪一下压上去</span></li>
+        <li><span class="t">儀器記錄那一瞬間<b>熱跑掉最快的速度</b>，那個數字就是 Q-max</span><span class="s">仪器记录那一瞬间<b>热跑掉最快的速度</b>，那个数字就是 Q-max</span></li>
+      </ol>
+      <div class="unit"><span class="t">單位 <b>W/cm²</b>＝每一平方公分、每秒帶走幾瓦的熱</span><span class="s">单位 <b>W/cm²</b>＝每一平方厘米、每秒带走几瓦的热</span></div>
+    </div>
+    <div class="scale">
+      <div class="bar"></div>
+      <div class="ticks">
+        <div><b>0.15</b><span class="t">才算涼感</span><span class="s">才算凉感</span></div>
+        <div><b>0.20</b><span class="t">好</span><span class="s">好</span></div>
+        <div><b>0.25</b><span class="t">很好</span><span class="s">很好</span></div>
+        <div><b>0.30+</b><span class="t">頂規</span><span class="s">顶规</span></div>
+      </div>
+    </div>
+    <div class="truth"><span class="t">要知道：<b>這個冰是碰到的前幾秒最明顯</b>，像涼蓆一躺很涼、躺久就不涼了。</span><span class="s">要知道：<b>这个冰是碰到的前几秒最明显</b>，像凉席一躺很凉、躺久就不凉了。</span></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">2</span><span class="t">透氣率</span><span class="s">透气率</span><small><span class="t">悶不悶</span><span class="s">闷不闷</span></small></h2>
+    <div class="lead"><span class="t">空氣能穿過布料的量。數字越大，越不悶。</span><span class="s">空气能穿过布料的量。数字越大，越不闷。</span></div>
+    <div class="said"><span class="t">把布貼在嘴前哈氣——<b>熱氣一下就穿過去的，就是透氣好的</b>；悶在布裡的，穿久一定黏。</span><span class="s">把布贴在嘴前哈气——<b>热气一下就穿过去的，就是透气好的</b>；闷在布里的，穿久一定黏。</span></div>
+    <div class="how">
+      <div class="ht"><span class="t">怎麼測出來的</span><span class="s">怎么测出来的</span></div>
+      <ol>
+        <li><span class="t">布夾在一個圓孔上（<b>20 平方公分</b>）</span><span class="s">布夹在一个圆孔上（<b>20 平方厘米</b>）</span></li>
+        <li><span class="t">下面用<b>固定大小的吸力</b>，把空氣往布裡吸</span><span class="s">下面用<b>固定大小的吸力</b>，把空气往布里吸</span></li>
+        <li><span class="t">量<b>空氣穿過去的速度</b>，那個數字就是透氣率</span><span class="s">量<b>空气穿过去的速度</b>，那个数字就是透气率</span></li>
+      </ol>
+      <div class="unit"><span class="t">單位 <b>mm/s</b>＝空氣穿過布的速度。180 就是每秒鑽過 180 毫米</span><span class="s">单位 <b>mm/s</b>＝空气穿过布的速度。180 就是每秒钻过 180 毫米</span></div>
+    </div>
+    <div class="scale">
+      <div class="bar"></div>
+      <div class="ticks">
+        <div><b>100↓</b><span class="t">悶</span><span class="s">闷</span></div>
+        <div><b>180</b><span class="t">舒服</span><span class="s">舒服</span></div>
+        <div><b>300</b><span class="t">很透氣</span><span class="s">很透气</span></div>
+        <div><b>500+</b><span class="t">網眼級</span><span class="s">网眼级</span></div>
+      </div>
+    </div>
+    <div class="truth"><span class="t">要知道：<b>涼感只有那幾秒，一整天不黏不悶靠的是透氣</b>。汗排得掉、布乾得快，體溫才降得下來。</span><span class="s">要知道：<b>凉感只有那几秒，一整天不黏不闷靠的是透气</b>。汗排得掉、布干得快，体温才降得下来。</span></div>
+  </div>
+
+  <div class="card oneline">
+    <div class="big"><span class="t">一個測「<em>熱</em>跑得多快」<br>一個測「<em>風</em>穿得多快」</span><span class="s">一个测「<em>热</em>跑得多快」<br>一个测「<em>风</em>穿得多快」</span></div>
+  </div>
+
+  <div class="card both">
+    <h2><span class="no">3</span><span class="t">兩個要一起看</span><span class="s">两个要一起看</span></h2>
+    <div class="row"><span class="mark m-no">✕</span><span class="t"><b>只有冰、不透氣</b> → 一摸驚艷，穿十分鐘悶爆</span><span class="s"><b>只有冰、不透气</b> → 一摸惊艳，穿十分钟闷爆</span></div>
+    <div class="row"><span class="mark m-no">✕</span><span class="t"><b>只有透氣、不夠冰</b> → 舒服，但沒有那個涼</span><span class="s"><b>只有透气、不够冰</b> → 舒服，但没有那个凉</span></div>
+    <div class="row"><span class="mark m-ok">✓</span><span class="t"><b>兩個都好，才是真的涼感衣</b></span><span class="s"><b>两个都好，才是真的凉感衣</b></span></div>
+    <div class="fact"><span class="t">消基會抽驗市售 10 件涼感衣，<b>有 5 件連最低標準都沒過</b>。「涼感」兩個字誰都能印，<b>敢附數字的才算數</b>。</span><span class="s">台湾消基会抽验市售 10 件凉感衣，<b>有 5 件连最低标准都没过</b>。「凉感」两个字谁都能印，<b>敢附数字的才算数</b>。</span></div>
+  </div>
+
+  <div class="card ours">
+    <h2><span class="t">本款數字</span><span class="s">本款数字</span></h2>
+    <div class="val">
+      <div><span>Q-max</span><b>—</b></div>
+      <div><span class="t">透氣率</span><span class="s">透气率</span><b>—</b></div>
+    </div>
+    <div class="truth" style="border:none;padding-top:8px"><span class="t">上播前填入本款的第三方檢測數值。</span><span class="s">上播前填入本款的第三方检测数值。</span></div>
+  </div>
+
+  <div class="card host">
+    <h2><span class="t">主播提醒</span><span class="s">主播提醒</span></h2>
+    <div class="ln"><span class="yes">可以講</span>　<span class="t">接觸涼感、摸起來冰、乾爽、透氣、不悶、汗乾得快</span><span class="s">接触凉感、摸起来冰、干爽、透气、不闷、汗干得快</span></div>
+    <div class="ln"><span class="nope">不能講</span>　<span class="t">降溫幾度、像穿冷氣、穿一整天都涼、改善更年期、退燒</span><span class="s">降温几度、像穿冷气、穿一整天都凉、改善更年期、退烧</span></div>
+    <div class="ln"><span class="t"><b>成分要說台灣講法：</b>尼龍（不是錦綸）、彈性纖維（不是氨綸、不是萊卡）</span><span class="s"><b>成分要说台湾讲法：</b>尼龙（不是锦纶）、弹性纤维（不是氨纶、不是莱卡）</span></div>
+    <div class="ln"><span class="t"><b>客人問「洗了還會涼嗎」：</b>只有確認過是<b>原紗涼感</b>才能說洗不掉；後整理塗層的不能這樣講。</span><span class="s"><b>客人问「洗了还会凉吗」：</b>只有确认过是<b>原纱凉感</b>才能说洗不掉；后整理涂层的不能这样讲。</span></div>
+    <div class="ln"><span class="t"><b>主動講限制反而加分：</b>「這個冰是碰到那幾秒最明顯，讓妳一整天不悶的是透氣。」誠實的那句話最建立信任。</span><span class="s"><b>主动讲限制反而加分：</b>「这个冰是碰到那几秒最明显，让你一整天不闷的是透气。」诚实的那句话最建立信任。</span></div>
+  </div>
+
+  <footer>MURO 暮若 · <span class="t">涼感透氣</span><span class="s">凉感透气</span> · 2026<br><span class="t">數值依 GB/T 35263（涼感）與 GB/T 5453（透氣）第三方檢測</span><span class="s">数值依 GB/T 35263（凉感）与 GB/T 5453（透气）第三方检测</span></footer>
+</div>
+</body>
+</html>

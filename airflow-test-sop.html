@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4a2c3a">
+<title>MURO 內部透氣率檢測 SOP</title>
+<style>
+:root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--line:#e8ddd6;--ok:#2f7d5d;--no:#b34a4a;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--cream);color:var(--plum);line-height:1.75;-webkit-text-size-adjust:100%}
+.wrap{max-width:860px;margin:0 auto;padding:0 18px 80px}
+header{background:linear-gradient(135deg,var(--plum),var(--plum2));color:#fff;padding:30px 18px 26px;margin-bottom:20px}
+header .inner{max-width:860px;margin:0 auto}
+.back{display:inline-block;color:#f0e3da;text-decoration:none;font-size:13px;opacity:.85;margin-bottom:11px}
+.kicker{font-size:12px;letter-spacing:3px;color:var(--gold);margin-bottom:7px}
+h1{font-size:23px;line-height:1.35;font-weight:700}
+.sub{margin-top:9px;font-size:13.5px;color:#f0e2d8;opacity:.95}
+.lead{background:#fff;border-left:4px solid var(--gold);padding:15px 17px;border-radius:0 10px 10px 0;font-size:14.5px;margin:20px 0}
+.lead b{color:var(--rose)}
+nav.toc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:24px}
+nav.toc div{font-size:12px;color:var(--rose);letter-spacing:2px;margin-bottom:8px}
+nav.toc a{display:inline-block;font-size:13px;color:var(--plum2);text-decoration:none;background:var(--cream);border:1px solid var(--line);border-radius:20px;padding:4px 11px;margin:0 6px 6px 0}
+h2{font-size:18.5px;margin:34px 0 11px;padding-bottom:8px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:9px}
+h2 .n{background:var(--plum);color:#fff;font-size:12px;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+h3{font-size:15px;margin:19px 0 7px;color:var(--rose)}
+p{font-size:14.5px;margin:9px 0}
+ul,ol{margin:9px 0 9px 20px;font-size:14.5px}
+li{margin:5px 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px 17px;margin:13px 0}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:13px 0;border:1px solid var(--line);border-radius:12px;background:#fff}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:13.5px}
+th{background:var(--plum);color:#fff;padding:9px 11px;text-align:left;font-weight:600;white-space:nowrap}
+td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#fdfbfa}
+.warn{background:#fff8f0;border:1px solid var(--gold);border-radius:10px;padding:12px 15px;margin:13px 0;font-size:14px}
+.warn b{color:#a9711f}
+.danger{background:#fdf0f0;border:1px solid #e0a5a5;border-radius:10px;padding:12px 15px;margin:13px 0;font-size:14px}
+.danger b{color:var(--no)}
+.steps{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:13px 0}
+.steps ol{margin:0;padding:5px 0;list-style:none}
+.steps li{display:flex;gap:11px;padding:12px 15px;border-top:1px solid var(--line);margin:0;font-size:14.5px}
+.steps li:first-child{border-top:none}
+.steps .no{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
+.steps .txt b{display:block;margin-bottom:2px}
+.steps .txt span{color:#6a5a55;font-size:13.5px}
+.formula{background:var(--plum);color:#fff;border-radius:12px;padding:17px;text-align:center;margin:14px 0}
+.formula .f{font-size:19px;font-weight:700;letter-spacing:.5px}
+.formula .n{font-size:12.5px;opacity:.8;margin-top:8px;display:block}
+.copybox{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin:13px 0}
+.copybox pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.85;white-space:pre-wrap;color:var(--plum)}
+.cbtn{position:absolute;top:11px;right:11px;background:var(--plum2);color:#fff;border:none;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:20px;white-space:nowrap}
+.p-ok{background:#e6f3ec;color:var(--ok)}
+.p-no{background:#fbeaea;color:var(--no)}
+.chain{display:flex;flex-wrap:wrap;gap:7px;align-items:center;font-size:13.5px;background:var(--cream);border-radius:10px;padding:12px 14px;margin:12px 0}
+.chain b{background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-weight:600}
+.footnote{font-size:12.5px;color:#8a7a75;margin-top:6px}
+footer{text-align:center;font-size:12px;color:#9a8a85;margin-top:42px;padding-top:18px;border-top:1px solid var(--line)}
+@media(max-width:600px){h1{font-size:21px}h2{font-size:17px}}
+</style>
+</head>
+<body>
+<header><div class="inner">
+<a class="back" href="cool-breathable.html">‹ 返回涼感透氣報告</a>
+<div class="kicker">MURO 暮若 · 內部檢測 SOP</div>
+<h1>透氣率檢測 SOP<br>與影片示範實驗</h1>
+<div class="sub">架設 · 操作 · 記錄 · 商品頁怎麼寫 · 怎麼拍</div>
+</div></header>
+
+<div class="wrap">
+
+<div class="lead">
+這套裝置的定位：<b>自主檢測，不是第三方檢測。</b><br>
+方法照 GB/T 5453 走，數字可以自己用、可以拍成影片、可以標在商品頁——但<b>儀器沒有校正溯源、環境不是認證實驗室</b>，所以永遠不能寫成「檢驗合格」或「檢測報告」。守住這條線，這套東西就是資產；跨過去就是風險。
+</div>
+
+<nav class="toc">
+<div>本篇目錄</div>
+<a href="#s1">1 器材清單</a><a href="#s2">2 環境設定</a><a href="#s3">3 裝置組裝</a><a href="#s4">4 操作步驟</a><a href="#s5">5 計算</a><a href="#s6">6 記錄表</a><a href="#s7">7 校準驗證</a><a href="#s8">8 誤差來源</a><a href="#s9">9 商品頁怎麼寫</a><a href="#s10">10 影片示範實驗</a><a href="#s11">11 簡易版</a>
+</nav>
+
+<h2 id="s1"><span class="n">1</span>器材清單</h2>
+<div class="tw"><table>
+<tr><th>器材</th><th>規格要求</th><th>用途／備註</th></tr>
+<tr><td><b>試樣夾具</b></td><td>圓孔 <b>20 cm²＝直徑 50.5 mm</b>；上下壓板＋橡膠密封圈</td><td>自製可行（壓克力或金屬）。夾緊時<b>不能拉伸布料</b></td></tr>
+<tr><td><b>微差壓計</b></td><td>量程 0–1000 Pa，解析度 1 Pa 以內</td><td>一端接夾具下腔、一端開放大氣</td></tr>
+<tr><td><b>轉子流量計</b></td><td>需覆蓋約 2–200 L/min，可能要兩支不同量程</td><td>浮子式，<b>必須垂直安裝</b>、氣流由下往上</td></tr>
+<tr><td><b>可調氣源</b></td><td>吸塵器或可調速抽風機</td><td>搭配洩氣閥微調壓差</td></tr>
+<tr><td><b>洩氣閥</b></td><td>可開合的孔（球閥或閘板皆可）</td><td>把壓差精準調到 100 Pa 的關鍵</td></tr>
+<tr><td><b>溫濕度計</b></td><td>數位式，可同時顯示溫度與 RH</td><td><b>照實測值走，不要照冷氣設定值走</b></td></tr>
+<tr><td>加濕器 或 除濕機</td><td>—</td><td>先實測再決定買哪一個（見第 2 節）</td></tr>
+<tr><td>（選配）成品透氣量儀</td><td>—</td><td>把夾具＋壓差＋流量整合成一台。價格需向廠商詢價</td></tr>
+</table></div>
+
+<h2 id="s2"><span class="n">2</span>環境設定</h2>
+<p>標準大氣是 <b>20°C ± 2°C、65% RH ± 4%</b>。溫度會影響空氣密度，濕度會讓纖維膨潤改變孔隙——兩個都會直接改變讀數。</p>
+<div class="warn"><b>先做這件事，再決定買什麼：</b>把冷氣開 20 度跑一小時，用溫濕度計看實際濕度。<b>冷氣本身就在除濕，濕度常常會掉到 50–60% 以下</b>——那你需要的是<b>加濕器</b>，不是除濕機。不要憑直覺買。</div>
+<h3>試樣調濕</h3>
+<p>布<b>不能從包裝拆出來就測</b>。要先攤平放在測試環境裡<b>過夜（至少 4 小時，建議 24 小時）</b>，讓它跟環境的濕度平衡。這一步省掉，前面所有的環境控制都白做。</p>
+
+<h2 id="s3"><span class="n">3</span>裝置組裝</h2>
+<p>氣路順序不能錯：</p>
+<div class="chain"><b>試樣夾具</b> → <b>轉子流量計</b> → <b>洩氣閥（T 接）</b> → <b>氣源</b></div>
+<div class="card">
+<b>為什麼是這個順序：</b>洩氣閥一定要接在<b>流量計後面</b>。如果接在流量計前面，洩掉的空氣會被算進流量，數字整個報廢。流量計必須<b>只量到穿過布的那些空氣</b>。
+</div>
+<h3>差壓計接法</h3>
+<p>一根管接到<b>夾具下方的腔室</b>（布的下面），另一根<b>開放在大氣中</b>。讀到的就是布兩側的壓差。</p>
+<h3>密封</h3>
+<p>夾具的密封圈要完整貼合、螺絲<b>對角均勻鎖緊</b>。漏氣是這套裝置最大的誤差來源，見第 8 節。</p>
+
+<h2 id="s4"><span class="n">4</span>操作步驟</h2>
+<div class="steps"><ol>
+<li><span class="no">1</span><span class="txt"><b>記錄環境</b><span>開測前記下溫濕度計的實際讀數，寫進記錄表。不在 20±2°C／65±4% 範圍就不要測。</span></span></li>
+<li><span class="no">2</span><span class="txt"><b>確認試樣已調濕過夜</b><span>沒調濕的布不測。</span></span></li>
+<li><span class="no">3</span><span class="txt"><b>裝上試樣</b><span>攤平、不拉伸、不起皺，密封圈壓好，螺絲對角鎖緊。</span></span></li>
+<li><span class="no">4</span><span class="txt"><b>開氣源，調洩氣閥</b><span>看著差壓計，調到 <b>100 Pa</b> 並穩定（讀數不再飄）。</span></span></li>
+<li><span class="no">5</span><span class="txt"><b>讀流量</b><span>等浮子停穩再讀，視線與浮子頂端平視。記錄 L/min。</span></span></li>
+<li><span class="no">6</span><span class="txt"><b>換位置，重複 10 次</b><span>同一塊布<b>取 10 個不同部位</b>，避開布邊與縫線。每次都要重新調到 100 Pa。</span></span></li>
+<li><span class="no">7</span><span class="txt"><b>算平均，再換算</b><span>10 筆流量取平均，代入第 5 節公式。</span></span></li>
+<li><span class="no">8</span><span class="txt"><b>測一塊校準片確認</b><span>每次收工前測一塊校準片，數字跟上次差太多＝裝置跑掉了，當天數據全部重測。</span></span></li>
+<li><span class="no">9</span><span class="txt"><b>拍照存證</b><span>溫濕度計、差壓計、流量計的讀數各拍一張，跟記錄表一起存。</span></span></li>
+</ol></div>
+
+<h2 id="s5"><span class="n">5</span>計算</h2>
+<div class="formula">
+<div class="f">透氣率 R ＝ 流量 ÷ 面積 × 167</div>
+<span class="n">R 單位 mm/s｜流量單位 L/min｜面積單位 cm²</span>
+</div>
+<div class="card">
+<b>範例：</b>20 cm² 的孔，10 次流量平均 24 L/min<br>
+R ＝ 24 ÷ 20 × 167 ＝ <b>200 mm/s</b>
+</div>
+<h3>判讀刻度</h3>
+<div class="tw"><table>
+<tr><th>透氣率</th><th>體感</th></tr>
+<tr><td>&lt; 100</td><td><span class="pill p-no">悶</span> 貼身品不要</td></tr>
+<tr><td>100–180</td><td>勉強，防曬／塑身這類本來就密的可接受</td></tr>
+<tr><td><b>180–300</b></td><td><span class="pill p-ok">舒適帶</span> 夏季針織的合格區</td></tr>
+<tr><td>300–500</td><td>透氣良好</td></tr>
+<tr><td>500+</td><td>網眼、鏤空結構</td></tr>
+</table></div>
+<p class="footnote">「180 mm/s 舒適」的依據來自 FZ/T 73022 針織保暖內衣的規定，被業界廣泛引用為通用基準；夏季服裝沒有強制國標，因此當參考刻度用，不當硬紅線。</p>
+
+<h2 id="s6"><span class="n">6</span>記錄表欄位</h2>
+<p>每一次測試都要留下這些欄位，這是萬一被檢舉時的護身符：</p>
+<div class="card">
+測試日期／時間　｜　操作者<br>
+品名／貨號／顏色　｜　供應商<br>
+環境溫度（實測）　｜　環境濕度（實測）<br>
+試樣調濕起訖時間<br>
+試樣面積（cm²）　｜　設定壓差（Pa）<br>
+流量讀數 ×10 筆　｜　平均流量<br>
+換算透氣率（mm/s）<br>
+校準片當日讀數（確認裝置正常）<br>
+現場照片（溫濕度計／差壓計／流量計）
+</div>
+
+<h2 id="s7"><span class="n">7</span>校準與驗證</h2>
+<h3>開張前一定要做：送一塊布去比對</h3>
+<p>挑一塊布<b>同時</b>送第三方檢測 ＋ 用你的裝置測。</p>
+<ul>
+<li><b>兩個數字差在 10–15% 以內</b> → 這份比對記錄就是你自測可信度最強的佐證，比任何文字聲明都有力，留著</li>
+<li><b>差很多</b> → 裝置有問題，八成是漏氣。先修正，修正前不要對外講任何數字</li>
+</ul>
+<h3>三塊校準片</h3>
+<p>準備一塊密的、一塊中等的、一塊網眼的，<b>供起來——不能洗、不能曬、不能剪</b>。每次收工前測一塊，確認裝置沒跑掉。換夾具或換氣源時，三塊全部重測。</p>
+
+<h2 id="s8"><span class="n">8</span>誤差來源（照這個順序排查）</h2>
+<div class="tw"><table>
+<tr><th>問題</th><th>症狀</th><th>怎麼修</th></tr>
+<tr><td><b>夾具漏氣</b>（最常見）</td><td>數字明顯偏高、密的布也很「透氣」</td><td>換密封圈、螺絲對角均勻鎖緊；空跑一次（不裝布用實心板封住），流量應接近零</td></tr>
+<tr><td><b>布被拉伸</b></td><td>數字偏高</td><td>攤平放上去，不要拉緊再夾</td></tr>
+<tr><td>沒調濕</td><td>同一塊布不同天差很多</td><td>過夜調濕，環境照實測值控制</td></tr>
+<tr><td>只測一點</td><td>數字不穩、無法重現</td><td>10 個部位取平均</td></tr>
+<tr><td>流量計沒垂直</td><td>浮子讀數偏移</td><td>用水平儀確認垂直，氣流由下往上</td></tr>
+<tr><td>壓差沒穩定就讀</td><td>數字飄</td><td>調到 100 Pa 後等 5 秒讀數不動再記</td></tr>
+</table></div>
+
+<h2 id="s9"><span class="n">9</span>商品頁怎麼寫</h2>
+<p>直接複製這個格式，數字換掉就好：</p>
+<div class="copybox">
+<button class="cbtn" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText);this.textContent='已複製'">複製</button>
+<pre>【MURO 自主檢測】透氣率 ___ mm/s
+
+依 GB/T 5453 方法自行測試
+壓差 100 Pa｜試樣面積 20 cm²｜同一塊布取 10 點平均
+測試環境 20°C／65% RH｜測試日期 2026-__-__
+
+※ 本數據為 MURO 內部自主測試，非第三方認證檢測，數值僅供參考。</pre>
+</div>
+<div class="tw"><table>
+<tr><th>可以寫</th><th>不能寫</th></tr>
+<tr><td>MURO 自主檢測、自行測試、內部測試</td><td><b>檢驗合格、通過認證、檢測報告顯示</b></td></tr>
+<tr><td>依 GB/T 5453 方法</td><td><b>GB/T 5453 認證</b></td></tr>
+<tr><td>數值僅供參考</td><td>（把自測數字跟第三方報告數字並排到看不出差別）</td></tr>
+</table></div>
+<div class="warn"><b>會出事的不是「準不準」，是「有沒有讓人以為是第三方認證」。</b> 標示完整、記錄留存、數據真實可複現，自測數據就站得住。反過來只寫一個光禿禿的數字，消費者會合理認為那是檢測值——那就是誤導。<br><span class="footnote">此為實務判斷，非法律意見。要大量投放廣告前，建議請律師看過一次文案。</span></div>
+
+<h2 id="s10"><span class="n">10</span>影片示範實驗</h2>
+<p>拍過程比報數字有說服力。三個實驗，前兩個測透氣、第三個測涼感。</p>
+
+<h3>① 隔布吹蠟燭（透氣・可信度最高）</h3>
+<div class="card">
+<p><b>畫面</b>：隔著布吹蠟燭。透氣布一吹就滅，不透氣的怎麼吹都不滅。</p>
+<p><b>拍法</b>：① 先不隔布吹一次證明蠟燭正常會滅 ② 隔一般棉 T 吹 → 不滅 ③ 隔候選品吹 → 一口就滅 ④ 兩塊布並排給鏡頭看厚度</p>
+<p><b>強項</b>：零器材、觀眾自己在家就能複製，所以最可信。</p>
+<p class="footnote">公平性：兩塊布厚度要接近、都繃平不重疊、嘴到蠟燭的距離用膠帶標記固定。做不到會被同行挑，反而扣分。</p>
+</div>
+
+<h3>② 乾冰霧穿透（透氣・畫面最美）</h3>
+<div class="card">
+<p><b>畫面</b>：不透氣的布，霧憋在杯裡只能從邊緣鑽；透氣的布，霧<b>整片均勻從布面滲出</b>，像布在冒煙。</p>
+<p><b>器材</b>：兩個<b>同款耐熱玻璃杯（硼矽玻璃）</b>、等量乾冰、等量 40–60°C 溫水、夾子、厚手套、托盤</p>
+<p><b>拍法</b>：① 兩杯<b>先倒溫水再放乾冰</b>（順序不能反）② 立刻各蓋一塊布，橡皮筋繃緊 ③ 黑背景＋側光或逆光 ④ 慢動作 120fps ⑤ <b>兩杯一定要同框</b>，分開拍會有作弊嫌疑</p>
+<p class="footnote">水只裝三分之一，乾冰入水會劇烈翻騰。杯外會大量結露，底下墊托盤。</p>
+</div>
+<div class="danger">
+<b>乾冰安全（沒有例外）</b>
+<ul>
+<li><b>絕對不能徒手拿</b>（−78.5°C，幾秒就凍傷）→ 戴厚手套或用夾子，<b>夾進去不要丟進去</b>（丟會濺熱水）</li>
+<li><b>絕對不能放進密封容器</b>（保溫瓶、寶特瓶、密封盒）→ 會爆</li>
+<li><b>房間要通風</b>。二氧化碳比空氣重會沉在地面，小又密閉的直播間要開窗或開抽風</li>
+<li>不能放冷凍庫、不能放車內密閉空間；剩料放通風處自行昇華，不要倒進水槽</li>
+</ul>
+</div>
+
+<h3>③ 冰袋 ＋ 熱像儀（涼感）</h3>
+<div class="card">
+<p><b>畫面</b>：兩塊布蓋在同一個 0°C 冰袋上，熱像儀看布表面降溫速度——<b>導熱好的布降得快、藍得快</b>。</p>
+<p><b>沒有熱像儀</b>：改用紅外線測溫槍，兩塊布蓋在同溫熱水杯上量表面溫度，涼感布升得快。畫面沒那麼炫但數字清楚。</p>
+<div class="warn"><b>涼感不要用乾冰。</b> Qmax 測的是 15°C 溫差（皮膚 35°C 對上 20°C 的布），乾冰是 −78°C、差將近 100 度——<b>任何布貼上去都冰得要命，反而分不出好壞</b>，而且會結霜把布弄濕，測出來的是濕布不是涼感。</div>
+</div>
+
+<h3>旁白紅線</h3>
+<div class="tw"><table>
+<tr><th>可以說</th><th>不能說</th></tr>
+<tr><td>「同樣距離、同樣力氣，這件一吹就滅，棉 T 吹不滅」</td><td>「這證明透氣率有 XXX mm/s」</td></tr>
+<tr><td>「熱散得比較開，所以摸起來冰」</td><td>「降溫 X 度」「像穿冷氣」</td></tr>
+<tr><td>「這是我們自己測給你看的」</td><td>「這是檢測認證」</td></tr>
+</table></div>
+<p class="footnote">示範實驗是<b>視覺展示</b>，不是量測。乾冰霧含水滴、密度也跟空氣不同，穿透效果跟透氣率不是同一件事。影片裡「示範」與「第三方報告數字」要分開講清楚。</p>
+
+<h2 id="s11"><span class="n">11</span>簡易版（器材買齊之前先用這個）</h2>
+<div class="card">
+<p><b>透氣指數 ＝ 有布風速 ÷ 無布風速 × 100%</b></p>
+<p>固定風扇、固定距離、固定治具，用風速計量。這個比值會自動抵銷電池電量與環境漂移，比直接看風速穩得多。</p>
+<p><b>但它不是 mm/s</b>：布擋住之後壓力會回頭壓在風扇上，強風扇不甩、弱風扇被憋住，所以<b>換一台風扇整組數字就要重來</b>。只能內部用，不能對外講。</p>
+<p><b>用三塊標準片定位</b>：A 悶樣、B 現在賣得最好那件、C 網眼布。每次四塊一起測，看候選品落在哪兩塊之間——接近或超過 B 才合格。</p>
+<p class="footnote">最容易毀掉數據的不是風扇，是<b>布沒繃緊</b>。只要邊緣有縫，風從旁邊溜過去，悶布會被判成透氣布。橡皮筋圈數固定、繃平不起皺。</p>
+</div>
+
+<footer>MURO 暮若 · 內部透氣率檢測 SOP · 2026-08<br>自主檢測 ≠ 第三方檢測，標示與記錄照第 9 節走</footer>
+</div>
+</body>
+</html>
