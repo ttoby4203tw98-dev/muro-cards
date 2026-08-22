@@ -105,6 +105,7 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
   <div class="step">
     <div class="sh"><span class="n">3</span><b><span class="t">物流</span><span class="s">物流</span></b><small><span class="t">下單 → 到深圳</span><span class="s">下单 → 到深圳</span></small></div>
     <div class="grid g4" id="logG"></div>
+    <div class="grid" style="grid-template-columns:1fr;margin-top:7px" id="splG"></div>
     <div class="hint"><span class="t">下單前先用賣家發貨時效估，到貨後回來改成實際天數</span><span class="s">下单前先用卖家发货时效估，到货后回来改成实际天数</span></div>
   </div>
 </div>
@@ -220,9 +221,10 @@ var MK=[
  {p:6,t:'有一個',s:'有一个',dt:'講得出一個賣點',ds:'讲得出一个卖点'},
  {p:10,t:'一講就懂',s:'一讲就懂',dt:'一句話講完客人就想買',ds:'一句话讲完客人就想买'}
 ];
+var SPL=[{t:'⚠ 分多個包裹發貨　物流分 −2',s:'⚠ 分多个包裹发货　物流分 −2'}];
 var POS={'2':[10,'利潤款（極品）','利润款（极品）'],'1':[8.5,'利潤款','利润款'],'0':[7,'滿額款','满额款'],'-1':[4,'弱勢，只能拚價','弱势，只能拼价'],'-2':[1,'汰換','淘汰']};
 
-var S={cat:null,mat:null,wrk:null,pkg:null,log:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
+var S={cat:null,mat:null,wrk:null,pkg:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
 function bi(a,b){return '<span class="t">'+a+'</span><span class="s">'+b+'</span>'}
 function tab(i){
  document.querySelectorAll('.pane').forEach(function(p,j){p.classList.toggle('on',j===i)});
@@ -238,6 +240,8 @@ function build(){
   document.getElementById(g[0]).innerHTML=g[1].map(function(o,i){
    var d=o.dt?'<span class="d">'+bi(o.dt,o.ds)+'</span>':'';
    return '<button class="opt" data-k="'+g[2]+'" data-i="'+i+'"><span class="pt">'+(o.p<0?'✕':o.p)+'</span><span>'+bi(o.t,o.s)+d+'</span></button>'}).join('')});
+ document.getElementById('splG').innerHTML=SPL.map(function(o,i){
+  return '<button class="chip fail" data-k="spl" data-i="'+i+'">'+bi(o.t,o.s)+'</button>'}).join('');
  document.querySelectorAll('[data-k]').forEach(function(b){
   b.onclick=function(){var k=b.dataset.k,i=+b.dataset.i;
    S[k]=(S[k]===i)?null:i;
@@ -271,6 +275,7 @@ function calc(){
  var pos=null,info=null;
  if(ct&&vt&&!wFail){info=POS[String(vt.tier-ct)];pos=info[0]}
  var log=S.log===null?null:LOG[S.log].v;
+ if(log!==null&&log>0&&S.spl===0)log=Math.max(0,log-2);
  var failed=(log===-1)||wFail;
  var obj=(pos!==null&&log!==null&&!failed)?pos*0.9+log*0.1:null;
 
@@ -320,7 +325,7 @@ function calc(){
  if(sub===null)miss.push(['主觀','主观']);
  m.innerHTML=miss.length?bi('還缺：','还缺：')+miss.map(function(x){return bi(x[0],x[1])}).join('、'):bi('三項都好了，填回 Trello','三项都好了，填回 Trello');
 }
-function reset(){S={cat:null,mat:null,wrk:null,pkg:null,log:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
+function reset(){S={cat:null,mat:null,wrk:null,pkg:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
  document.querySelectorAll('.on[data-k]').forEach(function(x){x.classList.remove('on')});
  ['price','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
 build();calc();
