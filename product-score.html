@@ -146,7 +146,7 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 </div>
 
   <button class="rst" onclick="reset()"><span class="t">清空重來</span><span class="s">清空重来</span></button>
-  <footer><span class="t">客觀 ＝ 定位×0.7 ＋ 物流×0.3　｜　主題 ＝ √(qmax × 內部透氣)<br>≥8 主推｜5–7.9 觀察｜&lt;5 汰換</span><span class="s">客观 ＝ 定位×0.7 ＋ 物流×0.3　｜　主题 ＝ √(qmax × 内部透气)<br>≥8 主推｜5–7.9 观察｜&lt;5 淘汰</span><br>MURO 暮若 · 2026-08</footer>
+  <footer><span class="t">客觀 ＝ 定位×0.9 ＋ 物流×0.1　｜　主題 ＝ √(qmax × 內部透氣)<br>≥8 主推｜5–7.9 觀察｜&lt;5 汰換</span><span class="s">客观 ＝ 定位×0.9 ＋ 物流×0.1　｜　主题 ＝ √(qmax × 内部透气)<br>≥8 主推｜5–7.9 观察｜&lt;5 淘汰</span><br>MURO 暮若 · 2026-08</footer>
 </div>
 
 <div class="res"><div class="inner">
@@ -268,7 +268,7 @@ function calc(){
  if(ct&&vt){info=POS[String(vt.tier-ct)];pos=info[0]}
  var log=S.log===null?null:LOG[S.log].v;
  var failed=(log===-1);
- var obj=(pos!==null&&log!==null&&!failed)?pos*0.7+log*0.3:null;
+ var obj=(pos!==null&&log!==null&&!failed)?pos*0.9+log*0.1:null;
 
  // 主題
  var air=null,conflict=false;
