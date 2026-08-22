@@ -95,9 +95,9 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
     <div class="lbl"><span class="t">材質（看占比最高的成分，氨綸跳過）</span><span class="s">材质（看占比最高的成分，氨纶跳过）</span></div>
     <div class="opts" id="matG"></div>
     <div class="hint"><span class="t">有紗線檢測報告 → 升一級（最高 3）</span><span class="s">有纱线检测报告 → 升一级（最高 3）</span></div>
-    <div class="lbl"><span class="t">做工（看邊緣：下擺、袖口、褲口）</span><span class="s">做工（看边缘：下摆、袖口、裤口）</span></div>
+    <div class="lbl"><span class="t">做工（看車工：縫線車得好不好）</span><span class="s">做工（看车工：缝线车得好不好）</span></div>
     <div class="opts" id="wrkG"></div>
-    <div class="hint"><span class="t">商品頁沒寫、照片也看不出來 → 1 分</span><span class="s">商品页没写、照片也看不出来 → 1 分</span></div>
+    <div class="hint"><span class="t">看下擺、袖口、褲口、腋下這些關鍵接縫。到貨一定要複查，做工只有實物最準</span><span class="s">看下摆、袖口、裤口、腋下这些关键接缝。到货一定要复查，做工只有实物最准</span></div>
     <div class="lbl"><span class="t">包裝</span><span class="s">包装</span></div>
     <div class="opts" id="pkgG"></div>
     <div class="tier none" id="valT"></div>
@@ -175,9 +175,9 @@ var MAT=[
  {p:3,t:'天然纖維',s:'天然纤维',dt:'麻、蠶絲、羊毛、羊絨（棉除外）',ds:'麻、蚕丝、羊毛、羊绒（棉除外）'}
 ];
 var WRK=[
- {p:1,t:'看得到縫線',s:'看得到缝线',dt:'包邊、鎖邊、拷邊、平車',ds:'包边、锁边、拷边、平车'},
- {p:2,t:'無痕',s:'无痕',dt:'無縫、雷射切邊、熱熔、超音波、一體成型',ds:'无缝、激光切边、热熔、超声波、一体成型'},
- {p:3,t:'無痕 ＋ 結構設計',s:'无痕 ＋ 结构设计',dt:'網眼拼接、分區、立體剪裁、內襯、定型杯（至少 1 項）',ds:'网眼拼接、分区、立体剪裁、内衬、定型杯（至少 1 项）'}
+ {p:1,t:'車工亂',s:'车工乱',dt:'脫線、線頭外露、縫線歪斜、接縫起皺；或商品頁根本不給細節照',ds:'脱线、线头外露、缝线歪斜、接缝起皱；或商品页根本不给细节照'},
+ {p:2,t:'車工整齊',s:'车工整齐',dt:'線直、針距均勻、沒有線頭。無痕處理（雷射切邊、熱熔、一體成型）也算這級',ds:'线直、针距均匀、没有线头。无痕处理（激光切边、热熔、一体成型）也算这级'},
+ {p:3,t:'車工精緻',s:'车工精致',dt:'整齊之外再加一項：針距密、包邊細窄平整、關鍵部位補強（雙針／三線鎖邊），或無痕＋結構設計',ds:'整齐之外再加一项：针距密、包边细窄平整、关键部位补强（双针／三线锁边），或无痕＋结构设计'}
 ];
 var PKG=[
  {p:1,t:'透明袋',s:'透明袋',dt:'',ds:''},
