@@ -16,11 +16,11 @@ body.cn .s{display:inline}
 .hero h1{font-size:21px;font-weight:800;letter-spacing:1.5px}
 .hero .sub{margin-top:5px;font-size:12.5px;opacity:.85}
 .tog{position:absolute;top:calc(env(safe-area-inset-top,0px) + 18px);right:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;font-weight:700;border-radius:99px;padding:5px 13px;cursor:pointer;font-family:inherit}
-.tabs{display:flex;gap:5px;max-width:560px;margin:0 auto;padding:10px 12px 0}
-.tab{flex:1;background:#fff;border:1px solid var(--line);border-bottom:none;border-radius:13px 13px 0 0;padding:9px 2px;font-size:12.5px;font-weight:700;font-family:inherit;color:var(--ink2);cursor:pointer;position:relative}
+.tabs{display:flex;gap:6px;max-width:560px;margin:0 auto;padding:10px 12px 0}
+.tab{flex:1;background:#fff;border:1px solid var(--line);border-bottom:none;border-radius:14px 14px 0 0;padding:11px 4px;font-size:14px;font-weight:700;font-family:inherit;color:var(--ink2);cursor:pointer;position:relative}
 .tab.on{color:var(--plum2);box-shadow:0 -3px 0 var(--gold) inset}
-.tab i{display:block;font-style:normal;font-size:10px;font-weight:600;opacity:.7;margin-top:1px}
-.tab.done:after{content:'✓';position:absolute;top:5px;right:6px;font-size:10.5px;color:var(--ok);font-weight:800}
+.tab i{display:block;font-style:normal;font-size:10.5px;font-weight:600;opacity:.7;margin-top:1px}
+.tab.done:after{content:'✓';position:absolute;top:6px;right:9px;font-size:11px;color:var(--ok);font-weight:800}
 .wrap{max-width:560px;margin:0 auto;padding:0 12px}
 .pane{display:none}
 .pane.on{display:block}
@@ -30,6 +30,8 @@ body.cn .s{display:inline}
 .sh .n{width:23px;height:23px;border-radius:50%;background:var(--plum);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .sh b{font-size:15.5px;color:var(--plum2)}
 .sh small{margin-left:auto;font-size:11.5px;color:var(--ink2)}
+.grp{display:flex;align-items:center;gap:8px;margin:22px 2px 0;font-size:12px;font-weight:800;color:var(--rose);letter-spacing:2px}
+.grp:before,.grp:after{content:'';flex:1;height:1px;background:var(--line)}
 .lbl{font-size:12.5px;font-weight:700;color:var(--rose);margin:13px 0 5px}
 .opts{display:flex;flex-direction:column;gap:7px;margin-top:8px}
 .opt{display:flex;gap:9px;align-items:flex-start;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 11px;cursor:pointer;font-family:inherit;text-align:left;font-size:13.5px;color:var(--ink);line-height:1.5;transition:.12s}
@@ -45,21 +47,23 @@ body.cn .s{display:inline}
 .chip.fail.on{border-color:var(--no);background:var(--no)}
 input[type=number]{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 12px;font-size:16px;font-family:inherit;color:var(--ink);background:#fff}
 input[type=number]:focus{outline:none;border-color:var(--plum2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .hint{font-size:11.5px;color:var(--ink2);margin-top:6px;line-height:1.6}
 .tier{margin-top:9px;font-size:13px;font-weight:700;color:var(--plum2);background:var(--cream);border-radius:10px;padding:9px 11px}
 .tier.none{color:var(--ink2);font-weight:600}
 .tier.warn{background:var(--nobg);color:var(--no)}
 .verdict{margin-top:13px;border-radius:14px;padding:15px;text-align:center}
 .verdict.go{background:var(--okbg);border:1.5px solid var(--ok)}
+.verdict.mid{background:#fdf6ec;border:1.5px solid var(--gold)}
 .verdict.no{background:var(--nobg);border:1.5px solid var(--no)}
 .verdict.idle{background:var(--cream);border:1.5px solid var(--line)}
 .verdict b{display:block;font-size:20px;font-weight:800;letter-spacing:1px}
-.verdict.go b{color:var(--ok)} .verdict.no b{color:var(--no)} .verdict.idle b{color:var(--ink2);font-size:15px}
+.verdict.go b{color:var(--ok)} .verdict.no b{color:var(--no)} .verdict.mid b{color:#a9711f} .verdict.idle b{color:var(--ink2);font-size:15px}
 .verdict span{display:block;font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.6}
 .res{position:fixed;left:0;right:0;bottom:0;background:rgba(74,44,58,.97);backdrop-filter:blur(8px);color:#f6eee8;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);box-shadow:0 -6px 20px rgba(0,0,0,.18)}
 .res .inner{max-width:560px;margin:0 auto}
 .rrow{display:flex;gap:7px}
-.rbox{flex:1;background:rgba(255,255,255,.1);border-radius:12px;padding:8px 5px;text-align:center;cursor:pointer}
+.rbox{flex:1;background:rgba(255,255,255,.1);border-radius:12px;padding:8px 5px;text-align:center}
 .rbox span{display:block;font-size:10.5px;opacity:.75}
 .rbox b{font-size:19px;font-weight:800;color:var(--gold)}
 .rbox.big{background:rgba(214,166,128,.26);flex:1.25}
@@ -80,27 +84,29 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 </div>
 
 <div class="tabs">
-  <button class="tab on" onclick="tab(0)"><span class="t">下單前</span><span class="s">下单前</span><i><span class="t">叫不叫</span><span class="s">叫不叫</span></i></button>
-  <button class="tab" onclick="tab(1)"><span class="t">客觀</span><span class="s">客观</span><i><span class="t">到貨後</span><span class="s">到货后</span></i></button>
-  <button class="tab" onclick="tab(2)"><span class="t">主題</span><span class="s">主题</span><i><span class="t">涼感透氣</span><span class="s">凉感透气</span></i></button>
-  <button class="tab" onclick="tab(3)"><span class="t">主觀</span><span class="s">主观</span><i><span class="t">賣得動</span><span class="s">卖得动</span></i></button>
+  <button class="tab on" onclick="tab(0)"><span class="t">到貨前</span><span class="s">到货前</span><i><span class="t">叫不叫</span><span class="s">叫不叫</span></i></button>
+  <button class="tab" onclick="tab(1)"><span class="t">到貨後</span><span class="s">到货后</span><i><span class="t">三項評分</span><span class="s">三项评分</span></i></button>
 </div>
 
 <div class="wrap">
 
-<!-- ===== 0 下單前 ===== -->
+<!-- ===== 到貨前 ===== -->
 <div class="pane on" id="p0">
   <div class="step">
     <div class="sh"><span class="n">1</span><b><span class="t">成本等級</span><span class="s">成本等级</span></b><small><span class="t">65% 毛利定價</span><span class="s">65% 毛利定价</span></small></div>
     <div class="lbl"><span class="t">品類</span><span class="s">品类</span></div>
     <div class="grid" id="catG"></div>
-    <div class="lbl"><span class="t">1688 商品成本（人民幣）</span><span class="s">1688 商品成本（人民币）</span></div>
-    <input type="number" id="cny" inputmode="decimal" placeholder="¥" oninput="calc()">
-    <div class="lbl"><span class="t">重量（公克，選填）</span><span class="s">重量（克，选填）</span></div>
-    <input type="number" id="wt" inputmode="decimal" placeholder="g" oninput="calc()">
-    <div class="hint"><span class="t">定價 ＝（商品成本 ＋ 重量×¥30/kg）× 匯率 4.8 ÷ 0.35（65% 毛利）。不填重量會低估定價。這是概算，跟試算表可能差 ±10%。</span><span class="s">定价 ＝（商品成本 ＋ 重量×¥30/kg）× 汇率 4.8 ÷ 0.35（65% 毛利）。不填重量会低估定价。这是概算，跟试算表可能差 ±10%。</span></div>
-    <div class="lbl"><span class="t">或直接填試算表定價（會蓋過上面）</span><span class="s">或直接填试算表定价（会盖过上面）</span></div>
-    <input type="number" id="price" inputmode="decimal" placeholder="NT$" oninput="calc()">
+    <div class="two" style="margin-top:13px">
+      <div>
+        <div class="lbl" style="margin-top:0"><span class="t">商品成本 ¥</span><span class="s">商品成本 ¥</span></div>
+        <input type="number" id="cny" inputmode="decimal" placeholder="¥" oninput="calc()">
+      </div>
+      <div>
+        <div class="lbl" style="margin-top:0"><span class="t">重量 g</span><span class="s">重量 g</span></div>
+        <input type="number" id="wt" inputmode="decimal" placeholder="g" oninput="calc()">
+      </div>
+    </div>
+    <div class="hint"><span class="t">定價 ＝（¥成本 × 4.8 ＋ 重量 × NT$55/kg ＋ NT$40 包材進店）÷ 0.35</span><span class="s">定价 ＝（¥成本 × 4.8 ＋ 重量 × NT$55/kg ＋ NT$40 包材进店）÷ 0.35</span></div>
     <div class="tier none" id="costT"></div>
   </div>
   <div class="step">
@@ -115,12 +121,13 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
   </div>
 </div>
 
-<!-- ===== 1 客觀 ===== -->
+<!-- ===== 到貨後 ===== -->
 <div class="pane" id="p1">
-  <div class="step">
+  <div class="grp" style="margin-top:12px"><span class="t">客觀分</span><span class="s">客观分</span></div>
+  <div class="step" style="margin-top:8px">
     <div class="sh"><span class="n">4</span><b><span class="t">做工</span><span class="s">做工</span></b><small><span class="t">縫線車得好不好</span><span class="s">缝线车得好不好</span></small></div>
     <div class="opts" id="wrkG"></div>
-    <div class="hint"><span class="t">看下擺、袖口、褲口、腋下這些關鍵接縫。做工只有實物最準，一定要拆箱才判。</span><span class="s">看下摆、袖口、裤口、腋下这些关键接缝。做工只有实物最准，一定要拆箱才判。</span></div>
+    <div class="hint"><span class="t">看下擺、袖口、褲口、腋下這些關鍵接縫。</span><span class="s">看下摆、袖口、裤口、腋下这些关键接缝。</span></div>
   </div>
   <div class="step">
     <div class="sh"><span class="n">5</span><b><span class="t">物流</span><span class="s">物流</span></b><small><span class="t">下單 → 到深圳</span><span class="s">下单 → 到深圳</span></small></div>
@@ -128,11 +135,9 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
     <div class="grid" style="grid-template-columns:1fr;margin-top:7px" id="splG"></div>
     <div class="tier none" id="valT"></div>
   </div>
-</div>
 
-<!-- ===== 2 主題 ===== -->
-<div class="pane" id="p2">
-  <div class="step">
+  <div class="grp"><span class="t">主題分 · 涼感透氣</span><span class="s">主题分 · 凉感透气</span></div>
+  <div class="step" style="margin-top:8px">
     <div class="sh"><span class="n">6</span><b>qmax</b><small><span class="t">第三方報告</span><span class="s">第三方报告</span></small></div>
     <div class="opts" id="qmG"></div>
   </div>
@@ -143,16 +148,14 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
   </div>
   <div class="step">
     <div class="sh"><span class="n">8</span><b><span class="t">蠟燭測試</span><span class="s">蜡烛测试</span></b><small><span class="t">MURO 內部測試</span><span class="s">MURO 内部测试</span></small></div>
-    <div class="hint"><span class="t">固定距離（桌上貼膠帶標記），隔著布吹蠟燭。</span><span class="s">固定距离（桌上贴胶带标记），隔着布吹蜡烛。</span></div>
+    <div class="hint"><span class="t">固定距離，隔著布吹蠟燭。</span><span class="s">固定距离，隔着布吹蜡烛。</span></div>
     <div class="opts" id="cdG"></div>
     <div class="tier none" id="airT"></div>
   </div>
-</div>
 
-<!-- ===== 3 主觀 ===== -->
-<div class="pane" id="p3">
-  <div class="step">
-    <div class="sh"><span class="n">9</span><b><span class="t">賣得動</span><span class="s">卖得动</span></b><small><span class="t">實物到手才打</span><span class="s">实物到手才打</span></small></div>
+  <div class="grp"><span class="t">主觀分 · 賣得動</span><span class="s">主观分 · 卖得动</span></div>
+  <div class="step" style="margin-top:8px">
+    <div class="sh"><span class="n">9</span><b><span class="t">實物到手才打</span><span class="s">实物到手才打</span></b></div>
     <div class="hint"><span class="t">三項各對應一種賠錢方式：不舒服會退貨、不好看賣不動、沒記憶點直播講不下去。</span><span class="s">三项各对应一种赔钱方式：不舒服会退货、不好看卖不动、没记忆点直播讲不下去。</span></div>
     <div class="lbl"><span class="t">舒不舒服</span><span class="s">舒不舒服</span></div>
     <div class="opts" id="sfG"></div>
@@ -163,6 +166,7 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
     <div class="tier none" id="subT"></div>
     <div class="lbl"><span class="t">或直接打分（0–10，會蓋過上面三項）</span><span class="s">或直接打分（0–10，会盖过上面三项）</span></div>
     <input type="number" id="subjN" inputmode="decimal" step="0.5" min="0" max="10" placeholder="0 – 10" oninput="calc()">
+    <div class="verdict idle" id="vd2"></div>
   </div>
 </div>
 
@@ -172,9 +176,9 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 
 <div class="res"><div class="inner">
   <div class="rrow">
-    <div class="rbox" onclick="tab(1)"><span><span class="t">客觀</span><span class="s">客观</span></span><b id="rObj">–</b></div>
-    <div class="rbox" onclick="tab(2)"><span><span class="t">主題</span><span class="s">主题</span></span><b id="rThm">–</b></div>
-    <div class="rbox" onclick="tab(3)"><span><span class="t">主觀</span><span class="s">主观</span></span><b id="rSub">–</b></div>
+    <div class="rbox"><span><span class="t">客觀</span><span class="s">客观</span></span><b id="rObj">–</b></div>
+    <div class="rbox"><span><span class="t">主題</span><span class="s">主题</span></span><b id="rThm">–</b></div>
+    <div class="rbox"><span><span class="t">主觀</span><span class="s">主观</span></span><b id="rSub">–</b></div>
     <div class="rbox big"><span><span class="t">最終分</span><span class="s">最终分</span></span><b id="rFin">–</b></div>
   </div>
   <div class="role" id="rRole"></div>
@@ -182,6 +186,7 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 </div></div>
 
 <script>
+var RATE=4.8, SHIP=55, PACK=40, GM=0.35;
 var CATS=[
  {t:'內衣',s:'内衣',lo:290,mi:500,txt:'88–290 / 300–500 / 1000+'},
  {t:'內褲',s:'内裤',lo:65,mi:189,txt:'25–65 / 89–189 / 234+'},
@@ -202,9 +207,9 @@ var PKG=[
 ];
 var WRK=[
  {p:-1,t:'爆線 → 直接淘汰',s:'爆线 → 直接淘汰',dt:'線頭外露到像炸開、大面積脫線、車歪到接縫扭曲',ds:'线头外露到像炸开、大面积脱线、车歪到接缝扭曲'},
- {p:1,t:'車工亂',s:'车工乱',dt:'脫線、線頭外露、縫線歪斜、接縫起皺；或商品頁根本不給細節照',ds:'脱线、线头外露、缝线歪斜、接缝起皱；或商品页根本不给细节照'},
- {p:2,t:'車工整齊',s:'车工整齐',dt:'線直、針距均勻、沒有線頭。無痕處理（雷射切邊、熱熔、一體成型）也算這級',ds:'线直、针距均匀、没有线头。无痕处理（激光切边、热熔、一体成型）也算这级'},
- {p:3,t:'車工精緻',s:'车工精致',dt:'整齊之外再加一項：針距密、包邊細窄平整、關鍵部位補強（雙針／三線鎖邊），或無痕＋結構設計',ds:'整齐之外再加一项：针距密、包边细窄平整、关键部位补强（双针／三线锁边），或无痕＋结构设计'}
+ {p:1,t:'車工亂',s:'车工乱',dt:'脫線、線頭外露、縫線歪斜、接縫起皺',ds:'脱线、线头外露、缝线歪斜、接缝起皱'},
+ {p:2,t:'車工整齊',s:'车工整齐',dt:'線直、針距均勻、沒有線頭。無痕處理也算這級',ds:'线直、针距均匀、没有线头。无痕处理也算这级'},
+ {p:3,t:'車工精緻',s:'车工精致',dt:'整齊之外再加：針距密、包邊細窄平整、關鍵部位補強，或無痕＋結構設計',ds:'整齐之外再加：针距密、包边细窄平整、关键部位补强，或无痕＋结构设计'}
 ];
 var LOG=[{v:10,t:'1–2 天',s:'1–2 天'},{v:7.5,t:'3 天',s:'3 天'},{v:6,t:'4 天',s:'4 天'},{v:-1,t:'超過 4 天',s:'超过 4 天'}];
 var SPL=[{t:'⚠ 分多個包裹發貨　物流分 −2',s:'⚠ 分多个包裹发货　物流分 −2'}];
@@ -269,43 +274,46 @@ function build(){
    calc()}});
 }
 function calcPrice(){
- var ov=parseFloat(document.getElementById('price').value);
- if(ov>0)return {v:ov,src:'sheet'};
  var y=parseFloat(document.getElementById('cny').value);
  if(!(y>0))return null;
- var g=parseFloat(document.getElementById('wt').value);
- if(!(g>0))g=0;
- return {v:(y+g/1000*30)*4.8/0.35,src:'est'};
+ var g=parseFloat(document.getElementById('wt').value); if(!(g>0))g=0;
+ return (y*RATE + g/1000*SHIP + PACK)/GM;
 }
 function costTier(){
  if(S.cat===null)return 0;
- var p=calcPrice();
- if(!p)return 0;
+ var p=calcPrice(); if(!p)return 0;
  var c=CATS[S.cat];
- return p.v<=c.lo?1:(p.v<=c.mi?2:3);
+ return p<=c.lo?1:(p<=c.mi?2:3);
 }
 function toTier(sum){return sum<=4?1:(sum<=7?2:3)}
+var TN=['','低','中','高'];
+// 上架規則：任一項高於價位 → 考慮；全部等於價位 → 相符；有一項低於且沒有一項高於 → 不上架
+function rule(items,C){
+ var mx=Math.max.apply(null,items), mn=Math.min.apply(null,items);
+ if(mx>C)return 2;
+ if(mn>=C)return 1;
+ return 0;
+}
 function calc(){
  var ct=costTier();
  var cE=document.getElementById('costT');
- if(ct){var pp=calcPrice();
+ if(ct){var pv=calcPrice();
   cE.className='tier';
-  cE.innerHTML=bi('定價 NT$','定价 NT$')+'<b>'+Math.round(pp.v)+'</b>'+(pp.src==='est'?bi('（概算）','（概算）'):'')+'　→　'+bi('成本等級 ','成本等级 ')+'<b>'+['','低','中','高'][ct]+'</b>'+'<span style="display:block;font-weight:400;font-size:11.5px;opacity:.7;margin-top:3px">'+CATS[S.cat].txt+'</span>'}
- else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入人民幣成本','先选品类并输入人民币成本')}
+  cE.innerHTML=bi('定價 NT$','定价 NT$')+'<b>'+Math.round(pv)+'</b>　→　'+bi('成本等級 ','成本等级 ')+'<b>'+TN[ct]+'</b><span style="display:block;font-weight:400;font-size:11.5px;opacity:.7;margin-top:3px">'+CATS[S.cat].txt+'</span>'}
+ else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入商品成本','先选品类并输入商品成本')}
 
- // ---- 下單前速判：做工先假設 2 分（車工整齊，最常見）----
+ // 到貨前判定：材質、包裝 vs 成本等級
  var vE=document.getElementById('vd');
  if(ct&&S.mat!==null&&S.pkg!==null){
-  var mp=MAT[S.mat].p+PKG[S.pkg].p;
-  var est=toTier(mp+2), d0=est-ct;
-  var best=toTier(mp+3)-ct, worst=toTier(mp+1)-ct;
-  var lineT='材質 '+MAT[S.mat].p+' ＋ 包裝 '+PKG[S.pkg].p+' ＝ '+mp+' 分｜做工抓 2 分 → 價值 '+['','低','中','高'][est]+'　最好 '+POS[String(best)][0]+' 分 · 最差 '+POS[String(worst)][0]+' 分';
-  var lineS='材质 '+MAT[S.mat].p+' ＋ 包装 '+PKG[S.pkg].p+' ＝ '+mp+' 分｜做工按 2 分 → 价值 '+['','低','中','高'][est]+'　最好 '+POS[String(best)][0]+' 分 · 最差 '+POS[String(worst)][0]+' 分';
-  if(d0>=0){vE.className='verdict go';vE.innerHTML='<b>'+bi('可以叫','可以叫')+'</b><span>'+bi(lineT,lineS)+'</span>'}
-  else{vE.className='verdict no';vE.innerHTML='<b>'+bi('不用叫','不用叫')+'</b><span>'+bi(lineT,lineS)+'<br>'+bi('貴又普通，最難賣的組合','贵又普通，最难卖的组合')+'</span>'}
+  var M=MAT[S.mat].p,P=PKG[S.pkg].p,r=rule([M,P],ct);
+  var dT='材質 '+M+'（'+TN[M]+'）　包裝 '+P+'（'+TN[P]+'）　價位 '+TN[ct];
+  var dS='材质 '+M+'（'+TN[M]+'）　包装 '+P+'（'+TN[P]+'）　价位 '+TN[ct];
+  if(r===2){vE.className='verdict go';vE.innerHTML='<b>'+bi('可以叫','可以叫')+'</b><span>'+bi(dT,dS)+'<br>'+bi('有一項高於價位，值得考慮','有一项高于价位，值得考虑')+'</span>'}
+  else if(r===1){vE.className='verdict mid';vE.innerHTML='<b>'+bi('勉強可以','勉强可以')+'</b><span>'+bi(dT,dS)+'<br>'+bi('剛好符合價位，沒有亮點','刚好符合价位，没有亮点')+'</span>'}
+  else{vE.className='verdict no';vE.innerHTML='<b>'+bi('不用叫','不用叫')+'</b><span>'+bi(dT,dS)+'<br>'+bi('低於自己的價位，且沒有任何一項高過','低于自己的价位，且没有任何一项高过')+'</span>'}
  }else{vE.className='verdict idle';vE.innerHTML='<b>'+bi('選完品類、成本、材質、包裝','选完品类、成本、材质、包装')+'</b><span>'+bi('這四項在 1688 頁面上就問得到','这四项在 1688 页面上就问得到')+'</span>'}
 
- // ---- 客觀 ----
+ // 客觀
  var wFail=(S.wrk!==null&&WRK[S.wrk].p<0);
  var vt=0;
  if(!wFail&&S.mat!==null&&S.wrk!==null&&S.pkg!==null){
@@ -314,8 +322,8 @@ function calc(){
  }
  var tE=document.getElementById('valT');
  if(wFail){tE.className='tier warn';tE.innerHTML='✕ '+bi('車工爆線 → 直接淘汰，不計分','车工爆线 → 直接淘汰，不计分')}
- else if(vt){tE.className='tier';tE.innerHTML=bi('價值等級：','价值等级：')+'<b>'+['','低','中','高'][vt.tier]+'</b>　<span style="font-weight:400;font-size:11.5px;opacity:.7">'+vt.sum+' 分</span>'}
- else{tE.className='tier none';tE.innerHTML=bi('材質、做工、包裝都選才會出等級','材质、做工、包装都选才会出等级')}
+ else if(vt){tE.className='tier';tE.innerHTML=bi('價值等級：','价值等级：')+'<b>'+TN[vt.tier]+'</b>　<span style="font-weight:400;font-size:11.5px;opacity:.7">'+vt.sum+' 分</span>'}
+ else{tE.className='tier none';tE.innerHTML=bi('做工選完才會出價值等級','做工选完才会出价值等级')}
 
  var pos=null,info=null;
  if(ct&&vt&&!wFail){info=POS[String(vt.tier-ct)];pos=info[0]}
@@ -324,7 +332,7 @@ function calc(){
  var failed=(log===-1)||wFail;
  var obj=(pos!==null&&log!==null&&!failed)?pos*0.9+log*0.1:null;
 
- // ---- 主題 ----
+ // 主題
  var air=null,conflict=false;
  var aE=document.getElementById('airT');
  if(S.ws!==null&&S.cd!==null){
@@ -335,7 +343,7 @@ function calc(){
  var qm=S.qm===null?null:QM[S.qm].p;
  var thm=(qm!==null&&air!==null)?Math.sqrt(qm*air):null;
 
- // ---- 主觀 ----
+ // 主觀
  var sub3=null,sE=document.getElementById('subT');
  if(S.sf!==null&&S.lk!==null&&S.mk!==null){
   var a=SF[S.sf].p,b=LK[S.lk].p,c3=MK[S.mk].p;
@@ -347,6 +355,17 @@ function calc(){
 
  var fin=(obj!==null&&thm!==null&&sub!==null)?Math.cbrt(obj*thm*sub):null;
 
+ // 到貨後的上架判定（材質、做工、包裝 三項 vs 價位）
+ var v2=document.getElementById('vd2');
+ if(ct&&vt&&!wFail){
+  var r2=rule([MAT[S.mat].p,WRK[S.wrk].p,PKG[S.pkg].p],ct);
+  var t2='材質 '+MAT[S.mat].p+'　做工 '+WRK[S.wrk].p+'　包裝 '+PKG[S.pkg].p+'　價位 '+TN[ct];
+  var s2='材质 '+MAT[S.mat].p+'　做工 '+WRK[S.wrk].p+'　包装 '+PKG[S.pkg].p+'　价位 '+TN[ct];
+  if(r2===0){v2.className='verdict no';v2.innerHTML='<b>'+bi('不上架','不上架')+'</b><span>'+bi(t2,s2)+'<br>'+bi('低於自己的價位，且沒有任何一項高過','低于自己的价位，且没有任何一项高过')+'</span>'}
+  else if(r2===1){v2.className='verdict mid';v2.innerHTML='<b>'+bi('可上架，不主推','可上架，不主推')+'</b><span>'+bi(t2,s2)+'</span>'}
+  else{v2.className='verdict go';v2.innerHTML='<b>'+bi('可上架','可上架')+'</b><span>'+bi(t2,s2)+'<br>'+bi('有一項高於價位','有一项高于价位')+'</span>'}
+ }else{v2.className='verdict idle';v2.innerHTML='<b>'+bi('填完成本、材質、做工、包裝','填完成本、材质、做工、包装')+'</b><span>'+bi('才判得出上不上架','才判得出上不上架')+'</span>'}
+
  document.getElementById('rObj').textContent=obj===null?'–':obj.toFixed(2);
  document.getElementById('rThm').textContent=thm===null?'–':thm.toFixed(2);
  document.getElementById('rSub').textContent=sub===null?'–':(Math.round(sub*100)/100);
@@ -354,18 +373,18 @@ function calc(){
 
  var tabs=document.querySelectorAll('.tab');
  tabs[0].classList.toggle('done',!!(ct&&S.mat!==null&&S.pkg!==null));
- tabs[1].classList.toggle('done',obj!==null);
- tabs[2].classList.toggle('done',thm!==null);
- tabs[3].classList.toggle('done',sub!==null);
+ tabs[1].classList.toggle('done',fin!==null);
 
  var r=document.getElementById('rRole'),m=document.getElementById('rMiss');
  if(failed){r.className='role fail';r.innerHTML=(wFail?bi('車工爆線 → 直接淘汰','车工爆线 → 直接淘汰'):bi('物流超過 4 天 → 直接淘汰','物流超过 4 天 → 直接淘汰'));m.innerHTML='';return}
  if(conflict){r.className='role fail';r.innerHTML=bi('兩個透氣測試矛盾，請重測','两个透气测试矛盾，请重测');m.innerHTML='';return}
+ if(ct&&vt&&!wFail&&rule([MAT[S.mat].p,WRK[S.wrk].p,PKG[S.pkg].p],ct)===0){
+  r.className='role fail';r.innerHTML=bi('低於自己的價位 → 不上架','低于自己的价位 → 不上架');m.innerHTML='';return}
  if(fin!==null){
   var v=fin>=8?['主推','主推','ok']:fin>=5?['觀察','观察','']:['汰換','淘汰','fail'];
   r.className='role '+v[2];
   r.innerHTML='<b>'+bi(v[0],v[1])+'</b>　'+bi(info[1],info[2])+(S.qm===0?'　'+bi('· 無報告不可主打','· 无报告不可主打'):'');
- }else{r.className='role';r.innerHTML=info?bi(info[1],info[2]):bi('四個分頁填完才會出最終分','四个分页填完才会出最终分')}
+ }else{r.className='role';r.innerHTML=info?bi(info[1],info[2]):bi('兩個分頁填完才會出最終分','两个分页填完才会出最终分')}
  var miss=[];
  if(obj===null)miss.push(['客觀','客观']);
  if(thm===null)miss.push(['主題','主题']);
@@ -374,7 +393,7 @@ function calc(){
 }
 function reset(){S={cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
  document.querySelectorAll('.on[data-k]').forEach(function(x){x.classList.remove('on')});
- ['price','cny','wt','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
+ ['cny','wt','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
 build();calc();
 </script>
 </body>
