@@ -94,7 +94,12 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
     <div class="sh"><span class="n">1</span><b><span class="t">成本等級</span><span class="s">成本等级</span></b><small><span class="t">65% 毛利定價</span><span class="s">65% 毛利定价</span></small></div>
     <div class="lbl"><span class="t">品類</span><span class="s">品类</span></div>
     <div class="grid" id="catG"></div>
-    <div class="lbl"><span class="t">試算表算出的台幣定價</span><span class="s">试算表算出的台币定价</span></div>
+    <div class="lbl"><span class="t">1688 商品成本（人民幣）</span><span class="s">1688 商品成本（人民币）</span></div>
+    <input type="number" id="cny" inputmode="decimal" placeholder="¥" oninput="calc()">
+    <div class="lbl"><span class="t">重量（公克，選填）</span><span class="s">重量（克，选填）</span></div>
+    <input type="number" id="wt" inputmode="decimal" placeholder="g" oninput="calc()">
+    <div class="hint"><span class="t">定價 ＝（商品成本 ＋ 重量×¥30/kg）× 匯率 4.8 ÷ 0.35（65% 毛利）。不填重量會低估定價。這是概算，跟試算表可能差 ±10%。</span><span class="s">定价 ＝（商品成本 ＋ 重量×¥30/kg）× 汇率 4.8 ÷ 0.35（65% 毛利）。不填重量会低估定价。这是概算，跟试算表可能差 ±10%。</span></div>
+    <div class="lbl"><span class="t">或直接填試算表定價（會蓋過上面）</span><span class="s">或直接填试算表定价（会盖过上面）</span></div>
     <input type="number" id="price" inputmode="decimal" placeholder="NT$" oninput="calc()">
     <div class="tier none" id="costT"></div>
   </div>
@@ -263,19 +268,30 @@ function build(){
    document.querySelectorAll('[data-k="'+k+'"]').forEach(function(x){x.classList.toggle('on',+x.dataset.i===S[k])});
    calc()}});
 }
+function calcPrice(){
+ var ov=parseFloat(document.getElementById('price').value);
+ if(ov>0)return {v:ov,src:'sheet'};
+ var y=parseFloat(document.getElementById('cny').value);
+ if(!(y>0))return null;
+ var g=parseFloat(document.getElementById('wt').value);
+ if(!(g>0))g=0;
+ return {v:(y+g/1000*30)*4.8/0.35,src:'est'};
+}
 function costTier(){
  if(S.cat===null)return 0;
- var p=parseFloat(document.getElementById('price').value);
- if(!(p>0))return 0;
+ var p=calcPrice();
+ if(!p)return 0;
  var c=CATS[S.cat];
- return p<=c.lo?1:(p<=c.mi?2:3);
+ return p.v<=c.lo?1:(p.v<=c.mi?2:3);
 }
 function toTier(sum){return sum<=4?1:(sum<=7?2:3)}
 function calc(){
  var ct=costTier();
  var cE=document.getElementById('costT');
- if(ct){cE.className='tier';cE.innerHTML=bi('成本等級：','成本等级：')+'<b>'+['','低','中','高'][ct]+'</b>　<span style="font-weight:400;font-size:11.5px;opacity:.7">'+CATS[S.cat].txt+'</span>'}
- else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入定價','先选品类并输入定价')}
+ if(ct){var pp=calcPrice();
+  cE.className='tier';
+  cE.innerHTML=bi('定價 NT$','定价 NT$')+'<b>'+Math.round(pp.v)+'</b>'+(pp.src==='est'?bi('（概算）','（概算）'):'')+'　→　'+bi('成本等級 ','成本等级 ')+'<b>'+['','低','中','高'][ct]+'</b>'+'<span style="display:block;font-weight:400;font-size:11.5px;opacity:.7;margin-top:3px">'+CATS[S.cat].txt+'</span>'}
+ else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入人民幣成本','先选品类并输入人民币成本')}
 
  // ---- 下單前速判：做工先假設 2 分（車工整齊，最常見）----
  var vE=document.getElementById('vd');
@@ -287,7 +303,7 @@ function calc(){
   var lineS='材质 '+MAT[S.mat].p+' ＋ 包装 '+PKG[S.pkg].p+' ＝ '+mp+' 分｜做工按 2 分 → 价值 '+['','低','中','高'][est]+'　最好 '+POS[String(best)][0]+' 分 · 最差 '+POS[String(worst)][0]+' 分';
   if(d0>=0){vE.className='verdict go';vE.innerHTML='<b>'+bi('可以叫','可以叫')+'</b><span>'+bi(lineT,lineS)+'</span>'}
   else{vE.className='verdict no';vE.innerHTML='<b>'+bi('不用叫','不用叫')+'</b><span>'+bi(lineT,lineS)+'<br>'+bi('貴又普通，最難賣的組合','贵又普通，最难卖的组合')+'</span>'}
- }else{vE.className='verdict idle';vE.innerHTML='<b>'+bi('選完品類、定價、材質、包裝','选完品类、定价、材质、包装')+'</b><span>'+bi('這四項下單前就問得到','这四项下单前就问得到')+'</span>'}
+ }else{vE.className='verdict idle';vE.innerHTML='<b>'+bi('選完品類、成本、材質、包裝','选完品类、成本、材质、包装')+'</b><span>'+bi('這四項在 1688 頁面上就問得到','这四项在 1688 页面上就问得到')+'</span>'}
 
  // ---- 客觀 ----
  var wFail=(S.wrk!==null&&WRK[S.wrk].p<0);
@@ -358,7 +374,7 @@ function calc(){
 }
 function reset(){S={cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
  document.querySelectorAll('.on[data-k]').forEach(function(x){x.classList.remove('on')});
- ['price','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
+ ['price','cny','wt','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
 build();calc();
 </script>
 </body>
