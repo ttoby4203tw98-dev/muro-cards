@@ -6,22 +6,22 @@
 <meta name="theme-color" content="#4a2c3a">
 <title>商品綜合評分｜MURO 暮若</title>
 <style>
-:root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--ok:#2f7d4f;--no:#b34a4a;}
+:root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--ok:#2f7d4f;--okbg:#e7f3ec;--no:#b34a4a;--nobg:#fbeaea;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;padding-bottom:176px}
 .s{display:none}
 body.cn .t{display:none}
 body.cn .s{display:inline}
-.hero{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px 22px;position:relative}
+.hero{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px 20px;position:relative}
 .hero h1{font-size:21px;font-weight:800;letter-spacing:1.5px}
 .hero .sub{margin-top:5px;font-size:12.5px;opacity:.85}
 .tog{position:absolute;top:calc(env(safe-area-inset-top,0px) + 18px);right:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;font-weight:700;border-radius:99px;padding:5px 13px;cursor:pointer;font-family:inherit}
-.tabs{display:flex;gap:6px;max-width:540px;margin:0 auto;padding:12px 14px 0}
-.tab{flex:1;background:#fff;border:1px solid var(--line);border-bottom:none;border-radius:14px 14px 0 0;padding:11px 4px;font-size:13.5px;font-weight:700;font-family:inherit;color:var(--ink2);cursor:pointer;position:relative}
+.tabs{display:flex;gap:5px;max-width:560px;margin:0 auto;padding:10px 12px 0}
+.tab{flex:1;background:#fff;border:1px solid var(--line);border-bottom:none;border-radius:13px 13px 0 0;padding:9px 2px;font-size:12.5px;font-weight:700;font-family:inherit;color:var(--ink2);cursor:pointer;position:relative}
 .tab.on{color:var(--plum2);box-shadow:0 -3px 0 var(--gold) inset}
-.tab i{display:block;font-style:normal;font-size:10.5px;font-weight:600;opacity:.7;margin-top:2px}
-.tab.done:after{content:'✓';position:absolute;top:6px;right:9px;font-size:11px;color:var(--ok);font-weight:800}
-.wrap{max-width:540px;margin:0 auto;padding:0 14px}
+.tab i{display:block;font-style:normal;font-size:10px;font-weight:600;opacity:.7;margin-top:1px}
+.tab.done:after{content:'✓';position:absolute;top:5px;right:6px;font-size:10.5px;color:var(--ok);font-weight:800}
+.wrap{max-width:560px;margin:0 auto;padding:0 12px}
 .pane{display:none}
 .pane.on{display:block}
 .step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 15px 16px;margin-top:12px;box-shadow:0 4px 12px rgba(74,44,58,.05)}
@@ -48,9 +48,16 @@ input[type=number]:focus{outline:none;border-color:var(--plum2)}
 .hint{font-size:11.5px;color:var(--ink2);margin-top:6px;line-height:1.6}
 .tier{margin-top:9px;font-size:13px;font-weight:700;color:var(--plum2);background:var(--cream);border-radius:10px;padding:9px 11px}
 .tier.none{color:var(--ink2);font-weight:600}
-.tier.warn{background:#fdf0f0;color:var(--no)}
+.tier.warn{background:var(--nobg);color:var(--no)}
+.verdict{margin-top:13px;border-radius:14px;padding:15px;text-align:center}
+.verdict.go{background:var(--okbg);border:1.5px solid var(--ok)}
+.verdict.no{background:var(--nobg);border:1.5px solid var(--no)}
+.verdict.idle{background:var(--cream);border:1.5px solid var(--line)}
+.verdict b{display:block;font-size:20px;font-weight:800;letter-spacing:1px}
+.verdict.go b{color:var(--ok)} .verdict.no b{color:var(--no)} .verdict.idle b{color:var(--ink2);font-size:15px}
+.verdict span{display:block;font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.6}
 .res{position:fixed;left:0;right:0;bottom:0;background:rgba(74,44,58,.97);backdrop-filter:blur(8px);color:#f6eee8;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);box-shadow:0 -6px 20px rgba(0,0,0,.18)}
-.res .inner{max-width:540px;margin:0 auto}
+.res .inner{max-width:560px;margin:0 auto}
 .rrow{display:flex;gap:7px}
 .rbox{flex:1;background:rgba(255,255,255,.1);border-radius:12px;padding:8px 5px;text-align:center;cursor:pointer}
 .rbox span{display:block;font-size:10.5px;opacity:.75}
@@ -73,17 +80,18 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 </div>
 
 <div class="tabs">
-  <button class="tab on" data-p="0" onclick="tab(0)"><span class="t">客觀評分</span><span class="s">客观评分</span><i><span class="t">定位＋物流</span><span class="s">定位＋物流</span></i></button>
-  <button class="tab" data-p="1" onclick="tab(1)"><span class="t">主題評分</span><span class="s">主题评分</span><i><span class="t">涼感透氣</span><span class="s">凉感透气</span></i></button>
-  <button class="tab" data-p="2" onclick="tab(2)"><span class="t">主觀評分</span><span class="s">主观评分</span><i><span class="t">賣得動</span><span class="s">卖得动</span></i></button>
+  <button class="tab on" onclick="tab(0)"><span class="t">下單前</span><span class="s">下单前</span><i><span class="t">叫不叫</span><span class="s">叫不叫</span></i></button>
+  <button class="tab" onclick="tab(1)"><span class="t">客觀</span><span class="s">客观</span><i><span class="t">到貨後</span><span class="s">到货后</span></i></button>
+  <button class="tab" onclick="tab(2)"><span class="t">主題</span><span class="s">主题</span><i><span class="t">涼感透氣</span><span class="s">凉感透气</span></i></button>
+  <button class="tab" onclick="tab(3)"><span class="t">主觀</span><span class="s">主观</span><i><span class="t">賣得動</span><span class="s">卖得动</span></i></button>
 </div>
 
 <div class="wrap">
 
-<!-- ===== 客觀 ===== -->
+<!-- ===== 0 下單前 ===== -->
 <div class="pane on" id="p0">
   <div class="step">
-    <div class="sh"><span class="n">1</span><b><span class="t">成本等級</span><span class="s">成本等级</span></b><small><span class="t">65% 毛利定價落在哪一帶</span><span class="s">65% 毛利定价落在哪一带</span></small></div>
+    <div class="sh"><span class="n">1</span><b><span class="t">成本等級</span><span class="s">成本等级</span></b><small><span class="t">65% 毛利定價</span><span class="s">65% 毛利定价</span></small></div>
     <div class="lbl"><span class="t">品類</span><span class="s">品类</span></div>
     <div class="grid" id="catG"></div>
     <div class="lbl"><span class="t">試算表算出的台幣定價</span><span class="s">试算表算出的台币定价</span></div>
@@ -91,49 +99,56 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
     <div class="tier none" id="costT"></div>
   </div>
   <div class="step">
-    <div class="sh"><span class="n">2</span><b><span class="t">價值等級</span><span class="s">价值等级</span></b><small><span class="t">材質 ＋ 做工 ＋ 包裝</span><span class="s">材质 ＋ 做工 ＋ 包装</span></small></div>
-    <div class="lbl"><span class="t">材質（看占比最高的成分，氨綸跳過）</span><span class="s">材质（看占比最高的成分，氨纶跳过）</span></div>
+    <div class="sh"><span class="n">2</span><b><span class="t">材質</span><span class="s">材质</span></b><small><span class="t">看占比最高的成分</span><span class="s">看占比最高的成分</span></small></div>
     <div class="opts" id="matG"></div>
-    <div class="hint"><span class="t">有紗線檢測報告 → 升一級（最高 3）</span><span class="s">有纱线检测报告 → 升一级（最高 3）</span></div>
-    <div class="lbl"><span class="t">做工（看車工：縫線車得好不好）</span><span class="s">做工（看车工：缝线车得好不好）</span></div>
-    <div class="opts" id="wrkG"></div>
-    <div class="hint"><span class="t">看下擺、袖口、褲口、腋下這些關鍵接縫。到貨一定要複查，做工只有實物最準</span><span class="s">看下摆、袖口、裤口、腋下这些关键接缝。到货一定要复查，做工只有实物最准</span></div>
-    <div class="lbl"><span class="t">包裝</span><span class="s">包装</span></div>
-    <div class="opts" id="pkgG"></div>
-    <div class="tier none" id="valT"></div>
+    <div class="hint"><span class="t">氨綸跳過不看。有紗線檢測報告 → 升一級（最高 3）</span><span class="s">氨纶跳过不看。有纱线检测报告 → 升一级（最高 3）</span></div>
   </div>
   <div class="step">
-    <div class="sh"><span class="n">3</span><b><span class="t">物流</span><span class="s">物流</span></b><small><span class="t">下單 → 到深圳</span><span class="s">下单 → 到深圳</span></small></div>
-    <div class="grid g4" id="logG"></div>
-    <div class="grid" style="grid-template-columns:1fr;margin-top:7px" id="splG"></div>
-    <div class="hint"><span class="t">下單前先用賣家發貨時效估，到貨後回來改成實際天數</span><span class="s">下单前先用卖家发货时效估，到货后回来改成实际天数</span></div>
+    <div class="sh"><span class="n">3</span><b><span class="t">包裝</span><span class="s">包装</span></b><small><span class="t">敢不敢直接寄給客人</span><span class="s">敢不敢直接寄给客人</span></small></div>
+    <div class="opts" id="pkgG"></div>
+    <div class="verdict idle" id="vd"></div>
   </div>
 </div>
 
-<!-- ===== 主題 ===== -->
+<!-- ===== 1 客觀 ===== -->
 <div class="pane" id="p1">
   <div class="step">
-    <div class="sh"><span class="n">1</span><b>qmax</b><small><span class="t">第三方報告</span><span class="s">第三方报告</span></small></div>
+    <div class="sh"><span class="n">4</span><b><span class="t">做工</span><span class="s">做工</span></b><small><span class="t">縫線車得好不好</span><span class="s">缝线车得好不好</span></small></div>
+    <div class="opts" id="wrkG"></div>
+    <div class="hint"><span class="t">看下擺、袖口、褲口、腋下這些關鍵接縫。做工只有實物最準，一定要拆箱才判。</span><span class="s">看下摆、袖口、裤口、腋下这些关键接缝。做工只有实物最准，一定要拆箱才判。</span></div>
+  </div>
+  <div class="step">
+    <div class="sh"><span class="n">5</span><b><span class="t">物流</span><span class="s">物流</span></b><small><span class="t">下單 → 到深圳</span><span class="s">下单 → 到深圳</span></small></div>
+    <div class="grid g4" id="logG"></div>
+    <div class="grid" style="grid-template-columns:1fr;margin-top:7px" id="splG"></div>
+    <div class="tier none" id="valT"></div>
+  </div>
+</div>
+
+<!-- ===== 2 主題 ===== -->
+<div class="pane" id="p2">
+  <div class="step">
+    <div class="sh"><span class="n">6</span><b>qmax</b><small><span class="t">第三方報告</span><span class="s">第三方报告</span></small></div>
     <div class="opts" id="qmG"></div>
   </div>
   <div class="step">
-    <div class="sh"><span class="n">2</span><b><span class="t">風速比</span><span class="s">风速比</span></b><small><span class="t">MURO 內部測試</span><span class="s">MURO 内部测试</span></small></div>
+    <div class="sh"><span class="n">7</span><b><span class="t">風速比</span><span class="s">风速比</span></b><small><span class="t">MURO 內部測試</span><span class="s">MURO 内部测试</span></small></div>
     <div class="hint"><span class="t">蓋布風速 ÷ 沒蓋布風速 × 100%。同一台風扇、同一距離、橡皮筋圈數固定。</span><span class="s">盖布风速 ÷ 没盖布风速 × 100%。同一台风扇、同一距离、橡皮筋圈数固定。</span></div>
     <div class="opts" id="wsG"></div>
   </div>
   <div class="step">
-    <div class="sh"><span class="n">3</span><b><span class="t">蠟燭測試</span><span class="s">蜡烛测试</span></b><small><span class="t">MURO 內部測試</span><span class="s">MURO 内部测试</span></small></div>
+    <div class="sh"><span class="n">8</span><b><span class="t">蠟燭測試</span><span class="s">蜡烛测试</span></b><small><span class="t">MURO 內部測試</span><span class="s">MURO 内部测试</span></small></div>
     <div class="hint"><span class="t">固定距離（桌上貼膠帶標記），隔著布吹蠟燭。</span><span class="s">固定距离（桌上贴胶带标记），隔着布吹蜡烛。</span></div>
     <div class="opts" id="cdG"></div>
     <div class="tier none" id="airT"></div>
   </div>
 </div>
 
-<!-- ===== 主觀 ===== -->
-<div class="pane" id="p2">
+<!-- ===== 3 主觀 ===== -->
+<div class="pane" id="p3">
   <div class="step">
-    <div class="sh"><span class="n">1</span><b><span class="t">賣得動</span><span class="s">卖得动</span></b><small><span class="t">實物到手才打</span><span class="s">实物到手才打</span></small></div>
-    <div class="hint"><span class="t">實物拿在手上，憑直覺打。三項各對應一種賠錢方式：不舒服會退貨、不好看賣不動、沒記憶點直播講不下去。</span><span class="s">实物拿在手上，凭直觉打。三项各对应一种赔钱方式：不舒服会退货、不好看卖不动、没记忆点直播讲不下去。</span></div>
+    <div class="sh"><span class="n">9</span><b><span class="t">賣得動</span><span class="s">卖得动</span></b><small><span class="t">實物到手才打</span><span class="s">实物到手才打</span></small></div>
+    <div class="hint"><span class="t">三項各對應一種賠錢方式：不舒服會退貨、不好看賣不動、沒記憶點直播講不下去。</span><span class="s">三项各对应一种赔钱方式：不舒服会退货、不好看卖不动、没记忆点直播讲不下去。</span></div>
     <div class="lbl"><span class="t">舒不舒服</span><span class="s">舒不舒服</span></div>
     <div class="opts" id="sfG"></div>
     <div class="lbl"><span class="t">好不好看</span><span class="s">好不好看</span></div>
@@ -147,14 +162,14 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 </div>
 
   <button class="rst" onclick="reset()"><span class="t">清空重來</span><span class="s">清空重来</span></button>
-  <footer><span class="t">客觀 ＝ 定位×0.9 ＋ 物流×0.1　｜　主題 ＝ √(qmax × 內部透氣)<br>≥8 主推｜5–7.9 觀察｜&lt;5 汰換</span><span class="s">客观 ＝ 定位×0.9 ＋ 物流×0.1　｜　主题 ＝ √(qmax × 内部透气)<br>≥8 主推｜5–7.9 观察｜&lt;5 淘汰</span><br>MURO 暮若 · 2026-08</footer>
+  <footer><span class="t">客觀 ＝ 定位×0.9 ＋ 物流×0.1　｜　主題 ＝ √(qmax × 內部透氣)　｜　主觀 ＝ ³√(舒服×好看×記憶點)<br>≥8 主推｜5–7.9 觀察｜&lt;5 汰換</span><span class="s">客观 ＝ 定位×0.9 ＋ 物流×0.1　｜　主题 ＝ √(qmax × 内部透气)　｜　主观 ＝ ³√(舒服×好看×记忆点)<br>≥8 主推｜5–7.9 观察｜&lt;5 淘汰</span><br>MURO 暮若 · 2026-08</footer>
 </div>
 
 <div class="res"><div class="inner">
   <div class="rrow">
-    <div class="rbox" onclick="tab(0)"><span><span class="t">客觀</span><span class="s">客观</span></span><b id="rObj">–</b></div>
-    <div class="rbox" onclick="tab(1)"><span><span class="t">主題</span><span class="s">主题</span></span><b id="rThm">–</b></div>
-    <div class="rbox" onclick="tab(2)"><span><span class="t">主觀</span><span class="s">主观</span></span><b id="rSub">–</b></div>
+    <div class="rbox" onclick="tab(1)"><span><span class="t">客觀</span><span class="s">客观</span></span><b id="rObj">–</b></div>
+    <div class="rbox" onclick="tab(2)"><span><span class="t">主題</span><span class="s">主题</span></span><b id="rThm">–</b></div>
+    <div class="rbox" onclick="tab(3)"><span><span class="t">主觀</span><span class="s">主观</span></span><b id="rSub">–</b></div>
     <div class="rbox big"><span><span class="t">最終分</span><span class="s">最终分</span></span><b id="rFin">–</b></div>
   </div>
   <div class="role" id="rRole"></div>
@@ -175,18 +190,19 @@ var MAT=[
  {p:2,t:'再生纖維素纖維',s:'再生纤维素纤维',dt:'嫘縈(粘膠)、莫代爾、萊賽爾、醋酸纖維｜精梳棉、長絨棉、新疆棉',ds:'粘胶、莫代尔、莱赛尔、醋酯纤维｜精梳棉、长绒棉、新疆棉'},
  {p:3,t:'天然纖維',s:'天然纤维',dt:'麻、蠶絲、羊毛、羊絨（棉除外）',ds:'麻、蚕丝、羊毛、羊绒（棉除外）'}
 ];
+var PKG=[
+ {p:1,t:'要換包裝',s:'要换包装',dt:'必須換，或勉強可以用',ds:'必须换，或勉强可以用'},
+ {p:2,t:'不用換，而且好看',s:'不用换，而且好看',dt:'可以直接寄給客人',ds:'可以直接寄给客人'},
+ {p:3,t:'品牌等級',s:'品牌等级',dt:'有細節、有層次',ds:'有细节、有层次'}
+];
 var WRK=[
  {p:-1,t:'爆線 → 直接淘汰',s:'爆线 → 直接淘汰',dt:'線頭外露到像炸開、大面積脫線、車歪到接縫扭曲',ds:'线头外露到像炸开、大面积脱线、车歪到接缝扭曲'},
  {p:1,t:'車工亂',s:'车工乱',dt:'脫線、線頭外露、縫線歪斜、接縫起皺；或商品頁根本不給細節照',ds:'脱线、线头外露、缝线歪斜、接缝起皱；或商品页根本不给细节照'},
  {p:2,t:'車工整齊',s:'车工整齐',dt:'線直、針距均勻、沒有線頭。無痕處理（雷射切邊、熱熔、一體成型）也算這級',ds:'线直、针距均匀、没有线头。无痕处理（激光切边、热熔、一体成型）也算这级'},
  {p:3,t:'車工精緻',s:'车工精致',dt:'整齊之外再加一項：針距密、包邊細窄平整、關鍵部位補強（雙針／三線鎖邊），或無痕＋結構設計',ds:'整齐之外再加一项：针距密、包边细窄平整、关键部位补强（双针／三线锁边），或无痕＋结构设计'}
 ];
-var PKG=[
- {p:1,t:'透明袋',s:'透明袋',dt:'',ds:''},
- {p:2,t:'獨立包裝、有設計',s:'独立包装、有设计',dt:'',ds:''},
- {p:3,t:'兩層包裝',s:'两层包装',dt:'',ds:''}
-];
 var LOG=[{v:10,t:'1–2 天',s:'1–2 天'},{v:7.5,t:'3 天',s:'3 天'},{v:6,t:'4 天',s:'4 天'},{v:-1,t:'超過 4 天',s:'超过 4 天'}];
+var SPL=[{t:'⚠ 分多個包裹發貨　物流分 −2',s:'⚠ 分多个包裹发货　物流分 −2'}];
 var QM=[
  {p:4,t:'沒有 qmax 報告',s:'没有 qmax 报告',dt:'不能當本週主打，只能補位',ds:'不能当本周主打，只能补位'},
  {p:6,t:'0.15 以下',s:'0.15 以下',dt:'',ds:''},
@@ -221,10 +237,9 @@ var MK=[
  {p:6,t:'有一個',s:'有一个',dt:'講得出一個賣點',ds:'讲得出一个卖点'},
  {p:10,t:'一講就懂',s:'一讲就懂',dt:'一句話講完客人就想買',ds:'一句话讲完客人就想买'}
 ];
-var SPL=[{t:'⚠ 分多個包裹發貨　物流分 −2',s:'⚠ 分多个包裹发货　物流分 −2'}];
 var POS={'2':[10,'利潤款（極品）','利润款（极品）'],'1':[8.5,'利潤款','利润款'],'0':[7,'滿額款','满额款'],'-1':[4,'弱勢，只能拚價','弱势，只能拼价'],'-2':[1,'汰換','淘汰']};
 
-var S={cat:null,mat:null,wrk:null,pkg:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
+var S={cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
 function bi(a,b){return '<span class="t">'+a+'</span><span class="s">'+b+'</span>'}
 function tab(i){
  document.querySelectorAll('.pane').forEach(function(p,j){p.classList.toggle('on',j===i)});
@@ -236,12 +251,12 @@ function build(){
   return '<button class="chip" data-k="cat" data-i="'+i+'">'+bi(c.t,c.s)+'</button>'}).join('');
  document.getElementById('logG').innerHTML=LOG.map(function(o,i){
   return '<button class="chip'+(o.v<0?' fail':'')+'" data-k="log" data-i="'+i+'">'+bi(o.t,o.s)+'</button>'}).join('');
- [['matG',MAT,'mat'],['wrkG',WRK,'wrk'],['pkgG',PKG,'pkg'],['qmG',QM,'qm'],['wsG',WS,'ws'],['cdG',CD,'cd'],['sfG',SF,'sf'],['lkG',LK,'lk'],['mkG',MK,'mk']].forEach(function(g){
+ document.getElementById('splG').innerHTML=SPL.map(function(o,i){
+  return '<button class="chip fail" data-k="spl" data-i="'+i+'">'+bi(o.t,o.s)+'</button>'}).join('');
+ [['matG',MAT,'mat'],['pkgG',PKG,'pkg'],['wrkG',WRK,'wrk'],['qmG',QM,'qm'],['wsG',WS,'ws'],['cdG',CD,'cd'],['sfG',SF,'sf'],['lkG',LK,'lk'],['mkG',MK,'mk']].forEach(function(g){
   document.getElementById(g[0]).innerHTML=g[1].map(function(o,i){
    var d=o.dt?'<span class="d">'+bi(o.dt,o.ds)+'</span>':'';
    return '<button class="opt" data-k="'+g[2]+'" data-i="'+i+'"><span class="pt">'+(o.p<0?'✕':o.p)+'</span><span>'+bi(o.t,o.s)+d+'</span></button>'}).join('')});
- document.getElementById('splG').innerHTML=SPL.map(function(o,i){
-  return '<button class="chip fail" data-k="spl" data-i="'+i+'">'+bi(o.t,o.s)+'</button>'}).join('');
  document.querySelectorAll('[data-k]').forEach(function(b){
   b.onclick=function(){var k=b.dataset.k,i=+b.dataset.i;
    S[k]=(S[k]===i)?null:i;
@@ -255,23 +270,37 @@ function costTier(){
  var c=CATS[S.cat];
  return p<=c.lo?1:(p<=c.mi?2:3);
 }
-function valTier(){
- if(S.wrk!==null&&WRK[S.wrk].p<0)return {fail:true};
- if(S.mat===null||S.wrk===null||S.pkg===null)return 0;
- var sum=MAT[S.mat].p+WRK[S.wrk].p+PKG[S.pkg].p;
- return {sum:sum,tier:sum<=4?1:(sum<=7?2:3)};
-}
+function toTier(sum){return sum<=4?1:(sum<=7?2:3)}
 function calc(){
- // 客觀
- var ct=costTier(),vt=valTier();
+ var ct=costTier();
  var cE=document.getElementById('costT');
  if(ct){cE.className='tier';cE.innerHTML=bi('成本等級：','成本等级：')+'<b>'+['','低','中','高'][ct]+'</b>　<span style="font-weight:400;font-size:11.5px;opacity:.7">'+CATS[S.cat].txt+'</span>'}
  else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入定價','先选品类并输入定价')}
- var vE=document.getElementById('valT');
- var wFail=!!(vt&&vt.fail);
- if(wFail){vE.className='tier warn';vE.innerHTML='✕ '+bi('車工爆線 → 直接淘汰，不計分','车工爆线 → 直接淘汰，不计分')}
- else if(vt){vE.className='tier';vE.innerHTML=bi('價值等級：','价值等级：')+'<b>'+['','低','中','高'][vt.tier]+'</b>　<span style="font-weight:400;font-size:11.5px;opacity:.7">'+vt.sum+' 分</span>'}
- else{vE.className='tier none';vE.innerHTML=bi('三項都選才會出等級','三项都选才会出等级')}
+
+ // ---- 下單前速判：做工先假設 2 分（車工整齊，最常見）----
+ var vE=document.getElementById('vd');
+ if(ct&&S.mat!==null&&S.pkg!==null){
+  var mp=MAT[S.mat].p+PKG[S.pkg].p;
+  var est=toTier(mp+2), d0=est-ct;
+  var best=toTier(mp+3)-ct, worst=toTier(mp+1)-ct;
+  var lineT='材質 '+MAT[S.mat].p+' ＋ 包裝 '+PKG[S.pkg].p+' ＝ '+mp+' 分｜做工抓 2 分 → 價值 '+['','低','中','高'][est]+'　最好 '+POS[String(best)][0]+' 分 · 最差 '+POS[String(worst)][0]+' 分';
+  var lineS='材质 '+MAT[S.mat].p+' ＋ 包装 '+PKG[S.pkg].p+' ＝ '+mp+' 分｜做工按 2 分 → 价值 '+['','低','中','高'][est]+'　最好 '+POS[String(best)][0]+' 分 · 最差 '+POS[String(worst)][0]+' 分';
+  if(d0>=0){vE.className='verdict go';vE.innerHTML='<b>'+bi('可以叫','可以叫')+'</b><span>'+bi(lineT,lineS)+'</span>'}
+  else{vE.className='verdict no';vE.innerHTML='<b>'+bi('不用叫','不用叫')+'</b><span>'+bi(lineT,lineS)+'<br>'+bi('貴又普通，最難賣的組合','贵又普通，最难卖的组合')+'</span>'}
+ }else{vE.className='verdict idle';vE.innerHTML='<b>'+bi('選完品類、定價、材質、包裝','选完品类、定价、材质、包装')+'</b><span>'+bi('這四項下單前就問得到','这四项下单前就问得到')+'</span>'}
+
+ // ---- 客觀 ----
+ var wFail=(S.wrk!==null&&WRK[S.wrk].p<0);
+ var vt=0;
+ if(!wFail&&S.mat!==null&&S.wrk!==null&&S.pkg!==null){
+  var sum=MAT[S.mat].p+WRK[S.wrk].p+PKG[S.pkg].p;
+  vt={sum:sum,tier:toTier(sum)};
+ }
+ var tE=document.getElementById('valT');
+ if(wFail){tE.className='tier warn';tE.innerHTML='✕ '+bi('車工爆線 → 直接淘汰，不計分','车工爆线 → 直接淘汰，不计分')}
+ else if(vt){tE.className='tier';tE.innerHTML=bi('價值等級：','价值等级：')+'<b>'+['','低','中','高'][vt.tier]+'</b>　<span style="font-weight:400;font-size:11.5px;opacity:.7">'+vt.sum+' 分</span>'}
+ else{tE.className='tier none';tE.innerHTML=bi('材質、做工、包裝都選才會出等級','材质、做工、包装都选才会出等级')}
+
  var pos=null,info=null;
  if(ct&&vt&&!wFail){info=POS[String(vt.tier-ct)];pos=info[0]}
  var log=S.log===null?null:LOG[S.log].v;
@@ -279,7 +308,7 @@ function calc(){
  var failed=(log===-1)||wFail;
  var obj=(pos!==null&&log!==null&&!failed)?pos*0.9+log*0.1:null;
 
- // 主題
+ // ---- 主題 ----
  var air=null,conflict=false;
  var aE=document.getElementById('airT');
  if(S.ws!==null&&S.cd!==null){
@@ -290,7 +319,7 @@ function calc(){
  var qm=S.qm===null?null:QM[S.qm].p;
  var thm=(qm!==null&&air!==null)?Math.sqrt(qm*air):null;
 
- // 主觀
+ // ---- 主觀 ----
  var sub3=null,sE=document.getElementById('subT');
  if(S.sf!==null&&S.lk!==null&&S.mk!==null){
   var a=SF[S.sf].p,b=LK[S.lk].p,c3=MK[S.mk].p;
@@ -307,9 +336,11 @@ function calc(){
  document.getElementById('rSub').textContent=sub===null?'–':(Math.round(sub*100)/100);
  document.getElementById('rFin').textContent=fin===null?'–':fin.toFixed(2);
 
- document.querySelectorAll('.tab')[0].classList.toggle('done',obj!==null);
- document.querySelectorAll('.tab')[1].classList.toggle('done',thm!==null);
- document.querySelectorAll('.tab')[2].classList.toggle('done',sub!==null);
+ var tabs=document.querySelectorAll('.tab');
+ tabs[0].classList.toggle('done',!!(ct&&S.mat!==null&&S.pkg!==null));
+ tabs[1].classList.toggle('done',obj!==null);
+ tabs[2].classList.toggle('done',thm!==null);
+ tabs[3].classList.toggle('done',sub!==null);
 
  var r=document.getElementById('rRole'),m=document.getElementById('rMiss');
  if(failed){r.className='role fail';r.innerHTML=(wFail?bi('車工爆線 → 直接淘汰','车工爆线 → 直接淘汰'):bi('物流超過 4 天 → 直接淘汰','物流超过 4 天 → 直接淘汰'));m.innerHTML='';return}
@@ -318,14 +349,14 @@ function calc(){
   var v=fin>=8?['主推','主推','ok']:fin>=5?['觀察','观察','']:['汰換','淘汰','fail'];
   r.className='role '+v[2];
   r.innerHTML='<b>'+bi(v[0],v[1])+'</b>　'+bi(info[1],info[2])+(S.qm===0?'　'+bi('· 無報告不可主打','· 无报告不可主打'):'');
- }else{r.className='role';r.innerHTML=info?bi(info[1],info[2]):bi('三個分頁都填完才會出最終分','三个分页都填完才会出最终分')}
+ }else{r.className='role';r.innerHTML=info?bi(info[1],info[2]):bi('四個分頁填完才會出最終分','四个分页填完才会出最终分')}
  var miss=[];
  if(obj===null)miss.push(['客觀','客观']);
  if(thm===null)miss.push(['主題','主题']);
  if(sub===null)miss.push(['主觀','主观']);
  m.innerHTML=miss.length?bi('還缺：','还缺：')+miss.map(function(x){return bi(x[0],x[1])}).join('、'):bi('三項都好了，填回 Trello','三项都好了，填回 Trello');
 }
-function reset(){S={cat:null,mat:null,wrk:null,pkg:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
+function reset(){S={cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
  document.querySelectorAll('.on[data-k]').forEach(function(x){x.classList.remove('on')});
  ['price','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
 build();calc();
