@@ -93,20 +93,12 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 <!-- ===== 到貨前 ===== -->
 <div class="pane on" id="p0">
   <div class="step">
-    <div class="sh"><span class="n">1</span><b><span class="t">成本等級</span><span class="s">成本等级</span></b><small><span class="t">65% 毛利定價</span><span class="s">65% 毛利定价</span></small></div>
+    <div class="sh"><span class="n">1</span><b><span class="t">價格帶</span><span class="s">价格带</span></b><small><span class="t">65% 毛利定價落在哪</span><span class="s">65% 毛利定价落在哪</span></small></div>
     <div class="lbl"><span class="t">品類</span><span class="s">品类</span></div>
     <div class="grid" id="catG"></div>
-    <div class="two" style="margin-top:13px">
-      <div>
-        <div class="lbl" style="margin-top:0"><span class="t">商品成本 ¥</span><span class="s">商品成本 ¥</span></div>
-        <input type="number" id="cny" inputmode="decimal" placeholder="¥" oninput="calc()">
-      </div>
-      <div>
-        <div class="lbl" style="margin-top:0"><span class="t">重量 g</span><span class="s">重量 g</span></div>
-        <input type="number" id="wt" inputmode="decimal" placeholder="g" oninput="calc()">
-      </div>
-    </div>
-    <div class="hint"><span class="t">定價 ＝（¥成本 × 4.8 ＋ 重量 × NT$55/kg ＋ NT$40 包材進店）÷ 0.35</span><span class="s">定价 ＝（¥成本 × 4.8 ＋ 重量 × NT$55/kg ＋ NT$40 包材进店）÷ 0.35</span></div>
+    <div class="lbl"><span class="t">台幣定價</span><span class="s">台币定价</span></div>
+    <input type="number" id="price" inputmode="decimal" placeholder="NT$" oninput="calc()">
+    <div class="hint"><span class="t">從定價試算表來（65% 營業毛利：商品×4.8 ＋ 重量×NT$55/kg ＋ NT$40 包材進店，再 ÷0.35）</span><span class="s">从定价试算表来（65% 营业毛利：商品×4.8 ＋ 重量×NT$55/kg ＋ NT$40 包材进店，再 ÷0.35）</span></div>
     <div class="tier none" id="costT"></div>
   </div>
   <div class="step">
@@ -274,10 +266,8 @@ function build(){
    calc()}});
 }
 function calcPrice(){
- var y=parseFloat(document.getElementById('cny').value);
- if(!(y>0))return null;
- var g=parseFloat(document.getElementById('wt').value); if(!(g>0))g=0;
- return (y*RATE + g/1000*SHIP + PACK)/GM;
+ var p=parseFloat(document.getElementById('price').value);
+ return (p>0)?p:null;
 }
 function costTier(){
  if(S.cat===null)return 0;
@@ -299,8 +289,8 @@ function calc(){
  var cE=document.getElementById('costT');
  if(ct){var pv=calcPrice();
   cE.className='tier';
-  cE.innerHTML=bi('定價 NT$','定价 NT$')+'<b>'+Math.round(pv)+'</b>　→　'+bi('成本等級 ','成本等级 ')+'<b>'+TN[ct]+'</b><span style="display:block;font-weight:400;font-size:11.5px;opacity:.7;margin-top:3px">'+CATS[S.cat].txt+'</span>'}
- else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入商品成本','先选品类并输入商品成本')}
+  cE.innerHTML=bi('NT$','NT$')+'<b>'+Math.round(pv)+'</b>　→　'+bi('價格帶 ','价格带 ')+'<b>'+TN[ct]+'</b><span style="display:block;font-weight:400;font-size:11.5px;opacity:.7;margin-top:3px">'+CATS[S.cat].txt+'</span>'}
+ else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入定價','先选品类并输入定价')}
 
  // 到貨前判定：材質、包裝 vs 成本等級
  var vE=document.getElementById('vd');
@@ -311,7 +301,7 @@ function calc(){
   if(r===2){vE.className='verdict go';vE.innerHTML='<b>'+bi('可以叫','可以叫')+'</b><span>'+bi(dT,dS)+'<br>'+bi('有一項高於價位，值得考慮','有一项高于价位，值得考虑')+'</span>'}
   else if(r===1){vE.className='verdict mid';vE.innerHTML='<b>'+bi('勉強可以','勉强可以')+'</b><span>'+bi(dT,dS)+'<br>'+bi('剛好符合價位，沒有亮點','刚好符合价位，没有亮点')+'</span>'}
   else{vE.className='verdict no';vE.innerHTML='<b>'+bi('不用叫','不用叫')+'</b><span>'+bi(dT,dS)+'<br>'+bi('低於自己的價位，且沒有任何一項高過','低于自己的价位，且没有任何一项高过')+'</span>'}
- }else{vE.className='verdict idle';vE.innerHTML='<b>'+bi('選完品類、成本、材質、包裝','选完品类、成本、材质、包装')+'</b><span>'+bi('這四項在 1688 頁面上就問得到','这四项在 1688 页面上就问得到')+'</span>'}
+ }else{vE.className='verdict idle';vE.innerHTML='<b>'+bi('選完品類、定價、材質、包裝','选完品类、定价、材质、包装')+'</b><span>'+bi('這四項在 1688 頁面上就問得到','这四项在 1688 页面上就问得到')+'</span>'}
 
  // 客觀
  var wFail=(S.wrk!==null&&WRK[S.wrk].p<0);
@@ -393,7 +383,7 @@ function calc(){
 }
 function reset(){S={cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
  document.querySelectorAll('.on[data-k]').forEach(function(x){x.classList.remove('on')});
- ['cny','wt','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
+ ['price','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
 build();calc();
 </script>
 </body>
