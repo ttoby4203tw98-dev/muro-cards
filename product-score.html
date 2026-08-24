@@ -94,6 +94,8 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 <div class="pane on" id="p0">
   <div class="step">
     <div class="sh"><span class="n">1</span><b><span class="t">價格帶</span><span class="s">价格带</span></b><small><span class="t">65% 毛利定價落在哪</span><span class="s">65% 毛利定价落在哪</span></small></div>
+    <div class="lbl"><span class="t">季節</span><span class="s">季节</span></div>
+    <div class="grid" style="grid-template-columns:1fr 1fr" id="seaG"></div>
     <div class="lbl"><span class="t">品類</span><span class="s">品类</span></div>
     <div class="grid" id="catG"></div>
     <div class="lbl"><span class="t">台幣定價</span><span class="s">台币定价</span></div>
@@ -180,13 +182,41 @@ footer{text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 14px;line
 <script>
 var RATE=4.8, SHIP=55, PACK=40, GM=0.35;
 var CATS=[
- {t:'內衣',s:'内衣',lo:290,mi:500,txt:'88–290 / 300–500 / 1000+'},
- {t:'內褲',s:'内裤',lo:65,mi:189,txt:'25–65 / 89–189 / 234+'},
- {t:'上衣',s:'上衣',lo:199,mi:400,txt:'99–199 / 200–400 / 500+'},
- {t:'下身',s:'下身',lo:399,mi:650,txt:'199–399 / 490–650 / 1400+'},
- {t:'塑身',s:'塑身',lo:299,mi:499,txt:'169–299 / 349–499 / 980+'},
- {t:'襪子',s:'袜子',lo:69,mi:128,txt:'11–69 / 59–128 / 149+'}
+ {t:'內衣',s:'内衣',
+  sum:{lo:189,mi:350,txt:'99–189 / 190–350 / 469+',hot:'199–239'},
+  win:{lo:199,mi:350,txt:'99–199 / 200–350 / 469+',hot:'199–260'}},
+ {t:'內褲',s:'内裤',
+  sum:{lo:39,mi:99,txt:'9–39 / 40–99 / 100+',hot:'19–65'},
+  win:{lo:39,mi:99,txt:'9–39 / 40–99 / 100+',hot:'19–65',note:'無季節差異'}},
+ {t:'上衣-短袖',s:'上衣-短袖',
+  sum:{lo:139,mi:299,txt:'49–139 / 140–299 / 300+',hot:'147–199'},
+  win:{lo:139,mi:299,txt:'49–139 / 140–299 / 300+',hot:'147–199',note:'冬季非主力'}},
+ {t:'上衣-長袖',s:'上衣-长袖',
+  sum:{lo:138,mi:299,txt:'69–138 / 139–299 / 314+',hot:'168–219'},
+  win:{lo:150,mi:390,txt:'69–150 / 151–390 / 450+',hot:'80–299 雙峰'}},
+ {t:'下身-短褲',s:'下身-短裤',
+  sum:{lo:148,mi:339,txt:'69–148 / 149–339 / 480+',hot:'148–208'},
+  win:{lo:148,mi:339,txt:'69–148 / 149–339 / 480+',hot:'148–208',note:'冬季非主力'}},
+ {t:'下身-長褲',s:'下身-长裤',
+  sum:{lo:158,mi:349,txt:'88–158 / 159–349 / 350+',hot:'99–220'},
+  win:{lo:199,mi:499,txt:'88–199 / 200–499 / 500+',hot:'199–364'}},
+ {t:'外套-薄',s:'外套-薄',
+  sum:{lo:199,mi:439,txt:'99–199 / 200–439 / 459+',hot:'180–290'},
+  win:{lo:199,mi:390,txt:'99–199 / 200–390 / 450+',hot:'179–239'}},
+ {t:'外套-厚',s:'外套-厚',
+  sum:{lo:499,mi:990,txt:'299–499 / 500–990 / 1080+',hot:'399–699',note:'夏季非銷售品項'},
+  win:{lo:499,mi:990,txt:'299–499 / 500–990 / 1080+',hot:'399–699'}},
+ {t:'塑身褲',s:'塑身裤',
+  sum:{lo:108,mi:278,txt:'56–108 / 109–278 / 350+',hot:'99–258'},
+  win:{lo:99,mi:299,txt:'49–99 / 100–299 / 358+',hot:'99–278'}},
+ {t:'塑身衣',s:'塑身衣',
+  sum:{lo:199,mi:499,txt:'66–199 / 200–499 / 579+',hot:'199–328'},
+  win:{lo:199,mi:499,txt:'66–199 / 200–499 / 579+',hot:'199–328',note:'無季節差異'}},
+ {t:'襪子',s:'袜子',
+  sum:{lo:19,mi:59,txt:'6–19 / 20–59 / 79+',hot:'9–39'},
+  win:{lo:29,mi:99,txt:'9–29 / 30–99 / 109+',hot:'29–59'}}
 ];
+var SEA=[{t:'夏季',s:'夏季'},{t:'冬季',s:'冬季'}];
 var MAT=[
  {p:1,t:'合成纖維 · 棉',s:'合成纤维 · 棉',dt:'聚酯(滌綸)、尼龍(錦綸)、壓克力(腈綸)、棉',ds:'涤纶、锦纶、腈纶、棉'},
  {p:2,t:'再生纖維素纖維',s:'再生纤维素纤维',dt:'嫘縈(粘膠)、莫代爾、萊賽爾、醋酸纖維｜精梳棉、長絨棉、新疆棉',ds:'粘胶、莫代尔、莱赛尔、醋酯纤维｜精梳棉、长绒棉、新疆棉'},
@@ -241,7 +271,7 @@ var MK=[
 ];
 var POS={'2':[10,'利潤款（極品）','利润款（极品）'],'1':[8.5,'利潤款','利润款'],'0':[7,'滿額款','满额款'],'-1':[4,'弱勢，只能拚價','弱势，只能拼价'],'-2':[1,'汰換','淘汰']};
 
-var S={cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
+var S={sea:0,cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
 function bi(a,b){return '<span class="t">'+a+'</span><span class="s">'+b+'</span>'}
 function tab(i){
  document.querySelectorAll('.pane').forEach(function(p,j){p.classList.toggle('on',j===i)});
@@ -249,6 +279,8 @@ function tab(i){
  window.scrollTo(0,0);
 }
 function build(){
+ document.getElementById('seaG').innerHTML=SEA.map(function(o,i){
+  return '<button class="chip'+(i===0?' on':'')+'" data-k="sea" data-i="'+i+'">'+bi(o.t,o.s)+'</button>'}).join('');
  document.getElementById('catG').innerHTML=CATS.map(function(c,i){
   return '<button class="chip" data-k="cat" data-i="'+i+'">'+bi(c.t,c.s)+'</button>'}).join('');
  document.getElementById('logG').innerHTML=LOG.map(function(o,i){
@@ -261,7 +293,7 @@ function build(){
    return '<button class="opt" data-k="'+g[2]+'" data-i="'+i+'"><span class="pt">'+(o.p<0?'✕':o.p)+'</span><span>'+bi(o.t,o.s)+d+'</span></button>'}).join('')});
  document.querySelectorAll('[data-k]').forEach(function(b){
   b.onclick=function(){var k=b.dataset.k,i=+b.dataset.i;
-   S[k]=(S[k]===i)?null:i;
+   S[k]=(k==='sea')?i:((S[k]===i)?null:i);
    document.querySelectorAll('[data-k="'+k+'"]').forEach(function(x){x.classList.toggle('on',+x.dataset.i===S[k])});
    calc()}});
 }
@@ -269,11 +301,11 @@ function calcPrice(){
  var p=parseFloat(document.getElementById('price').value);
  return (p>0)?p:null;
 }
+function band(){return S.cat===null?null:(S.sea===1?CATS[S.cat].win:CATS[S.cat].sum)}
 function costTier(){
- if(S.cat===null)return 0;
+ var b=band(); if(!b)return 0;
  var p=calcPrice(); if(!p)return 0;
- var c=CATS[S.cat];
- return p<=c.lo?1:(p<=c.mi?2:3);
+ return p<=b.lo?1:(p<=b.mi?2:3);
 }
 function toTier(sum){return sum<=4?1:(sum<=7?2:3)}
 var TN=['','低','中','高'];
@@ -289,7 +321,8 @@ function calc(){
  var cE=document.getElementById('costT');
  if(ct){var pv=calcPrice();
   cE.className='tier';
-  cE.innerHTML=bi('NT$','NT$')+'<b>'+Math.round(pv)+'</b>　→　'+bi('價格帶 ','价格带 ')+'<b>'+TN[ct]+'</b><span style="display:block;font-weight:400;font-size:11.5px;opacity:.7;margin-top:3px">'+CATS[S.cat].txt+'</span>'}
+  var bd=band();
+  cE.innerHTML=bi('NT$','NT$')+'<b>'+Math.round(pv)+'</b>　→　'+bi('價格帶 ','价格带 ')+'<b>'+TN[ct]+'</b><span style="display:block;font-weight:400;font-size:11.5px;opacity:.7;margin-top:3px">'+bd.txt+'　'+bi('暢銷 ','畅销 ')+bd.hot+(bd.note?'　·　'+bd.note:'')+'</span>'}
  else{cE.className='tier none';cE.innerHTML=bi('先選品類並輸入定價','先选品类并输入定价')}
 
  // 到貨前判定：材質、包裝 vs 成本等級
@@ -381,7 +414,7 @@ function calc(){
  if(sub===null)miss.push(['主觀','主观']);
  m.innerHTML=miss.length?bi('還缺：','还缺：')+miss.map(function(x){return bi(x[0],x[1])}).join('、'):bi('三項都好了，填回 Trello','三项都好了，填回 Trello');
 }
-function reset(){S={cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
+function reset(){S={sea:0,cat:null,mat:null,pkg:null,wrk:null,log:null,spl:null,qm:null,ws:null,cd:null,sf:null,lk:null,mk:null};
  document.querySelectorAll('.on[data-k]').forEach(function(x){x.classList.remove('on')});
  ['price','subjN'].forEach(function(id){document.getElementById(id).value=''});calc()}
 build();calc();
