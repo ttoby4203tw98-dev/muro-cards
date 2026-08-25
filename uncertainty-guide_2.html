@@ -1,0 +1,562 @@
+<title>不確定性的轉移</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+
+<style>
+:root{
+  --bg:#FAFAF7;
+  --surface:#FFFFFF;
+  --surface-2:#F1F1EC;
+  --ink:#1B1F1C;
+  --ink-2:#4A504B;
+  --ink-3:#787E79;
+  --rule:#D4D5CD;
+  --rule-strong:#A9ABA1;
+  --accent:#2C5A4C;
+  --accent-soft:#E3EDE8;
+  --mark:#9A6C1E;
+  --mark-soft:#F5EBD8;
+  --shadow:0 1px 2px rgba(27,31,28,.05), 0 8px 24px -16px rgba(27,31,28,.25);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12150F;
+    --surface:#1A1E18;
+    --surface-2:#222720;
+    --ink:#E9EAE2;
+    --ink-2:#B3B8AE;
+    --ink-3:#858B82;
+    --rule:#333A32;
+    --rule-strong:#555D53;
+    --accent:#7FB9A2;
+    --accent-soft:#1E2C26;
+    --mark:#D3A94F;
+    --mark-soft:#2A2317;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12150F;
+  --surface:#1A1E18;
+  --surface-2:#222720;
+  --ink:#E9EAE2;
+  --ink-2:#B3B8AE;
+  --ink-3:#858B82;
+  --rule:#333A32;
+  --rule-strong:#555D53;
+  --accent:#7FB9A2;
+  --accent-soft:#1E2C26;
+  --mark:#D3A94F;
+  --mark-soft:#2A2317;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  font-size:16.5px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ---------- masthead ---------- */
+.masthead{padding:76px 0 0}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 20px;
+}
+h1{
+  font-family:"Noto Serif TC",serif;font-weight:700;
+  font-size:clamp(38px,7vw,58px);line-height:1.18;letter-spacing:.01em;
+  margin:0 0 20px;text-wrap:balance;
+}
+.standfirst{
+  font-size:18px;line-height:1.8;color:var(--ink-2);
+  max-width:60ch;margin:0 0 34px;
+}
+.standfirst strong{color:var(--ink);font-weight:500}
+
+.tick{
+  height:11px;margin:0;border:0;
+  background-image:repeating-linear-gradient(to right,var(--rule-strong) 0 1px,transparent 1px 9px);
+}
+.tick.tall{
+  background-image:
+    repeating-linear-gradient(to right,var(--rule-strong) 0 1px,transparent 1px 45px),
+    repeating-linear-gradient(to right,var(--rule) 0 1px,transparent 1px 9px);
+  background-size:100% 11px,100% 6px;
+  background-position:0 0,0 5px;
+  background-repeat:no-repeat,repeat-x;
+  height:11px;
+}
+
+/* ---------- legend ---------- */
+.legend{
+  display:flex;flex-wrap:wrap;gap:12px 28px;
+  margin:26px 0 0;padding:16px 18px;
+  background:var(--surface-2);border-radius:3px;
+}
+.legend div{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2)}
+.swatch{width:26px;height:14px;flex:none;border-radius:2px}
+.swatch.solid{border:1.5px solid var(--accent)}
+.swatch.dashed{border:1.5px dashed var(--mark)}
+
+/* ---------- sections ---------- */
+section{padding-top:64px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sec-num{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;
+  color:var(--accent);flex:none;padding-top:4px;
+}
+h2{
+  font-family:"Noto Serif TC",serif;font-weight:700;
+  font-size:clamp(25px,4vw,31px);line-height:1.35;margin:0;text-wrap:balance;
+}
+h3{
+  font-family:"Noto Serif TC",serif;font-weight:600;
+  font-size:19.5px;line-height:1.5;margin:38px 0 10px;text-wrap:balance;
+}
+p{margin:0 0 18px;max-width:66ch}
+strong{font-weight:700}
+em{font-style:normal;color:var(--accent);font-weight:500}
+
+/* ---------- chain of reasoning ---------- */
+.chain{list-style:none;margin:26px 0 8px;padding:0;display:flex;flex-direction:column;gap:0}
+.chain li{
+  display:grid;grid-template-columns:34px 1fr;gap:0 16px;
+  padding:0 0 22px;position:relative;
+}
+.chain li::before{
+  content:"";position:absolute;left:16px;top:26px;bottom:0;width:1px;background:var(--rule);
+}
+.chain li:last-child::before{display:none}
+.chain .dot{
+  grid-column:1;width:33px;height:22px;border-radius:2px;
+  background:var(--accent-soft);color:var(--accent);
+  font-family:"IBM Plex Mono",monospace;font-size:11px;
+  display:flex;align-items:center;justify-content:center;margin-top:3px;
+  position:relative;z-index:1;
+}
+.chain .body{grid-column:2}
+.chain .q{font-weight:700;display:block;margin-bottom:2px}
+.chain .a{color:var(--ink-2);font-size:15.5px;line-height:1.75}
+
+.bedrock{
+  margin:8px 0 0;padding:22px 24px;
+  background:var(--accent-soft);border-radius:3px;
+  border-left:3px solid var(--accent);
+}
+.bedrock p{margin:0;font-size:17px}
+.bedrock .label{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px;
+}
+
+/* ---------- rulers (三把尺) ---------- */
+.rulers{display:flex;flex-direction:column;gap:14px;margin:28px 0 8px}
+.ruler{
+  background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+  padding:20px 22px;box-shadow:var(--shadow);
+}
+.ruler .who{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:9px;
+}
+.ruler .line{
+  font-family:"Noto Serif TC",serif;font-weight:600;font-size:19px;line-height:1.55;
+  margin:0 0 8px;color:var(--ink);
+}
+.ruler .why{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.7}
+
+/* ---------- table ---------- */
+.tablewrap{overflow-x:auto;margin:26px 0 10px;border:1px solid var(--rule);border-radius:3px}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:14.5px;background:var(--surface)}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.65}
+thead th{
+  font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td.pain,td.cost{white-space:nowrap;font-variant-numeric:tabular-nums}
+.tag{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.08em;padding:2px 8px;border-radius:2px;white-space:nowrap;
+}
+.tag.a{background:var(--accent-soft);color:var(--accent)}
+.tag.b{background:var(--mark-soft);color:var(--mark)}
+.tag.c{background:var(--surface-2);color:var(--ink-3)}
+
+/* ---------- role cards ---------- */
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:28px 0 10px}
+.role{
+  background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+  padding:22px 22px 20px;display:flex;flex-direction:column;gap:0;
+  box-shadow:var(--shadow);
+}
+.role h4{
+  font-family:"Noto Serif TC",serif;font-weight:700;font-size:21px;
+  margin:0 0 4px;letter-spacing:.02em;
+}
+.role .role-sub{font-size:13px;color:var(--ink-3);margin:0 0 16px;line-height:1.6}
+.role dl{margin:0;display:flex;flex-direction:column;gap:13px}
+.role dt{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:3px;
+}
+.role dd{margin:0;font-size:14.5px;line-height:1.7;color:var(--ink-2)}
+.role dd b{color:var(--ink);font-weight:500}
+
+/* ---------- flow ---------- */
+.flow{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:3px;
+  margin:26px 0 10px;overflow:hidden;
+}
+.step{background:var(--surface);padding:18px 18px 16px}
+.step .n{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);
+  letter-spacing:.1em;margin-bottom:7px;
+}
+.step .t{font-weight:700;font-size:15.5px;margin-bottom:5px;line-height:1.5}
+.step .d{font-size:13.5px;color:var(--ink-2);line-height:1.65}
+
+/* ---------- success ---------- */
+.signals{display:flex;flex-direction:column;gap:12px;margin:26px 0 10px}
+.signal{
+  display:grid;grid-template-columns:auto 1fr;gap:0 18px;align-items:start;
+  padding:18px 20px;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+}
+.signal .when{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+  color:var(--ink-3);white-space:nowrap;padding-top:4px;text-transform:uppercase;
+}
+.signal .what{font-size:15.5px;line-height:1.7}
+.signal .what b{display:block;font-weight:700;color:var(--ink);margin-bottom:2px}
+.signal .what span{color:var(--ink-2);font-size:14.5px}
+
+/* ---------- discussion ---------- */
+.think{
+  border:1.5px dashed var(--mark);border-radius:3px;
+  padding:22px 24px;margin:30px 0 0;background:var(--mark-soft);
+}
+.think .label{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mark);display:block;margin-bottom:12px;
+}
+.think ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:9px}
+.think li{font-size:15.5px;line-height:1.75;color:var(--ink-2)}
+.think li::marker{color:var(--mark);font-family:"IBM Plex Mono",monospace;font-size:13px}
+.think p{margin:0 0 12px;font-size:15.5px;color:var(--ink-2)}
+
+/* ---------- callout ---------- */
+.note{
+  border-left:2px solid var(--rule-strong);padding:2px 0 2px 18px;
+  margin:24px 0;color:var(--ink-2);font-size:15.5px;max-width:64ch;
+}
+.note p{margin:0 0 10px}
+.note p:last-child{margin:0}
+
+.kicker{
+  font-family:"Noto Serif TC",serif;font-weight:600;font-size:20px;line-height:1.6;
+  color:var(--ink);margin:30px 0 0;padding:0;max-width:60ch;text-wrap:balance;
+}
+
+footer{margin-top:70px;padding-top:22px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:13px}
+footer p{margin:0 0 6px;max-width:66ch}
+
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:560px){
+  body{font-size:16px}
+  .wrap{padding:0 18px 90px}
+  .masthead{padding-top:52px}
+  .signal{grid-template-columns:1fr;gap:6px}
+  .signal .when{padding-top:0}
+}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">內部共讀 · 第一版</p>
+  <h1>不確定性的轉移</h1>
+  <p class="standfirst">
+    這份文件不是話術手冊，也不是排播表。它要回答一個更前面的問題：<strong>我們到底在賣什麼？</strong>
+    如果這一題答對了，話術、排播、選品都會自己長出來；答錯了，再精緻的腳本也只是在錯的方向上跑得更快。
+  </p>
+  <hr class="tick tall">
+  <div class="legend">
+    <div><span class="swatch solid"></span>實線＝已經推導完、我們共同接受的前提</div>
+    <div><span class="swatch dashed"></span>虛線＝還沒有答案，今天輪到我們一起想</div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head"><span class="sec-num">01</span><h2>一路問下去，直到問不動為止</h2></div>
+  <p>下面每一格都是在問前一格「為什麼」。這條鏈子不長，但它的終點會推翻我們現在很多的直覺做法。</p>
+
+  <ol class="chain">
+    <li><span class="dot">01</span><div class="body">
+      <span class="q">為什麼會有交易？</span>
+      <span class="a">因為買賣雙方對同一件東西的估值不同。她覺得這件值 590，我們覺得它值 180，交易才成立。</span>
+    </div></li>
+    <li><span class="dot">02</span><div class="body">
+      <span class="q">估值為什麼會不同？</span>
+      <span class="a">只有兩個來源：<em>資訊差</em>（我知道你不知道的）或<em>能力差</em>（我做得到你做不到的）。沒有第三種。</span>
+    </div></li>
+    <li><span class="dot">03</span><div class="body">
+      <span class="q">我們現在的利潤來自哪一個？</span>
+      <span class="a">主要是能力差——我們找得到工廠、吃得下一次一千件、處理得了跨境。</span>
+    </div></li>
+    <li><span class="dot">04</span><div class="body">
+      <span class="q">那能力差會怎麼變化？</span>
+      <span class="a">歸零。1688 誰都上得去，代購遍地，跨境物流商越來越多。<strong>建立在能力差上的利潤是遞減的，而且遞減速度不由我們控制。</strong></span>
+    </div></li>
+    <li><span class="dot">05</span><div class="body">
+      <span class="q">所以只剩資訊差。哪一種資訊差？</span>
+      <span class="a">隱瞞造成的（把便宜貨講成高級貨）會隨著資訊流通崩塌，而且是負和的。<em>創造出來的</em>——我真的知道這件穿在你身上會怎樣，而這個知識原本不存在——會隨時間累積而增厚。</span>
+    </div></li>
+    <li><span class="dot">06</span><div class="body">
+      <span class="q">這個資訊差要建立在什麼問題上？</span>
+      <span class="a">建立在<strong>她自己也不知道答案</strong>的問題上。她知道她要顯瘦、不勒、不透。她不知道的是：這東西穿在<em>我</em>身上會變成什麼樣。</span>
+    </div></li>
+    <li><span class="dot">07</span><div class="body">
+      <span class="q">那是什麼性質的問題？</span>
+      <span class="a">關於<strong>未來狀態的不確定性</strong>。於是所有的購買行為都化約成同一件事：她付出確定的錢，換一個不確定的結果。她在下注。</span>
+    </div></li>
+    <li><span class="dot">08</span><div class="body">
+      <span class="q">為什麼有人願意替別人承擔不確定性？</span>
+      <span class="a">因為承擔它的成本，對雙方是<strong>不對稱</strong>的。我們賣一千件，每件的偏差互相抵銷；她買一件，錯了就是百分之百錯。到這裡是地板了——再往下是數學。</span>
+    </div></li>
+  </ol>
+
+  <div class="bedrock">
+    <span class="label">地基</span>
+    <p><strong>我們不是在賣衣服，我們在賣「確定性」。誰承擔不確定性，誰就取得價值。</strong>我們收的錢，本質上是一筆保費。</p>
+  </div>
+
+  <div class="note">
+    <p>這一條一口氣解釋了很多本來各自獨立的事：直播為什麼有效（它是降低不確定性的裝置）、評價系統為什麼存在（同一件事）、品牌為什麼值錢（品牌是不確定性的預付折扣）、便宜的東西為什麼好賣（低價縮小了賭注的賠額，於是不確定的痛變小）。</p>
+    <p>一個前提如果能同時解釋很多原本不相干的現象，它通常就是對的。</p>
+  </div>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">02</span><h2>兩把尺，取代所有規定</h2></div>
+  <p>從地基推上來，我們不需要一本厚厚的規範。兩句話就夠了，而且每一句都能當場判斷、不用回來問人。</p>
+
+  <div class="rulers">
+    <div class="ruler">
+      <div class="who">尺 A · 判斷展示有沒有說服力</div>
+      <p class="line">「如果我現在在說謊，這個動作會不會當場穿幫？」</p>
+      <p class="why">「這件彈性超好」——不會穿幫，所有人都這樣講，觀眾自動折價成零。「我現在拉到這裡，你們看回彈」——會穿幫，所以它才有說服力。<strong>觀眾相信的不是我們的話，是我們冒的險。</strong></p>
+    </div>
+    <div class="ruler">
+      <div class="who">尺 B · 判斷一個做法值不值得</div>
+      <p class="line">「這個動作，把不確定性搬向我們，還是搬向她？」</p>
+      <p class="why">搬向我們的，長期累積成資產。搬向她的（模糊尺碼、不給換、報喜不報憂、「不買就沒了」），短期省錢，長期蒸發。製造稀缺性不是原理，是<strong>借貸</strong>——可以用，但要知道自己在借，還款方式是退貨率跟評價。</p>
+    </div>
+  </div>
+
+  <div class="think">
+    <span class="label">現在輪到我們</span>
+    <p>拿尺 A 掃一次我們自己的直播：</p>
+    <ol>
+      <li>我們最常講、但「說謊也不會穿幫」的三句話是哪三句？（找出來，砍掉）</li>
+      <li>我們現在有幾個動作是「當場可能失敗」的？如果少於三個，為什麼？</li>
+    </ol>
+  </div>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">03</span><h2>不確定性不是一團，要挑著承擔</h2></div>
+  <p>目標<strong>不是</strong>讓顧客毫無不確定性——歸零的成本是無限的，追求歸零會讓我們開出無條件退貨然後被拖垮。目標是：把它移到我們這邊，直到多花的一塊錢換不回一塊錢為止。</p>
+  <p>所以要排序。每一項不確定性都有兩個數字：<strong>她有多痛</strong>，跟<strong>我們承擔要花多少</strong>。承擔成本分成三類，性質完全不同——</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>不確定性</th><th class="pain">她多痛</th><th class="cost">我們的成本</th><th>該怎麼辦</th></tr></thead>
+    <tbody>
+      <tr><td>會不會透、會不會勒出痕</td><td class="pain">高</td><td class="cost"><span class="tag a">成本 A 趨近零</span></td><td>當場實測一次，幾百人同時看到。成本一次，效益無限</td></tr>
+      <tr><td>洗過會不會變形鬆掉</td><td class="pain">中高</td><td class="cost"><span class="tag a">成本 A 一次性</span></td><td>自己洗十次拍對比，素材永久重複用。幾乎沒人做</td></tr>
+      <tr><td>尺碼合不合</td><td class="pain">最高</td><td class="cost"><span class="tag b">成本 B 每單</span></td><td>用換貨承擔。要先算出一次換貨的完整成本</td></tr>
+      <tr><td>實際觸感</td><td class="pain">中</td><td class="cost"><span class="tag b">成本 B 偏高</span></td><td>中段。特寫加語言描述，暫不投錢</td></tr>
+      <tr><td>要等多久才到</td><td class="pain">中</td><td class="cost"><span class="tag c">成本 C 不可承擔</span></td><td>跨境十天是物理事實。<strong>只揭露，不花錢</strong>。講清楚成本是零，用話術蓋掉的成本是一則負評</td></tr>
+      <tr><td>風格喜不喜歡</td><td class="pain">—</td><td class="cost"><span class="tag c">成本 C 無解</span></td><td>不要碰</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <p><strong>成本 A</strong>（一次性、可無限重複使用）不用算比值，全部直接做。它們幾乎沒人做，因為做起來不像做生意，像做功課。</p>
+    <p>成本 A 有一個被我們浪費掉的出口：<strong>我們的商品頁現在只有尺碼表，沒有實測圖。</strong>直播的實測講完就消失，只有當下在線的人看得到；同一段實測放進商品頁，會替我們工作二十四小時，接住所有沒趕上直播的人。<strong>拍一次，餵兩個地方</strong>——這正是成本 A 最典型的樣子。</p>
+    <p><strong>成本 B</strong>（每一單都要花錢）才需要算，也是為什麼「一次換貨的完整成本」這個數字這麼關鍵。</p>
+    <p><strong>成本 C</strong>（花錢也改不掉）只要講清楚。大部分同業的錯誤是：成本 A 完全不做，卻拚命想用話術解決成本 C。兩邊都做反了。</p>
+  </div>
+
+  <div class="think">
+    <span class="label">現在輪到我們</span>
+    <ol>
+      <li>上面這張表少了什麼？我們實際被問過、但沒列進來的不確定性有哪些？</li>
+      <li>如果這一季只能承擔<strong>一項</strong>，選哪一項？為什麼是它而不是尺碼？</li>
+      <li>一次換貨的完整成本要怎麼算？除了運費，還要算進哪些東西——逆物流、人力、重新包裝、那件貨還能不能再賣？誰去把這個數字生出來？</li>
+    </ol>
+  </div>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">04</span><h2>完整流程：找 → 排 → 承擔 → 展示 → 驗收</h2></div>
+  <p>不確定性的清單不該來自誰的想像，它每天都在我們眼前產生，只是沒人記下來。</p>
+
+  <div class="flow">
+    <div class="step"><div class="n">STEP 1</div><div class="t">找</div><div class="d">直播留言區的每一個問題，都是一個還沒被消除的不確定性。而且是購買<em>之前</em>的，比退貨資料早得多</div></div>
+    <div class="step"><div class="n">STEP 2</div><div class="t">排</div><div class="d">提問頻率 × 問完沒下單的比例 ÷ 承擔成本。按成本 A～C 分開看</div></div>
+    <div class="step"><div class="n">STEP 3</div><div class="t">承擔</div><div class="d">成本 A 全做、成本 B 挑比值最高的一項、成本 C 只揭露不花錢</div></div>
+    <div class="step"><div class="n">STEP 4</div><div class="t">展示</div><div class="d">把承擔的部分做成「說謊會當場穿幫」的動作，放進直播</div></div>
+    <div class="step"><div class="n">STEP 5</div><div class="t">驗收</div><div class="d">下週看那一類問題的提問量有沒有下降</div></div>
+  </div>
+
+  <h3>為什麼「留言區的問題」是最好的資料</h3>
+  <p>因為打字提問是有成本的——要花力氣、可能被忽略、可能被笑。她願意付這個成本，代表這件事真的擋住她了。<strong>提問頻率就是「她有多痛」最直接的測量。</strong>反過來說，沒被問出口的疑慮，通常也沒重要到會阻止成交。</p>
+  <p>第二好的資料是<strong>問了但沒下單的人</strong>——她問了、主播答了、她還是沒買，代表我們的回答沒有消除她的不確定性。那是最精準的失敗案例。</p>
+
+  <h3>最強的一招：主動展示失敗</h3>
+  <p>「這件 D 罩杯穿起來是這樣——你們看，壓住了，D 以上不要買。」</p>
+  <p>一次真實的不合格展示，比十次成功展示更能建立信任。因為它是我們唯一能證明「我不隱瞞」的方法，而這個證明會回頭讓我們<strong>其他所有的宣稱都變得可信</strong>。同業抄不動它，不是因為想不到，是因為他們的貨經不起。</p>
+
+  <h3>保證要具體到痛，而且要放在對的那一秒</h3>
+  <p>「不滿意可退換」——無效，模糊等於沒承諾。<br>
+  「你收到穿上不合，拍張照給我，我當天出下一個尺碼，運費我出，你不用先寄回來」——有效。<strong>細節本身就是抵押品</strong>，講得越具體，我們反悔的空間越小，而觀眾知道這件事。</p>
+  <p class="kicker">順序：展示 → 排雷 → 報價 → 保證 → 逼單。</p>
+  <p>保證放在報價<strong>之後</strong>，因為報完價的那一秒，正是她心裡在算「賭輸要賠多少」的那一秒。放太早，她還沒感覺到風險；放太晚，她已經滑走了。</p>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">05</span><h2>你在這個系統裡的位置</h2></div>
+  <p>四個角色，四種產出。每個人手上都有一把尺，不需要回來問「這樣可以嗎」——尺會回答。</p>
+
+  <div class="roles">
+
+    <div class="role">
+      <h4>主播</h4>
+      <p class="role-sub">系統的輸出端。所有承擔過的不確定性，只有經過你才會被觀眾看見</p>
+      <dl>
+        <div><dt>你的產出</dt><dd><b>可證偽的展示。</b>不是介紹商品，是讓「我們承擔了什麼」變得看得見</dd></div>
+        <div><dt>你的尺</dt><dd>尺 A——如果我在說謊，這個動作會不會當場穿幫？</dd></div>
+        <div><dt>最小動作</dt><dd>每一款至少一個<b>會失敗的實測</b>，加一句<b>主動排雷</b>。報價後補上保證，再逼單</dd></div>
+        <div><dt>做得好長怎樣</dt><dd>留言區從「這個會不會透」變成「已下單」。同一類問題你不用再回答第二次</dd></div>
+      </dl>
+    </div>
+
+    <div class="role">
+      <h4>運營</h4>
+      <p class="role-sub">系統的大腦。決定我們這一季要承擔哪一項不確定性</p>
+      <dl>
+        <div><dt>你的產出</dt><dd><b>優先順序。</b>把一週的問題劃記算成比值，排出下週要承擔哪一項</dd></div>
+        <div><dt>你的尺</dt><dd>尺 B——這個動作把不確定性搬向我們還是搬向她？搬向她的一律否決</dd></div>
+        <div><dt>最小動作</dt><dd>每週一次比值排序。成本 A 直接排進製作，成本 B 先把數字算出來再決定，成本 C 寫成揭露文案</dd></div>
+        <div><dt>做得好長怎樣</dt><dd>我們承擔一單位不確定性的成本，這個月比上個月低</dd></div>
+      </dl>
+    </div>
+
+    <div class="role">
+      <h4>中控</h4>
+      <p class="role-sub">系統的即時執行。地基再對，現場漏掉就等於沒有</p>
+      <dl>
+        <div><dt>你的產出</dt><dd><b>不遺漏。</b>該切的連結切到、該出現的保證出現、該發的券發出去</dd></div>
+        <div><dt>你的尺</dt><dd>現貨賣完的那一刻，預購連結有沒有在五秒內上置頂？報價之後，保證有沒有講？</dd></div>
+        <div><dt>最小動作</dt><dd>開播前備妥每款的現貨／預購兩個連結。現場只盯兩個數字：<b>講這款時在線人數是漲是跌</b>、<b>留言區問尺碼的人數</b></dd></div>
+        <div><dt>做得好長怎樣</dt><dd>主播不用回頭確認任何事。她講到哪，畫面就到哪</dd></div>
+      </dl>
+    </div>
+
+    <div class="role">
+      <h4>運營助理</h4>
+      <p class="role-sub">系統的輸入端。沒有你，上面三個人都在憑印象工作</p>
+      <dl>
+        <div><dt>你的產出</dt><dd><b>資料。</b>這是整條鏈子的起點，也是目前唯一完全空白的一段</dd></div>
+        <div><dt>你的尺</dt><dd>這一場的問題劃記完整嗎？下週運營拿得到能排序的東西嗎？</dd></div>
+        <div><dt>最小動作</dt><dd>一張紙，每個問題劃記歸類：尺碼／透不透／勒不勒／材質／洗滌／到貨時間／其他。另外記下<b>問了但沒下單</b>的案例</dd></div>
+        <div><dt>做得好長怎樣</dt><dd>一週後，我們第一次能用數字而不是印象，說出顧客最怕的是哪一件事</dd></div>
+      </dl>
+    </div>
+
+  </div>
+
+  <div class="think">
+    <span class="label">現在輪到我們</span>
+    <ol>
+      <li>上面這四張卡，哪一張跟你現在實際在做的事差最遠？</li>
+      <li>有哪件事是四個人都以為別人在做，其實沒人在做的？</li>
+      <li>如果只能先啟動<strong>一個</strong>角色的最小動作，先動哪一個？</li>
+    </ol>
+  </div>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">06</span><h2>什麼樣的結果算好</h2></div>
+  <p>如果地基是「不確定性的轉移」，那 GMV 就不是把手，只是輸出。真正該盯的指標會提早很多動起來。</p>
+
+  <div class="signals">
+    <div class="signal">
+      <div class="when">最快 · 一到兩週</div>
+      <div class="what"><b>某一類提問量下降</b><span>我們承擔並展示了「會不會透」，兩週後這類問題就該變少。這是不確定性真的被消除了的<strong>第一個證據</strong>，它會在業績變好之前就先出現</span></div>
+    </div>
+    <div class="signal">
+      <div class="when">中期 · 一到三個月</div>
+      <div class="what"><b>換貨率下降、單次換貨成本下降</b><span>推薦變準、成本變低。這兩個數字決定我們能開出多強的保證</span></div>
+    </div>
+    <div class="signal">
+      <div class="when">再往後</div>
+      <div class="what"><b>保證能開得更強 → 能吃的市場更大</b><span>而規模又讓成本再降。這是一個會自己滾的循環</span></div>
+    </div>
+    <div class="signal">
+      <div class="when">最後才動</div>
+      <div class="what"><b>複購率、GMV</b><span>它們是結果，不是把手。盯著它們調整，等於看著里程表開車</span></div>
+    </div>
+  </div>
+
+  <h3>一個要先講明白的副作用</h3>
+  <p>既然我們在賣保險，就繼承了保險業的全部問題。<strong>強保證會不成比例地吸引「本來就最不確定的人」</strong>——尺碼卡在兩個號中間的、身形特殊的、以前買三次退三次的。她們正是換貨率最高的一群。另外也會有人「兩個尺碼都下單，留一個」。</p>
+  <p>這不代表不要開保證，代表保證必須<strong>有結構</strong>：第一次換貨免運、第二次自付；或是「填完身體數據才享有換貨保證」——後者特別漂亮，因為它同時解決了逆選擇<em>並且</em>幫我們把資料收進來，一個條件兩個作用。</p>
+
+  <div class="think">
+    <span class="label">今天散會前，要帶走三個答案</span>
+    <ol>
+      <li>這週開始，<strong>誰</strong>負責記留言區的問題劃記？從<strong>哪一場</strong>開始？</li>
+      <li>「一次換貨的完整成本」，<strong>誰</strong>去算？需要跟誰要哪些數字？<strong>什麼時候</strong>給答案？</li>
+      <li>下一場直播，我們要放進去的第一個「會失敗的實測」是什麼？</li>
+    </ol>
+  </div>
+
+  <p class="kicker">共讀完不代表懂了。真正的驗證是：一週後沒人盯的那一場，這些事有沒有照樣發生。</p>
+</section>
+
+<footer>
+  <p>這份文件會隨著我們手上的數字更新。目前最大的空白有三個：留言問題的分類統計、一次換貨的完整成本，以及只有尺碼表、沒有實測素材的商品頁。</p>
+  <p>虛線框裡的題目沒有標準答案——它們是刻意留空的，等這次會議填上。</p>
+</footer>
+
+</div>
