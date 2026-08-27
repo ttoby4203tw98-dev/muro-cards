@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="暮若團隊職權劃分：四段鏈、五個位置、決策三層。">
+<title>誰決定什麼｜暮若職權劃分</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+
+<style>
+:root{
+  --bg:#FAFAF7;--surface:#FFFFFF;--surface-2:#F1F1EC;
+  --ink:#1B1F1C;--ink-2:#4A504B;--ink-3:#787E79;
+  --rule:#D4D5CD;--rule-strong:#A9ABA1;
+  --accent:#2C5A4C;--accent-soft:#E3EDE8;
+  --mark:#9A6C1E;--mark-soft:#F5EBD8;
+  --shadow:0 1px 2px rgba(27,31,28,.05), 0 8px 24px -16px rgba(27,31,28,.25);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12150F;--surface:#1A1E18;--surface-2:#222720;
+    --ink:#E9EAE2;--ink-2:#B3B8AE;--ink-3:#858B82;
+    --rule:#333A32;--rule-strong:#555D53;
+    --accent:#7FB9A2;--accent-soft:#1E2C26;
+    --mark:#D3A94F;--mark-soft:#2A2317;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12150F;--surface:#1A1E18;--surface-2:#222720;
+  --ink:#E9EAE2;--ink-2:#B3B8AE;--ink-3:#858B82;
+  --rule:#333A32;--rule-strong:#555D53;
+  --accent:#7FB9A2;--accent-soft:#1E2C26;
+  --mark:#D3A94F;--mark-soft:#2A2317;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  font-size:16.5px;line-height:1.85;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 120px}
+
+.masthead{padding:76px 0 0}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 20px;
+}
+h1{
+  font-family:"Noto Serif TC",serif;font-weight:700;
+  font-size:clamp(38px,7vw,58px);line-height:1.18;margin:0 0 22px;text-wrap:balance;
+}
+.purpose{
+  background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:3px;
+  padding:22px 24px;margin:0 0 26px;
+}
+.purpose .label{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);display:block;margin-bottom:9px;
+}
+.purpose p{
+  font-family:"Noto Serif TC",serif;font-weight:600;font-size:clamp(20px,3.4vw,25px);
+  line-height:1.55;margin:0;text-wrap:balance;
+}
+.purpose .sub{
+  font-family:"Noto Sans TC",sans-serif;font-weight:400;font-size:14.5px;
+  color:var(--ink-2);margin-top:12px;line-height:1.75;
+}
+.standfirst{font-size:17.5px;line-height:1.8;color:var(--ink-2);max-width:62ch;margin:0 0 30px}
+
+.tick{height:11px;margin:0;border:0;
+  background-image:repeating-linear-gradient(to right,var(--rule-strong) 0 1px,transparent 1px 9px);}
+
+section{padding-top:62px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.sec-num{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;color:var(--accent);flex:none;padding-top:4px}
+h2{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(25px,4vw,31px);line-height:1.35;margin:0;text-wrap:balance}
+h3{font-family:"Noto Serif TC",serif;font-weight:600;font-size:19px;line-height:1.5;margin:34px 0 10px}
+p{margin:0 0 18px;max-width:66ch}
+em{font-style:normal;color:var(--accent);font-weight:500}
+
+.chain4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:3px;margin:26px 0 12px;overflow:hidden}
+.seg{background:var(--surface);padding:20px 18px}
+.seg .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);letter-spacing:.1em;margin-bottom:8px}
+.seg .t{font-family:"Noto Serif TC",serif;font-weight:700;font-size:19px;margin-bottom:6px}
+.seg .q{font-size:14px;color:var(--ink-2);line-height:1.7;margin-bottom:10px}
+.seg .who{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);letter-spacing:.06em;
+  padding-top:9px;border-top:1px solid var(--rule)}
+.seg .who b{color:var(--ink);font-weight:500;font-family:"Noto Sans TC",sans-serif;font-size:13.5px;letter-spacing:0}
+
+.roles{display:flex;flex-direction:column;gap:16px;margin:26px 0 12px}
+.role{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:24px;box-shadow:var(--shadow)}
+.role-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.role h4{font-family:"Noto Serif TC",serif;font-weight:700;font-size:22px;margin:0;letter-spacing:.02em}
+.seg-badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+  padding:3px 9px;border-radius:2px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.role .oneline{
+  font-family:"Noto Serif TC",serif;font-weight:600;font-size:17.5px;line-height:1.6;
+  color:var(--ink);margin:8px 0 18px;padding-bottom:18px;border-bottom:1px solid var(--rule);text-wrap:balance;
+}
+.role dl{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px 26px}
+.role dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.role dd{margin:0;font-size:14.5px;line-height:1.75;color:var(--ink-2)}
+.role dd ul{margin:0;padding-left:17px}
+.role dd li{margin-bottom:4px}
+.role dd.fail{color:var(--mark)}
+.role .note-in{font-size:13.5px;color:var(--ink-3);margin:16px 0 0;padding-top:14px;border-top:1px dashed var(--rule);line-height:1.7}
+
+.tiers{display:flex;flex-direction:column;gap:14px;margin:26px 0 12px}
+.tier{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:20px 22px;
+  display:grid;grid-template-columns:130px 1fr;gap:0 24px}
+.tier .head{border-right:1px solid var(--rule);padding-right:20px}
+.tier .lvl{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--ink-3);margin-bottom:5px}
+.tier .name{font-family:"Noto Serif TC",serif;font-weight:700;font-size:17px;line-height:1.4}
+.tier .bet{font-size:12.5px;color:var(--ink-3);margin-top:5px;line-height:1.6}
+.tier ul{margin:0;padding-left:18px;font-size:14.5px;line-height:1.8;color:var(--ink-2)}
+.tier li{margin-bottom:3px}
+.tier.t1 .name{color:var(--accent)}
+.tier.t3 .name{color:var(--mark)}
+
+.note{border-left:2px solid var(--rule-strong);padding:2px 0 2px 18px;margin:24px 0;color:var(--ink-2);font-size:15.5px;max-width:64ch}
+.note p{margin:0 0 10px}.note p:last-child{margin:0}
+
+.kicker{font-family:"Noto Serif TC",serif;font-weight:600;font-size:20px;line-height:1.6;
+  color:var(--ink);margin:30px 0 0;max-width:60ch;text-wrap:balance}
+
+.handoff{background:var(--surface);border:1px solid var(--rule);border-radius:3px;margin:24px 0 12px;overflow:hidden}
+.handoff .hrow{display:grid;grid-template-columns:150px 1fr;gap:0 22px;padding:16px 22px;border-bottom:1px solid var(--rule)}
+.handoff .hrow:last-child{border-bottom:0}
+.handoff .when{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--accent);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.handoff .what{font-size:14.5px;line-height:1.75;color:var(--ink-2)}
+.handoff .what b{color:var(--ink);font-weight:500}
+
+footer{margin-top:70px;padding-top:22px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:13px}
+footer p{margin:0 0 6px;max-width:66ch}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:620px){
+  body{font-size:16px}.wrap{padding:0 18px 90px}.masthead{padding-top:52px}
+  .tier{grid-template-columns:1fr;gap:14px}
+  .tier .head{border-right:0;border-bottom:1px solid var(--rule);padding-right:0;padding-bottom:12px}
+  .handoff .hrow{grid-template-columns:1fr;gap:6px}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">暮若 · 職權劃分 · 第一版</p>
+  <h1>誰決定什麼</h1>
+
+  <div class="purpose">
+    <span class="label">我們存在的意義</span>
+    <p>讓台灣女生買貼身衣物的時候，不用再賭。</p>
+    <p class="sub">每家尺碼表都不一樣、不能試穿、拆封不能退——她每買一次都在賭，賭輸了那件就是廢的。我們的工作就是把這個賭拿掉。<br>
+    這句話同時關掉了一整類賺錢方式：靠模糊尺碼賺、靠逼單賺、靠報喜不報憂賺。它之所以是價值觀，正因為它讓某些好賺的錢變得不能賺。</p>
+  </div>
+
+  <p class="standfirst">
+    這份文件不列任務清單。任務會變，職權不會。<br>
+    它回答三件事：<em>你在哪一段</em>、<em>你自己能決定什麼</em>、<em>什麼情況算你這一環斷了</em>。
+  </p>
+  <hr class="tick">
+</header>
+
+<section>
+  <div class="sec-head"><span class="sec-num">01</span><h2>一條鏈，四段</h2></div>
+  <p>「賭」從產生到消滅，一定會走完這四段。缺一段就漏水，而且<strong>斷在哪一段，看得出來是誰</strong>——出問題時不用互相猜，一問就知道。</p>
+
+  <div class="chain4">
+    <div class="seg">
+      <div class="n">① 發現</div>
+      <div class="t">她在賭什麼</div>
+      <div class="q">沒有這一段，後面三段全是用猜的</div>
+      <div class="who">主責 <b>運營助理</b><br>現場收集 <b>當班中控</b></div>
+    </div>
+    <div class="seg">
+      <div class="n">② 決策</div>
+      <div class="t">我們扛哪一個</div>
+      <div class="q">她多痛 ÷ 我們多貴。扛錯了，錢花了她沒感覺</div>
+      <div class="who">主責 <b>運營</b></div>
+    </div>
+    <div class="seg">
+      <div class="n">③ 證明</div>
+      <div class="t">讓她看到不用賭</div>
+      <div class="q">再好的決策，沒被看見就等於沒有</div>
+      <div class="who">主責 <b>主播</b><br>確保送達 <b>中控</b></div>
+    </div>
+    <div class="seg">
+      <div class="n">④ 兌現</div>
+      <div class="t">賭輸時接住她</div>
+      <div class="q">這一段崩了，前三段全部倒扣，而且是負評的形式</div>
+      <div class="who">主責 <b>運營助理</b><br>出貨 <b>運營</b></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><strong>灰色地帶怎麼判：</strong>任何「這件事誰做」的爭議，先問一句——<em>這個賭現在在鏈的哪一段？</em>答案出來，主人就出來了。</p>
+  </div>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">02</span><h2>五個位置</h2></div>
+  <p>每張卡四件事：你負責哪一段、一句話職責、<strong>你自己能決定什麼</strong>、什麼情況算你這一環斷了。</p>
+
+  <div class="roles">
+
+    <div class="role">
+      <div class="role-top"><h4>管理</h4><span class="seg-badge">跨全鏈 · 只守邊界</span></div>
+      <p class="oneline">你不訂規則，你守住第三層的決定，並且親自補最空的那一環。</p>
+      <dl>
+        <div><dt>你決定什麼</dt><dd><ul>
+          <li>換貨與保證政策</li><li>定價結構</li><li>大額追單、庫存金額上限</li>
+          <li>人事、班表</li><li><b>什麼時候把觀察值變成正式門檻</b></li>
+        </ul></dd></div>
+        <div><dt>你要交出什麼</dt><dd><ul>
+          <li>三條金額線（試單／備貨／追單上限）</li>
+          <li>覆盤時的問題，不是答案</li>
+          <li>早上那一場的實測與排雷</li>
+        </ul></dd></div>
+        <div><dt>什麼算斷了</dt><dd class="fail"><ul>
+          <li>第一層的事跑來問你，或第三層的事別人自己決了</li>
+          <li>覆盤時你給答案而不是問「這一環斷在哪」</li>
+        </ul></dd></div>
+      </dl>
+      <p class="note-in">沉澱期的管理者不該訂死規則。訂規則規定「你要怎麼做」，會綁死人；訂邊界規定「哪些你自己決」，會鬆綁人。</p>
+    </div>
+
+    <div class="role">
+      <div class="role-top"><h4>運營</h4><span class="seg-badge">② 決策</span></div>
+      <p class="oneline">你決定我們這一週、這一季要替客人扛掉哪一個賭，並且讓全隊每天知道今天推進哪一格。</p>
+      <dl>
+        <div><dt>你決定什麼</dt><dd><ul>
+          <li>每週新品選哪幾款（品類方向與試單金額上限內）</li>
+          <li>每款測款數量</li>
+          <li>排品順序、話術方向、要拍什麼素材</li>
+          <li>券的面額、限時價</li>
+          <li><b>每日一件事</b></li>
+        </ul></dd></div>
+        <div><dt>你要交出什麼</dt><dd><ul>
+          <li>每天開播前一行字：<b>今天這場的一件事</b></li>
+          <li>每週新品上架，賣場不斷檔</li>
+          <li>每月初的備貨排序名單</li>
+          <li>每週一次：這一週要承擔哪一項不確定性</li>
+        </ul></dd></div>
+        <div><dt>什麼算斷了</dt><dd class="fail"><ul>
+          <li>團隊來上班不知道今天最重要的是什麼</li>
+          <li>某一週沒有新品</li>
+          <li>你的一天全部是被推著跑的事，沒有一件是你起的頭</li>
+        </ul></dd></div>
+      </dl>
+      <p class="note-in">助理做被推動的事，運營做推動別人的事。差別不在工作量，在誰起的頭——「每日一件事」就是你每天起頭的那三分鐘，它是這個位置最不可取代的部分。</p>
+    </div>
+
+    <div class="role">
+      <div class="role-top"><h4>運營助理</h4><span class="seg-badge">① 發現</span><span class="seg-badge">④ 兌現</span></div>
+      <p class="oneline">你是全隊唯一知道「客人到底在賭什麼」的人，也是賭輸時接住她的人。</p>
+      <dl>
+        <div><dt>你決定什麼</dt><dd><ul>
+          <li>問題怎麼分類、劃記表長什麼樣</li>
+          <li>客訴的第一線回覆方式（政策內）</li>
+          <li>換貨個案的判斷（政策內）</li>
+        </ul></dd></div>
+        <div><dt>你要交出什麼</dt><dd><ul>
+          <li><b>每週一份問題統計</b>：這週客人最常賭什麼、問了沒買的有哪些</li>
+          <li>換貨原因分類：太大／太小／版型不合</li>
+          <li>客訴當日回覆</li>
+        </ul></dd></div>
+        <div><dt>什麼算斷了</dt><dd class="fail"><ul>
+          <li>運營要做決策時，手上只有印象沒有數字</li>
+          <li>換貨處理完了，但沒留下原因</li>
+        </ul></dd></div>
+      </dl>
+      <p class="note-in">① 是目前全隊最空白的一段，也是整條鏈的起點。它不是打雜，它是決策的原料——沒有它，運營的每一個決定都是猜的。</p>
+    </div>
+
+    <div class="role">
+      <div class="role-top"><h4>主播</h4><span class="seg-badge">③ 證明</span></div>
+      <p class="oneline">你不是在介紹商品，你是在讓她親眼看到「這件事你不用賭」。</p>
+      <dl>
+        <div><dt>你決定什麼</dt><dd><ul>
+          <li>現場怎麼演示、用什麼方式測</li>
+          <li>觀眾問了什麼要當場回、什麼留給客服</li>
+          <li>臨場的節奏調整</li>
+        </ul></dd></div>
+        <div><dt>你要交出什麼</dt><dd><ul>
+          <li>每一款至少一個<b>會失敗的實測</b>——說謊會當場穿幫的那種</li>
+          <li>每一款一句<b>主動排雷</b></li>
+          <li>報價之後、逼單之前，把保證講完整</li>
+        </ul></dd></div>
+        <div><dt>什麼算斷了</dt><dd class="fail"><ul>
+          <li>整場沒有一個動作是「說謊會穿幫」的</li>
+          <li>承諾了排播表上沒有的東西</li>
+          <li>同一類問題你回答了一整場還在被問</li>
+        </ul></dd></div>
+      </dl>
+      <p class="note-in">你的尺只有一把：<b>如果我現在在說謊，這個動作會不會當場穿幫？</b>會，就有價值；不會，就是廢話。觀眾相信的不是你的話，是你冒的險。</p>
+    </div>
+
+    <div class="role">
+      <div class="role-top"><h4>中控</h4><span class="seg-badge">③ 證明（送達）</span><span class="seg-badge">① 發現（現場）</span></div>
+      <p class="oneline">主播負責證明，你負責讓證明真的被看到——並且把客人在賭什麼記下來。</p>
+      <dl>
+        <div><dt>你決定什麼</dt><dd><ul>
+          <li>連結什麼時候切、置頂放哪一款</li>
+          <li>券什麼時候發</li>
+          <li>哪些留言要遞給主播、哪些自己回</li>
+        </ul></dd></div>
+        <div><dt>你要交出什麼</dt><dd><ul>
+          <li>該切的連結切到、該發的券發出去</li>
+          <li>報價之後保證有被講到（沒講就提醒）</li>
+          <li><b>當場的問題劃記</b>——你的位置是全隊看留言區最清楚的地方</li>
+        </ul></dd></div>
+        <div><dt>什麼算斷了</dt><dd class="fail"><ul>
+          <li>主播得回頭確認畫面在哪</li>
+          <li>那一場的劃記空白</li>
+        </ul></dd></div>
+      </dl>
+      <p class="note-in">主播與中控是同一批人的兩個身分，輪流互換。<b>坐上中控台的那一刻，你的職責就整組換了</b>——不是幫忙，是換崗。</p>
+    </div>
+
+  </div>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">03</span><h2>決策分三層</h2></div>
+  <p><strong>決定權跟著賭注大小走。</strong>賭小的自己決，賭大的一起決。這樣就不用訂一堆規則來綁人。</p>
+  <p style="font-size:14.5px;color:var(--ink-3)">這一節主要是<b>管理與運營</b>之間的約定。主播與中控知道有這三層就好——遇到不確定要不要問的事，看它落在哪一層。</p>
+
+  <div class="tiers">
+    <div class="tier t1">
+      <div class="head"><div class="lvl">第一層</div><div class="name">自己決</div><div class="bet">賭小、可逆<br>事後同步就好</div></div>
+      <ul>
+        <li>每週新品選哪幾款（在品類方向與試單金額上限內）</li>
+        <li>每款測款數量</li>
+        <li>排品順序、話術方向、素材要拍什麼</li>
+        <li>券的面額、限時價</li>
+        <li>每日一件事</li>
+        <li>現場的臨場判斷（切連結、發券、演示方式）</li>
+      </ul>
+    </div>
+    <div class="tier t2">
+      <div class="head"><div class="lvl">第二層</div><div class="name">先講一聲</div><div class="bet">賭中、半可逆<br>做之前說，不用等批准</div></div>
+      <ul>
+        <li>某款<b>首次</b>進倉備現貨——不管量多小，因為它從「試」變成「押」</li>
+        <li>追單超過金額上限</li>
+        <li>換新供應商</li>
+        <li>跨出內衣塑身褲的品類</li>
+        <li>改直播節奏的結構（不是單場調整）</li>
+      </ul>
+    </div>
+    <div class="tier t3">
+      <div class="head"><div class="lvl">第三層</div><div class="name">管理拍板</div><div class="bet">賭大、不可逆<br>一個人不能決</div></div>
+      <ul>
+        <li>換貨與保證政策</li>
+        <li>定價結構</li>
+        <li>大額追單、庫存金額上限</li>
+        <li>人事、班表</li>
+        <li>什麼時候把觀察值變成正式門檻</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>沉澱期：只訂程序，不訂數值</h3>
+  <p>「還沒有結果就訂標準，只會一直改到沒有標準」——這個擔心是對的，但結論不是不訂標準，是<strong>訂錯了種類</strong>。</p>
+  <div class="note">
+    <p><strong>數值標準</strong>（「點擊率超過 5% 就追單」）：沒有歷史資料就訂，必錯，而且每改一次折損一次權威。<b>現在不訂。</b></p>
+    <p><strong>程序標準</strong>（「某款首次備貨前，必須先跑完測款並累積到單量」）：不需要任何資料就能訂，幾乎不會被推翻，而且它會<b>生產</b>資料。<b>現在就訂。</b></p>
+    <p>要看的數字現在就寫下來，但寫成<b>觀察值</b>不是門檻——「累積滿 20 款後畫分布，取前 25% 當第一版門檻」。標準的誕生時間預先講好，就沒有人會覺得管理在亂改。</p>
+  </div>
+
+  <h3>兩種數字，只有一種現在能訂</h3>
+  <div class="note">
+    <p><strong>「什麼樣算好」</strong>——績效門檻、點擊率、轉化率。這是<b>預測</b>，現在訂必錯。</p>
+    <p><strong>「我願意輸多少」</strong>——試單上限、備貨上限、追單上限。這是<b>風險偏好</b>，不需要任何資料，而且只有管理端說得準。<b>今天就能訂，而且不會一直改。</b></p>
+  </div>
+</section>
+
+<hr class="tick">
+
+<section>
+  <div class="sec-head"><span class="sec-num">04</span><h2>交接：一天只有一個接點</h2></div>
+  <p>① 發現交給 ② 決策的那個接點，是整條鏈最容易斷的地方。它不能靠碰巧遇到，要排進班表。</p>
+
+  <div class="handoff">
+    <div class="hrow"><div class="when">早班</div><div class="what"><b>管理</b>　早上直播 → 至 18:30</div></div>
+    <div class="hrow"><div class="when">晚班</div><div class="what"><b>運營</b>　16:00 → 01:00（晚間直播約 22:00 開播）</div></div>
+    <div class="hrow"><div class="when">16:00–17:00</div><div class="what"><b>固定交接，三件事，不聊別的</b><br>① 昨晚的問題劃記　② 今天的一件事　③ 有沒有需要拍板的</div></div>
+    <div class="hrow"><div class="when">收播後 10 分鐘內</div><div class="what"><b>五分鐘覆盤</b>——今天哪一款人數是漲的？哪一句講完人掉了？明天換不換？不開檢討會</div></div>
+  </div>
+
+  <div class="note">
+    <p><strong>運營不需要全程盯直播。</strong>直播中在場的是主播和中控，他們在 ③。運營的工作是開播前的準備和收播後的覆盤，中間那兩小時盯著也改變不了什麼，反而又多兩小時被推著跑。除非那場有特別要驗證的東西。</p>
+  </div>
+
+  <p class="kicker">職權劃分不是為了限制誰，是為了讓每個人知道：哪些事不用問就能做。</p>
+</section>
+
+<footer>
+  <p>第一版．任務會變，這份不會。要改的時候，改的是名單和數字，不是這四段鏈。</p>
+  <p>搭配閱讀：《不確定性的轉移》——這份講「誰負責」，那份講「為什麼」。</p>
+</footer>
+
+</div>
+
+</body>
+</html>
