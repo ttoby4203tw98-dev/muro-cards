@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蝦皮售後判斷邏輯 SOP</title>
+<style>
+  :root{
+    --bg: #FAF8F5;
+    --ink: #24211D;
+    --ink-soft: #5B564E;
+    --line: #D8D2C7;
+    --shopee: #EE4D2D;
+    --shopee-deep: #C93A1F;
+    --yes: #2F7A4F;
+    --yes-bg: #EAF4EC;
+    --no: #B4562E;
+    --no-bg: #FBEDE4;
+    --result-approve: #1F6B45;
+    --result-approve-bg: #E4F3E9;
+    --result-review: #A05A00;
+    --result-review-bg: #FBF0DD;
+    --result-reject: #8A2E1E;
+    --result-reject-bg: #FBE7E1;
+    --result-risk: #6B3FA0;
+    --result-risk-bg: #F1EAFB;
+    --card: #FFFFFF;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--bg); color:var(--ink);
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+    line-height:1.6;
+  }
+  .wrap{ max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header{ margin-bottom: 20px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size: 13px; color: var(--shopee-deep); font-weight:600;
+    background: #FFF0EB; border:1px solid #F7CDBE; padding:4px 12px; border-radius:100px;
+    margin-bottom: 14px;
+  }
+  .eyebrow::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--shopee); }
+  h1{
+    font-size: clamp(26px, 4vw, 34px); margin: 0 0 10px; letter-spacing:-0.01em;
+    font-weight: 800; color: var(--ink);
+  }
+  h2{ font-size:19px; font-weight:800; margin: 0 0 12px; }
+  .lede{ color: var(--ink-soft); font-size: 15.5px; max-width: 680px; margin:0; }
+
+  .principles{
+    background: var(--card); border:1px solid var(--line); border-radius:14px;
+    padding: 22px 24px; margin: 28px 0; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .principles ul{ margin: 10px 0 0; padding-left: 20px; font-size:14.5px; color: var(--ink); }
+  .principles li{ margin-bottom: 7px; }
+  .principles li b{ color: var(--shopee-deep); }
+
+  table.risk-table{ width:100%; border-collapse:collapse; margin-top:14px; font-size:14px; }
+  table.risk-table th, table.risk-table td{ border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top; }
+  table.risk-table th{ background:#F3EFE8; font-size:13px; }
+  table.risk-table td.tag-low{ color:var(--yes); font-weight:700; }
+  table.risk-table td.tag-mid{ color:var(--result-review); font-weight:700; }
+  table.risk-table td.tag-high{ color:var(--result-risk); font-weight:700; }
+
+  nav.tabs{
+    display:flex; gap:6px; margin: 30px 0 20px; border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  nav.tabs button{
+    appearance:none; border:none; background:none; cursor:pointer;
+    padding: 11px 6px; margin-right: 22px; font-size: 15.5px; font-weight:600;
+    color: var(--ink-soft); border-bottom: 2.5px solid transparent; font-family:inherit;
+  }
+  nav.tabs button.active{ color: var(--shopee-deep); border-bottom-color: var(--shopee); }
+
+  section.scenario{ display:none; }
+  section.scenario.active{ display:block; }
+
+  .scenario-intro{
+    background: var(--card); border:1px solid var(--line); border-radius:10px;
+    padding: 16px 18px; margin-bottom: 22px; font-size:14.5px; color: var(--ink-soft);
+  }
+  .scenario-intro b{ color: var(--ink); }
+
+  .tree{ position:relative; }
+
+  .node{
+    background: var(--card); border:1px solid var(--line); border-radius:10px;
+    padding: 14px 16px; margin-bottom: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .node.question{ border-left: 4px solid var(--ink); font-weight:600; font-size:15px; }
+  .node.question .qtag{ display:block; font-size:11px; font-weight:700; letter-spacing:0.02em; color: var(--ink-soft); margin-bottom: 4px; }
+  .node.note{ font-size: 13.5px; color: var(--ink-soft); border-style:dashed; background:transparent; }
+
+  .result{ border-radius:10px; padding: 14px 16px 15px; margin-bottom:4px; border:1px solid transparent; font-size: 14.5px; }
+  .result .rtag{ display:inline-block; font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:100px; margin-bottom:7px; }
+  .result.approve{ background: var(--result-approve-bg); }
+  .result.approve .rtag{ background: var(--result-approve); color:#fff; }
+  .result.review{ background: var(--result-review-bg); }
+  .result.review .rtag{ background: var(--result-review); color:#fff; }
+  .result.reject{ background: var(--result-reject-bg); }
+  .result.reject .rtag{ background: var(--result-reject); color:#fff; }
+  .result.risk{ background: var(--result-risk-bg); }
+  .result.risk .rtag{ background: var(--result-risk); color:#fff; }
+
+  .branches{ display:flex; gap: 18px; margin: 10px 0 18px 11px; padding-left: 18px; border-left: 2px solid var(--line); flex-wrap: wrap; }
+  .branches > .branch{ flex: 1 1 280px; min-width: 260px; }
+  .branch .branch-label{ display:inline-flex; align-items:center; gap:6px; font-size: 12.5px; font-weight:700; padding: 3px 10px; border-radius:100px; margin-bottom: 8px; }
+  .branch.yes .branch-label{ background: var(--yes-bg); color: var(--yes); }
+  .branch.no .branch-label{ background: var(--no-bg); color: var(--no); }
+  .branch.yes .branch-label::before{ content:"是"; }
+  .branch.no .branch-label::before{ content:"否"; }
+  .branch .branch-label.custom::before{ content:none; }
+
+  .sub-branches{ margin-left: 6px; padding-left: 14px; border-left: 2px solid var(--line); }
+
+  .script-tip{
+    margin-top:8px; padding-top:8px; border-top:1px dashed rgba(0,0,0,0.12);
+    font-size:13px; color: var(--ink-soft);
+  }
+  .script-tip b{ color:var(--ink); }
+
+  footer{ margin-top: 44px; padding-top: 20px; border-top:1px solid var(--line); font-size: 12.5px; color: var(--ink-soft); }
+  footer .src-list{ margin: 8px 0 0; padding-left: 18px; }
+  footer .src-list li{ margin-bottom:3px; }
+
+  .legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-soft); margin: 4px 0 26px; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+  @media (max-width:640px){
+    .branches{ flex-direction:column; }
+    .branches > .branch{ min-width: 0; }
+    table.risk-table{ font-size:12.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">蝦皮賣家 · 女性內衣／服飾賣場</span>
+    <h1>售後判斷決策樹</h1>
+    <p class="lede">依「退換貨」「換尺寸／換色」「瑕疵」「少件／漏寄」四種情境，給客服人員在對話當下明確、不用請示的處理方向。核心原則：減少買家的不確定感、促進回購，同時守住不虧損的底線。</p>
+  </header>
+
+  <div class="principles">
+    <h2>服務原則</h2>
+    <ul>
+      <li><b>先給方向，不用等查證完成。</b>小額爭議（少件、輕微瑕疵）不計較舉證，客服可以直接給出處理方式，查證放在背景進行，不讓買家等答案。</li>
+      <li><b>補寄不動用蝦皮退貨系統，是我們能自由運用、展現服務誠意的地方。</b>少件漏寄、瑕疵補寄，一律走補單連結（免運／1元），立刻處理。</li>
+      <li><b>蝦皮系統只有「部分退款（僅退款不退貨）」與「退貨退款（全額＋商品寄回）」二選一，沒有「退部分錢又要收貨」這個選項。</b>任何牽涉退款金額的判斷，都要先確認走的是哪一種，不能私下喬。</li>
+      <li><b>信任是有分層的。</b>金額小、風險低的情境（補寄）可以放心給信任；牽涉系統退款保障的情境，照系統規則走；超出平台保障範圍的彈性服務（如逾鑑賞期換貨），是店家主動選擇的例外，需要追蹤成效，不是無底線提供。</li>
+      <li><b>前端預防比後端補救更有效。</b>直播時現場量身、把「幾公斤配幾號」講具體、留言問尺寸主動回覆，能大幅降低「尺寸買錯」的機率，比任何退換貨保證都有用，也順勢完成教育與成交。</li>
+    </ul>
+    <div class="node note" style="margin-top:16px;">換貨通用邊界（內衣／塑身褲換尺寸、一般服飾換貨皆適用）：<b>每筆訂單限換一次、須於收到商品 7 天內提出、吊牌與包裝須完整。</b>這三條寫清楚跟買家說明，客訴會少很多，也是唯一能寫死的硬門檻。</div>
+    <table class="risk-table">
+      <tr><th>風險等級</th><th>情境</th><th>處理方式</th><th>為什麼可以這樣做</th></tr>
+      <tr>
+        <td class="tag-low">低・放心給信任</td>
+        <td>少件補寄、瑕疵補寄</td>
+        <td>立刻用補單連結（免運／1元）補寄，不用等驗貨或退回舊品</td>
+        <td>損失頂多一件商品成本＋運費，金額小、頻率低，不動用蝦皮退貨系統</td>
+      </tr>
+      <tr>
+        <td class="tag-mid">中・用系統保障</td>
+        <td>買家單純不想要而退貨</td>
+        <td>走蝦皮「退貨退款」，商品寄回、蝦皮審核後退款</td>
+        <td>風險由平台系統接住，賣家不用自己承擔商品收不回來的風險</td>
+      </tr>
+      <tr>
+        <td class="tag-high">高・店家主動選擇的例外</td>
+        <td>逾鑑賞期換貨（補單）</td>
+        <td>先出新品、買家私下寄回舊品，運費買家自付</td>
+        <td>蝦皮官方不保障，是用信任換取顧客體驗；建議追蹤「舊品未退回率」，控制在可接受比例（例如每月 10–15%），異常個案可個別停止提供，不用收緊所有規則</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--result-approve)"></i>可直接同意 / 受理</span>
+    <span><i style="background:var(--result-review)"></i>需審核、依系統流程或協商</span>
+    <span><i style="background:var(--result-reject)"></i>原則上可不受理 / 依店家自訂政策</span>
+    <span><i style="background:var(--result-risk)"></i>店家自訂的高風險彈性服務,非平台保障</span>
+  </div>
+
+  <nav class="tabs">
+    <button class="active" data-target="s1">退換貨</button>
+    <button data-target="s4">換尺寸／換色</button>
+    <button data-target="s2">瑕疵</button>
+    <button data-target="s3">少件／漏寄</button>
+  </nav>
+
+  <!-- SCENARIO 1: 退換貨 -->
+  <section class="scenario active" id="s1">
+    <div class="scenario-intro">
+      適用情境：買家<b>非因商品瑕疵</b>而想退貨（例如款式不喜歡、買錯、改變心意）。內衣類商品依「內褲」「內衣／塑身褲」「睡衣」分成三種標準，不是一刀切「貼身衣物一律不退」——已拆封的個人衛生用品確實可合法排除鑑賞期，但只有真正貼身、無法逆轉衛生疑慮的品項需要排除，其餘應盡量給買家退路。
+    </div>
+
+    <div class="tree">
+      <div class="node question"><span class="qtag">Q1</span>這項商品屬於「內褲」「內衣／塑身褲」，還是「睡衣／其他一般服飾」？</div>
+      <div class="branches">
+        <div class="branch yes">
+          <span class="branch-label custom">內褲</span>
+          <div class="node question" style="margin-top:8px;">是否仍為未拆封的整組包裝？</div>
+          <div class="branches">
+            <div class="branch yes"><span class="branch-label"></span>
+              <div class="result review"><span class="rtag">視同一般商品</span>整組包裝未拆封，仍適用鑑賞期規則，往下走 Q2。</div>
+            </div>
+            <div class="branch no"><span class="branch-label"></span>
+              <div class="result reject"><span class="rtag">原則不受理</span>已拆封／單件試穿，屬衛生底線不能碰的品項，一律不接受退貨，且不提供換貨。<b>前提是商品頁面須事先載明此限制</b>，否則例外不成立、仍須依一般規則受理。</div>
+            </div>
+          </div>
+        </div>
+        <div class="branch no">
+          <span class="branch-label custom">內衣／塑身褲</span>
+          <div class="node question" style="margin-top:8px;">吊牌是否未剪、未下水洗、衛生襯墊是否完整？</div>
+          <div class="branches">
+            <div class="branch yes"><span class="branch-label"></span>
+              <div class="result approve"><span class="rtag">可換不可退</span>不接受退貨退款，但可以換尺寸／換色，請轉導至「換尺寸／換色」情境處理（適用換貨通用邊界：限換一次、7天內、吊牌包裝完整）。</div>
+            </div>
+            <div class="branch no"><span class="branch-label"></span>
+              <div class="result reject"><span class="rtag">原則不受理</span>已剪吊牌、已下水洗或衛生襯墊破損／取下，不接受退貨也不提供換貨。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="node note" style="margin-top:14px;">睡衣屬於外衣類，直接比照下方「睡衣／其他一般服飾」流程，適用完整鑑賞期規則：</div>
+      <div class="node question"><span class="qtag">Q2</span>買家申請退貨的時間，是否還在鑑賞期內？（一般賣場：到貨隔日起算 7 天內；蝦皮商城賣場：15 天內）</div>
+      <div class="branches">
+        <div class="branch yes">
+          <span class="branch-label"></span>
+          <div class="result approve">
+            <span class="rtag">先受理申請</span>
+            引導買家透過蝦皮系統申請「退貨退款」，選擇超商或物流免運寄回，賣家不需自行收費或墊付運費。
+            <div class="script-tip"><b>話術方向：</b>不用等驗貨才給答案，申請當下就可以說「沒問題，幫您安排退貨退款，麻煩您依系統指示寄回」，讓買家馬上有明確方向。</div>
+          </div>
+        </div>
+        <div class="branch no">
+          <span class="branch-label"></span>
+          <div class="result reject">
+            <span class="rtag">非平台強制受理</span>
+            已逾鑑賞期，蝦皮不強制受理退貨退款。若買家其實是想換另一個尺碼／款式，可轉導至「換尺寸／換色」情境的逾鑑賞期彈性做法。
+          </div>
+        </div>
+      </div>
+
+      <div class="node note" style="margin-top:18px;">以下判斷點僅適用於「睡衣／一般服飾、鑑賞期內」且買家已將商品寄回的情況：</div>
+      <div class="node question"><span class="qtag">Q3</span>賣家收到退回商品，開箱確認是否全新、無明顯穿著或洗滌痕跡？</div>
+      <div class="branches">
+        <div class="branch yes">
+          <span class="branch-label"></span>
+          <div class="result approve">
+            <span class="rtag">確認收貨</span>
+            商品狀態沒問題，在系統確認收貨，走「退貨退款」，蝦皮系統自動全額退款給買家。
+          </div>
+        </div>
+        <div class="branch no">
+          <span class="branch-label"></span>
+          <div class="result review">
+            <span class="rtag">系統仲裁，不私下喬</span>
+            商品有明顯穿著／洗滌痕跡（判斷標準：只要看得出洗過即不算全新，未洗、輕微試穿痕跡仍算可以退）。賣家在系統點選「拒絕收貨」，附上照片說明，交由蝦皮申訴機制依雙方證據裁定。蝦皮系統無法「只退部分金額又收貨」，這個節點不能自行決定退多少，只能走系統仲裁。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENARIO 4: 換尺寸/換色 -->
+  <section class="scenario" id="s4">
+    <div class="scenario-intro">
+      適用情境：商品<b>沒有瑕疵</b>，買家單純想換另一個尺寸或顏色（服飾賣場最常見的售後需求）。內衣／塑身褲的換貨資格判斷與退貨情境相同標準（吊牌未剪、未下水、衛生襯墊完整）；內褲不提供換貨。<b>通用邊界：每筆訂單限換一次、須於收到商品 7 天內提出、吊牌與包裝須完整。</b>
+    </div>
+
+    <div class="tree">
+      <div class="node question"><span class="qtag">Q1</span>商品屬於「內褲」「內衣／塑身褲」，還是「睡衣／其他一般服飾」？</div>
+      <div class="branches">
+        <div class="branch yes">
+          <span class="branch-label custom">內褲</span>
+          <div class="result reject"><span class="rtag">不提供換貨</span>內褲不提供換貨，僅整組未拆封包裝可依退貨情境處理。</div>
+        </div>
+        <div class="branch no">
+          <span class="branch-label custom">內衣／塑身褲</span>
+          <div class="node question" style="margin-top:8px;">吊牌是否未剪、未下水洗、衛生襯墊是否完整？</div>
+          <div class="branches">
+            <div class="branch yes"><span class="branch-label"></span>
+              <div class="result approve"><span class="rtag">可換尺寸</span>符合換貨資格，往下走 Q2 判斷鑑賞期與現貨。</div>
+            </div>
+            <div class="branch no"><span class="branch-label"></span>
+              <div class="result reject"><span class="rtag">不提供換貨</span>已剪吊牌、已下水洗或衛生襯墊破損，不提供換貨。</div>
+            </div>
+          </div>
+        </div>
+        <div class="branch no">
+          <span class="branch-label custom">睡衣／一般服飾</span>
+          <div class="node question" style="margin-top:8px;">是否已下水洗過？</div>
+          <div class="branches">
+            <div class="branch yes"><span class="branch-label"></span>
+              <div class="result reject"><span class="rtag">不可換</span>洗過即不可換貨。</div>
+            </div>
+            <div class="branch no"><span class="branch-label"></span>
+              <div class="result approve"><span class="rtag">可以換</span>沒洗過（即使試穿過）仍可換貨，往下走 Q2。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tree" style="margin-top:6px;">
+      <div class="node question"><span class="qtag">Q2</span>買家申請換貨的時間，是否還在鑑賞期內？</div>
+      <div class="branches">
+        <div class="branch yes">
+          <span class="branch-label"></span>
+          <div class="result approve">
+            <span class="rtag">全退全重拍（蝦皮官方保障）</span>
+            原訂單走系統「退貨退款」，買家把原商品寄回換取全額退款；新尺碼／顏色統一用補單連結下單（只要填金額，免運），不用讓買家自己重新回賣場搜尋商品下單，體驗更順。補單可與退貨申請同時進行，不用等舊品退回才處理。若當下要換的規格剛好沒現貨，一樣先用補單連結收單，到貨後盡快出貨並告知買家預計時間即可，不影響流程一致性。
+          </div>
+        </div>
+        <div class="branch no">
+          <span class="branch-label"></span>
+          <div class="result risk">
+            <span class="rtag">店家彈性服務，非平台保障</span>
+            用補單連結出新尺碼／顏色（免運／1元），不要求買家先提供舊商品寄件證明，請買家自行把舊商品寄回、運費買家自付。這是你主動選擇的信任型服務，蝦皮官方不保障退貨，需定期追蹤「舊品未退回率」，控制在可接受比例，異常個案可個別停止提供。
+            <div class="script-tip"><b>話術方向：</b>強調這是額外的服務彈性，例如「因為已經超過平台退貨期限了，這邊額外幫您安排換貨，麻煩您收到後把原本的商品寄回給我們」，讓買家感受到是通融而非義務。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENARIO 2: 瑕疵 -->
+  <section class="scenario" id="s2">
+    <div class="scenario-intro">
+      適用情境：商品<b>本身有品質問題</b>——故障、破損、與頁面描述不符，或使用一段時間後失去功能。
+    </div>
+
+    <div class="tree">
+      <div class="node question"><span class="qtag">Q1</span>買家是在「收到商品當下／拆箱後短時間內」就發現問題，還是使用一段時間後才出現故障？</div>
+      <div class="branches">
+        <div class="branch yes">
+          <span class="branch-label custom">收到即發現（含與描述不符）</span>
+          <div class="result approve">
+            <span class="rtag">立即補寄，不用退回</span>
+            不論是商品故障、瑕疵，或與商品頁描述不符，一律直接用補單連結補寄新品（免運），瑕疵品不用退回，請買家自行處理即可。
+            <div class="script-tip"><b>話術方向：</b>「造成您的困擾很抱歉，這邊立刻幫您安排新品補寄，瑕疵的商品不用麻煩您寄回，直接處理掉就可以」，展現對商品與服務的重視，也不用讓買家等驗貨結果。</div>
+          </div>
+        </div>
+        <div class="branch no">
+          <span class="branch-label custom">使用後才故障</span>
+          <div class="node question"><span class="qtag">Q2</span>商品是否仍在保固期內？</div>
+          <div class="branches">
+            <div class="branch yes">
+              <span class="branch-label"></span>
+              <div class="result review">
+                <span class="rtag">走保固流程</span>
+                依原廠／品牌保固條款處理，協助買家聯繫原廠或授權維修據點送修或換新。
+              </div>
+            </div>
+            <div class="branch no">
+              <span class="branch-label"></span>
+              <div class="result reject">
+                <span class="rtag">非強制受理</span>
+                已逾保固期，依店家政策提供，例如付費維修管道、零件購買建議，或視情況給予誠意折扣。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENARIO 3: 少件/漏寄 -->
+  <section class="scenario" id="s3">
+    <div class="scenario-intro">
+      適用情境：買家反映<b>收到的商品品項或數量與訂單不符</b>（少一件、漏寄某個品項）。先核對出貨紀錄釐清責任歸屬，但「立刻補寄」的態度不因為查證而延後。
+    </div>
+
+    <div class="tree">
+      <div class="node question"><span class="qtag">Q1</span>核對訂單明細與出貨紀錄（出貨前拍照或秤重紀錄），賣家出貨當下是否確實已包含該品項？</div>
+      <div class="branches">
+        <div class="branch no">
+          <span class="branch-label custom">確實漏放</span>
+          <div class="node question"><span class="qtag">Q2</span>該品項目前是否仍有現貨？</div>
+          <div class="branches">
+            <div class="branch yes">
+              <span class="branch-label"></span>
+              <div class="result approve">
+                <span class="rtag">立即補寄</span>
+                用補單連結（免運／1元）立刻安排補寄，運費賣家吸收，不用等查證完全結束。可加碼發放折扣券（面額為商品金額 5%，低消 99 元可用）挽回購物體驗。
+                <div class="script-tip"><b>話術方向：</b>「不好意思讓您等了，這邊立刻幫您安排補寄，1元連結我馬上傳給您」。</div>
+              </div>
+            </div>
+            <div class="branch no">
+              <span class="branch-label custom">缺貨</span>
+              <div class="result review">
+                <span class="rtag">單品退款</span>
+                誠實告知缺貨原因，主動在系統對該品項辦理「部分退款（僅退款不退貨）」，同樣可加碼發放折扣券（商品金額 5%，低消 99 元）補償，避免只退不補的爭議。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="branch yes">
+          <span class="branch-label custom">出貨紀錄顯示足額</span>
+          <div class="node question"><span class="qtag">Q3</span>是否能判斷為物流環節掉件或包裹遭拆封？</div>
+          <div class="branches">
+            <div class="branch yes">
+              <span class="branch-label"></span>
+              <div class="result review">
+                <span class="rtag">物流協處</span>
+                協助買家一同向物流業者申請理賠或申訴；可先用補單連結補寄安撫買家，之後再向物流業者求償。
+              </div>
+            </div>
+            <div class="branch no">
+              <span class="branch-label"></span>
+              <div class="result review">
+                <span class="rtag">送蝦皮爭議審核</span>
+                保留出貨證明（照片、秤重紀錄等），提報蝦皮客服協處／爭議審核，由平台依雙方提供的證據裁定。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="principles" style="margin-top:34px;">
+    <h2>直播滿額贈品與退貨</h2>
+    <ul>
+      <li>贈品維持「下單即出貨」，保留直播衝動下單的誘因，不延後寄出。</li>
+      <li>蝦皮系統的「退貨退款」為系統自動全額退款，賣家無法自行從中扣除贈品市價，因此<b>贈品成本直接認列為行銷成本，不向買家追討</b>，不做「退貨要退回贈品」的規則（執行成本過高，也容易造成爭議）。</li>
+      <li>若特定檔期贈品成本較高、退貨率評估風險大，可暫時改用縮短版做法：到貨後 2–3 天內主動寄出贈品（而非等買家反應才寄），兼顧下單誘因與曝險控制，依檔期彈性決定是否啟用。</li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>「退換貨」「換尺寸／換色」情境的鑑賞期天數、退貨退款／部分退款機制，依據蝦皮官方公告之退款與退貨政策整理；貼身衣物排除鑑賞期的依據為消保法「郵購買賣解除權合理例外情事適用準則」。標註「店家彈性服務」的節點屬於自訂政策，非平台保障，執行時務必讓客服與買家都清楚這是通融而非義務。</p>
+    <ul class="src-list">
+      <li>蝦皮購物退款與退貨政策 — help.shopee.tw</li>
+      <li>什麼是「七天鑑賞期」／蝦皮商城 15 天鑑賞期服務 — help.shopee.tw</li>
+      <li>蝦皮購物退貨商品類型須知 — help.shopee.tw</li>
+      <li>貼身衣物不適用七天鑑賞期之法律說明 — 法律百科 legis-pedia.com</li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('nav.tabs button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('section.scenario').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
