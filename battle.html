@@ -10,6 +10,8 @@
   :root{
     --plum:#4a2c3a; --plum2:#6b3f52; --rose:#9c5c6e; --gold:#d6a680;
     --cream:#faf6f2; --ink:#372a30; --ink2:#8a7580; --line:#eee2da;
+    --lead:#2f7d8c; --brand:#7a5aa8; --profit:#b0813f; --chance:#4b8b5a;
+    --ok:#146C48; --no:#A4344F; --back:#3d6b8a;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
@@ -19,43 +21,112 @@
   .top h1 small{font-size:11px;letter-spacing:3px;opacity:.7;margin-left:8px;}
   .top p{font-size:13px;opacity:.85;margin-top:6px;}
   .wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px;}
-  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(74,44,58,.07);margin-top:14px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(74,44,58,.07);margin-top:14px;position:relative;}
+  .stage{font-size:11px;font-weight:800;letter-spacing:2px;color:#fff;background:var(--rose);border-radius:99px;padding:3px 12px;display:inline-block;margin-bottom:10px;}
+  .stage.after{background:var(--plum2);}
+  .stage.back{background:var(--back);}
+  .stage.two{background:var(--ok);}
   .flabel{font-size:13px;font-weight:800;color:var(--plum2);letter-spacing:1px;margin:14px 0 6px;}
-  .flabel:first-child{margin-top:0;}
   .hint{font-size:12px;color:var(--ink2);margin:-2px 0 6px;line-height:1.6;}
-  input[type=date]{border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:15px;background:#fff;color:var(--ink);}
   .optrow{display:flex;flex-wrap:wrap;gap:8px;}
   .opt{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 16px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink);}
   .opt.on{border-color:var(--plum2);background:var(--plum2);color:#fff;}
-  input:focus,textarea:focus{outline:2px solid var(--rose);border-color:var(--rose);}
+  .txt{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
+  select.txt{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink2) 50%),linear-gradient(135deg,var(--ink2) 50%,transparent 50%);
+    background-position:calc(100% - 15px) 18px,calc(100% - 10px) 18px;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px;}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--rose);border-color:var(--rose);}
+  input:disabled,select:disabled{background:#f7f2ee;color:#7a6a72;}
+  .lab{font-size:11.5px;font-weight:800;color:var(--plum2);display:block;margin-bottom:3px;letter-spacing:.5px;}
 
-  /* 排品 · 知識卡 */
-  .plsec{margin-top:6px;}
-  .plcard{background:#fffdfb;border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;margin-top:10px;}
-  .pl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-  .pl-no{font-size:12px;font-weight:800;color:#b0813f;background:#faeeda;border-radius:99px;padding:3px 12px;letter-spacing:1px;}
-  .pl-del{border:none;background:none;color:var(--ink2);font-size:12px;cursor:pointer;text-decoration:underline;padding:2px 4px;}
-  .pl-field{margin-top:7px;}
-  .pl-field>label,.pl-group>label{font-size:12px;font-weight:800;color:var(--plum2);display:block;margin-bottom:4px;letter-spacing:.5px;}
-  .pl-field input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
-  .pl-group{margin-top:9px;}
-  .pl-lines{display:flex;flex-direction:column;gap:6px;}
-  .pl-line{display:flex;gap:6px;align-items:flex-start;}
-  .pl-input{flex:1 1 auto;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
-  textarea.pl-input{resize:vertical;min-height:46px;line-height:1.6;}
-  .pl-x{flex:0 0 auto;width:32px;height:36px;border:1.5px solid var(--line);background:#fff;border-radius:9px;color:var(--ink2);font-size:17px;line-height:1;cursor:pointer;}
-  .pl-x:active{background:#f7edf1;}
-  .pl-addline{border:none;background:none;color:var(--rose);font-size:13px;font-weight:800;cursor:pointer;padding:6px 2px;margin-top:3px;letter-spacing:.5px;}
-  .pl-add{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:12px;padding:12px;font-size:14px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:12px;}
-  .pl-add:active{background:#fdf4f7;}
+  #sessIn{font-size:24px;font-weight:800;letter-spacing:4px;text-align:center;padding:12px;}
+  #sessLabel{display:block;text-align:center;margin-top:8px;font-size:15px;font-weight:800;color:var(--plum2);}
+  #sessLabel.bad{color:var(--no);}
+  .who{display:flex;gap:7px;margin-top:12px;}
+  .who>div{flex:1 1 0;min-width:0;}
+
+  .rotag{position:absolute;top:14px;right:16px;font-size:10.5px;font-weight:800;letter-spacing:1px;
+    background:#E6F4EC;color:var(--ok);border-radius:99px;padding:3px 10px;display:none;}
+  .card.ro .rotag{display:block;}
+  .card.ro .std,.card.ro .hint{opacity:.7;}
+
+  .chk{background:#fffdfb;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:12px;}
+  .chk h3{font-size:12px;font-weight:800;color:var(--plum2);letter-spacing:1px;margin-bottom:8px;}
+  .chk ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+  .chk li{font-size:13px;line-height:1.5;color:var(--ok);font-weight:700;}
+  .chk li.no{color:var(--no);}
+
+  .pool{border:1px solid var(--line);border-radius:16px;padding:13px;margin-top:14px;background:#fffdfb;}
+  .pool>h3{font-size:15px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .pool .cnt{font-size:11px;font-weight:800;background:#f4eaf0;color:#7a4b62;border-radius:99px;padding:2px 9px;letter-spacing:.5px;}
+  .std{font-size:11.5px;color:var(--ink2);line-height:1.65;margin-top:6px;padding:8px 10px;background:#f7f2ee;border-radius:10px;border-left:3px solid var(--line);}
+  .std b{color:var(--plum2);}
+  .act{margin-top:9px;}
+  .pool[data-k=lead]>h3{color:var(--lead);} .pool[data-k=lead] .std{border-left-color:var(--lead);}
+  .pool[data-k=brand]>h3{color:var(--brand);} .pool[data-k=brand] .std{border-left-color:var(--brand);}
+  .pool[data-k=profit]>h3{color:var(--profit);} .pool[data-k=profit] .std{border-left-color:var(--profit);}
+  .pool[data-k=chance]>h3{color:var(--chance);} .pool[data-k=chance] .std{border-left-color:var(--chance);}
+
+  .item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;margin-top:10px;}
+  .it-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;}
+  .it-no{font-size:11.5px;font-weight:800;color:var(--ink2);letter-spacing:1px;}
+  .it-del{border:none;background:none;color:var(--ink2);font-size:12px;cursor:pointer;text-decoration:underline;padding:2px 4px;}
+  .it-del:disabled{opacity:.3;cursor:default;}
+  .it-f{margin-top:7px;}
+  .it-row{display:flex;gap:7px;margin-top:7px;align-items:flex-end;}
+  .it-row>div{flex:1 1 0;min-width:0;}
+  .live{flex:1 1 0;min-width:0;background:#f4eaf0;border-radius:10px;padding:7px 9px;text-align:center;}
+  .live small{display:block;font-size:10.5px;font-weight:800;color:#7a4b62;letter-spacing:.5px;}
+  .live b{font-size:17px;font-weight:800;color:var(--plum);line-height:1.5;}
+  .newbox{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:13.5px;font-weight:800;color:var(--plum2);cursor:pointer;user-select:none;}
+  .newbox input{width:18px;height:18px;accent-color:var(--rose);}
+  .addbtn{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:12px;padding:11px;font-size:13.5px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:11px;}
+  .addbtn:active{background:#fdf4f7;}
+  .addbtn:disabled{opacity:.3;cursor:default;}
 
   .savebtn{width:100%;border:none;border-radius:14px;background:var(--plum2);color:#fff;
-    font-size:18px;font-weight:800;letter-spacing:3px;padding:15px 0;margin-top:16px;cursor:pointer;}
-  .savebtn:disabled{opacity:.5;}
+    font-size:17px;font-weight:800;letter-spacing:2px;padding:15px 0;margin-top:12px;cursor:pointer;}
+  .savebtn:disabled{opacity:.45;cursor:default;}
+  .savebtn.ghost{background:#fff;color:var(--plum2);border:1.5px solid var(--plum2);font-size:15px;letter-spacing:1px;padding:12px 0;}
+  .savebtn.blue{background:var(--back);}
+  .done{background:#E6F4EC;color:var(--ok);border-radius:12px;padding:11px 13px;font-size:13.5px;font-weight:800;line-height:1.7;margin-top:10px;}
+
+  .gate{display:flex;gap:9px;margin-top:10px;}
+  .gbtn{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:12px 6px;cursor:pointer;
+    font-size:14px;font-weight:800;color:var(--ink2);letter-spacing:1px;line-height:1.5;}
+  .gbtn small{display:block;font-size:10.5px;font-weight:700;letter-spacing:0;margin-top:2px;opacity:.85;}
+  .gbtn.on{border-color:var(--ok);background:#E6F4EC;color:var(--ok);}
+  .gbtn:disabled{opacity:.4;cursor:default;}
+  .locked .lockbody{opacity:.35;pointer-events:none;filter:grayscale(.6);}
+  .lockmsg{font-size:12.5px;font-weight:800;color:var(--no);background:#FBE4E4;border-radius:10px;padding:9px 12px;margin-top:10px;line-height:1.6;}
+
   #msg{margin-top:10px;font-size:14px;font-weight:700;text-align:center;border-radius:10px;padding:10px;display:none;}
-  #msg.good{display:block;background:#E6F4EC;color:#146C48;}
+  #msg.good{display:block;background:#E6F4EC;color:var(--ok);}
   #msg.warn{display:block;background:#FCF3D7;color:#8a6a10;}
-  #msg.bad{display:block;background:#FBE4E4;color:#A4344F;}
+  #msg.bad{display:block;background:#FBE4E4;color:var(--no);}
+
+  .lookrow{display:flex;gap:8px;}
+  .lookrow input{flex:1 1 auto;min-width:0;font-size:19px;font-weight:800;letter-spacing:3px;text-align:center;}
+  .lookrow button{flex:0 0 auto;border:none;border-radius:12px;background:var(--back);color:#fff;font-size:15px;font-weight:800;letter-spacing:1px;padding:0 18px;cursor:pointer;}
+  .view{margin-top:14px;}
+  .vhead{background:linear-gradient(135deg,var(--plum2),var(--rose));color:#fff;border-radius:14px;padding:13px 15px;}
+  .vhead b{font-size:19px;font-weight:800;letter-spacing:2px;display:block;}
+  .vhead span{font-size:12.5px;opacity:.9;display:block;margin-top:3px;line-height:1.7;}
+  .vsec{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:11px;background:#fffdfb;}
+  .vsec h4{font-size:14px;font-weight:800;letter-spacing:1px;margin-bottom:5px;}
+  .vact{font-size:12.5px;font-weight:800;color:#8a6a10;background:#FCF3D7;border-radius:8px;padding:6px 9px;margin-bottom:8px;line-height:1.6;}
+  .vitem{border-top:1px dashed var(--line);padding:9px 0 3px;font-size:13.5px;line-height:1.75;}
+  .vitem:first-of-type{border-top:none;}
+  .vitem .vsku{font-weight:800;color:var(--plum2);}
+  .vitem .vtag{font-size:10.5px;font-weight:800;background:#f4eaf0;color:#7a4b62;border-radius:6px;padding:1px 7px;margin-left:5px;}
+  .vitem .vnew{background:#E6F4EC;color:var(--ok);}
+  .vitem .vprice{color:var(--ink2);}
+  .vitem .vprice b{color:var(--plum);font-size:16px;}
+  .vitem a{color:var(--rose);font-size:12.5px;word-break:break-all;}
+  .vnone{font-size:13px;color:var(--no);font-weight:700;}
+  .vmeta{font-size:12.5px;color:var(--ink2);line-height:1.9;margin-top:9px;}
+  .vmeta b{color:var(--plum2);}
+
+  .legacy{font-size:12.5px;color:var(--ink2);background:#f7f2ee;border-radius:10px;padding:10px 12px;margin-top:10px;line-height:1.7;white-space:pre-wrap;}
   .hist h2{font-size:15px;color:var(--plum2);letter-spacing:1px;margin-bottom:8px;}
   .hrow{padding:10px 4px;border-top:1px dashed var(--line);font-size:14px;cursor:pointer;display:flex;gap:8px;align-items:baseline;}
   .hrow:first-of-type{border-top:none;}
@@ -70,29 +141,116 @@
 <body>
 
 <div class="top">
-  <h1>本週作戰卡<small>MURO</small></h1>
-  <p>選本週哪一天・早班或晚班・排好品先讀熟知識卡</p>
+  <h1>單場作戰卡<small>MURO</small></h1>
+  <p>① 運營交卡 → ② 主播·中控確認 → ③ 下播回填</p>
 </div>
 
 <div class="wrap">
-  <div class="card">
-    <div class="flabel">📅 選週期</div>
-    <div class="hint">點日曆選任一天，自動抓該天所在那週（週一~週日）</div>
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-      <input type="date" id="weekpick">
-      <span id="weekLabel" style="font-weight:800;color:var(--plum2);font-size:15px;"></span>
+
+  <!-- 場次 + 人員 -->
+  <div class="card" id="whoCard">
+    <span class="rotag">🔒 已交卡</span>
+    <div class="flabel" style="margin-top:0">🎬 場次編號</div>
+    <div class="hint">月日 + 第幾場。例：9/6 第一場 = <b>90601</b>、12/25 第二場 = <b>122502</b></div>
+    <input class="txt" id="sessIn" inputmode="numeric" placeholder="90601" data-always>
+    <span id="sessLabel">先輸入場次編號</span>
+    <div class="who">
+      <div><label class="lab">🎤 主播</label><select class="txt" id="nAnchor"></select></div>
+      <div><label class="lab">🎛 中控</label><select class="txt" id="nOps"></select></div>
+      <div><label class="lab">📋 運營</label><select class="txt" id="nOp"></select></div>
     </div>
-    <input type="hidden" id="fdate">
-    <div class="flabel">🕒 場次</div>
-    <div class="optrow" id="slotRow"></div>
+  </div>
 
-    <div class="flabel">🎬 這場排品 · 知識卡</div>
-    <div class="hint">一段一個主題，底下的商品、贈品、知識點都可以按「＋」加好幾個。主播開播前先讀熟知識點。</div>
-    <div class="plsec" id="plWrap"></div>
-    <button type="button" class="pl-add" id="plAdd">＋ 加一個主題</button>
+  <!-- 本場目的 -->
+  <div class="card" id="aimCard">
+    <span class="rotag">🔒 已交卡</span>
+    <span class="stage">① 開播前 · 運營填</span>
+    <div class="flabel" style="margin-top:0">🎯 本場目的</div>
+    <div class="hint">一場只挑一個主目標。主目標決定主播該把力氣花在哪一池。</div>
+    <div class="optrow" id="aimRow"></div>
+    <div class="it-f"><label class="lab">一句話目的</label>
+      <input class="txt" id="aimText" placeholder="例：測秋季高腰塑身褲三款反應，找出下週主推"></div>
+    <div class="it-f"><label class="lab">成功條件（1–2 個數字）</label>
+      <input class="txt" id="aimKpi" placeholder="例：場觀 3000 · 新品加購率 8%"></div>
+  </div>
 
-    <button class="savebtn" id="save">儲存作戰卡</button>
+  <!-- 檢核 -->
+  <div class="card">
+    <div class="flabel" style="margin-top:0">✅ 交卡檢核</div>
+    <div class="hint">開播前 24 小時交卡。沒達標會亮紅字，但還是交得出去。</div>
+    <div class="chk"><h3>本場狀態</h3><ul id="chkList"></ul></div>
+  </div>
+
+  <!-- 商品池 -->
+  <div class="card" id="poolCard">
+    <span class="rotag">🔒 已交卡</span>
+    <span class="stage">① 開播前 · 運營填</span>
+    <div class="flabel" style="margin-top:0">🛒 本場商品池</div>
+    <div class="hint">灰底那行是標準，不用填，照著挑就對。<b>引流·品牌·利潤三款都要有，缺一不合格。</b></div>
+    <div id="pools"></div>
+  </div>
+
+  <!-- 階段一：運營交卡 -->
+  <div class="card">
+    <span class="stage">第一階段 · 運營</span>
+    <div class="flabel" style="margin-top:0">📤 運營交卡</div>
+    <div class="hint">按下去等於把卡交給主播和中控。交卡後上面的欄位會鎖住，要改請按「退回修改」。</div>
+    <button class="savebtn" id="submitBtn">① 運營交卡</button>
+    <div class="done" id="subInfo" style="display:none"></div>
+    <button class="savebtn ghost" id="unsubBtn" style="display:none">↩ 退回修改（會清掉主播中控的確認）</button>
     <div id="msg"></div>
+  </div>
+
+  <!-- 階段二：主播中控確認 -->
+  <div class="card" id="gateCard">
+    <span class="stage two">第二階段 · 主播 · 中控</span>
+    <div class="flabel" style="margin-top:0">🤝 看完按確認</div>
+    <div class="hint">運營交卡後，主播和中控各自看完按自己那顆。兩邊都確認，下播後的欄位才會解鎖。</div>
+    <div class="lockmsg" id="lockMsg0">🔒 等運營交卡後才能確認</div>
+    <div class="gate">
+      <button type="button" class="gbtn" id="gAnchor">🎤 主播確認<small>尚未確認</small></button>
+      <button type="button" class="gbtn" id="gOps">🎛 中控確認<small>尚未確認</small></button>
+    </div>
+  </div>
+
+  <!-- 下播回填（運營） -->
+  <div class="card locked" id="afterCard">
+    <span class="stage after">③ 下播後 · 運營填</span>
+    <div class="flabel" style="margin-top:0">🔚 下播回填</div>
+    <div class="lockmsg" id="lockMsg">🔒 等主播與中控都按確認後才能填</div>
+    <div class="lockbody">
+      <div class="flabel">本場目的達成了沒</div>
+      <div class="optrow" id="resRow"></div>
+      <div class="it-f"><label class="lab">一句話原因</label>
+        <input class="txt" id="resWhy" placeholder="例：新品講太晚，前 40 分鐘都在引流款打轉"></div>
+      <button class="savebtn ghost" id="saveAfter">儲存下播回填</button>
+    </div>
+  </div>
+
+  <!-- 下播花費（後端） -->
+  <div class="card locked" id="backCard">
+    <span class="stage back">③ 下播後 · 後端填</span>
+    <div class="flabel" style="margin-top:0">💼 本場花費</div>
+    <div class="hint">這兩格由後端結帳的人填，運營不用動。</div>
+    <div class="lockmsg" id="lockMsg2">🔒 等主播與中控都按確認後才能填</div>
+    <div class="lockbody">
+      <div class="it-row" style="margin-top:12px">
+        <div><label class="lab">💸 廣告花費 NT$</label><input class="txt" id="adCost" inputmode="decimal" placeholder="0"></div>
+        <div><label class="lab">🪙 蝦幣花費 NT$</label><input class="txt" id="coinCost" inputmode="decimal" placeholder="0"></div>
+      </div>
+      <button class="savebtn blue" id="saveBack">儲存花費</button>
+    </div>
+  </div>
+
+  <!-- 調閱 -->
+  <div class="card">
+    <div class="flabel" style="margin-top:0">🔍 調閱作戰卡</div>
+    <div class="hint">輸入場次編號就看得到那場的完整作戰卡（唯讀，主播中控開播前看這個就好）。</div>
+    <div class="lookrow">
+      <input class="txt" id="lookIn" inputmode="numeric" placeholder="90601">
+      <button type="button" id="lookBtn">調閱</button>
+    </div>
+    <div class="view" id="lookView"></div>
   </div>
 
   <div class="card hist">
@@ -109,107 +267,309 @@ var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1b
 var TOKEN='muro2026';
 var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('作戰卡');
 
-var SLOTS=['早班','晚班'];
-var slot='早班';
-var cards={}; // 'date|slot' -> {..}
+var AIMS=['拉新粉','測新品','衝GMV','清庫存'];
+var RES=['✅ 達成','❌ 沒達成'];
+var CATS=['內衣','內褲','上衣','下身','塑身','襪子','其他（非內衣類）'];
+var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['小羅']};
+
+var aim='', res='', sess='', sdate='';
+var gate={sub:'',anchor:'',ops:''};
+var cards={};
+
+var POOLS=[
+  {k:'lead',  icon:'🎣', name:'引流款', min:2, max:3, slots:2, act:true, must:true,
+   std:'<b>任務</b>：開場留人。<b>價帶</b>：內衣88–290 · 內褲25–65 · 上衣99–199 · 內搭199–399 · 塑身169–299 · 襪11–69。<b>條件</b>：一句話就講得完的感知價值。'},
+  {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, slots:2, act:true, must:true,
+   std:'<b>任務</b>：撐調性、講技術。<b>價帶</b>：內衣300–500 · 內褲89–189 · 上衣200–400 · 塑身349–499。<b>條件</b>：必須有一個能講滿 30 秒的技術點（涼感qmax／透氣率／抗菌檢測），沒有就不要放進來。'},
+  {k:'profit',icon:'💰', name:'利潤款', min:2, max:3, slots:2, act:true, must:true,
+   std:'<b>任務</b>：中段收割。<b>價帶</b>：內衣290–499 · 塑身300–500 · 寬褲490–650 · 上衣99–299。<b>條件</b>：要有組合或贈品把客單拉起來。'},
+  {k:'chance',icon:'🎲', name:'機會款', min:0, max:1, slots:1, act:false, must:false,
+   std:'<b>任務</b>：測水溫。<b>限制</b>：非女性內衣類。<b>可有可無</b>，有想測的才放，最多 1 個。'}
+];
 
 function pad(n){return (n<10?'0':'')+n;}
-function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
-var WD=['一','二','三','四','五','六','日'];
-function mondayOf(d){var x=new Date(d);var g=x.getDay();x.setDate(x.getDate()-((g+6)%7));return x;}
-function fmtMD(d){return pad(d.getMonth()+1)+'/'+pad(d.getDate());}
-function dstr(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
-function weekRange(mon){var s=new Date(mon);s.setDate(mon.getDate()+6);return fmtMD(mon)+'–'+fmtMD(s);}
-function rangeFromStr(ds){var p=(ds||'').split('-');if(p.length<3)return ds||'';return weekRange(new Date(+p[0],+p[1]-1,+p[2]));}
-function setWeekByDate(ds){var p=(ds||todayStr()).split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);var mon=mondayOf(d);document.getElementById('fdate').value=dstr(mon);document.getElementById('weekLabel').textContent='本週期 '+weekRange(mon);}
-function initWeekPick(){var wp=document.getElementById('weekpick');wp.value=todayStr();wp.onchange=function(){setWeekByDate(this.value);fill();};setWeekByDate(todayStr());}
-
-/* ---------- 排品 · 知識卡（主題 + 複數 商品/贈品/知識點）---------- */
-var CN=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
-var PH={goods:'品名 / 貨號', gifts:'贈品，沒有就不用加', knows:'主播先讀熟：材質怎麼說、解決什麼痛點、怎麼搭、跟市面差在哪'};
-
-function plLine(kind,val){
-  var row=document.createElement('div');row.className='pl-line';
-  var el=(kind==='knows')?document.createElement('textarea'):document.createElement('input');
-  el.className='pl-input';el.value=val||'';el.placeholder=PH[kind]||'';
-  if(kind==='knows')el.rows=2;
-  var x=document.createElement('button');x.type='button';x.className='pl-x';x.textContent='×';
-  x.onclick=function(){row.parentNode.removeChild(row);};
-  row.appendChild(el);row.appendChild(x);
-  return row;
-}
-function plCard(){
-  var d=document.createElement('div');d.className='plcard';
-  d.innerHTML=
-    '<div class="pl-top"><span class="pl-no"></span><button class="pl-del" type="button">刪除整段</button></div>'+
-    '<div class="pl-field"><label>主題</label><input class="pl-theme" placeholder="這一段的切入主題，例：換季保暖 / 一件抵三件"></div>'+
-    '<div class="pl-group" data-k="goods"><label>商品</label><div class="pl-lines"></div><button class="pl-addline" type="button">＋ 加商品</button></div>'+
-    '<div class="pl-group" data-k="gifts"><label>贈品</label><div class="pl-lines"></div><button class="pl-addline" type="button">＋ 加贈品</button></div>'+
-    '<div class="pl-group" data-k="knows"><label>知識點</label><div class="pl-lines"></div><button class="pl-addline" type="button">＋ 加知識點</button></div>';
-  d.querySelector('.pl-del').onclick=function(){d.parentNode.removeChild(d);renumber();};
-  [].forEach.call(d.querySelectorAll('.pl-group'),function(g){
-    var k=g.getAttribute('data-k');
-    g.querySelector('.pl-addline').onclick=function(){g.querySelector('.pl-lines').appendChild(plLine(k,''));};
-  });
-  return d;
-}
-function fillGroup(card,k,vals){
-  var box=card.querySelector('.pl-group[data-k="'+k+'"] .pl-lines');
-  if(!vals||!vals.length){ if(k!=='gifts') box.appendChild(plLine(k,'')); return; }
-  vals.forEach(function(v){box.appendChild(plLine(k,v));});
-}
-function addBlock(data){
-  data=data||{};
-  var goods=data.goods,gifts=data.gifts,knows=data.knows;
-  if(!goods && data.name!==undefined){ // 相容舊格式 {theme,name,gift,know}
-    goods=data.name?[data.name]:[]; gifts=data.gift?[data.gift]:[]; knows=data.know?[data.know]:[];
-  }
-  var card=plCard();
-  card.querySelector('.pl-theme').value=data.theme||'';
-  fillGroup(card,'goods',goods);
-  fillGroup(card,'gifts',gifts);
-  fillGroup(card,'knows',knows);
-  document.getElementById('plWrap').appendChild(card);renumber();
-}
-function renumber(){
-  var cs=document.getElementById('plWrap').children;
-  [].forEach.call(cs,function(c,i){c.querySelector('.pl-no').textContent='主題 '+(CN[i]||(i+1));});
-}
-function readLineup(){
-  var arr=[];
-  [].forEach.call(document.getElementById('plWrap').children,function(card){
-    var o={theme:card.querySelector('.pl-theme').value.trim(),goods:[],gifts:[],knows:[]};
-    [].forEach.call(card.querySelectorAll('.pl-group'),function(g){
-      var k=g.getAttribute('data-k');
-      [].forEach.call(g.querySelectorAll('.pl-input'),function(inp){var v=inp.value.trim();if(v)o[k].push(v);});
-    });
-    if(o.theme||o.goods.length||o.gifts.length||o.knows.length)arr.push(o);
-  });
-  return arr;
-}
-function setLineup(focus){
-  var wrap=document.getElementById('plWrap');wrap.innerHTML='';
-  var arr=null;
-  try{var p=JSON.parse(focus);if(Array.isArray(p))arr=p;}catch(e){}
-  if(arr&&arr.length){arr.forEach(function(x){addBlock(x);});}
-  else if(focus&&focus.trim()){addBlock({knows:[focus.trim()]});}
-  else{addBlock({});}
-  renumber();
-}
-function sumOf(focus){
-  try{var a=JSON.parse(focus);if(Array.isArray(a)&&a.length){
-    var b=a[0];return b.theme || (b.goods&&b.goods[0]) || '（未填排品）';
-  }}catch(e){}
-  return (focus&&focus.trim())?'（排品）':'（未填排品）';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function safeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:'';}
+function opts(list,ph){
+  return '<option value="">'+ph+'</option>'+list.map(function(c){
+    return '<option value="'+esc(c)+'">'+esc(c)+'</option>';}).join('');
 }
 
-function buildSlots(){
-  var r=document.getElementById('slotRow');r.innerHTML='';
-  SLOTS.forEach(function(s){
-    var b=document.createElement('button');b.className='opt'+(s===slot?' on':'');b.textContent=s;
-    b.onclick=function(){slot=s;[].forEach.call(r.children,function(x){x.classList.remove('on');});b.classList.add('on');fill();};
+/* ---------- 場次編號 ---------- */
+function parseSess(s){
+  s=(s||'').replace(/\D/g,'');
+  if(s.length<3)return null;
+  var seq=s.slice(-2), head=s.slice(0,-2), m, d;
+  if(head.length===3){m=+head[0];d=+head.slice(1);}
+  else if(head.length===4){m=+head.slice(0,2);d=+head.slice(2);}
+  else return null;
+  if(m<1||m>12||d<1||d>31||+seq<1)return null;
+  var y=new Date().getFullYear();
+  return {code:s,m:m,d:d,seq:+seq,date:y+'-'+pad(m)+'-'+pad(d),label:m+'/'+d+' 第 '+(+seq)+' 場'};
+}
+function onSess(){
+  var p=parseSess(document.getElementById('sessIn').value);
+  var el=document.getElementById('sessLabel');
+  if(!p){sess='';sdate='';el.className='bad';el.textContent='編號格式不對（月日＋兩位場次，例 90601）';refresh();return;}
+  sess=p.code;sdate=p.date;el.className='';el.textContent='📅 '+p.label;
+  fill();
+}
+
+function chipRow(id,list,getv,setv){
+  var r=document.getElementById(id);r.innerHTML='';
+  list.forEach(function(s){
+    var b=document.createElement('button');b.type='button';
+    b.className='opt'+(s===getv()?' on':'');b.textContent=s;
+    b.onclick=function(){
+      if(getv()===s){setv('');b.classList.remove('on');return;}
+      setv(s);[].forEach.call(r.children,function(x){x.classList.remove('on');});b.classList.add('on');
+    };
     r.appendChild(b);
   });
+}
+
+/* ---------- 單品 ---------- */
+function itemEl(p,data){
+  data=data||{};
+  var d=document.createElement('div');d.className='item';
+  d.innerHTML=
+    '<div class="it-top"><span class="it-no"></span><button class="it-del" type="button">刪除</button></div>'+
+    '<div class="it-f"><label class="lab">① muro 貨號</label><input class="txt f-sku" placeholder="例：JYWD030"></div>'+
+    '<div class="it-f"><label class="lab">② 商品連結</label><input class="txt f-url" inputmode="url" placeholder="貼蝦皮賣場連結或商品購買連結"></div>'+
+    '<div class="it-f"><label class="lab">③ 商品類別</label><select class="txt f-cat">'+opts(CATS,'— 選類別 —')+'</select></div>'+
+    '<div class="it-row">'+
+      '<div><label class="lab">④ 賣場價 NT$</label><input class="txt f-price" inputmode="decimal" placeholder="0"></div>'+
+      '<div><label class="lab">⑤ 打幾折</label><input class="txt f-disc" inputmode="decimal" placeholder="8 = 八折"></div>'+
+      '<div class="live"><small>直播價</small><b class="f-live">—</b></div>'+
+    '</div>'+
+    '<label class="newbox"><input type="checkbox" class="f-new"><span>🆕 新品（從沒在直播講過）</span></label>';
+  d.querySelector('.f-sku').value=data.sku||'';
+  d.querySelector('.f-url').value=data.url||'';
+  d.querySelector('.f-cat').value=data.cat||'';
+  d.querySelector('.f-price').value=data.price||'';
+  d.querySelector('.f-disc').value=data.disc||'';
+  d.querySelector('.f-new').checked=!!data.isNew;
+  d.querySelector('.it-del').onclick=function(){d.parentNode.removeChild(d);refresh();};
+  [].forEach.call(d.querySelectorAll('input,select'),function(el){
+    el.addEventListener('input',refresh);el.addEventListener('change',refresh);});
+  return d;
+}
+function livePrice(price,disc){
+  var p=parseFloat(price);if(!(p>0))return null;
+  var x=parseFloat(disc);
+  if(!(x>0))return Math.round(p);
+  if(x>10)x=x/10;
+  if(x>1&&x<=10)x=x/10;
+  return Math.round(p*x);
+}
+function buildPools(){
+  var box=document.getElementById('pools');box.innerHTML='';
+  POOLS.forEach(function(p){
+    var s=document.createElement('div');s.className='pool';s.setAttribute('data-k',p.k);
+    s.innerHTML='<h3>'+p.icon+' '+p.name+' <span class="cnt" data-cnt></span></h3>'+
+      '<div class="std">'+p.std+'</div>'+
+      (p.act?'<div class="act"><label class="lab">🎁 '+p.name+'本場活動</label><input class="txt f-act" placeholder="例：買一送一 / 滿2件8折 / 前10名加送洗衣袋"></div>':'')+
+      '<div class="items" data-items></div>'+
+      '<button type="button" class="addbtn">＋ 加一個'+p.name+'</button>';
+    s.querySelector('.addbtn').onclick=function(){
+      s.querySelector('[data-items]').appendChild(itemEl(p,{}));refresh();
+    };
+    var a=s.querySelector('.f-act');
+    if(a)a.addEventListener('input',refresh);
+    box.appendChild(s);
+  });
+}
+function poolEl(k){return document.querySelector('.pool[data-k="'+k+'"]');}
+function poolBox(k){return poolEl(k).querySelector('[data-items]');}
+function readItem(el){
+  return {sku:el.querySelector('.f-sku').value.trim(),
+          url:el.querySelector('.f-url').value.trim(),
+          cat:el.querySelector('.f-cat').value,
+          price:el.querySelector('.f-price').value.trim(),
+          disc:el.querySelector('.f-disc').value.trim(),
+          isNew:el.querySelector('.f-new').checked};
+}
+function readPools(){
+  var o={};
+  POOLS.forEach(function(p){
+    var a=poolEl(p.k).querySelector('.f-act');
+    o[p.k]={act:a?a.value.trim():'',items:[]};
+    [].forEach.call(poolBox(p.k).children,function(el){
+      var it=readItem(el);
+      if(it.sku||it.url||it.cat||it.price||it.disc)o[p.k].items.push(it);
+    });
+  });
+  return o;
+}
+function setPools(data){
+  POOLS.forEach(function(p){
+    var box=poolBox(p.k);box.innerHTML='';
+    var g=(data&&data[p.k])||{};
+    var arr=g.items||[];
+    var a=poolEl(p.k).querySelector('.f-act');
+    if(a)a.value=g.act||'';
+    if(!arr.length){for(var i=0;i<(p.slots||p.min);i++)box.appendChild(itemEl(p,{}));}
+    else arr.forEach(function(x){box.appendChild(itemEl(p,x));});
+  });
+}
+
+/* ---------- 人員 ---------- */
+function buildRoster(){
+  document.getElementById('nAnchor').innerHTML=opts(ROSTER.anchor,'— 選主播 —');
+  document.getElementById('nOps').innerHTML=opts(ROSTER.ops,'— 選中控 —');
+  document.getElementById('nOp').innerHTML=opts(ROSTER.op,'— 選運營 —');
+}
+function readNames(){
+  return {anchor:document.getElementById('nAnchor').value,
+          ops:document.getElementById('nOps').value,
+          op:document.getElementById('nOp').value};
+}
+
+/* ---------- 檢核 ---------- */
+function refresh(){
+  var d=readPools(),lines=[],all=[],missAct=[],missPool=[];
+  POOLS.forEach(function(p){
+    var arr=d[p.k].items,n=arr.length;all=all.concat(arr);
+    var want=(p.min===0)?('最多 '+p.max):((p.min===p.max)?String(p.min):(p.min+'–'+p.max));
+    poolEl(p.k).querySelector('[data-cnt]').textContent=n+' / '+want+' 個';
+    [].forEach.call(poolBox(p.k).children,function(c,i){
+      c.querySelector('.it-no').textContent=p.name+' '+(i+1);
+      var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
+      c.querySelector('.f-live').textContent=(lp===null)?'—':('$'+lp);
+    });
+    if(p.must&&n===0)missPool.push(p.name);
+    if(p.act&&!d[p.k].act)missAct.push(p.name);
+    var okN=(n>=p.min&&n<=p.max);
+    lines.push({ok:okN,t:p.icon+' '+p.name+'：'+n+' 個'+
+      (okN?(p.min===0&&n===0?'（可有可無）':''):'（要 '+want+' 個）')});
+  });
+  var total=all.length;
+  var nnew=all.filter(function(x){return x.isNew;}).length;
+  lines.unshift({ok:missPool.length===0,
+    t:'🚦 三款齊全：'+(missPool.length?'缺 '+missPool.join('、'):'引流·品牌·利潤都有')});
+  lines.splice(1,0,{ok:nnew>=1,
+    t:'🆕 新品 '+nnew+' / '+total+'（至少 1 款）'});
+  lines.push({ok:missAct.length===0,
+    t:'🎁 三款活動：'+(missAct.length?'還沒填 '+missAct.join('、'):'都填了')});
+  var miss=all.filter(function(x){return !(x.sku&&x.url&&x.cat&&x.price);}).length;
+  lines.push({ok:total>0&&miss===0,
+    t:'📝 欄位填滿：'+(miss?'還有 '+miss+' 品沒填完（貨號／連結／類別／賣場價）':(total?'全部填完':'還沒排品'))});
+  lines.push({ok:!!aim,t:'🎯 本場目的：'+(aim||'還沒選主目標')});
+  var nm=readNames();
+  lines.unshift({ok:!!(nm.anchor&&nm.ops&&nm.op),
+    t:'👥 人員：'+((nm.anchor&&nm.ops&&nm.op)?('主播 '+nm.anchor+' · 中控 '+nm.ops+' · 運營 '+nm.op):'主播／中控／運營沒選齊')});
+  lines.unshift({ok:!!sess,t:'🎬 場次編號：'+(sess?sess:'還沒填')});
+
+  var ul=document.getElementById('chkList');ul.innerHTML='';
+  lines.forEach(function(l){
+    var li=document.createElement('li');li.className=l.ok?'':'no';
+    li.textContent=(l.ok?'✔ ':'✘ ')+l.t;ul.appendChild(li);
+  });
+  paintPhase();
+}
+
+/* ---------- 三階段狀態 ---------- */
+function stamp(){var d=new Date();return (d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function setRO(id,ro){
+  var c=document.getElementById(id);
+  c.className='card'+(ro?' ro':'');
+  [].forEach.call(c.querySelectorAll('input,select,textarea,button'),function(el){
+    if(el.hasAttribute('data-always'))return;   // 場次欄永遠可改，才切得到別場
+    el.disabled=ro;});
+  [].forEach.call(c.querySelectorAll('.opt'),function(el){el.disabled=ro;el.style.opacity=ro?'.5':'';el.style.cursor=ro?'default':'pointer';});
+}
+function paintPhase(){
+  var nm=readNames(), sub=!!gate.sub, both=!!(gate.anchor&&gate.ops);
+
+  ['whoCard','aimCard','poolCard'].forEach(function(id){setRO(id,sub);});
+
+  document.getElementById('submitBtn').style.display=sub?'none':'block';
+  document.getElementById('submitBtn').disabled=false;
+  var info=document.getElementById('subInfo');
+  info.style.display=sub?'block':'none';
+  info.textContent=sub?('✅ 已交卡　'+gate.sub+(nm.op?'　by '+nm.op:'')):'';
+  document.getElementById('unsubBtn').style.display=sub?'block':'none';
+
+  [['anchor','gAnchor','🎤 主播確認',nm.anchor],['ops','gOps','🎛 中控確認',nm.ops]].forEach(function(x){
+    var b=document.getElementById(x[1]);
+    var on=!!gate[x[0]];
+    b.className='gbtn'+(on?' on':'');
+    b.disabled=!sub;
+    b.innerHTML=x[2]+'<small>'+(x[3]?esc(x[3])+(on?' ✔ '+gate[x[0]]:' · 尚未確認'):(on?'✔ '+gate[x[0]]:'尚未確認'))+'</small>';
+  });
+  document.getElementById('lockMsg0').style.display=sub?'none':'block';
+
+  ['afterCard','backCard'].forEach(function(id){
+    document.getElementById(id).className='card'+(both?'':' locked');
+  });
+  document.getElementById('lockMsg').style.display=both?'none':'block';
+  document.getElementById('lockMsg2').style.display=both?'none':'block';
+}
+
+/* ---------- 讀寫 ---------- */
+function jparse(s){try{var o=JSON.parse(s||'{}');return (o&&typeof o==='object')?o:{};}catch(e){return {};}}
+function parseFocus(focus){
+  var out={pools:null,legacy:''};
+  if(!focus||!focus.trim())return out;
+  try{
+    var p=JSON.parse(focus);
+    if(Array.isArray(p)){
+      out.legacy=p.map(function(b){
+        var t=[];
+        if(b.theme)t.push('【'+b.theme+'】');
+        if(b.goods&&b.goods.length)t.push('商品：'+b.goods.join('、'));
+        if(b.name)t.push('商品：'+b.name);
+        if(b.gifts&&b.gifts.length)t.push('贈品：'+b.gifts.join('、'));
+        if(b.gift)t.push('贈品：'+b.gift);
+        if(b.knows&&b.knows.length)t.push('知識點：'+b.knows.join(' / '));
+        if(b.know)t.push('知識點：'+b.know);
+        return t.join('\n');
+      }).join('\n\n');
+      return out;
+    }
+    if(p&&typeof p==='object'){
+      var ps=p.pools||p,o={};
+      POOLS.forEach(function(q){
+        var g=ps[q.k];
+        if(Array.isArray(g))o[q.k]={act:'',items:g};
+        else o[q.k]=g||{act:'',items:[]};
+      });
+      out.pools=o;return out;
+    }
+  }catch(e){out.legacy=focus;}
+  return out;
+}
+function showLegacy(txt){
+  var old=document.getElementById('legacyBox');if(old)old.parentNode.removeChild(old);
+  if(!txt)return;
+  var d=document.createElement('div');d.id='legacyBox';d.className='legacy';
+  d.textContent='📎 這場是舊版排品卡的內容（僅供參考，存檔後會換成新版四池）：\n\n'+txt;
+  document.getElementById('pools').parentNode.appendChild(d);
+}
+function fill(){
+  var c=(sess&&sdate)?(cards[sdate+'|'+sess]||{}):{};
+  var f=parseFocus(c.focus||'');
+  setPools(f.pools);
+  showLegacy(f.legacy);
+  var g=jparse(c.strategy);
+  aim=g.aim||'';
+  document.getElementById('aimText').value=g.text||'';
+  document.getElementById('aimKpi').value=g.kpi||'';
+  var n=jparse(c.notes);
+  res=n.res||'';
+  document.getElementById('resWhy').value=n.why||'';
+  document.getElementById('adCost').value=n.ad||'';
+  document.getElementById('coinCost').value=n.coin||'';
+  var h=jparse(c.hook);
+  gate={sub:h.sub||'',anchor:h.anchor||'',ops:h.ops||''};
+  var w=jparse(c.who);
+  document.getElementById('nAnchor').value=w.anchor||'';
+  document.getElementById('nOps').value=w.ops||'';
+  document.getElementById('nOp').value=w.op||'';
+  chipRow('aimRow',AIMS,function(){return aim;},function(v){aim=v;refresh();});
+  chipRow('resRow',RES,function(){return res;},function(v){res=v;});
+  refresh();
 }
 function parseCSV(text){
   var rows=[],row=[],cur='',q=false;
@@ -223,7 +583,6 @@ function parseCSV(text){
 }
 function normDate(s){s=(s||'').trim();var m=s.match(/(\d{4})[\/\-年\.](\d{1,2})[\/\-月\.](\d{1,2})/);
   return m?m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]):null;}
-
 function load(){
   fetch(CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
     var rows=parseCSV(t);cards={};
@@ -231,29 +590,36 @@ function load(){
     for(var i=1;i<rows.length;i++){
       var d=normDate(rows[i][0]);if(!d)continue;
       cards[d+'|'+(rows[i][1]||'').trim()]={
-        date:d,slot:(rows[i][1]||'').trim(),focus:rows[i][3]||''};
+        date:d,sess:(rows[i][1]||'').trim(),
+        strategy:rows[i][2]||'',focus:rows[i][3]||'',hook:rows[i][4]||'',
+        notes:rows[i][5]||'',who:rows[i][6]||''};
     }
-    renderHist();fill();
+    renderHist();if(sess)fill();
   }).catch(function(){renderHist();});
 }
-function fill(){
-  var c=cards[document.getElementById('fdate').value+'|'+slot]||{};
-  setLineup(c.focus||'');
+function sumOf(c){
+  var g=jparse(c.strategy),f=parseFocus(c.focus||''),n=0;
+  if(f.pools)POOLS.forEach(function(p){n+=((f.pools[p.k]||{}).items||[]).length;});
+  var h=jparse(c.hook);
+  var flag=(h.anchor&&h.ops)?'🔓':(h.sub?'📤':'✏️');
+  if(g.aim||n)return flag+' '+(g.aim?'【'+g.aim+'】':'')+(n?' 共 '+n+' 品':'');
+  if(f.legacy)return '（舊版排品）';
+  return '（未填）';
 }
 function renderHist(){
   var el=document.getElementById('hlist');
   var keys=Object.keys(cards).sort().reverse().slice(0,12);
-  if(!keys.length){el.className='empty';el.textContent='還沒有作戰卡，填好上面第一張按儲存就有了。';return;}
+  if(!keys.length){el.className='empty';el.textContent='還沒有作戰卡，填好上面第一張按交卡就有了。';return;}
   el.className='';el.innerHTML='';
   keys.forEach(function(k){
     var c=cards[k];
+    var p=parseSess(c.sess);
     var row=document.createElement('div');row.className='hrow';
-    row.innerHTML='<span class="hdate">'+rangeFromStr(c.date)+'</span>'+
-      '<span class="hslot">'+(c.slot||'—')+'</span>'+
-      '<span class="hsum">'+sumOf(c.focus)+'</span>';
+    row.innerHTML='<span class="hdate">'+esc(c.sess||'—')+'</span>'+
+      '<span class="hslot">'+esc(p?p.label:c.date)+'</span>'+
+      '<span class="hsum">'+esc(sumOf(c))+'</span>';
     row.onclick=function(){
-      document.getElementById('weekpick').value=c.date;setWeekByDate(c.date);
-      slot=c.slot||'早班';buildSlots();fill();
+      document.getElementById('sessIn').value=c.sess;onSess();
       window.scrollTo({top:0,behavior:'smooth'});
     };
     el.appendChild(row);
@@ -261,30 +627,130 @@ function renderHist(){
 }
 function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
 
-document.getElementById('plAdd').onclick=function(){addBlock({});};
+/* ---------- 調閱 ---------- */
+function renderView(c){
+  var p=parseSess(c.sess)||{label:c.date,code:c.sess};
+  var g=jparse(c.strategy), n=jparse(c.notes), h=jparse(c.hook), w=jparse(c.who);
+  var f=parseFocus(c.focus||'');
+  var html='<div class="vhead"><b>場次 '+esc(c.sess)+'</b><span>📅 '+esc(p.label)+
+    (g.aim?'　🎯 '+esc(g.aim):'')+'</span>'+
+    '<span>🎤 '+esc(w.anchor||'—')+'　🎛 '+esc(w.ops||'—')+'　📋 '+esc(w.op||'—')+'</span></div>';
+  if(g.text||g.kpi){
+    html+='<div class="vsec"><h4>🎯 本場目的</h4>'+
+      (g.text?'<div style="font-size:13.5px;line-height:1.8">'+esc(g.text)+'</div>':'')+
+      (g.kpi?'<div class="vmeta"><b>成功條件</b>：'+esc(g.kpi)+'</div>':'')+'</div>';
+  }
+  if(f.pools){
+    POOLS.forEach(function(q){
+      var pool=f.pools[q.k]||{},items=pool.items||[];
+      if(!items.length&&!pool.act)return;
+      html+='<div class="vsec" style="border-left:3px solid var(--'+q.k+')"><h4 style="color:var(--'+q.k+')">'+q.icon+' '+q.name+'</h4>';
+      if(pool.act)html+='<div class="vact">🎁 '+esc(pool.act)+'</div>';
+      if(!items.length)html+='<div class="vnone">⚠ 這場沒排'+q.name+'</div>';
+      items.forEach(function(it){
+        var lp=livePrice(it.price,it.disc),u=safeUrl(it.url);
+        html+='<div class="vitem"><span class="vsku">'+esc(it.sku||'（無貨號）')+'</span>'+
+          (it.cat?'<span class="vtag">'+esc(it.cat)+'</span>':'')+
+          (it.isNew?'<span class="vtag vnew">🆕 新品</span>':'')+
+          '<div class="vprice">賣場價 $'+esc(it.price||'—')+
+            (it.disc?'　打 '+esc(it.disc)+' 折':'')+'　→　直播價 <b>'+(lp===null?'—':'$'+lp)+'</b></div>'+
+          (u?'<a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(u)+'</a>':'')+'</div>';
+      });
+      html+='</div>';
+    });
+  }else if(f.legacy){
+    html+='<div class="legacy">'+esc(f.legacy)+'</div>';
+  }else{
+    html+='<div class="vsec"><div class="vnone">⚠ 這場還沒排品</div></div>';
+  }
+  html+='<div class="vsec"><h4>🤝 進度</h4><div class="vmeta">'+
+    '<b>運營交卡</b>：'+(h.sub?'✔ '+esc(h.sub):'尚未交卡')+'<br>'+
+    '<b>主播確認</b>：'+(h.anchor?'✔ '+esc(h.anchor):'尚未確認')+'<br>'+
+    '<b>中控確認</b>：'+(h.ops?'✔ '+esc(h.ops):'尚未確認')+'</div></div>';
+  if(n.res||n.why||n.ad||n.coin){
+    html+='<div class="vsec"><h4>🔚 下播後</h4><div class="vmeta">'+
+      (n.res?'<b>結果</b>：'+esc(n.res)+'<br>':'')+
+      (n.why?'<b>原因</b>：'+esc(n.why)+'<br>':'')+
+      (n.ad?'<b>廣告花費</b>：NT$'+esc(n.ad)+'<br>':'')+
+      (n.coin?'<b>蝦幣花費</b>：NT$'+esc(n.coin):'')+'</div></div>';
+  }
+  return html;
+}
+function doLookup(){
+  var box=document.getElementById('lookView');
+  var p=parseSess(document.getElementById('lookIn').value);
+  if(!p){box.innerHTML='<div class="vnone" style="margin-top:10px">編號格式不對，例：90601</div>';return;}
+  var c=cards[p.date+'|'+p.code];
+  if(!c){box.innerHTML='<div class="vnone" style="margin-top:10px">找不到場次 '+esc(p.code)+' 的作戰卡（'+esc(p.label)+'）</div>';return;}
+  box.innerHTML=renderView(c);
+}
 
-document.getElementById('save').onclick=function(){
-  var date=document.getElementById('fdate').value;
-  if(!date){showMsg('warn','先選日期');return;}
-  var payload={token:TOKEN,action:'card_save',date:date,slot:slot,
-    strategy:'', focus:JSON.stringify(readLineup()), hook:'', notes:'', r1:'', r2:'', r3:''};
-  var btn=document.getElementById('save');btn.disabled=true;
-  showMsg('warn','儲存中…');
+/* ---------- 儲存 ---------- */
+function doSave(quiet,okText){
+  if(!sess||!sdate){showMsg('warn','先填場次編號（例 90601）');return;}
+  var strategy=JSON.stringify({aim:aim,
+    text:document.getElementById('aimText').value.trim(),
+    kpi:document.getElementById('aimKpi').value.trim()});
+  var focus=JSON.stringify({v:3,pools:readPools()});
+  var hook=JSON.stringify({sub:gate.sub,anchor:gate.anchor,ops:gate.ops});
+  var notes=JSON.stringify({res:res,why:document.getElementById('resWhy').value.trim(),
+    ad:document.getElementById('adCost').value.trim(),
+    coin:document.getElementById('coinCost').value.trim()});
+  var who=JSON.stringify(readNames());
+  var payload={token:TOKEN,action:'card_save',date:sdate,slot:sess,
+    strategy:strategy, focus:focus, hook:hook, notes:notes, r1:who, r2:'', r3:''};
+  if(!quiet)showMsg('warn','儲存中…');
   fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
   .then(function(r){return r.text();})
   .then(function(t){
     if(t==='ok'||t==='updated'){
-      showMsg('good','✅ 已儲存　'+rangeFromStr(date)+'（'+slot+'）');
-      cards[date+'|'+slot]=payload;renderHist();
+      showMsg('good',(okText||'✅ 已儲存')+'　場次 '+sess);
+      cards[sdate+'|'+sess]={date:sdate,sess:sess,strategy:strategy,focus:focus,hook:hook,notes:notes,who:who};
+      showLegacy('');renderHist();
     }else{showMsg('bad','儲存失敗，請確認寫入服務已更新到最新版');}
   })
-  .catch(function(){showMsg('bad','連不上寫入服務，請確認網路後再試');})
-  .finally(function(){btn.disabled=false;});
-};
+  .catch(function(){showMsg('bad','連不上寫入服務，請確認網路後再試');});
+}
 
-initWeekPick();
-buildSlots();
-fill();
+document.getElementById('submitBtn').onclick=function(){
+  if(!sess){showMsg('warn','先填場次編號');return;}
+  var nm=readNames();
+  if(!(nm.anchor&&nm.ops&&nm.op)){showMsg('warn','主播／中控／運營三個都要選');return;}
+  gate.sub=stamp();paintPhase();
+  doSave(false,'📤 已交卡，等主播中控確認');
+  window.scrollTo({top:document.getElementById('gateCard').offsetTop-20,behavior:'smooth'});
+};
+document.getElementById('unsubBtn').onclick=function(){
+  if(!window.confirm('退回修改會清掉主播和中控已按的確認，確定嗎？'))return;
+  gate.sub='';gate.anchor='';gate.ops='';paintPhase();
+  doSave(false,'↩ 已退回修改');
+};
+function toggleGate(k){
+  if(!gate.sub){showMsg('warn','等運營交卡後才能確認');return;}
+  gate[k]=gate[k]?'':stamp();
+  paintPhase();
+  doSave(true);
+}
+function saveGated(){
+  if(!(gate.anchor&&gate.ops)){showMsg('warn','主播和中控都確認後才能填下播後的項目');return;}
+  doSave(false);
+}
+document.getElementById('saveAfter').onclick=saveGated;
+document.getElementById('saveBack').onclick=saveGated;
+document.getElementById('gAnchor').onclick=function(){toggleGate('anchor');};
+document.getElementById('gOps').onclick=function(){toggleGate('ops');};
+document.getElementById('sessIn').addEventListener('input',onSess);
+['nAnchor','nOps','nOp'].forEach(function(id){
+  document.getElementById(id).addEventListener('change',refresh);});
+document.getElementById('lookBtn').onclick=doLookup;
+document.getElementById('lookIn').addEventListener('keydown',function(e){if(e.key==='Enter')doLookup();});
+
+buildRoster();
+buildPools();
+setPools(null);
+chipRow('aimRow',AIMS,function(){return aim;},function(v){aim=v;refresh();});
+chipRow('resRow',RES,function(){return res;},function(v){res=v;});
+refresh();
 load();
 </script>
 </body>
