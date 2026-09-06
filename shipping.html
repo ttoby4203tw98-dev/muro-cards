@@ -97,7 +97,7 @@
   <div class="when">⏰ 每天早上第一場直播結束後開始，連第一場的單一起處理</div>
   <div class="prog">
     <div class="bar"><div class="fill" id="fill"></div></div>
-    <div class="txt" id="progTxt">今天完成 0 / 14</div>
+    <div class="txt" id="progTxt">今天完成 0 / 17</div>
   </div>
 </div>
 
@@ -147,17 +147,20 @@ var SECTIONS=[
   {id:'s7',t:'剩餘訂單逐一檢查貨源',h:'剩下的單 = 要採購的單。<b>深圳倉有現貨的品要把貨源移除</b>，才不會被批量採購叫到',tools:[{l:'大邁寶 商品匹配',u:DMB+'/warehouse/mapping',k:'link'}]},
   {id:'s8',t:'無貨源又沒現貨 → 新增貨源 → 匹配 SKU',h:'大邁寶先<b>添加貨源</b>（貼 1688 連結），再開工具包跑 SKU 匹配；對不上的人工補',tools:[{l:'工具_大邁寶SKU匹配.bat',k:'bat'}]},
   {id:'s9',t:'全部有貨源、SKU 都對好 → 批量採購',h:'少一個貨源都先補完再按批量採購。<b>按完後看左上角「訂單合併狀態」，一定要調成「合併」</b>',tools:[{l:'大邁寶 採購清單',u:DMB+'/trade/flow/buylist',k:'link'}]},
-  {id:'s10',t:'核對 SKU 與數量 → 下單',h:'下單前再看一次：SKU 對、數量對、<b>沒貨源的 SKU 確實有現貨</b>',tools:[{l:'大邁寶 採購單',u:DMB+'/warehouse/procure',k:'link'}]}
+  {id:'s10',t:'核對 SKU 與數量 → 下單',h:'下單前再看一次：SKU 對、數量對、<b>沒貨源的 SKU 確實有現貨</b>',tools:[{l:'大邁寶 採購單',u:DMB+'/warehouse/procure',k:'link'}]},
+  {id:'s11',t:'思維完成支付',h:'1688 付款由思維處理，付完才算採購完成',tools:[{l:'1688 待付款',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
+  {id:'s12',t:'確認每筆訂單都採購到 → 做隔離 → 待處理訂單歸 0',h:'逐筆核對都有下到單，處理完的單在大邁寶隔離；做完<b>待處理訂單應該是 0</b>，避免跟明天的新單混到',tools:[{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}]}
  ]},
  {name:'深圳倉 掃碼驗貨',steps:[
   {id:'s4',t:'開倉庫端 → 掃碼驗貨 → 今日到貨確認',h:'採購下完單後再驗貨。深圳倉今天到的包裹全部掃過一遍',tools:[{l:'大邁寶 倉庫端',u:DMB+'/',k:'link'}]},
   {id:'s5',t:'到齊的打包，未到齊的做記號',h:'<b>到齊</b> → 直接打包。<b>未到齊</b> → 在包裹上寫<b>日期 ＋ muro貨號</b>，先放著等下一批。兩種通常都會有，都處理完再打勾'}
  ]},
- {name:'收尾',steps:[
-  {id:'s11',t:'思維完成支付',h:'1688 付款由思維處理，付完才算採購完成',tools:[{l:'1688 待付款',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
-  {id:'s12',t:'確認每筆訂單都確實採購到 → 已處理完的單做隔離',h:'採購完逐筆核對都有下到單，<b>處理完的訂單在大邁寶隔離</b>，避免跟明天的新訂單混在一起',tools:[{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}]},
-  {id:'s13',t:'追蹤昨日隔離訂單：廠商都正常出貨了嗎？',h:'翻昨天隔離的單，逐筆確認<b>廠商已出貨、單子沒異常</b>；有問題的今天就處理',tools:[{l:'1688 已買到的貨',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
-  {id:'s14',t:'完成出貨',h:'昨日隔離單全部確認正常，今日流程才算結束'}
+ {name:'收尾追蹤',steps:[
+  {id:'s13',t:'昨日隔離訂單：廠商都出貨了嗎？',h:'翻昨天隔離的單，逐筆確認<b>廠商已出貨</b>；還沒出的<b>跟廠商確認</b>',tools:[{l:'1688 已買到的貨',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
+  {id:'s15',t:'已打包訂單 → 待入庫：有 2 天前的單嗎？',h:'待入庫裡如果還有 <b>2 天前</b>的單，一樣要追蹤到底卡在哪'},
+  {id:'s16',t:'部分入庫的單：SKU 跟現場未到齊的對得上嗎？',h:'系統顯示部分入庫的 SKU，要跟<b>現場未到齊的 SKU</b> 一致；對不上就是有東西漏掃或走錯'},
+  {id:'s17',t:'打包中的訂單：有非當日處理的單嗎？',h:'打包中如果混到<b>不是今天處理</b>的單，也要拉出來檢查'},
+  {id:'s14',t:'完成出貨',h:'上面四項追蹤都確認正常，今日出貨才算完成'}
  ]}
 ];
 var ALL=[];SECTIONS.forEach(function(s){s.steps.forEach(function(x){ALL.push(x);});});
