@@ -84,6 +84,21 @@
   .tst.run{background:#FCF3D7;color:#8a6a10;}
   .tnote{margin-left:auto;font-size:12px;color:var(--ink2);max-width:45%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .empty{color:var(--ink2);font-size:14px;}
+  .daterow{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .daterow input{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;font-size:15px;font-family:inherit;color:var(--ink);background:#fff;}
+  .daterow input:focus{outline:none;border-color:var(--plum2);}
+  .daterow button{border:none;border-radius:12px;background:var(--plum2);color:#fff;font-weight:800;font-size:14px;padding:10px 14px;cursor:pointer;}
+  .vsum{font-size:13.5px;color:var(--ink2);margin-bottom:8px;line-height:1.7;}
+  .vsum b{color:var(--plum2);}
+  .vsec{font-size:13px;font-weight:800;color:var(--plum2);margin:10px 0 4px;letter-spacing:1px;}
+  .vrow{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line);font-size:14px;line-height:1.5;}
+  .vrow .vi{flex:0 0 22px;height:22px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;background:#eee;color:var(--skip);margin-top:1px;}
+  .vrow.ok .vi{background:var(--ok);color:#fff;}
+  .vrow .vt{flex:1;}
+  .vrow .vs{font-size:12px;color:#146C48;font-weight:700;white-space:nowrap;}
+  .vrow.no .vs{color:#c9b3bd;}
+  .vnote{margin-top:10px;background:#fbf5f8;border-radius:10px;padding:9px 12px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;}
+  .trow{cursor:pointer;}
   footer{text-align:center;margin-top:22px;font-size:12px;color:#b9a8b0;}
   footer a{color:var(--rose);}
 </style>
@@ -117,6 +132,12 @@
       <button class="btn reset" id="resetBtn">清空今天重來</button>
     </div>
     <div id="msg"></div>
+  </div>
+
+  <div class="card today">
+    <h2>📅 查某一天的紀錄</h2>
+    <div class="daterow"><input type="date" id="pickDate"><button id="pickToday">今天</button></div>
+    <div id="dayView" class="empty">選日期，或點下面列表的某一天</div>
   </div>
 
   <div class="card today">
@@ -299,6 +320,7 @@ function loadRecords(){
         if(mine.note&&document.activeElement!==document.getElementById('note'))state.note=mine.note;render();}
     }
     renderRec();
+    var pd=document.getElementById('pickDate').value;if(pd)showDay(pd);
   }).catch(function(){allRec=[];renderRec();});
 }
 function renderRec(){
@@ -313,10 +335,11 @@ function renderRec(){
     if(r.bag&&r.bag.steps&&r.bag.steps.s14)last=r.bag.steps.s14.t;
     var whoAll={};if(r.bag&&r.bag.steps)Object.keys(r.bag.steps).forEach(function(k){if(r.bag.steps[k].by)whoAll[r.bag.steps[k].by]=1;});
     var names=Object.keys(whoAll).join('・')||r.who;
-    return '<div class="trow"><span class="tdate">'+r.date.slice(5).replace('-','/')+'</span><span class="twho">'+esc(names)+'</span>'+
+    return '<div class="trow" data-d="'+r.date+'"><span class="tdate">'+r.date.slice(5).replace('-','/')+'</span><span class="twho">'+esc(names)+'</span>'+
       '<span class="tst '+(fin?'fin':'run')+'">'+esc(r.st)+(fin&&last?'　'+esc(last):'')+'</span>'+
       (r.note?'<span class="tnote" title="'+esc(r.note)+'">'+esc(r.note)+'</span>':'')+'</div>';
   }).join('');
+  [].forEach.call(list.querySelectorAll('.trow'),function(el){el.onclick=function(){showDay(el.getAttribute('data-d'));window.scrollTo({top:document.getElementById('pickDate').offsetTop-80,behavior:'smooth'});};});
 }
 
 var noteTimer=null;
@@ -325,6 +348,32 @@ document.getElementById('note').addEventListener('input',function(){
   clearTimeout(noteTimer);noteTimer=setTimeout(function(){if(who)persist();},1500);
 });
 document.getElementById('note').addEventListener('blur',function(){clearTimeout(noteTimer);if(who)persist();});
+/* ---------- 查某一天 ---------- */
+function showDay(d){
+  var box=document.getElementById('dayView');
+  document.getElementById('pickDate').value=d;
+  if(!allRec){box.className='empty';box.textContent='紀錄還在載入…';return;}
+  var r=allRec.filter(function(x){return x.date===d;})[0];
+  if(!r){box.className='empty';box.textContent=d.slice(5).replace('-','/')+' 這天沒有出貨紀錄。';return;}
+  var st=(r.bag&&r.bag.steps)||{},ans=(r.bag&&r.bag.ans)||{};
+  var whoAll={};Object.keys(st).forEach(function(k){if(st[k].by)whoAll[st[k].by]=1;});
+  var html='<div class="vsum"><b>'+esc(d)+'</b>　'+esc(r.st)+'　'+esc(Object.keys(whoAll).join('・')||r.who)+(r.upd?'<br>最後更新 '+esc(r.upd):'')+'</div>';
+  SECTIONS.forEach(function(sec,si){
+    html+='<div class="vsec">第 '+(si+1)+' 段　'+esc(sec.name)+'</div>';
+    sec.steps.forEach(function(s){
+      var rec=st[s.id],skip=!!(s.skipIf&&s.skipIf({ans:ans,steps:st}));
+      var cls=rec?'ok':(skip?'skip':'no');
+      var right=rec?('✓ '+esc(rec.t)+' '+esc(rec.by||'')+(s.q&&ans[s.q]?' → '+esc(ans[s.q]):'')):(skip?'略過':'未勾');
+      html+='<div class="vrow '+cls+'"><div class="vi">'+(rec?'✓':(skip?'－':(ALL.indexOf(s)+1)))+'</div><div class="vt">'+esc(s.t)+'</div><div class="vs">'+right+'</div></div>';
+    });
+  });
+  if(r.note)html+='<div class="vnote">📝 '+esc(r.note)+'</div>';
+  box.className='';box.innerHTML=html;
+}
+(function(){var pd=document.getElementById('pickDate');pd.max=todayKey();
+  pd.onchange=function(){if(pd.value)showDay(pd.value);};
+  document.getElementById('pickToday').onclick=function(){showDay(todayKey());};})();
+
 document.getElementById('saveBtn').onclick=function(){if(needWho())return;persist();};
 document.getElementById('resetBtn').onclick=function(){
   if(!window.confirm('把今天的勾全部清掉重來？紀錄會一起清空。'))return;
