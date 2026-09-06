@@ -233,7 +233,8 @@ function render(){
   var c=counts();
   document.getElementById('fill').style.width=Math.round(c.d/c.n*100)+'%';
   document.getElementById('progTxt').textContent=(c.d===c.n?'🎉 今天流程全部完成':'今天完成 '+c.d+' / '+c.n);
-  document.getElementById('note').value=state.note||'';
+  var ta=document.getElementById('note');
+  if(document.activeElement!==ta&&ta.value!==(state.note||''))ta.value=state.note||'';
 }
 
 function needWho(){if(!who){showMsg('warn','先選一下你是誰再打勾喔');window.scrollTo({top:0,behavior:'smooth'});return true;}return false;}
@@ -294,7 +295,8 @@ function loadRecords(){
     var tk=todayKey(),mine=allRec.filter(function(r){return r.date===tk;})[0];
     if(mine&&mine.bag&&mine.bag.steps){
       var local=Object.keys(state.steps).length,remote=Object.keys(mine.bag.steps).length;
-      if(remote>=local){state.steps=mine.bag.steps;state.ans=mine.bag.ans||{};if(mine.note)state.note=mine.note;render();}
+      if(remote>=local){state.steps=mine.bag.steps;state.ans=mine.bag.ans||{};
+        if(mine.note&&document.activeElement!==document.getElementById('note'))state.note=mine.note;render();}
     }
     renderRec();
   }).catch(function(){allRec=[];renderRec();});
@@ -317,6 +319,12 @@ function renderRec(){
   }).join('');
 }
 
+var noteTimer=null;
+document.getElementById('note').addEventListener('input',function(){
+  state.note=this.value;try{localStorage.setItem(LS(),JSON.stringify(state));}catch(e){}
+  clearTimeout(noteTimer);noteTimer=setTimeout(function(){if(who)persist();},1500);
+});
+document.getElementById('note').addEventListener('blur',function(){clearTimeout(noteTimer);if(who)persist();});
 document.getElementById('saveBtn').onclick=function(){if(needWho())return;persist();};
 document.getElementById('resetBtn').onclick=function(){
   if(!window.confirm('把今天的勾全部清掉重來？紀錄會一起清空。'))return;
