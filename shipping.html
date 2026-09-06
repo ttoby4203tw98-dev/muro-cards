@@ -20,6 +20,7 @@
   .top h1 small{font-size:11px;letter-spacing:3px;opacity:.7;margin-left:8px;}
   #dateline{font-size:13px;opacity:.8;margin-top:6px;}
   .legend{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;letter-spacing:1px;background:rgba(255,255,255,.14);border-radius:99px;padding:4px 14px;}
+  .when{font-size:12.5px;opacity:.85;margin-top:8px;}
   .prog{max-width:420px;margin:14px auto 0;}
   .prog .bar{height:10px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden;}
   .prog .fill{height:100%;width:0;background:var(--gold);border-radius:99px;transition:width .3s;}
@@ -93,6 +94,7 @@
   <h1>每日出貨流程<small>MURO</small></h1>
   <div id="dateline"></div>
   <div class="legend">大邁寶＝深圳倉　｜　BigSeller＝台灣倉</div>
+  <div class="when">⏰ 每天早上第一場直播結束後開始，連第一場的單一起處理</div>
   <div class="prog">
     <div class="bar"><div class="fill" id="fill"></div></div>
     <div class="txt" id="progTxt">今天完成 0 / 14</div>
@@ -138,16 +140,18 @@ var SECTIONS=[
   {id:'s2',t:'查 BigSeller：台灣倉這批有要出的單嗎？',q:'q2',opts:[{v:'有',l:'有'},{v:'沒有',l:'沒有'}],h:'BigSeller 上的單 = 台灣倉出貨。選「沒有」會略過下一步，直接進深圳倉驗貨',tools:[{l:'BigSeller',u:'https://www.bigseller.com/',k:'link'}]},
   {id:'s3',t:'對單隔離：把台灣出貨單從大邁寶移除',h:'開工具包跑 <b>bigseller 對單隔離</b>，台灣要出的單在大邁寶隔離掉，<b>避免深圳倉重複出貨</b>；隔離完跟台灣倉確認這些單能正常出',tools:[{l:'每日1_大邁寶對單隔離.bat',k:'bat'},{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}],skipIf:function(st){return st.ans.q2==='沒有';}}
  ]},
- {name:'深圳倉 驗貨與出貨',steps:[
-  {id:'s4',t:'開倉庫端 → 掃碼驗貨 → 今日到貨確認',h:'深圳倉今天到的包裹全部掃過一遍',tools:[{l:'大邁寶 倉庫端',u:DMB+'/',k:'link'}]},
-  {id:'s5',t:'到齊的打包，未到齊的做記號',h:'<b>到齊</b> → 直接打包。<b>未到齊</b> → 在包裹上寫<b>日期 ＋ muro貨號</b>，先放著等下一批。兩種通常都會有，都處理完再打勾'},
-  {id:'s6',t:'有現貨可出的單：列印 → 出貨',h:'今天能出的全部出掉'}
+ {name:'現貨先出',steps:[
+  {id:'s6',t:'有現貨可出的單：列印 → 出貨',h:'含早上第一場直播的單。今天能出的全部先出掉，再進採購'}
  ]},
  {name:'採購',steps:[
   {id:'s7',t:'剩餘訂單逐一檢查貨源',h:'剩下的單 = 要採購的單。<b>深圳倉有現貨的品要把貨源移除</b>，才不會被批量採購叫到',tools:[{l:'大邁寶 商品匹配',u:DMB+'/warehouse/mapping',k:'link'}]},
   {id:'s8',t:'無貨源又沒現貨 → 新增貨源 → 匹配 SKU',h:'大邁寶先<b>添加貨源</b>（貼 1688 連結），再開工具包跑 SKU 匹配；對不上的人工補',tools:[{l:'工具_大邁寶SKU匹配.bat',k:'bat'}]},
   {id:'s9',t:'全部有貨源、SKU 都對好 → 批量採購',h:'少一個貨源都先補完再按批量採購。<b>按完後看左上角「訂單合併狀態」，一定要調成「合併」</b>',tools:[{l:'大邁寶 採購清單',u:DMB+'/trade/flow/buylist',k:'link'}]},
   {id:'s10',t:'核對 SKU 與數量 → 下單',h:'下單前再看一次：SKU 對、數量對、<b>沒貨源的 SKU 確實有現貨</b>',tools:[{l:'大邁寶 採購單',u:DMB+'/warehouse/procure',k:'link'}]}
+ ]},
+ {name:'深圳倉 掃碼驗貨',steps:[
+  {id:'s4',t:'開倉庫端 → 掃碼驗貨 → 今日到貨確認',h:'採購下完單後再驗貨。深圳倉今天到的包裹全部掃過一遍',tools:[{l:'大邁寶 倉庫端',u:DMB+'/',k:'link'}]},
+  {id:'s5',t:'到齊的打包，未到齊的做記號',h:'<b>到齊</b> → 直接打包。<b>未到齊</b> → 在包裹上寫<b>日期 ＋ muro貨號</b>，先放著等下一批。兩種通常都會有，都處理完再打勾'}
  ]},
  {name:'收尾',steps:[
   {id:'s11',t:'思維完成支付',h:'1688 付款由思維處理，付完才算採購完成',tools:[{l:'1688 待付款',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
