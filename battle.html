@@ -170,6 +170,8 @@
     <div class="optrow" id="aimRow"></div>
     <div class="it-f"><label class="lab">一句話目的</label>
       <input class="txt" id="aimText" placeholder="例：測秋季高腰塑身褲三款反應，找出下週主推"></div>
+    <div class="it-f"><label class="lab">為什麼是這個目的（必填）</label>
+      <input class="txt" id="aimWhy" placeholder="例：上週塑身複購率最高但只有一款，要找出第二款接手"></div>
     <div class="it-f"><label class="lab">成功條件（1–2 個數字）</label>
       <input class="txt" id="aimKpi" placeholder="例：場觀 3000 · 新品加購率 8%"></div>
   </div>
@@ -455,7 +457,9 @@ function refresh(){
   var miss=all.filter(function(x){return !(x.sku&&x.url&&x.cat&&x.price);}).length;
   lines.push({ok:total>0&&miss===0,
     t:'📝 欄位填滿：'+(miss?'還有 '+miss+' 品沒填完（貨號／連結／類別／賣場價）':(total?'全部填完':'還沒排品'))});
+  var awhy=document.getElementById('aimWhy').value.trim();
   lines.push({ok:!!aim,t:'🎯 本場目的：'+(aim||'還沒選主目標')});
+  lines.push({ok:!!awhy,t:'🧠 目的的原因：'+(awhy?'已寫':'沒寫為什麼定這個目的')});
   var nm=readNames();
   lines.unshift({ok:!!(nm.anchor&&nm.ops&&nm.op),
     t:'👥 人員：'+((nm.anchor&&nm.ops&&nm.op)?('主播 '+nm.anchor+' · 中控 '+nm.ops+' · 運營 '+nm.op):'主播／中控／運營沒選齊')});
@@ -555,6 +559,7 @@ function fill(){
   var g=jparse(c.strategy);
   aim=g.aim||'';
   document.getElementById('aimText').value=g.text||'';
+  document.getElementById('aimWhy').value=g.why||'';
   document.getElementById('aimKpi').value=g.kpi||'';
   var n=jparse(c.notes);
   res=n.res||'';
@@ -635,9 +640,10 @@ function renderView(c){
   var html='<div class="vhead"><b>場次 '+esc(c.sess)+'</b><span>📅 '+esc(p.label)+
     (g.aim?'　🎯 '+esc(g.aim):'')+'</span>'+
     '<span>🎤 '+esc(w.anchor||'—')+'　🎛 '+esc(w.ops||'—')+'　📋 '+esc(w.op||'—')+'</span></div>';
-  if(g.text||g.kpi){
+  if(g.text||g.kpi||g.why){
     html+='<div class="vsec"><h4>🎯 本場目的</h4>'+
       (g.text?'<div style="font-size:13.5px;line-height:1.8">'+esc(g.text)+'</div>':'')+
+      (g.why?'<div class="vmeta"><b>為什麼是這個目的</b>：'+esc(g.why)+'</div>':'')+
       (g.kpi?'<div class="vmeta"><b>成功條件</b>：'+esc(g.kpi)+'</div>':'')+'</div>';
   }
   if(f.pools){
@@ -690,6 +696,7 @@ function doSave(quiet,okText){
   if(!sess||!sdate){showMsg('warn','先填場次編號（例 90601）');return;}
   var strategy=JSON.stringify({aim:aim,
     text:document.getElementById('aimText').value.trim(),
+    why:document.getElementById('aimWhy').value.trim(),
     kpi:document.getElementById('aimKpi').value.trim()});
   var focus=JSON.stringify({v:3,pools:readPools()});
   var hook=JSON.stringify({sub:gate.sub,anchor:gate.anchor,ops:gate.ops});
@@ -740,6 +747,7 @@ document.getElementById('saveBack').onclick=saveGated;
 document.getElementById('gAnchor').onclick=function(){toggleGate('anchor');};
 document.getElementById('gOps').onclick=function(){toggleGate('ops');};
 document.getElementById('sessIn').addEventListener('input',onSess);
+document.getElementById('aimWhy').addEventListener('input',refresh);
 ['nAnchor','nOps','nOp'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
 document.getElementById('lookBtn').onclick=doLookup;
