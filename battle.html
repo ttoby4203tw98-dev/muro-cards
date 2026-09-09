@@ -195,7 +195,7 @@
     <span class="rotag">🔒 已交卡</span>
     <span class="stage">① 開播前 · 運營填</span>
     <div class="flabel" style="margin-top:0">🛒 本場商品池</div>
-    <div class="hint">灰底那行是標準，不用填，照著挑就對。<b>引流·品牌·利潤三款都要有，缺一不合格。</b></div>
+    <div class="hint">灰底那行是標準，不用填，照著挑就對。<b>引流·品牌·利潤·機會四款都要有，缺一不合格。</b></div>
     <div id="pools"></div>
   </div>
 
@@ -334,8 +334,8 @@ var POOLS=[
    std:'<b>任務</b>：撐調性、講技術。<b>價帶</b>：內衣300–500 · 內褲89–189 · 上衣200–400 · 塑身349–499。<b>條件</b>：必須有一個能講滿 30 秒的技術點（涼感qmax／透氣率／抗菌檢測），沒有就不要放進來。'},
   {k:'profit', want:['mid','high'],icon:'💰', name:'利潤款', min:2, max:3, slots:2, act:true, must:true,
    std:'<b>任務</b>：中段收割。<b>價帶</b>：內衣290–499 · 塑身300–500 · 寬褲490–650 · 上衣99–299。<b>條件</b>：要有組合或贈品把客單拉起來。'},
-  {k:'chance',icon:'🎲', name:'機會款', min:0, max:1, slots:1, act:false, must:false,
-   std:'<b>任務</b>：測水溫。<b>限制</b>：非女性內衣類。<b>可有可無</b>，有想測的才放，最多 1 個。'}
+  {k:'chance',icon:'🎲', name:'機會款', min:1, max:2, slots:1, act:true, must:true,
+   std:'<b>任務</b>：拉高價帶。<b>限制</b>：非女性內衣類。<b>必備 1–2 個</b>—— 矯姿帶・寢具・毛毯這類佔 12.7% 營收，是目前唯一跑得動高價帶的牌。'}
 ];
 
 function pad(n){return (n<10?'0':'')+n;}
@@ -515,7 +515,7 @@ function refresh(){
   var total=all.length;
   var nnew=all.filter(function(x){return x.isNew;}).length;
   lines.unshift({ok:missPool.length===0,
-    t:'🚦 三款齊全：'+(missPool.length?'缺 '+missPool.join('、'):'引流·品牌·利潤都有')});
+    t:'🚦 四款齊全：'+(missPool.length?'缺 '+missPool.join('、'):'引流·品牌·利潤·機會都有')});
   var srcTxt,srcOk;
   if(BAND_SRC.mode==='builtin'){srcOk=false;srcTxt='讀不到 Sheet「價格帶」分頁，現在用的是內建備援值';}
   else if(BAND_SRC.mode==='market'){srcOk=false;srcTxt='只有市場帶，成交帶還沒填（現在拿市場帶在判）';}
@@ -532,7 +532,7 @@ function refresh(){
   lines.splice(1,0,{ok:nnew>=1,
     t:'🆕 新品 '+nnew+' / '+total+'（至少 1 款）'});
   lines.push({ok:missAct.length===0,
-    t:'🎁 三款活動：'+(missAct.length?'還沒填 '+missAct.join('、'):'都填了')});
+    t:'🎁 四款活動：'+(missAct.length?'還沒填 '+missAct.join('、'):'都填了')});
   var miss=all.filter(function(x){return !(x.sku&&x.url&&x.cat&&x.price);}).length;
   lines.push({ok:total>0&&miss===0,
     t:'📝 欄位填滿：'+(miss?'還有 '+miss+' 品沒填完（貨號／連結／類別／賣場價）':(total?'全部填完':'還沒排品'))});
