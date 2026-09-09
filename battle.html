@@ -275,14 +275,16 @@ var SHEET_ID='1SsIRULQjX5dQJgnEzfijQuZV5lfJKHmwHy2CJvG_XwE';
 var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1bOiU8Q8J0NWhAbYJzGTueqUWaEKFhzraBMapcGLBq95QMg/exec';
 var TOKEN='muro2026';
 var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('作戰卡');
+var CSV_BAND='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('價格帶');
 
 var AIMS=['拉新粉','測新品','衝GMV','清庫存'];
 var RES=['✅ 達成','❌ 沒達成'];
 var CATS=['內衣','內褲','上衣','下身','塑身','襪子','其他（非內衣類）'];
 var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['小羅']};
 
-/* 價帶取自 market-intel.html（NT$）。高價帶只設下限，超過都算高。 */
-var BANDS={
+/* 價格帶：優先讀 Google Sheet 分頁「價格帶」；讀不到才用下面的內建備援值。
+   判定用「成交帶」(自家實際作戰帶)，「市場帶」只當參考天花板顯示。 */
+var BANDS_BUILTIN={
   '內衣':{low:[0,290],  mid:[300,500], high:1000, t:['88–290','300–500','1000+']},
   '內褲':{low:[0,65],   mid:[89,189],  high:234,  t:['25–65','89–189','234+']},
   '上衣':{low:[0,199],  mid:[200,400], high:500,  t:['99–199','200–400','500+']},
@@ -290,9 +292,17 @@ var BANDS={
   '塑身':{low:[0,299],  mid:[349,499], high:980,  t:['169–299','349–499','980+']},
   '襪子':{low:[0,69],   mid:[59,128],  high:149,  t:['棉11–69','機能59–128','壓力149+']}
 };
+var BANDS_MARKET=null, BANDS_DEAL=null;
+var BAND_SRC={mode:'builtin', updated:'', days:null};
 var BANDNAME={low:'低價帶',mid:'中價帶',high:'高價帶',gap:'跨帶'};
+
+function bandsFor(cat){
+  if(BANDS_DEAL&&BANDS_DEAL[cat])return BANDS_DEAL[cat];
+  if(BANDS_MARKET&&BANDS_MARKET[cat])return BANDS_MARKET[cat];
+  return BANDS_BUILTIN[cat]||null;
+}
 function bandOf(cat,price){
-  var b=BANDS[cat];
+  var b=bandsFor(cat);
   if(!b||!(price>0))return null;
   if(price<=b.low[1])return 'low';
   if(price>=b.mid[0]&&price<=b.mid[1])return 'mid';
@@ -300,12 +310,17 @@ function bandOf(cat,price){
   return 'gap';
 }
 function bandText(cat,k){
-  var b=BANDS[cat];if(!b)return '';
+  var b=bandsFor(cat);if(!b)return '';
   if(k==='low')return cat+' '+b.t[0];
   if(k==='mid')return cat+' '+b.t[1];
   if(k==='high')return cat+' '+b.t[2];
   if(k==='gap')return cat+' 價帶之間的空隙，自己判斷';
   return '';
+}
+function marketRef(cat,k){
+  if(!BANDS_MARKET||!BANDS_MARKET[cat]||!BANDS_DEAL||!BANDS_DEAL[cat])return '';
+  var i={low:0,mid:1,high:2}[k];
+  return (i===undefined)?'':'市場 '+BANDS_MARKET[cat].t[i];
 }
 
 var aim='', res='', sess='', sdate='';
@@ -480,7 +495,9 @@ function refresh(){
       if(!bk){bl.innerHTML=cat&&!BANDS[cat]?'<span class="bd bd-gap">無價帶</span><span>這個類別沒定價帶，不算進分佈</span>':'';}
       else{
         bandCount[bk]=(bandCount[bk]||0)+1;
-        var h='<span class="bd bd-'+bk+'">'+BANDNAME[bk]+'</span><span>'+esc(bandText(cat,bk))+'</span>';
+        var ref=marketRef(cat,bk);
+        var h='<span class="bd bd-'+bk+'">'+BANDNAME[bk]+'</span><span>'+esc(bandText(cat,bk))+'</span>'+
+               (ref?'<span class="bd bd-gap">'+esc(ref)+'</span>':'');
         if(p.want&&bk!=='gap'&&p.want.indexOf(bk)<0){
           h+='<div class="bandwarn">⚠ 直播價 $'+lp+' 落在'+BANDNAME[bk]+
              '，'+p.name+'預期的是'+p.want.map(function(w){return BANDNAME[w];}).join('或')+
@@ -499,12 +516,19 @@ function refresh(){
   var nnew=all.filter(function(x){return x.isNew;}).length;
   lines.unshift({ok:missPool.length===0,
     t:'🚦 三款齊全：'+(missPool.length?'缺 '+missPool.join('、'):'引流·品牌·利潤都有')});
+  var srcTxt,srcOk;
+  if(BAND_SRC.mode==='builtin'){srcOk=false;srcTxt='讀不到 Sheet「價格帶」分頁，現在用的是內建備援值';}
+  else if(BAND_SRC.mode==='market'){srcOk=false;srcTxt='只有市場帶，成交帶還沒填（現在拿市場帶在判）';}
+  else if(BAND_SRC.days===null){srcOk=false;srcTxt='成交帶（沒填更新日期，不知道多舊）';}
+  else if(BAND_SRC.days>14){srcOk=false;srcTxt='成交帶（'+BAND_SRC.days+' 天沒更新，該重查了）';}
+  else{srcOk=true;srcTxt='成交帶（'+BAND_SRC.days+' 天前更新）';}
   var kinds=['low','mid','high'].filter(function(k){return bandCount[k]>0;});
   var distOk=(bandCount.low>=1&&kinds.length>=2);
   lines.splice(1,0,{ok:distOk,
     t:'💰 價格分佈（依直播價）：低 '+bandCount.low+' · 中 '+bandCount.mid+
       ' · 高 '+bandCount.high+(bandCount.gap?' · 跨帶 '+bandCount.gap:'')+
       (distOk?'':(bandCount.low<1?'（沒有低價帶，留不住人）':'（全擠在同一帶，至少要跨 2 帶）'))});
+  lines.splice(1,0,{ok:srcOk,t:'📐 價格帶來源：'+srcTxt});
   lines.splice(1,0,{ok:nnew>=1,
     t:'🆕 新品 '+nnew+' / '+total+'（至少 1 款）'});
   lines.push({ok:missAct.length===0,
@@ -643,6 +667,46 @@ function parseCSV(text){
 }
 function normDate(s){s=(s||'').trim();var m=s.match(/(\d{4})[\/\-年\.](\d{1,2})[\/\-月\.](\d{1,2})/);
   return m?m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]):null;}
+function bnum(v){v=parseFloat(String(v||'').replace(/[^0-9.]/g,''));return (v>0)?v:0;}
+function mkBand(lo1,lo2,mi1,mi2,hi){
+  lo1=bnum(lo1);lo2=bnum(lo2);mi1=bnum(mi1);mi2=bnum(mi2);hi=bnum(hi);
+  if(!(lo2>0&&mi1>0&&mi2>0&&hi>0))return null;
+  if(!(mi2>=mi1&&hi>=mi2&&lo2<=mi1))return null;   /* 順序不合理就當沒填 */
+  return {low:[0,lo2],mid:[mi1,mi2],high:hi,
+          t:[(lo1>0?lo1+'–'+lo2:'≤'+lo2), mi1+'–'+mi2, hi+'+']};
+}
+function daysSince(str){
+  str=String(str||'').trim();if(!str)return null;
+  var m=str.match(/(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})/);
+  var d;
+  if(m)d=new Date(+m[1],+m[2]-1,+m[3]);
+  else{var q=str.match(/^(\d{1,2})[\/\-.](\d{1,2})$/);
+       if(!q)return null;d=new Date(new Date().getFullYear(),+q[1]-1,+q[2]);}
+  if(isNaN(d))return null;
+  return Math.floor((new Date()-d)/86400000);
+}
+function loadBands(){
+  fetch(CSV_BAND+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();})
+  .then(function(t){
+    var rows=parseCSV(t);
+    if(!rows.length||(rows[0][0]||'').indexOf('類別')===-1)throw 0;
+    var m={},d={},days=null;
+    for(var i=1;i<rows.length;i++){
+      var r=rows[i],cat=(r[0]||'').trim();
+      if(!cat||CATS.indexOf(cat)<0)continue;          /* 類別要跟下拉一致才算 */
+      var mb=mkBand(r[1],r[2],r[3],r[4],r[5]); if(mb)m[cat]=mb;
+      var db=mkBand(r[6],r[7],r[8],r[9],r[10]); if(db)d[cat]=db;
+      var dd=daysSince(r[11]);
+      if(dd!==null&&(days===null||dd<days))days=dd;
+    }
+    BANDS_MARKET=Object.keys(m).length?m:null;
+    BANDS_DEAL=Object.keys(d).length?d:null;
+    BAND_SRC.days=days;
+    BAND_SRC.mode=BANDS_DEAL?'deal':(BANDS_MARKET?'market':'builtin');
+  })
+  .catch(function(){BANDS_MARKET=null;BANDS_DEAL=null;BAND_SRC.mode='builtin';BAND_SRC.days=null;})
+  .then(function(){refresh();});
+}
 function load(){
   fetch(CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
     var rows=parseCSV(t);cards={};
@@ -816,6 +880,7 @@ setPools(null);
 chipRow('aimRow',AIMS,function(){return aim;},function(v){aim=v;refresh();});
 chipRow('resRow',RES,function(){return res;},function(v){res=v;});
 refresh();
+loadBands();
 load();
 </script>
 </body>
