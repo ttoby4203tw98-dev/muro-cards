@@ -77,6 +77,13 @@
   .live{flex:1 1 0;min-width:0;background:#f4eaf0;border-radius:10px;padding:7px 9px;text-align:center;}
   .live small{display:block;font-size:10.5px;font-weight:800;color:#7a4b62;letter-spacing:.5px;}
   .live b{font-size:17px;font-weight:800;color:var(--plum);line-height:1.5;}
+  .bandline{margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px;color:var(--ink2);}
+  .bd{font-weight:800;border-radius:99px;padding:2px 9px;letter-spacing:.5px;font-size:11px;}
+  .bd-low{background:#e3f1f4;color:var(--lead);}
+  .bd-mid{background:#efe8f7;color:var(--brand);}
+  .bd-high{background:#faeeda;color:var(--profit);}
+  .bd-gap{background:#f2ece8;color:#8a7580;}
+  .bandwarn{width:100%;font-size:11.5px;font-weight:800;color:#8a6a10;background:#FCF3D7;border-radius:8px;padding:5px 9px;line-height:1.6;}
   .newbox{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:13.5px;font-weight:800;color:var(--plum2);cursor:pointer;user-select:none;}
   .newbox input{width:18px;height:18px;accent-color:var(--rose);}
   .addbtn{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:12px;padding:11px;font-size:13.5px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:11px;}
@@ -274,16 +281,43 @@ var RES=['✅ 達成','❌ 沒達成'];
 var CATS=['內衣','內褲','上衣','下身','塑身','襪子','其他（非內衣類）'];
 var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['小羅']};
 
+/* 價帶取自 market-intel.html（NT$）。高價帶只設下限，超過都算高。 */
+var BANDS={
+  '內衣':{low:[0,290],  mid:[300,500], high:1000, t:['88–290','300–500','1000+']},
+  '內褲':{low:[0,65],   mid:[89,189],  high:234,  t:['25–65','89–189','234+']},
+  '上衣':{low:[0,199],  mid:[200,400], high:500,  t:['99–199','200–400','500+']},
+  '下身':{low:[0,399],  mid:[490,650], high:1400, t:['內搭199–399','寬褮490–650','1400+']},
+  '塑身':{low:[0,299],  mid:[349,499], high:980,  t:['169–299','349–499','980+']},
+  '襪子':{low:[0,69],   mid:[59,128],  high:149,  t:['棉11–69','機能59–128','壓力149+']}
+};
+var BANDNAME={low:'低價帶',mid:'中價帶',high:'高價帶',gap:'跨帶'};
+function bandOf(cat,price){
+  var b=BANDS[cat];
+  if(!b||!(price>0))return null;
+  if(price<=b.low[1])return 'low';
+  if(price>=b.mid[0]&&price<=b.mid[1])return 'mid';
+  if(price>=b.high)return 'high';
+  return 'gap';
+}
+function bandText(cat,k){
+  var b=BANDS[cat];if(!b)return '';
+  if(k==='low')return cat+' '+b.t[0];
+  if(k==='mid')return cat+' '+b.t[1];
+  if(k==='high')return cat+' '+b.t[2];
+  if(k==='gap')return cat+' 價帶之間的空隙，自己判斷';
+  return '';
+}
+
 var aim='', res='', sess='', sdate='';
 var gate={sub:'',anchor:'',ops:''};
 var cards={};
 
 var POOLS=[
-  {k:'lead',  icon:'🎣', name:'引流款', min:2, max:3, slots:2, act:true, must:true,
+  {k:'lead', want:['low'],  icon:'🎣', name:'引流款', min:2, max:3, slots:2, act:true, must:true,
    std:'<b>任務</b>：開場留人。<b>價帶</b>：內衣88–290 · 內褲25–65 · 上衣99–199 · 內搭199–399 · 塑身169–299 · 襪11–69。<b>條件</b>：一句話就講得完的感知價值。'},
-  {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, slots:2, act:true, must:true,
+  {k:'brand', want:['mid'], icon:'💎', name:'品牌款', min:2, max:3, slots:2, act:true, must:true,
    std:'<b>任務</b>：撐調性、講技術。<b>價帶</b>：內衣300–500 · 內褲89–189 · 上衣200–400 · 塑身349–499。<b>條件</b>：必須有一個能講滿 30 秒的技術點（涼感qmax／透氣率／抗菌檢測），沒有就不要放進來。'},
-  {k:'profit',icon:'💰', name:'利潤款', min:2, max:3, slots:2, act:true, must:true,
+  {k:'profit', want:['mid','high'],icon:'💰', name:'利潤款', min:2, max:3, slots:2, act:true, must:true,
    std:'<b>任務</b>：中段收割。<b>價帶</b>：內衣290–499 · 塑身300–500 · 寬褲490–650 · 上衣99–299。<b>條件</b>：要有組合或贈品把客單拉起來。'},
   {k:'chance',icon:'🎲', name:'機會款', min:0, max:1, slots:1, act:false, must:false,
    std:'<b>任務</b>：測水溫。<b>限制</b>：非女性內衣類。<b>可有可無</b>，有想測的才放，最多 1 個。'}
@@ -345,6 +379,7 @@ function itemEl(p,data){
       '<div><label class="lab">⑤ 打幾折</label><input class="txt f-disc" inputmode="decimal" placeholder="8 = 八折"></div>'+
       '<div class="live"><small>直播價</small><b class="f-live">—</b></div>'+
     '</div>'+
+    '<div class="bandline" data-band></div>'+
     '<label class="newbox"><input type="checkbox" class="f-new"><span>🆕 新品（從沒在直播講過）</span></label>';
   d.querySelector('.f-sku').value=data.sku||'';
   d.querySelector('.f-url').value=data.url||'';
@@ -369,7 +404,8 @@ function buildPools(){
   var box=document.getElementById('pools');box.innerHTML='';
   POOLS.forEach(function(p){
     var s=document.createElement('div');s.className='pool';s.setAttribute('data-k',p.k);
-    s.innerHTML='<h3>'+p.icon+' '+p.name+' <span class="cnt" data-cnt></span></h3>'+
+    var wantTag=p.want?'<span class="bd bd-'+p.want[0]+'">'+p.want.map(function(w){return BANDNAME[w];}).join('/')+'</span>':'';
+    s.innerHTML='<h3>'+p.icon+' '+p.name+' '+wantTag+' <span class="cnt" data-cnt></span></h3>'+
       '<div class="std">'+p.std+'</div>'+
       (p.act?'<div class="act"><label class="lab">🎁 '+p.name+'本場活動</label><input class="txt f-act" placeholder="例：買一送一 / 滿2件8折 / 前10名加送洗衣袋"></div>':'')+
       '<div class="items" data-items></div>'+
@@ -431,6 +467,7 @@ function readNames(){
 /* ---------- 檢核 ---------- */
 function refresh(){
   var d=readPools(),lines=[],all=[],missAct=[],missPool=[];
+  var bandCount={low:0,mid:0,high:0,gap:0};
   POOLS.forEach(function(p){
     var arr=d[p.k].items,n=arr.length;all=all.concat(arr);
     var want=(p.min===0)?('最多 '+p.max):((p.min===p.max)?String(p.min):(p.min+'–'+p.max));
@@ -439,6 +476,18 @@ function refresh(){
       c.querySelector('.it-no').textContent=p.name+' '+(i+1);
       var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
       c.querySelector('.f-live').textContent=(lp===null)?'—':('$'+lp);
+      var cat=c.querySelector('.f-cat').value, bk=bandOf(cat,lp), bl=c.querySelector('[data-band]');
+      if(!bk){bl.innerHTML=cat&&!BANDS[cat]?'<span class="bd bd-gap">無價帶</span><span>這個類別沒定價帶，不算進分佈</span>':'';}
+      else{
+        bandCount[bk]=(bandCount[bk]||0)+1;
+        var h='<span class="bd bd-'+bk+'">'+BANDNAME[bk]+'</span><span>'+esc(bandText(cat,bk))+'</span>';
+        if(p.want&&bk!=='gap'&&p.want.indexOf(bk)<0){
+          h+='<div class="bandwarn">⚠ 直播價 $'+lp+' 落在'+BANDNAME[bk]+
+             '，'+p.name+'預期的是'+p.want.map(function(w){return BANDNAME[w];}).join('或')+
+             '。確定要放這裡嗎？</div>';
+        }
+        bl.innerHTML=h;
+      }
     });
     if(p.must&&n===0)missPool.push(p.name);
     if(p.act&&!d[p.k].act)missAct.push(p.name);
@@ -450,6 +499,12 @@ function refresh(){
   var nnew=all.filter(function(x){return x.isNew;}).length;
   lines.unshift({ok:missPool.length===0,
     t:'🚦 三款齊全：'+(missPool.length?'缺 '+missPool.join('、'):'引流·品牌·利潤都有')});
+  var kinds=['low','mid','high'].filter(function(k){return bandCount[k]>0;});
+  var distOk=(bandCount.low>=1&&kinds.length>=2);
+  lines.splice(1,0,{ok:distOk,
+    t:'💰 價格分佈（依直播價）：低 '+bandCount.low+' · 中 '+bandCount.mid+
+      ' · 高 '+bandCount.high+(bandCount.gap?' · 跨帶 '+bandCount.gap:'')+
+      (distOk?'':(bandCount.low<1?'（沒有低價帶，留不住人）':'（全擠在同一帶，至少要跨 2 帶）'))});
   lines.splice(1,0,{ok:nnew>=1,
     t:'🆕 新品 '+nnew+' / '+total+'（至少 1 款）'});
   lines.push({ok:missAct.length===0,
@@ -655,8 +710,10 @@ function renderView(c){
       if(!items.length)html+='<div class="vnone">⚠ 這場沒排'+q.name+'</div>';
       items.forEach(function(it){
         var lp=livePrice(it.price,it.disc),u=safeUrl(it.url);
+        var vb=bandOf(it.cat,lp);
         html+='<div class="vitem"><span class="vsku">'+esc(it.sku||'（無貨號）')+'</span>'+
           (it.cat?'<span class="vtag">'+esc(it.cat)+'</span>':'')+
+          (vb?'<span class="vtag bd-'+vb+'">'+BANDNAME[vb]+'</span>':'')+
           (it.isNew?'<span class="vtag vnew">🆕 新品</span>':'')+
           '<div class="vprice">賣場價 $'+esc(it.price||'—')+
             (it.disc?'　打 '+esc(it.disc)+' 折':'')+'　→　直播價 <b>'+(lp===null?'—':'$'+lp)+'</b></div>'+
