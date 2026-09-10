@@ -181,14 +181,21 @@
   </div>
 
   <div class="card" id="whoCard">
-    <span class="rotag">🔒 已交卡</span>
-    <div class="flabel">🎬 這張卡是哪一場</div>
+    <div class="flabel">➕ 建立單場作戰卡</div>
+    <div class="hint">選好日期和場次，下面才會展開。要改別場也在這裡切換。</div>
     <div class="lookrow">
       <div><label class="lab">日期</label><input type="date" class="txt" id="fDate" data-always></div>
       <div><label class="lab">場次</label><select class="txt" id="fSeq" data-always></select></div>
     </div>
     <div id="sessLabel" style="margin-top:7px;font-size:13px;font-weight:800;color:var(--plum2);"></div>
-    <div class="it-row" style="margin-top:11px">
+  </div>
+
+  <div id="formArea" style="display:none">
+
+  <div class="card" id="peopleCard">
+    <span class="rotag">🔒 已交卡</span>
+    <div class="flabel">👥 這場的人</div>
+    <div class="it-row">
       <div><label class="lab">🎤 主播</label><select class="txt" id="nAnchor"></select></div>
       <div><label class="lab">🎛 中控</label><select class="txt" id="nOps"></select></div>
       <div><label class="lab">📋 運營</label><select class="txt" id="nOp"></select></div>
@@ -282,6 +289,8 @@
     </div>
   </div>
 
+  </div><!-- /formArea -->
+
   <footer><a href="team.html">← 回團隊首頁</a></footer>
 </div>
 
@@ -358,9 +367,14 @@ function seqOptions(){
 function onSess(){
   var ds=document.getElementById('fDate').value, sq=document.getElementById('fSeq').value;
   var el=document.getElementById('sessLabel');
-  if(!ds||!sq){sess='';sdate='';el.textContent='選好日期和場次才能填';refresh();return;}
+  if(!ds||!sq){
+    sess='';sdate='';el.textContent='⬆ 選好日期和場次，下面才會展開';
+    document.getElementById('formArea').style.display='none';
+    refresh();return;
+  }
   sdate=ds; sess=sessCode(ds,sq);
   el.textContent='📅 '+mdOf(ds)+' 第 '+sq+' 場（編號 '+sess+'）';
+  document.getElementById('formArea').style.display='block';
   fill();
 }
 
@@ -636,7 +650,7 @@ function setRO(id,ro){
 }
 function paintPhase(){
   var nm=readNames(), sub=!!gate.sub, both=!!(gate.anchor&&gate.ops);
-  ['whoCard','aimCard','poolCard'].forEach(function(id){setRO(id,sub);});
+  ['peopleCard','aimCard','poolCard'].forEach(function(id){setRO(id,sub);});
   document.getElementById('submitBtn').style.display=sub?'none':'block';
   var info=document.getElementById('subInfo');
   info.style.display=sub?'block':'none';
@@ -898,6 +912,7 @@ document.getElementById('fSeq').innerHTML=seqOptions();
 document.getElementById('lookSeq').innerHTML=seqOptions();
 document.getElementById('fDate').value=todayStr();
 document.getElementById('lookDate').value=todayStr();
+document.getElementById('sessLabel').textContent='⬆ 選好日期和場次，下面才會展開';
 buildRoster();
 buildPools();
 setPools(null);
