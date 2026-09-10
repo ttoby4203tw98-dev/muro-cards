@@ -40,6 +40,9 @@
   .lab{font-size:11px;font-weight:800;color:var(--plum2);display:block;margin-bottom:3px;letter-spacing:.5px;}
   input[type=date].txt{font-size:15px;}
 
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:0 12px;align-items:start;}
+  .col{min-width:0;}
+  .colh{font-size:10.5px;font-weight:800;letter-spacing:3px;color:var(--ink2);margin:14px 0 -4px 4px;}
   .ready{display:flex;flex-direction:column;gap:9px;}
   .rday{border:1px solid var(--line);border-radius:13px;padding:10px 11px;background:#fffdfb;}
   .rday h4{font-size:12.5px;font-weight:800;color:var(--plum2);margin-bottom:7px;letter-spacing:.5px;}
@@ -75,11 +78,10 @@
   .it-del:disabled{opacity:.3;cursor:default;}
   .itbody{display:flex;gap:10px;align-items:flex-start;}
   .itfields{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px;}
-  .thumb{flex:0 0 auto;width:74px;height:74px;border-radius:10px;overflow:hidden;
+  .thumb{flex:0 0 44%;aspect-ratio:1/1;border-radius:11px;overflow:hidden;
     border:1px solid var(--line);background:#f7f2ee;display:none;}
   .thumb.on{display:block;}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-  @media (max-width:380px){ .thumb{width:58px;height:58px;} }
   .it-row{display:flex;gap:6px;align-items:stretch;}
   .it-row>div{flex:1 1 0;min-width:0;}
   .linkrow{display:flex;gap:6px;}
@@ -88,9 +90,8 @@
     border:1.5px solid var(--line);background:#fff;color:#c3b3bb;font-size:12.5px;font-weight:800;
     text-decoration:none;pointer-events:none;white-space:nowrap;}
   .openbtn.on{border-color:var(--rose);color:var(--rose);background:#fdf5f8;pointer-events:auto;}
-  .live{flex:0 0 auto;min-width:86px;background:#f4eaf0;border-radius:9px;padding:4px 8px;text-align:center;}
-  .live small{display:block;font-size:9.5px;font-weight:800;color:#7a4b62;letter-spacing:.5px;}
-  .live b{font-size:16px;font-weight:800;color:var(--plum);line-height:1.35;}
+  .live{background:#f4eaf0;border-radius:9px;padding:6px 6px;text-align:center;min-height:37px;}
+  .live b{font-size:15.5px;font-weight:800;color:var(--plum);line-height:1.2;}
   .bandline{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:10.5px;color:var(--ink2);}
   .bd{font-weight:800;border-radius:99px;padding:2px 8px;letter-spacing:.5px;font-size:10.5px;}
   .bd-low{background:#e3f1f4;color:var(--lead);}
@@ -98,7 +99,10 @@
   .bd-high{background:#faeeda;color:var(--profit);}
   .bd-gap{background:#f2ece8;color:#8a7580;}
   .bandwarn{width:100%;font-size:11px;font-weight:800;color:#8a6a10;background:#FCF3D7;border-radius:7px;padding:5px 8px;line-height:1.55;}
-  .newbox{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--plum2);cursor:pointer;user-select:none;}
+  .metarow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+  .metarow .bandline{flex:1 1 auto;min-width:0;}
+  .live{display:flex;flex-direction:column;justify-content:center;}
+  .newbox{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--plum2);cursor:pointer;user-select:none;}
   .newbox input{width:17px;height:17px;accent-color:var(--rose);}
   .addbtn{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:11px;padding:10px;font-size:13px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:9px;}
   .addbtn:active{background:#fdf4f7;}
@@ -191,7 +195,6 @@
   </div>
 
   <div id="formArea" style="display:none">
-
   <div class="card" id="peopleCard">
     <span class="rotag">🔒 已交卡</span>
     <div class="flabel">👥 這場的人</div>
@@ -202,7 +205,10 @@
     </div>
   </div>
 
-  <div class="card" id="aimCard">
+  <div class="cols">
+    <div class="col">
+      <div class="colh">開播前</div>
+    <div class="card" id="aimCard">
     <span class="rotag">🔒 已交卡</span>
     <span class="stage">① 開播前 · 運營填</span>
     <div class="flabel">🎯 本場目的</div>
@@ -213,12 +219,58 @@
       <input class="txt" id="aimWhy" placeholder="例：上週塑身複購率最高但只有一款"></div>
     <div style="margin-top:7px"><label class="lab">成功條件</label>
       <input class="txt" id="aimKpi" placeholder="例：場觀 3000 · 新品加購率 8%"></div>
+    </div>
+    </div>
+    <div class="col">
+      <div class="colh">下播後</div>
+    <div class="card locked" id="fbCard">
+    <span class="stage two">③ 下播後 · 主播 · 中控填</span>
+    <div class="flabel">🗣 現場反饋</div>
+    <div class="hint">你們在鏡頭前後看到的，運營看不到。哪個品反應好、哪裡卡住、觀眾問什麼。</div>
+    <div class="lockmsg" id="lockMsg0">🔒 等主播與中控都按確認後才能填</div>
+    <div class="lockbody">
+      <div style="margin-top:9px"><label class="lab">🎤 主播反饋</label>
+        <textarea class="txt" id="fbAnchor" rows="3" placeholder="例：塑身褲講到第3分鐘彈幕開始問尺寸，但沒有大尺碼可推"></textarea></div>
+      <div style="margin-top:7px"><label class="lab">🎛 中控反饋</label>
+        <textarea class="txt" id="fbOps" rows="3" placeholder="例：上連結時機太晚，第2個品講完才上；觀眾一直問折扣碼"></textarea></div>
+      <button class="savebtn ghost" id="saveFb">儲存現場反饋</button>
+    </div>
+    </div>
+
+    <div class="card locked" id="afterCard">
+    <span class="stage after">③ 下播後 · 運營填</span>
+    <div class="flabel">🔚 運營總結</div>
+    <div class="hint">先看上面主播中控的反饋，再下結論。</div>
+    <div class="lockmsg" id="lockMsg">🔒 等主播與中控都按確認後才能填</div>
+    <div class="lockbody">
+      <div class="flabel">本場目的達成了沒</div>
+      <div class="optrow" id="resRow"></div>
+      <div style="margin-top:7px"><label class="lab">總結：原因 + 下場要改的一件事</label>
+        <textarea class="txt" id="resWhy" rows="3" placeholder="例：新品講太晚，前 40 分鐘都在引流款打轉。下場把新品提到第 15 分鐘。"></textarea></div>
+      <button class="savebtn ghost" id="saveAfter">儲存總結</button>
+    </div>
+    </div>
+
+    <div class="card locked" id="backCard">
+    <span class="stage back">③ 下播後 · 後端填</span>
+    <div class="flabel">💼 本場花費</div>
+    <div class="lockmsg" id="lockMsg2">🔒 等主播與中控都按確認後才能填</div>
+    <div class="lockbody">
+      <div class="it-row" style="margin-top:9px">
+        <div><label class="lab">💸 廣告花費 NT$</label><input class="txt" id="adCost" inputmode="decimal" placeholder="0"></div>
+        <div><label class="lab">🪙 蝦幣花費 NT$</label><input class="txt" id="coinCost" inputmode="decimal" placeholder="0"></div>
+      </div>
+      <button class="savebtn blue" id="saveBack">儲存花費</button>
+    </div>
+    </div>
+    </div>
   </div>
 
   <div class="card">
     <div class="flabel">✅ 交卡檢核</div>
     <div class="chk"><ul id="chkList"></ul></div>
   </div>
+
 
   <div class="card" id="poolCard">
     <span class="rotag">🔒 已交卡</span>
@@ -248,46 +300,8 @@
     </div>
   </div>
 
-  <div class="card locked" id="fbCard">
-    <span class="stage two">③ 下播後 · 主播 · 中控填</span>
-    <div class="flabel">🗣 現場反饋</div>
-    <div class="hint">你們在鏡頭前後看到的，運營看不到。哪個品反應好、哪裡卡住、觀眾問什麼。</div>
-    <div class="lockmsg" id="lockMsg0">🔒 等主播與中控都按確認後才能填</div>
-    <div class="lockbody">
-      <div style="margin-top:9px"><label class="lab">🎤 主播反饋</label>
-        <textarea class="txt" id="fbAnchor" rows="3" placeholder="例：塑身褲講到第3分鐘彈幕開始問尺寸，但沒有大尺碼可推"></textarea></div>
-      <div style="margin-top:7px"><label class="lab">🎛 中控反饋</label>
-        <textarea class="txt" id="fbOps" rows="3" placeholder="例：上連結時機太晚，第2個品講完才上；觀眾一直問折扣碼"></textarea></div>
-      <button class="savebtn ghost" id="saveFb">儲存現場反饋</button>
-    </div>
-  </div>
 
-  <div class="card locked" id="afterCard">
-    <span class="stage after">③ 下播後 · 運營填</span>
-    <div class="flabel">🔚 運營總結</div>
-    <div class="hint">先看上面主播中控的反饋，再下結論。</div>
-    <div class="lockmsg" id="lockMsg">🔒 等主播與中控都按確認後才能填</div>
-    <div class="lockbody">
-      <div class="flabel">本場目的達成了沒</div>
-      <div class="optrow" id="resRow"></div>
-      <div style="margin-top:7px"><label class="lab">總結：原因 + 下場要改的一件事</label>
-        <textarea class="txt" id="resWhy" rows="3" placeholder="例：新品講太晚，前 40 分鐘都在引流款打轉。下場把新品提到第 15 分鐘。"></textarea></div>
-      <button class="savebtn ghost" id="saveAfter">儲存總結</button>
-    </div>
-  </div>
 
-  <div class="card locked" id="backCard">
-    <span class="stage back">③ 下播後 · 後端填</span>
-    <div class="flabel">💼 本場花費</div>
-    <div class="lockmsg" id="lockMsg2">🔒 等主播與中控都按確認後才能填</div>
-    <div class="lockbody">
-      <div class="it-row" style="margin-top:9px">
-        <div><label class="lab">💸 廣告花費 NT$</label><input class="txt" id="adCost" inputmode="decimal" placeholder="0"></div>
-        <div><label class="lab">🪙 蝦幣花費 NT$</label><input class="txt" id="coinCost" inputmode="decimal" placeholder="0"></div>
-      </div>
-      <button class="savebtn blue" id="saveBack">儲存花費</button>
-    </div>
-  </div>
 
   </div><!-- /formArea -->
 
@@ -481,18 +495,19 @@ function itemEl(p,data){
       '<a class="thumb" data-thumb target="_blank" rel="noopener"><img alt=""></a>'+
       '<div class="itfields">'+
         '<div class="it-row">'+
-          '<div style="flex:1 1 42%"><input class="txt f-sku" placeholder="貨號"></div>'+
-          '<div style="flex:1 1 58%"><select class="txt f-cat">'+opts(CATS,'選類別')+'</select></div>'+
+          '<div style="flex:1 1 42%"><label class="lab">muro 貨號</label><input class="txt f-sku" placeholder="1023"></div>'+
+          '<div style="flex:1 1 58%"><label class="lab">類別</label><select class="txt f-cat">'+opts(CATS,'選類別')+'</select></div>'+
         '</div>'+
-        '<div class="linkrow"><input class="txt f-url" inputmode="url" placeholder="商品連結">'+
-          '<a class="openbtn" target="_blank" rel="noopener">開 ↗</a></div>'+
+        '<div><label class="lab">商品連結</label>'+
+          '<div class="linkrow"><input class="txt f-url" inputmode="url" placeholder="貼蝦皮或購買連結">'+
+          '<a class="openbtn" target="_blank" rel="noopener">開 ↗</a></div></div>'+
         '<div class="it-row">'+
-          '<div><input class="txt f-price" inputmode="decimal" placeholder="賣場價"></div>'+
-          '<div><input class="txt f-disc" inputmode="decimal" placeholder="折 8"></div>'+
-          '<div class="live"><small>直播價</small><b class="f-live">—</b></div>'+
+          '<div><label class="lab">賣場價</label><input class="txt f-price" inputmode="decimal" placeholder="0"></div>'+
+          '<div><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal" placeholder="8"></div>'+
+          '<div><label class="lab">直播價</label><div class="live"><b class="f-live">—</b></div></div>'+
         '</div>'+
-        '<div class="bandline" data-band></div>'+
-        '<label class="newbox"><input type="checkbox" class="f-new"><span>🆕 新品</span></label>'+
+        '<div class="metarow"><div class="bandline" data-band></div>'+
+          '<label class="newbox"><input type="checkbox" class="f-new"><span>🆕 新品</span></label></div>'+
       '</div>'+
     '</div>';
   d.querySelector('.f-sku').value=data.sku||'';
