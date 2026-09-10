@@ -77,6 +77,15 @@
   .live{flex:1 1 0;min-width:0;background:#f4eaf0;border-radius:10px;padding:7px 9px;text-align:center;}
   .live small{display:block;font-size:10.5px;font-weight:800;color:#7a4b62;letter-spacing:.5px;}
   .live b{font-size:17px;font-weight:800;color:var(--plum);line-height:1.5;}
+  .skurow{display:flex;gap:8px;align-items:center;}
+  .skurow .txt{flex:1 1 auto;min-width:0;}
+  .thumb{flex:0 0 auto;width:54px;height:54px;border-radius:10px;overflow:hidden;
+    border:1px solid var(--line);background:#f7f2ee;display:none;}
+  .thumb.on{display:block;}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .vthumb{float:left;width:56px;height:56px;border-radius:9px;overflow:hidden;margin:2px 10px 4px 0;
+    border:1px solid var(--line);background:#f7f2ee;}
+  .vthumb img{width:100%;height:100%;object-fit:cover;display:block;}
   .bandline{margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px;color:var(--ink2);}
   .bd{font-weight:800;border-radius:99px;padding:2px 9px;letter-spacing:.5px;font-size:11px;}
   .bd-low{background:#e3f1f4;color:var(--lead);}
@@ -386,7 +395,9 @@ function itemEl(p,data){
   var d=document.createElement('div');d.className='item';
   d.innerHTML=
     '<div class="it-top"><span class="it-no"></span><button class="it-del" type="button">刪除</button></div>'+
-    '<div class="it-f"><label class="lab">① muro 貨號</label><input class="txt f-sku" placeholder="例：JYWD030"></div>'+
+    '<div class="it-f"><label class="lab">① muro 貨號</label>'+
+      '<div class="skurow"><input class="txt f-sku" placeholder="例：1023">'+
+      '<a class="thumb" data-thumb target="_blank" rel="noopener"><img alt=""></a></div></div>'+
     '<div class="it-f"><label class="lab">② 商品連結</label><input class="txt f-url" inputmode="url" placeholder="貼蝦皮賣場連結或商品購買連結"></div>'+
     '<div class="it-f"><label class="lab">③ 商品類別</label><select class="txt f-cat">'+opts(CATS,'— 選類別 —')+'</select></div>'+
     '<div class="it-row">'+
@@ -406,6 +417,19 @@ function itemEl(p,data){
   [].forEach.call(d.querySelectorAll('input,select'),function(el){
     el.addEventListener('input',refresh);el.addEventListener('change',refresh);});
   return d;
+}
+function imgUrl(sku){return 'img/'+encodeURIComponent(sku)+'.jpg';}
+function setThumb(item){
+  var sku=item.querySelector('.f-sku').value.trim();
+  var a=item.querySelector('[data-thumb]'), im=a.querySelector('img');
+  if(!sku){a.className='thumb';a.removeAttribute('href');im.removeAttribute('data-sku');im.removeAttribute('src');return;}
+  if(im.getAttribute('data-sku')===sku)return;      /* 已經是這個貨號就別重載 */
+  im.setAttribute('data-sku',sku);
+  a.className='thumb';
+  im.onload=function(){a.className='thumb on';};
+  im.onerror=function(){a.className='thumb';};      /* 沒有圖就整個不顯示，不會破圖 */
+  im.src=imgUrl(sku);
+  a.href=imgUrl(sku);
 }
 function livePrice(price,disc){
   var p=parseFloat(price);if(!(p>0))return null;
@@ -491,6 +515,7 @@ function refresh(){
       c.querySelector('.it-no').textContent=p.name+' '+(i+1);
       var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
       c.querySelector('.f-live').textContent=(lp===null)?'—':('$'+lp);
+      setThumb(c);
       var cat=c.querySelector('.f-cat').value, bk=bandOf(cat,lp), bl=c.querySelector('[data-band]');
       if(!bk){bl.innerHTML=cat&&!BANDS[cat]?'<span class="bd bd-gap">無價帶</span><span>這個類別沒定價帶，不算進分佈</span>':'';}
       else{
@@ -775,7 +800,9 @@ function renderView(c){
       items.forEach(function(it){
         var lp=livePrice(it.price,it.disc),u=safeUrl(it.url);
         var vb=bandOf(it.cat,lp);
-        html+='<div class="vitem"><span class="vsku">'+esc(it.sku||'（無貨號）')+'</span>'+
+        html+='<div class="vitem">'+
+          (it.sku?'<span class="vthumb"><img alt="" src="'+esc(imgUrl(it.sku))+'"></span>':'')+
+          '<span class="vsku">'+esc(it.sku||'（無貨號）')+'</span>'+
           (it.cat?'<span class="vtag">'+esc(it.cat)+'</span>':'')+
           (vb?'<span class="vtag bd-'+vb+'">'+BANDNAME[vb]+'</span>':'')+
           (it.isNew?'<span class="vtag vnew">🆕 新品</span>':'')+
@@ -810,6 +837,10 @@ function doLookup(){
   var c=cards[p.date+'|'+p.code];
   if(!c){box.innerHTML='<div class="vnone" style="margin-top:10px">找不到場次 '+esc(p.code)+' 的作戰卡（'+esc(p.label)+'）</div>';return;}
   box.innerHTML=renderView(c);
+  [].forEach.call(box.querySelectorAll('.vthumb img'),function(im){
+    im.onerror=function(){ if(im.parentNode) im.parentNode.style.display='none'; };
+    if(im.complete&&im.naturalWidth===0&&im.parentNode) im.parentNode.style.display='none';
+  });
 }
 
 /* ---------- 儲存 ---------- */
