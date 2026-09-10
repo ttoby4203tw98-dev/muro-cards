@@ -40,8 +40,12 @@
   .lab{font-size:11px;font-weight:800;color:var(--plum2);display:block;margin-bottom:3px;letter-spacing:.5px;}
   input[type=date].txt{font-size:15px;}
 
-  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:0 12px;align-items:start;}
-  .col{min-width:0;}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:0 12px;align-items:stretch;}
+  .col{min-width:0;display:flex;flex-direction:column;}
+  .col>.card#aimCard{flex:1 1 auto;display:flex;flex-direction:column;}
+  .aimgrow{flex:1 1 auto;display:flex;flex-direction:column;gap:7px;margin-top:7px;}
+  .fgrow{flex:1 1 0;display:flex;flex-direction:column;min-height:66px;}
+  .fgrow textarea{flex:1 1 auto;min-height:42px;}
   .colh{font-size:10.5px;font-weight:800;letter-spacing:3px;color:var(--ink2);margin:14px 0 -4px 4px;}
   .ready{display:flex;flex-direction:column;gap:9px;}
   .rday{border:1px solid var(--line);border-radius:13px;padding:10px 11px;background:#fffdfb;}
@@ -213,12 +217,14 @@
     <span class="stage">① 開播前 · 運營填</span>
     <div class="flabel">🎯 本場目的</div>
     <div class="optrow" id="aimRow"></div>
-    <div style="margin-top:7px"><label class="lab">一句話目的</label>
-      <input class="txt" id="aimText" placeholder="例：測秋季高腰塑身褲三款反應"></div>
-    <div style="margin-top:7px"><label class="lab">為什麼是這個目的（必填）</label>
-      <input class="txt" id="aimWhy" placeholder="例：上週塑身複購率最高但只有一款"></div>
-    <div style="margin-top:7px"><label class="lab">成功條件</label>
-      <input class="txt" id="aimKpi" placeholder="例：場觀 3000 · 新品加購率 8%"></div>
+    <div class="aimgrow">
+      <div class="fgrow"><label class="lab">一句話目的</label>
+        <textarea class="txt" id="aimText" placeholder="例：測秋季高腰塑身褲三款反應"></textarea></div>
+      <div class="fgrow"><label class="lab">為什麼是這個目的（必填）</label>
+        <textarea class="txt" id="aimWhy" placeholder="例：上週塑身複購率最高但只有一款"></textarea></div>
+      <div class="fgrow"><label class="lab">成功條件</label>
+        <textarea class="txt" id="aimKpi" placeholder="例：場觀 3000 · 新品加購率 8%"></textarea></div>
+    </div>
     </div>
     </div>
     <div class="col">
@@ -251,19 +257,20 @@
     </div>
     </div>
 
-    <div class="card locked" id="backCard">
+    </div>
+    </div>
+  </div>
+
+  <div class="card locked" id="backCard">
     <span class="stage back">③ 下播後 · 後端填</span>
-    <div class="flabel">💼 本場花費</div>
-    <div class="lockmsg" id="lockMsg2">🔒 等主播與中控都按確認後才能填</div>
-    <div class="lockbody">
+  <div class="flabel">💼 本場花費</div>
+  <div class="lockmsg" id="lockMsg2">🔒 等主播與中控都按確認後才能填</div>
+  <div class="lockbody">
       <div class="it-row" style="margin-top:9px">
         <div><label class="lab">💸 廣告花費 NT$</label><input class="txt" id="adCost" inputmode="decimal" placeholder="0"></div>
         <div><label class="lab">🪙 蝦幣花費 NT$</label><input class="txt" id="coinCost" inputmode="decimal" placeholder="0"></div>
       </div>
       <button class="savebtn blue" id="saveBack">儲存花費</button>
-    </div>
-    </div>
-    </div>
   </div>
 
   <div class="card">
