@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>暮若每週週報</title>
+<title>暮若每週資訊</title>
 <meta name="theme-color" content="#4a2c3a">
 <style>
   :root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;
@@ -65,6 +65,26 @@
   footer{margin-top:16px;font-size:11px;color:var(--ink2);text-align:center;line-height:1.7}
 .know{font-size:11.5px;color:var(--ink2);background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin-top:8px;line-height:1.65}.know b{color:var(--gold)}.ksrc{display:block;margin-top:3px;opacity:.85}
 .rpt{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:800;color:var(--plum2);text-decoration:none;background:linear-gradient(90deg,#fdf3e9,#fff);border:1px solid var(--gold);border-radius:10px;padding:9px 11px}.rpt .ar{margin-left:auto;color:var(--gold)}
+.sw{display:inline-block;font-size:9.5px;font-weight:700;color:#fff;background:var(--rose);border-radius:4px;padding:0 4px;margin-right:4px;vertical-align:1px}
+.nwbar{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}
+.nwbar .big{font-size:22px;font-weight:800;color:var(--plum2)}
+.nwbar .rg{font-size:12px;color:var(--ink2)}
+.nwgrp{margin-top:10px}
+.nwgrp h4{font-size:12.5px;color:var(--plum2);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.nwgrp h4 .n{background:var(--plum2);color:#fff;border-radius:99px;font-size:10.5px;padding:1px 7px}
+.nw{border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:8px 11px;margin-bottom:7px;background:#fff}
+.nw-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px}
+.nw-code{font-weight:800;color:var(--plum2);font-size:12.5px}
+.nw-pos,.nw-st{border-radius:99px;padding:1px 8px;background:var(--orbg);color:#a3491f;font-weight:600}
+.nw-st.off{background:#eee;color:#888}
+.nw-date{margin-left:auto;color:var(--ink2)}
+.nw-name{font-size:12.5px;margin:4px 0 5px;line-height:1.5;word-break:break-word}
+.nw-bot{display:flex;align-items:center;gap:8px;font-size:12px}
+.nw-price{font-weight:800;color:var(--orange);font-size:14px}
+.nw-was{color:var(--ink2);text-decoration:line-through;font-size:11px}
+.nw-go{margin-left:auto;color:var(--rose);font-weight:700;text-decoration:none}
+.nwempty{font-size:12.5px;color:var(--ink2);padding:10px 2px}
+
 </style>
 </head>
 <body class="hant">
@@ -76,11 +96,11 @@
       <button id="l-s" onclick="setLang('hans')">简体</button>
     </div>
   </div>
-  <h1><span class="t">暮若每週週報</span><span class="s">暮若每周周报</span></h1>
+  <h1><span class="t">暮若每週資訊</span><span class="s">暮若每周资讯</span></h1>
   <div class="date"><span class="t">2026/09/08（二）· 鎖定 9/14–9/20 · 每週一 07:00 更新</span><span class="s">2026/09/08（二）· 锁定 9/14–9/20 · 每周一 07:00 更新</span></div>
   <div class="tabs">
     <button class="tab act" data-p="p1" onclick="setTab('p1',this)"><span class="t">市場痛點</span><span class="s">市场痛点</span></button>
-    <button class="tab" data-p="p2" onclick="setTab('p2',this)"><span class="t">商品情報</span><span class="s">商品情报</span></button>
+    <button class="tab" data-p="p2" onclick="setTab('p2',this)"><span class="t">商品情報</span><span class="s">商品情报</span></button><button class="tab" data-p="p3" onclick="setTab('p3',this)"><span class="t">本週新品</span><span class="s">本周新品</span></button>
   </div>
 </div>
 
@@ -155,17 +175,16 @@
 
 <!-- ============ 分頁2 商品情報 ============ -->
 <div class="pane" id="p2">
-  <div class="note"><span class="t"><b>商品面情報</b>(價帶/需求/毛利空間)。價格與 Trends 為<b>參考級</b>,下單前須人工蝦皮依銷量實搜校對。成本上限=暢銷價×(1−70%)÷4.8。</span><span class="s"><b>商品面情报</b>(价带/需求/毛利空间)。价格与 Trends 为<b>参考级</b>,下单前须人工虾皮依销量实搜校对。成本上限=畅销价×(1−70%)÷4.8。</span></div>
+  <div class="note"><span class="t"><b>商品情報</b>：以下價格一律為<b>實際成交價（折後結帳價）</b>，且只採計<b>單一商品</b>，不含任何多件組合價。三個來源分開列：蝦皮一般賣場、電商平台（momo／PChome／酷澎 Coupang）、台灣本土內衣品牌。成本上限＝蝦皮甜蜜點×(1−70%)÷4.8。</span><span class="s"><b>商品情报</b>：以下价格一律为<b>实际成交价（折后结帐价）</b>，且只采计<b>单一商品</b>，不含任何多件组合价。三个来源分开列：虾皮一般卖场、电商平台（momo／PChome／酷澎 Coupang）、台湾本土内衣品牌。成本上限＝虾皮甜蜜点×(1−70%)÷4.8。</span></div>
   <div class="ovf"><table>
-    <tr><th><span class="t">類目</span><span class="s">类目</span></th><th><span class="t">價帶(NT$)</span><span class="s">价带(NT$)</span></th><th><span class="t">暢銷</span><span class="s">畅销</span></th><th><span class="t">成本上限¥</span><span class="s">成本上限¥</span></th><th><span class="t">需求</span><span class="s">需求</span></th><th><span class="t">建議</span><span class="s">建议</span></th></tr>
-    <tr><td><span class="t">內衣</span><span class="s">内衣</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$≤380<br><span class="lv lv-mid">中</span>NT$381–740<br><span class="lv lv-hi">高</span>NT$741+</td><td>成交 NT$399</td><td>¥25</td><td class="t">升·高</td><td class="s">升·高</td><td><span class="pill watch"><span class="t">觀望</span><span class="s">观望</span></span></td></tr>
-    <tr><td><span class="t">內褲</span><span class="s">内裤</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$≤143<br><span class="lv lv-mid">中</span>NT$144–298<br><span class="lv lv-hi">高</span>NT$299+</td><td>成交 NT$99–199</td><td>¥9</td><td class="t">平·中</td><td class="s">平·中</td><td><span class="pill watch"><span class="t">觀望</span><span class="s">观望</span></span></td></tr>
-    <tr><td><span class="t">上衣</span><span class="s">上衣</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$≤234<br><span class="lv lv-mid">中</span>NT$235–621<br><span class="lv lv-hi">高</span>NT$622+</td><td>成交 NT$279–299</td><td>¥18</td><td class="t">升·高</td><td class="s">升·高</td><td><span class="pill go"><span class="t">做</span><span class="s">做</span></span></td></tr>
-    <tr><td><span class="t">下身</span><span class="s">下身</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$≤499<br><span class="lv lv-mid">中</span>NT$500–1235<br><span class="lv lv-hi">高</span>NT$1236+</td><td>成交 NT$199–299</td><td>¥16</td><td class="t">升·高</td><td class="s">升·高</td><td><span class="pill go"><span class="t">做</span><span class="s">做</span></span></td></tr>
-    <tr><td><span class="t">塑身</span><span class="s">塑身</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$≤398<br><span class="lv lv-mid">中</span>NT$399–853<br><span class="lv lv-hi">高</span>NT$854+</td><td>成交 NT$399</td><td>¥25</td><td class="t">平升·中</td><td class="s">平升·中</td><td><span class="pill go"><span class="t">做·合規</span><span class="s">做·合规</span></span></td></tr>
-    <tr><td><span class="t">睡衣</span><span class="s">睡衣</span></td><td class="pb"><span class="lv lv-lo">低</span>NT$≤449<br><span class="lv lv-mid">中</span>NT$450–699<br><span class="lv lv-hi">高</span>NT$700+</td><td>成交 NT$200</td><td>¥13</td><td class="t">機能升</td><td class="s">机能升</td><td><span class="pill go"><span class="t">做·機能</span><span class="s">做·机能</span></span></td></tr>
+    <tr><th><span class="t">類目</span><span class="s">类目</span></th><th><span class="t">蝦皮成交價</span><span class="s">虾皮成交价</span></th><th><span class="t">電商平台 momo/PChome/酷澎</span><span class="s">电商平台 momo/PChome/酷澎</span></th><th><span class="t">台灣品牌</span><span class="s">台湾品牌</span></th><th><span class="t">成本上限¥</span><span class="s">成本上限¥</span></th></tr>
+    <tr><td><span class="t">內衣</span><span class="s">内衣</span></td><td class="pb">NT$79–1,480<br><span class="sw">甜蜜點</span>NT$299</td><td class="pb">NT$99–2,006<br><span class="sw">甜蜜點</span>NT$435</td><td class="pb">NT$679–3,080<br><span class="sw">甜蜜點</span>NT$1,880</td><td>¥18</td></tr>
+    <tr><td><span class="t">內褲</span><span class="s">内裤</span></td><td class="pb">NT$37–290<br><span class="sw">甜蜜點</span>NT$149</td><td class="pb">NT$59–490<br><span class="sw">甜蜜點</span>NT$189</td><td class="pb">NT$162–599<br><span class="sw">甜蜜點</span>NT$379</td><td>¥9</td></tr>
+    <tr><td><span class="t">塑身褲</span><span class="s">塑身裤</span></td><td class="pb">NT$100–880<br><span class="sw">甜蜜點</span>NT$299</td><td class="pb">NT$279–1,200<br><span class="sw">甜蜜點</span>NT$580</td><td class="pb">NT$390–800<br><span class="sw">甜蜜點</span>NT$500</td><td>¥18</td></tr>
+    <tr><td><span class="t">連身塑身衣</span><span class="s">连身塑身衣</span></td><td class="pb">NT$490–2,298<br><span class="sw">甜蜜點</span>NT$999</td><td class="pb">NT$590–1,880<br><span class="sw">甜蜜點</span>NT$1,500</td><td class="pb">NT$1,090–1,980<br><span class="sw">甜蜜點</span>NT$1,500</td><td>¥62</td></tr>
+    <tr><td><span class="t">睡衣</span><span class="s">睡衣</span></td><td class="pb">NT$145–450<br><span class="sw">甜蜜點</span>NT$298</td><td class="pb">NT$236–1,380<br><span class="sw">甜蜜點</span>NT$599</td><td class="pb">NT$453–3,854<br><span class="sw">甜蜜點</span>NT$2,100</td><td>¥18</td></tr>
   </table></div>
-  <p style="font-size:11.5px;color:var(--ink2)"><span class="t">低價帶(冰絲內褲¥2–4、平價上衣¥6)在 1688 幾乎買不到能達 70% 毛利的貨 → 撐不起 70%,要嘛賣高一階、要嘛收 60% 目標。</span><span class="s">低价带(冰丝内裤¥2–4、平价上衣¥6)在 1688 几乎买不到能达 70% 毛利的货 → 撑不起 70%,要嘛卖高一阶、要嘛收 60% 目标。</span></p>
+  <p style="font-size:11.5px;color:var(--ink2);line-height:1.75"><span class="t"><b>怎麼看這張表</b>：內衣的品牌溢價最誇張（蝦皮 299 對專櫃 1,880，約 6 倍），所以主戰場在 NT$199–499，報價一過 600 觀眾就自動去跟華歌爾比。內褲三個來源只差 2.5 倍、沒有護城河，單件要撐到 NT$180–250 就得靠台灣製、抗菌檢驗、防漏層數這種講得出口的規格。塑身是唯一電商價高蝦皮 2 倍的品類，也是直播最能現場示範、把單價從 299 帶到 699–999 的切入點。睡衣的 NT$500–700 帶被 momo、酷澎的韓系品牌塞滿，卡在 NT$450–650 靠材質與大尺碼最有勝算。</span><span class="s"><b>怎么看这张表</b>：内衣的品牌溢价最夸张（虾皮 299 对专柜 1,880，约 6 倍），所以主战场在 NT$199–499，报价一过 600 观众就自动去跟华歌尔比。内裤三个来源只差 2.5 倍、没有护城河，单件要撑到 NT$180–250 就得靠台湾制、抗菌检验、防漏层数这种讲得出口的规格。塑身是唯一电商价高虾皮 2 倍的品类，也是直播最能现场示范、把单价从 299 带到 699–999 的切入点。睡衣的 NT$500–700 带被 momo、酷澎的韩系品牌塞满，卡在 NT$450–650 靠材质与大尺码最有胜算。</span></p>
   <div class="sec"><h2 class="plum"><span class="t">各欄資料來源與算法</span><span class="s">各栏资料来源与算法</span></h2>
     <p><b><span class="t">價格帶 低/中/高</span><span class="s">价格带 低/中/高</span></b>：<span class="t">蝦皮同款 ＋ BigGo/feebee 跨平台(momo/Yahoo/PChome),取「實際在賣」的價分低中高。</span><span class="s">虾皮同款 ＋ BigGo/feebee 跨平台(momo/Yahoo/PChome),取「实际在卖」的价分低中高。</span></p>
     <p><b><span class="t">暢銷價</span><span class="s">畅销价</span></b>：<span class="t">蝦皮依「銷量」排序,取熱賣可比款的成交價落點。</span><span class="s">虾皮依「销量」排序,取热卖可比款的成交价落点。</span></p>
@@ -195,13 +214,116 @@
   <a class="full" href="market-intel.html"><span class="t">看商品情報完整版 ›</span><span class="s">看商品情报完整版 ›</span></a>
 </div>
 
-<footer><span class="t">MURO 暮若每週週報 · 市場痛點/商品情報 · 每週一 07:00 更新</span><span class="s">MURO 暮若每周周报 · 市场痛点/商品情报 · 每周一 07:00 更新</span></footer>
+<!-- ============ 分頁3 本週新品 ============ -->
+<div class="pane" id="p3">
+  <div class="note"><span class="t">直接讀取 <b>MURO 商品庫</b>試算表，依各品類分頁第一欄的「日期」判定。一週以<b>週一到週日</b>計算，每次打開都是即時資料。日期只填到月份（例如 2026/06）的舊品項無法判定週次，不會出現在這裡。</span><span class="s">直接读取 <b>MURO 商品库</b>试算表，依各品类分页第一栏的「日期」判定。一周以<b>周一到周日</b>计算，每次打开都是即时资料。日期只填到月份（例如 2026/06）的旧品项无法判定周次，不会出现在这里。</span></div>
+  <div class="sec">
+    <h2>🆕 <span class="t">本週新品</span><span class="s">本周新品</span></h2>
+    <div class="nwbar"><span class="big" id="nwN1">–</span><span class="rg" id="nwR1"></span></div>
+    <div id="nwB1" class="nwempty"><span class="t">讀取中…</span><span class="s">读取中…</span></div>
+  </div>
+  <div class="sec">
+    <h2 class="plum">📦 <span class="t">上週新品</span><span class="s">上周新品</span></h2>
+    <div class="nwbar"><span class="big" id="nwN2">–</span><span class="rg" id="nwR2"></span></div>
+    <div id="nwB2" class="nwempty"></div>
+  </div>
+  <div class="note" id="nwNote"></div>
+</div>
+
+<footer><span class="t">MURO 暮若每週資訊 · 市場痛點/商品情報/本週新品 · 每週一 07:00 更新</span><span class="s">MURO 暮若每周资讯 · 市场痛点/商品情报/本周新品 · 每周一 07:00 更新</span></footer>
 </div>
 
 <script>
 function setLang(l){document.body.className=l;document.getElementById('l-t').classList.toggle('act',l==='hant');document.getElementById('l-s').classList.toggle('act',l==='hans');try{localStorage.setItem('muroLang',l)}catch(e){}}
 function setTab(p,btn){document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('act')});document.getElementById(p).classList.add('act');document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('act')});btn.classList.add('act');window.scrollTo(0,0)}
 try{var sv=localStorage.getItem('muroLang');if(sv)setLang(sv)}catch(e){}
+
+/* ===== 本週新品：即時讀取商品庫 ===== */
+var NW_ID='1WJcHeXKPIrPa95JcyditMIP1fNI-ot1GvJb096Ly-Qc';
+var NW_SHEETS=[['內衣','1-內衣'],['內褲','2-內褲 '],['塑身','8-塑身'],['睡衣','9-睡衣'],['上衣','3-上衣'],['下身','4-下身'],['外搭','5-外搭'],['連裝','6-連裝'],['襪子','S-襪子'],['其他','7-其他']];
+function nwCSV(t){var rows=[],row=[],cur='',q=false;for(var i=0;i<t.length;i++){var c=t[i];
+ if(q){ if(c==='"'){ if(t[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+ else { if(c==='"')q=true; else if(c===','){row.push(cur);cur='';}
+ else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur='';}
+ else if(c!=='\r')cur+=c; } }
+ if(cur||row.length){row.push(cur);rows.push(row);} return rows;}
+function nwDate(s){ s=(s||'').trim(); if(!s) return null; s=s.replace(/[.\-]/g,'/');
+ var m=s.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/); if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+ m=s.match(/^(\d{1,2})\/(\d{1,2})$/);
+ if(m){ var n=new Date(), y=n.getFullYear(), d=new Date(y,+m[1]-1,+m[2]);
+   if(d-n>1000*60*60*24*200) d=new Date(y-1,+m[1]-1,+m[2]); return d; }
+ return null; }
+function nwMon(d){ var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); var w=(x.getDay()+6)%7; x.setDate(x.getDate()-w); return x; }
+function nwFmt(d){ return (d.getMonth()+1)+'/'+d.getDate(); }
+function nwName(u){ if(!u) return ''; var s=u; try{s=decodeURIComponent(u);}catch(e){}
+ var m=s.match(/shopee\.tw\/(.+?)-i\.\d+\.\d+/); if(!m) return '';
+ var n=m[1].replace(/-/g,' ').replace(/\s+/g,' ').trim();
+ n=n.replace(/^[^一-龥A-Za-z]*/,''); return n.length>80?n.slice(0,80)+'…':n; }
+function nwEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function nwCard(it){
+  var st=(it.st||'').indexOf('下架')>=0?' off':'';
+  var h='<div class="nw"><div class="nw-top"><span class="nw-code">'+nwEsc(it.code||'—')+'</span>';
+  if(it.pos) h+='<span class="nw-pos">'+nwEsc(it.pos)+'</span>';
+  if(it.st) h+='<span class="nw-st'+st+'">'+nwEsc(it.st)+'</span>';
+  h+='<span class="nw-date">'+nwFmt(it.d)+'</span></div>';
+  if(it.name) h+='<div class="nw-name">'+nwEsc(it.name)+'</div>';
+  h+='<div class="nw-bot">';
+  if(it.price) h+='<span class="nw-price">NT$'+nwEsc(it.price)+'</span>';
+  if(it.list&&it.list!==it.price) h+='<span class="nw-was">NT$'+nwEsc(it.list)+'</span>';
+  if(it.url&&/^https?:/.test(it.url)) h+='<a class="nw-go" href="'+nwEsc(it.url)+'" target="_blank" rel="noopener">蝦皮 ›</a>';
+  h+='</div></div>'; return h; }
+function nwRender(box,cnt,rng,items,a,b){
+  document.getElementById(rng).textContent=nwFmt(a)+'–'+nwFmt(b);
+  document.getElementById(cnt).textContent=items.length;
+  var el=document.getElementById(box);
+  if(!items.length){ el.className='nwempty'; el.textContent='這一週沒有新增品項。'; return; }
+  el.className='';
+  var g={},order=[];
+  items.forEach(function(it){ if(!g[it.cat]){g[it.cat]=[];order.push(it.cat);} g[it.cat].push(it); });
+  var h='';
+  order.forEach(function(c){
+    h+='<div class="nwgrp"><h4>'+nwEsc(c)+'<span class="n">'+g[c].length+'</span></h4>';
+    g[c].sort(function(x,y){return y.d-x.d;}).forEach(function(it){h+=nwCard(it);});
+    h+='</div>'; });
+  el.innerHTML=h; }
+function nwLoad(){
+  var mon=nwMon(new Date()), sun=new Date(mon); sun.setDate(sun.getDate()+6);
+  var pmon=new Date(mon); pmon.setDate(pmon.getDate()-7); var psun=new Date(mon); psun.setDate(psun.getDate()-1);
+  var cur=[],prev=[],bad=0;
+  var jobs=NW_SHEETS.map(function(p){
+    var u='https://docs.google.com/spreadsheets/d/'+NW_ID+'/gviz/tq?tqx=out:csv&headers=0&sheet='+encodeURIComponent(p[1]);
+    return fetch(u).then(function(r){return r.text();}).then(function(t){
+      var rows=nwCSV(t),hi=-1;
+      for(var i=0;i<Math.min(rows.length,6);i++){ var j=rows[i].map(function(x){return x.trim();}); if(j.indexOf('狀態')>=0){hi=i;break;} }
+      if(hi<0){bad++;return;}
+      var H=rows[hi].map(function(x){return x.trim();});
+      var iSt=H.indexOf('狀態'), iPos=H.indexOf('定位');
+      var iLink=H.indexOf('商品連結'); if(iLink<0) iLink=H.indexOf('廠商連結');
+      var iSp=H.indexOf('蝦皮連結');
+      var iCode=iLink>0?iLink-1:-1;
+      for(var k=hi+1;k<rows.length;k++){
+        var r2=rows[k]; if(!r2||!r2.length) continue;
+        var d=nwDate(r2[0]); if(!d) continue;
+        var t0=d.getTime(); var inCur=t0>=mon.getTime()&&t0<=sun.getTime()+864e5-1;
+        var inPrev=t0>=pmon.getTime()&&t0<=psun.getTime()+864e5-1;
+        if(!inCur&&!inPrev) continue;
+        var it={cat:p[0],d:d,
+          st:iSt>=0?(r2[iSt]||'').trim():'',
+          pos:iPos>=0?(r2[iPos]||'').trim():'',
+          code:iCode>=0?(r2[iCode]||'').trim():'',
+          url:iSp>=0?(r2[iSp]||'').trim():'',
+          list:iSp>=0?(r2[iSp+1]||'').trim():'',
+          price:iSp>=0?(r2[iSp+3]||'').trim():''};
+        it.name=nwName(it.url);
+        (inCur?cur:prev).push(it); } })
+    .catch(function(){bad++;}); });
+  Promise.all(jobs).then(function(){
+    nwRender('nwB1','nwN1','nwR1',cur,mon,sun);
+    nwRender('nwB2','nwN2','nwR2',prev,pmon,psun);
+    var n=document.getElementById('nwNote');
+    n.innerHTML='更新時間：'+new Date().toLocaleString('zh-TW')+'　·　資料來源：MURO 商品庫試算表'+(bad?'　·　<b>有 '+bad+' 個品類分頁讀取失敗</b>':'');
+  }); }
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',nwLoad); else nwLoad();
 </script>
 </body>
 </html>
