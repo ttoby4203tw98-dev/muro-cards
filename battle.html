@@ -477,15 +477,26 @@ function loadBands(){
 }
 
 function imgUrl(sku){return 'img/'+encodeURIComponent(sku)+'.jpg';}
+/* 只認 muro 貨號（3–5 位純數字）；欄位可能一次填好幾個（例 2028.2029.2030），
+   逐一試到找得到圖為止。廠商貨號（MZ4703、C10 之類）不拿來查圖，避免誤抓。 */
+function skuList(v){
+  return String(v||'').split(/[.,、，\/;\s]+/).map(function(x){return x.trim();})
+    .filter(function(x){return /^\d{3,5}$/.test(x);});
+}
+function tryThumb(a,im,list,i){
+  if(i>=list.length){a.className='thumb';a.removeAttribute('href');return;}
+  im.onload=function(){a.className='thumb on';a.href=imgUrl(list[i]);};
+  im.onerror=function(){tryThumb(a,im,list,i+1);};
+  im.src=imgUrl(list[i]);
+}
 function setThumb(item){
-  var sku=item.querySelector('.f-sku').value.trim();
+  var list=skuList(item.querySelector('.f-sku').value);
   var a=item.querySelector('[data-thumb]'), im=a.querySelector('img');
-  if(!sku){a.className='thumb';a.removeAttribute('href');im.removeAttribute('data-sku');im.removeAttribute('src');return;}
-  if(im.getAttribute('data-sku')===sku)return;
-  im.setAttribute('data-sku',sku); a.className='thumb';
-  im.onload=function(){a.className='thumb on';};
-  im.onerror=function(){a.className='thumb';};
-  im.src=imgUrl(sku); a.href=imgUrl(sku);
+  var key=list.join('|');
+  if(!list.length){a.className='thumb';a.removeAttribute('href');im.removeAttribute('data-sku');im.removeAttribute('src');return;}
+  if(im.getAttribute('data-sku')===key)return;
+  im.setAttribute('data-sku',key); a.className='thumb';
+  tryThumb(a,im,list,0);
 }
 function setOpen(item){
   var u=safeUrl(item.querySelector('.f-url').value);
@@ -826,7 +837,8 @@ function renderView(c){
       items.forEach(function(it){
         var lp=livePrice(it.price,it.disc),u=safeUrl(it.url),vb=bandOf(it.cat,lp);
         html+='<div class="vitem">'+
-          (it.sku?'<span class="vthumb"><img alt="" src="'+esc(imgUrl(it.sku))+'"></span>':'')+
+          (it.sku?'<span class="vthumb"><img alt="" data-list="'+esc(skuList(it.sku).join('|'))+
+                  '" data-i="0" src="'+esc(imgUrl(skuList(it.sku)[0]||it.sku))+'"></span>':'')+
           '<span class="vsku">'+esc(it.sku||'（無貨號）')+'</span>'+
           (it.cat?'<span class="vtag">'+esc(it.cat)+'</span>':'')+
           (vb?'<span class="vtag bd-'+vb+'">'+BANDNAME[vb]+'</span>':'')+
@@ -865,8 +877,13 @@ function doLookup(){
   if(!c){box.innerHTML='<div class="vnone" style="margin-top:9px">找不到 '+esc(mdOf(ds))+' 第 '+esc(sq)+' 場的作戰卡</div>';return;}
   box.innerHTML=renderView(c);
   [].forEach.call(box.querySelectorAll('.vthumb img'),function(im){
-    im.onerror=function(){ if(im.parentNode) im.parentNode.style.display='none'; };
-    if(im.complete&&im.naturalWidth===0&&im.parentNode) im.parentNode.style.display='none';
+    im.onerror=function(){
+      var list=(im.getAttribute('data-list')||'').split('|').filter(Boolean);
+      var i=(+im.getAttribute('data-i')||0)+1;
+      if(i<list.length){im.setAttribute('data-i',i);im.src=imgUrl(list[i]);return;}
+      if(im.parentNode)im.parentNode.style.display='none';
+    };
+    if(im.complete&&im.naturalWidth===0)im.onerror();
   });
 }
 
