@@ -157,6 +157,7 @@
   .vnone{font-size:12.5px;color:var(--no);font-weight:700;}
   .vmeta{font-size:12px;color:var(--ink2);line-height:1.85;margin-top:7px;}
   .vmeta b{color:var(--plum2);}
+  .vmiss{color:var(--no);font-weight:800;background:#FBE4E4;border-radius:5px;padding:0 6px;}
   .legacy{font-size:12px;color:var(--ink2);background:#f7f2ee;border-radius:9px;padding:9px 11px;margin-top:9px;line-height:1.7;white-space:pre-wrap;}
   footer{text-align:center;margin-top:20px;font-size:12px;color:#b9a8b0;}
   footer a{color:var(--rose);}
@@ -855,18 +856,19 @@ function renderView(c){
     '<b>運營交卡</b>：'+(h.sub?'✔ '+esc(h.sub):'尚未交卡')+'<br>'+
     '<b>主播確認</b>：'+(h.anchor?'✔ '+esc(h.anchor):'尚未確認')+'<br>'+
     '<b>中控確認</b>：'+(h.ops?'✔ '+esc(h.ops):'尚未確認')+'</div></div>';
-  if(n.fbAnchor||n.fbOps){
-    html+='<div class="vsec"><h4>🗣 現場反饋</h4><div class="vmeta">'+
-      (n.fbAnchor?'<b>主播</b>：'+esc(n.fbAnchor)+'<br>':'')+
-      (n.fbOps?'<b>中控</b>：'+esc(n.fbOps):'')+'</div></div>';
+  /* 下播後三區一律顯示，沒填就標紅「未填」，才看得出誰還沒回填 */
+  function fld(label,val,prefix){
+    return '<b>'+label+'</b>：'+(val?(prefix||'')+esc(val):'<span class="vmiss">未填</span>');
   }
-  if(n.res||n.why||n.ad||n.coin){
-    html+='<div class="vsec"><h4>🔚 運營總結</h4><div class="vmeta">'+
-      (n.res?'<b>結果</b>：'+esc(n.res)+'<br>':'')+
-      (n.why?'<b>總結</b>：'+esc(n.why)+'<br>':'')+
-      (n.ad?'<b>廣告花費</b>：NT$'+esc(n.ad)+'<br>':'')+
-      (n.coin?'<b>蝦幣花費</b>：NT$'+esc(n.coin):'')+'</div></div>';
-  }
+  html+='<div class="vsec"><h4>🗣 現場反饋</h4><div class="vmeta">'+
+    fld('主播'+(w.anchor?'（'+esc(w.anchor)+'）':''),n.fbAnchor)+'<br>'+
+    fld('中控'+(w.ops?'（'+esc(w.ops)+'）':''),n.fbOps)+'</div></div>';
+  html+='<div class="vsec"><h4>🔚 運營總結</h4><div class="vmeta">'+
+    fld('結果',n.res)+'<br>'+
+    fld('總結',n.why)+'</div></div>';
+  html+='<div class="vsec"><h4>💼 本場花費</h4><div class="vmeta">'+
+    fld('廣告花費',n.ad,'NT$')+'<br>'+
+    fld('蝦幣花費',n.coin,'NT$')+'</div></div>';
   return html;
 }
 function doLookup(){
