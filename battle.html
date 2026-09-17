@@ -829,6 +829,24 @@ function renderView(c){
       (g.why?'<div class="vmeta"><b>為什麼</b>：'+esc(g.why)+'</div>':'')+
       (g.kpi?'<div class="vmeta"><b>成功條件</b>：'+esc(g.kpi)+'</div>':'')+'</div>';
   }
+  html+='<div class="vsec"><h4>🤝 進度</h4><div class="vmeta">'+
+    '<b>運營交卡</b>：'+(h.sub?'✔ '+esc(h.sub):'尚未交卡')+'<br>'+
+    '<b>主播確認</b>：'+(h.anchor?'✔ '+esc(h.anchor):'尚未確認')+'<br>'+
+    '<b>中控確認</b>：'+(h.ops?'✔ '+esc(h.ops):'尚未確認')+'</div></div>';
+  /* 下播後三區一律顯示，沒填就標紅「未填」，才看得出誰還沒回填 */
+  function fld(label,val,prefix){
+    return '<b>'+label+'</b>：'+(val?(prefix||'')+esc(val):'<span class="vmiss">未填</span>');
+  }
+  html+='<div class="vsec"><h4>🗣 現場反饋</h4><div class="vmeta">'+
+    fld('主播'+(w.anchor?'（'+esc(w.anchor)+'）':''),n.fbAnchor)+'<br>'+
+    fld('中控'+(w.ops?'（'+esc(w.ops)+'）':''),n.fbOps)+'</div></div>';
+  html+='<div class="vsec"><h4>🔚 運營總結</h4><div class="vmeta">'+
+    fld('結果',n.res)+'<br>'+
+    fld('總結',n.why)+'</div></div>';
+  html+='<div class="vsec"><h4>💼 本場花費</h4><div class="vmeta">'+
+    fld('廣告花費',n.ad,'NT$')+'<br>'+
+    fld('蝦幣花費',n.coin,'NT$')+'</div></div>';
+  /* 商品池放最後：進度與回填資訊先看到 */
   if(f.pools){
     POOLS.forEach(function(q){
       var pool=f.pools[q.k]||{},items=pool.items||[];
@@ -852,23 +870,6 @@ function renderView(c){
     });
   }else if(f.legacy){ html+='<div class="legacy">'+esc(f.legacy)+'</div>'; }
   else{ html+='<div class="vsec"><div class="vnone">⚠ 這場還沒排品</div></div>'; }
-  html+='<div class="vsec"><h4>🤝 進度</h4><div class="vmeta">'+
-    '<b>運營交卡</b>：'+(h.sub?'✔ '+esc(h.sub):'尚未交卡')+'<br>'+
-    '<b>主播確認</b>：'+(h.anchor?'✔ '+esc(h.anchor):'尚未確認')+'<br>'+
-    '<b>中控確認</b>：'+(h.ops?'✔ '+esc(h.ops):'尚未確認')+'</div></div>';
-  /* 下播後三區一律顯示，沒填就標紅「未填」，才看得出誰還沒回填 */
-  function fld(label,val,prefix){
-    return '<b>'+label+'</b>：'+(val?(prefix||'')+esc(val):'<span class="vmiss">未填</span>');
-  }
-  html+='<div class="vsec"><h4>🗣 現場反饋</h4><div class="vmeta">'+
-    fld('主播'+(w.anchor?'（'+esc(w.anchor)+'）':''),n.fbAnchor)+'<br>'+
-    fld('中控'+(w.ops?'（'+esc(w.ops)+'）':''),n.fbOps)+'</div></div>';
-  html+='<div class="vsec"><h4>🔚 運營總結</h4><div class="vmeta">'+
-    fld('結果',n.res)+'<br>'+
-    fld('總結',n.why)+'</div></div>';
-  html+='<div class="vsec"><h4>💼 本場花費</h4><div class="vmeta">'+
-    fld('廣告花費',n.ad,'NT$')+'<br>'+
-    fld('蝦幣花費',n.coin,'NT$')+'</div></div>';
   return html;
 }
 function doLookup(){
