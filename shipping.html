@@ -167,8 +167,8 @@ var SECTIONS=[
  ]},
  {name:'採購',steps:[
   {id:'s7',t:'整理貨源：部分現貨單缺的先叫、斷碼的補貨源',h:'第 2 段已把現貨放進部分入庫區，這些單<b>還缺的商品要先叫貨</b>。<br>現在都走<b>一件代發</b>：現貨有某個 SKU <b>斷碼</b>了就<b>新增貨源</b>（貼 1688 連結再跑 SKU 匹配），之後遇到斷碼的單就<b>正常採購</b>；單出完後，<b>斷碼單用現貨來退</b>',tools:[{l:'大邁寶 商品匹配',u:DMB+'/warehouse/mapping',k:'link'},{l:'工具_大邁寶SKU匹配.bat',k:'bat'}]},
-  {id:'s9',t:'批量採購 → 調「合併」→ 核對後下單',h:'按批量採購後，<b>左上角「訂單合併狀態」一定要調成「合併」</b>。下單前核對：SKU 對、數量對、沒貨源的 SKU 確實有現貨',tools:[{l:'大邁寶 採購清單',u:DMB+'/trade/flow/buylist',k:'link'},{l:'大邁寶 採購單',u:DMB+'/warehouse/procure',k:'link'}]},
-  {id:'s11',t:'確認好今日叫貨 → 通知思維支付',h:'今天要叫的都下完單、確認沒漏，再<b>通知思維付款</b>；付完才算採購完成',tools:[{l:'1688 待付款',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
+  {id:'s9',t:'批量採購 → 確認每個 SKU 都對應好 → 提交支付',h:'按批量採購後，左上角「訂單合併狀態」先調成「合併」（基本動作）。重點是<b>逐一確認每個商品的 SKU 都有對應好</b>、數量對，確認完再按<b>「提交支付」</b>',tools:[{l:'大邁寶 採購清單',u:DMB+'/trade/flow/buylist',k:'link'},{l:'大邁寶 採購單',u:DMB+'/warehouse/procure',k:'link'}]},
+  {id:'s11',t:'通知思維支付',h:'提交支付之後，<b>通知思維付款</b>；付完才算採購完成',tools:[{l:'1688 待付款',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
   {id:'s12',t:'逐筆確認 → 先隔離 → 隔離訂單全選按「打包出貨」',h:'逐筆確認都採購到之後<b>先隔離</b>，再到<b>隔離訂單</b>頁<b>全選 → 按「打包出貨」</b>。做完<b>待處理訂單應該是 0</b>，避免跟明天的新單混到',tools:[{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}]}
  ]},
  {name:'深圳倉 掃碼驗貨',steps:[
