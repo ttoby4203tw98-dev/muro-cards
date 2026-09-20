@@ -197,7 +197,7 @@
     <div class="actgrid">
       <div class="actbox muro">
         <div class="acth">MURO 今日活動</div>
-        <textarea class="txt" id="dayActTop" rows="3" placeholder="例：全館滿 999 折 100、下單送洗衣袋"></textarea>
+        <textarea class="txt" id="dayActTop" rows="3"></textarea>
         <button type="button" class="minibtn" id="saveDayTop">儲存今日活動</button>
         <div class="actmeta" id="dayMetaTop"></div>
       </div>
@@ -238,16 +238,12 @@
     <div class="flabel">🎯 本場目的</div>
     <div class="optrow" id="aimRow"></div>
     <div class="aimgrow">
-      <div class="fgrow"><label class="lab">一句話目的</label>
-        <textarea class="txt" id="aimText" placeholder="例：測秋季高腰塑身褲三款反應"></textarea></div>
-      <div class="fgrow"><label class="lab">為什麼是這個目的（必填）</label>
-        <textarea class="txt" id="aimWhy" placeholder="例：上週塑身複購率最高但只有一款"></textarea></div>
-      <div class="fgrow"><label class="lab">成功條件</label>
-        <textarea class="txt" id="aimKpi" placeholder="例：場觀 3000 · 新品加購率 8%"></textarea></div>
+      <div class="fgrow"><label class="lab">本場目標</label>
+        <textarea class="txt" id="aimKpi"></textarea></div>
       <div class="fgrow"><label class="lab">🎁 本場活動（只限這一場）</label>
-        <textarea class="txt" id="sessAct" placeholder="例：前 30 分鐘下單加贈褲襪、本場限定 3 件 88 折"></textarea></div>
+        <textarea class="txt" id="sessAct"></textarea></div>
       <div class="dayline"><label class="lab">📅 當日 MURO 活動（整天共用）</label>
-        <div class="dayrow"><textarea class="txt" id="dayActCard" rows="2" data-always placeholder="這天的全日活動，所有場次共用"></textarea>
+        <div class="dayrow"><textarea class="txt" id="dayActCard" rows="2" data-always></textarea>
         <button type="button" class="minibtn" id="saveDayCard" data-always>存</button></div>
         <div class="actmeta" id="dayMetaCard"></div></div>
     </div>
@@ -262,9 +258,9 @@
     <div class="lockmsg" id="lockMsg0">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
       <div style="margin-top:9px"><label class="lab">🎤 主播反饋</label>
-        <textarea class="txt" id="fbAnchor" rows="3" placeholder="例：塑身褲講到第3分鐘彈幕開始問尺寸，但沒有大尺碼可推"></textarea></div>
+        <textarea class="txt" id="fbAnchor" rows="3"></textarea></div>
       <div style="margin-top:7px"><label class="lab">🎛 中控反饋</label>
-        <textarea class="txt" id="fbOps" rows="3" placeholder="例：上連結時機太晚，第2個品講完才上；觀眾一直問折扣碼"></textarea></div>
+        <textarea class="txt" id="fbOps" rows="3"></textarea></div>
       <button class="savebtn ghost" id="saveFb">儲存現場反饋</button>
     </div>
     </div>
@@ -275,10 +271,8 @@
     <div class="hint">先看上面主播中控的反饋，再下結論。</div>
     <div class="lockmsg" id="lockMsg">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
-      <div class="flabel">本場目的達成了沒</div>
-      <div class="optrow" id="resRow"></div>
-      <div style="margin-top:7px"><label class="lab">總結：原因 + 下場要改的一件事</label>
-        <textarea class="txt" id="resWhy" rows="3" placeholder="例：新品講太晚，前 40 分鐘都在引流款打轉。下場把新品提到第 15 分鐘。"></textarea></div>
+      <div style="margin-top:7px"><label class="lab">總結</label>
+        <textarea class="txt" id="resWhy" rows="3"></textarea></div>
       <button class="savebtn ghost" id="saveAfter">儲存總結</button>
     </div>
     </div>
@@ -339,8 +333,8 @@ var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv
 var CSV_BAND='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('價格帶');
 
 var AIMS=['拉新粉','測新品','衝GMV','清庫存'];
-var RES=['✅ 達成','❌ 沒達成'];
 var CATS=['內衣','內褲','上衣','下身','塑身','睡衣','其他（非內衣類）'];
+var MARGINS=['低 20~24%','一般 25~30%','高 31~45%'];
 var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['小羅']};
 var MAXSEQ=3;
 
@@ -363,12 +357,10 @@ var BANDNAME={low:'低價帶',mid:'中價帶',high:'高價帶',gap:'跨帶'};
 var POOLS=[
   {k:'lead',  icon:'🎣', name:'引流款', min:2, max:3, want:['low'], act:true, must:true,
    task:'開場留人。', cond:'一句話就講得完的感知價值。價帶依類別＋直播價自動判定。'},
-  {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, want:['mid'], act:true, must:true,
+  {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, want:['mid'], act:true, must:true, margin:true,
    task:'撐調性、講技術。', cond:'必須有一個能講滿 30 秒的技術點（涼感qmax／透氣率／抗菌檢測），沒有就不要放。'},
   {k:'profit',icon:'💰', name:'利潤款', min:2, max:3, want:['mid','high'], act:true, must:true,
-   task:'中段收割。', cond:'要有組合或贈品把客單拉起來。'},
-  {k:'chance',icon:'🎲', name:'機會款', min:1, max:2, want:null, act:true, must:true,
-   task:'拉高價帶，非女性內衣類。', cond:'矯姿帶・寢具・毛毯這類佔 12.7% 營收，是目前唯一跑得動高價帶的牌。'}
+   task:'中段收割。', cond:'要有組合或贈品把客單拉起來。'}
 ];
 
 function pad(n){return (n<10?'0':'')+n;}
@@ -529,18 +521,19 @@ function itemEl(p,data){
       '<a class="thumb" data-thumb target="_blank" rel="noopener"><img alt=""></a>'+
       '<div class="itfields">'+
         '<div class="it-row">'+
-          '<div style="flex:1 1 42%"><label class="lab">muro 貨號</label><input class="txt f-sku" placeholder="1023"></div>'+
+          '<div style="flex:1 1 42%"><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
           '<div style="flex:1 1 58%"><label class="lab">類別</label><select class="txt f-cat">'+opts(CATS,'選類別')+'</select></div>'+
         '</div>'+
         '<div><label class="lab">商品連結</label>'+
-          '<div class="linkrow"><input class="txt f-url" inputmode="url" placeholder="貼蝦皮或購買連結">'+
+          '<div class="linkrow"><input class="txt f-url" inputmode="url">'+
           '<a class="openbtn" target="_blank" rel="noopener">開 ↗</a></div></div>'+
         '<div class="it-row">'+
-          '<div><label class="lab">賣場價</label><input class="txt f-price" inputmode="decimal" placeholder="0"></div>'+
-          '<div><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal" placeholder="8"></div>'+
+          '<div><label class="lab">賣場價</label><input class="txt f-price" inputmode="decimal"></div>'+
+          '<div><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal"></div>'+
           '<div><label class="lab">直播價</label><div class="live"><b class="f-live">—</b></div></div>'+
         '</div>'+
-        '<div><label class="lab">單品活動</label><input class="txt f-iact" placeholder="例：買二送一、加購價 $99"></div>'+
+        (p.margin?'<div><label class="lab">利潤帶</label><select class="txt f-margin">'+opts(MARGINS,'選利潤帶')+'</select></div>':'')+
+        '<div><label class="lab">單品活動</label><input class="txt f-iact"></div>'+
         '<div class="metarow"><div class="bandline" data-band></div>'+
           '<label class="newbox"><input type="checkbox" class="f-new"><span>🆕 新品</span></label></div>'+
       '</div>'+
@@ -552,6 +545,7 @@ function itemEl(p,data){
   d.querySelector('.f-disc').value=data.disc||'';
   d.querySelector('.f-new').checked=!!data.isNew;
   d.querySelector('.f-iact').value=data.act||'';
+  if(d.querySelector('.f-margin'))d.querySelector('.f-margin').value=data.margin||'';
   d.querySelector('.it-del').onclick=function(){d.parentNode.removeChild(d);refresh();};
   [].forEach.call(d.querySelectorAll('input,select'),function(el){
     el.addEventListener('input',refresh);el.addEventListener('change',refresh);});
@@ -587,7 +581,8 @@ function readItem(el){
           price:el.querySelector('.f-price').value.trim(),
           disc:el.querySelector('.f-disc').value.trim(),
           isNew:el.querySelector('.f-new').checked,
-          act:el.querySelector('.f-iact').value.trim()};
+          act:el.querySelector('.f-iact').value.trim(),
+          margin:el.querySelector('.f-margin')?el.querySelector('.f-margin').value:''};
 }
 function readPools(){
   var o={};
@@ -595,7 +590,7 @@ function readPools(){
     o[p.k]={items:[]};
     [].forEach.call(poolBox(p.k).children,function(el){
       var it=readItem(el);
-      if(it.sku||it.url||it.cat||it.price||it.disc||it.act)o[p.k].items.push(it);
+      if(it.sku||it.url||it.cat||it.price||it.disc||it.act||it.margin)o[p.k].items.push(it);
     });
   });
   return o;
@@ -639,7 +634,7 @@ function refresh(){
     comp.push(p.icon+p.name+' '+n);
   });
 
-  var nm=readNames(), awhy=document.getElementById('aimWhy').value.trim();
+  var nm=readNames();
   var total=all.length, nnew=all.filter(function(x){return x.isNew;}).length;
   var miss=all.filter(function(x){return !(x.sku&&x.url&&x.cat&&x.price);}).length;
   var kinds=['low','mid','high'].filter(function(k){return bandCount[k]>0;});
@@ -647,7 +642,6 @@ function refresh(){
   if(!sess)fails.unshift('🎬 還沒選日期和場次');
   if(!(nm.anchor&&nm.ops&&nm.op))fails.push('👥 主播／中控／運營沒選齊');
   if(!aim)fails.push('🎯 還沒選主目標');
-  if(!awhy)fails.push('🧠 沒寫為什麼定這個目的');
   if(nnew<1)fails.push('🆕 新品 '+nnew+' / '+total+'（至少 1 款）');
   if(!(bandCount.low>=1&&kinds.length>=2))
     fails.push('💰 價格分佈：低 '+bandCount.low+' · 中 '+bandCount.mid+' · 高 '+bandCount.high+
@@ -735,6 +729,7 @@ function parseFocus(focus){
         var g=ps[q.k];
         o[q.k]=Array.isArray(g)?{act:'',items:g}:(g||{act:'',items:[]});
       });
+      for(var k in ps)if(!o[k])o[k]=ps[k];          /* 已移除的池（機會款）原樣留著 */
       out.pools=o;return out;
     }
   }catch(e){out.legacy=focus;}
@@ -746,13 +741,14 @@ function fill(){
   setPools(f.pools);
   var g=jparse(c.strategy);
   aim=g.aim||'';
-  document.getElementById('aimText').value=g.text||'';
-  document.getElementById('aimWhy').value=g.why||'';
+  keepAim={text:g.text||'',why:g.why||''};        /* 欄位拿掉了，舊卡的值原樣留著 */
   document.getElementById('aimKpi').value=g.kpi||'';
   var n=jparse(c.notes);
-  res=n.res||'';
+  keepRes=n.res||'';
   document.getElementById('resWhy').value=n.why||'';
   keepCost={ad:n.ad||'',coin:n.coin||''};   /* 花費改到直播數據表填，舊值原樣保留 */
+  keepPools={};                                    /* 機會款等已移除的池，資料原樣留著 */
+  if(f.pools)for(var pk in f.pools)if(!POOLS.some(function(q){return q.k===pk;}))keepPools[pk]=f.pools[pk];
   var sa=g.sessAct||'';
   if(!sa&&f.pools){                        /* 舊版「款式活動」搬進本場活動，不遺失 */
     var old=[];
@@ -770,7 +766,6 @@ function fill(){
   document.getElementById('nOps').value=w.ops||'';
   document.getElementById('nOp').value=w.op||'';
   chipRow('aimRow',AIMS,function(){return aim;},function(v){aim=v;refresh();});
-  chipRow('resRow',RES,function(){return res;},function(v){res=v;});
   refresh();
 }
 function parseCSV(text){
@@ -803,7 +798,7 @@ function load(){
 function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
 
 /* ---------- 今日活動 ---------- */
-var keepCost={ad:'',coin:''};
+var keepCost={ad:'',coin:''}, keepAim={text:'',why:''}, keepRes='', keepPools={};
 function dayCode(ds){var p=(ds||'').split('-');return p.length<3?'':String(+p[1])+pad(+p[2])+'00';}
 function dayRow(ds){return cards[ds+'|'+dayCode(ds)]||null;}
 function showDayAct(ds,where){
@@ -859,13 +854,14 @@ function loadShopee(){
 function doSave(quiet,okText){
   if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
   var strategy=JSON.stringify({aim:aim,
-    text:document.getElementById('aimText').value.trim(),
-    why:document.getElementById('aimWhy').value.trim(),
+    text:keepAim.text, why:keepAim.why,
     kpi:document.getElementById('aimKpi').value.trim(),
     sessAct:document.getElementById('sessAct').value.trim()});
-  var focus=JSON.stringify({v:3,pools:readPools()});
+  var pools=readPools();
+  for(var pk in keepPools)if(!pools[pk])pools[pk]=keepPools[pk];
+  var focus=JSON.stringify({v:3,pools:pools});
   var hook=JSON.stringify({sub:gate.sub,anchor:gate.anchor,ops:gate.ops});
-  var notes=JSON.stringify({res:res,why:document.getElementById('resWhy').value.trim(),
+  var notes=JSON.stringify({res:keepRes,why:document.getElementById('resWhy').value.trim(),
     ad:keepCost.ad, coin:keepCost.coin,
     fbAnchor:document.getElementById('fbAnchor').value.trim(),
     fbOps:document.getElementById('fbOps').value.trim()});
@@ -912,7 +908,6 @@ document.getElementById('fDate').addEventListener('change',onSess);
 document.getElementById('fSeq').addEventListener('change',onSess);
 ['nAnchor','nOps','nOp'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
-document.getElementById('aimWhy').addEventListener('input',refresh);
 document.getElementById('saveDayTop').onclick=function(){
   saveDayAct(todayStr(),document.getElementById('dayActTop').value.trim(),this);};
 document.getElementById('saveDayCard').onclick=function(){
@@ -925,7 +920,6 @@ buildRoster();
 buildPools();
 setPools(null);
 chipRow('aimRow',AIMS,function(){return aim;},function(v){aim=v;refresh();});
-chipRow('resRow',RES,function(){return res;},function(v){res=v;});
 renderToday();
 loadShopee();
 refresh();
