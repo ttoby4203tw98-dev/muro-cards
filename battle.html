@@ -849,8 +849,8 @@ function loadShopee(){
       ? '<div style="color:var(--no);font-weight:800">⚠ 這是 '+esc(mdOf(j.date))+' 的資料，今天還沒更新</div>' : '';
     var upd=j.updated?'<div class="actupd">自動抓取於 '+esc(j.updated)+'</div>':'';
     /* 我們自己設的折扣與券 → 放 MURO 這邊 */
-    mbox.innerHTML=stale+'<div class="acts">賣場折扣與優惠券（自動抓）</div>'+
-      actList(j.shop,'今天沒有進行中的折扣或優惠券')+upd;
+    mbox.innerHTML=stale+'<div class="acts">賣場折扣活動（自動抓）</div>'+
+      actList(j.shop,'今天沒有進行中的賣場折扣活動')+upd;
     /* 蝦皮辦的活動 → 蝦皮這邊，已報名的排前面 */
     var joined=(j.platform||[]).filter(function(x){return /已報名/.test(x.detail||'');});
     var open=(j.platform||[]).filter(function(x){return !/已報名/.test(x.detail||'');});
