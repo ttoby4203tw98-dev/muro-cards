@@ -180,7 +180,7 @@
 
 <div class="top">
   <h1>單場作戰卡<small>MURO</small></h1>
-  <p>運營交卡 · 主播中控確認 · 下播三方回填</p>
+  <p>運營交卡 · 主播中控確認 · 下播復盤</p>
 </div>
 
 <div class="wrap">
@@ -231,23 +231,24 @@
     <div class="col">
       <div class="colh">下播後</div>
     <div class="card locked" id="fbCard">
-    <span class="stage two">③ 下播後 · 主播 · 中控填</span>
-    <div class="flabel">🗣 現場反饋</div>
-    <div class="hint">你們在鏡頭前後看到的，運營看不到。哪個品反應好、哪裡卡住、觀眾問什麼。</div>
+    <span class="stage two">③ 下播後 · 主播中控一起聊 · 中控填</span>
+    <div class="flabel">🗣 下播復盤</div>
+    <div class="hint">下播後主播和中控聊一下，由中控填。每題一句就好。</div>
     <div class="lockmsg" id="lockMsg0">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
-      <div style="margin-top:9px"><label class="lab">🎤 主播反饋</label>
-        <textarea class="txt" id="fbAnchor" rows="3"></textarea></div>
-      <div style="margin-top:7px"><label class="lab">🎛 中控反饋</label>
-        <textarea class="txt" id="fbOps" rows="3"></textarea></div>
-      <button class="savebtn ghost" id="saveFb">儲存現場反饋</button>
+      <div style="margin-top:9px"><label class="lab">① 今天最有效的：哪個商品或哪一招最留得住人</label>
+        <textarea class="txt" id="fbGood" rows="2"></textarea></div>
+      <div style="margin-top:7px"><label class="lab">② 今天最卡的：哪裡出狀況、當場怎麼處理</label>
+        <textarea class="txt" id="fbStuck" rows="2"></textarea></div>
+      <div id="fbOld" class="hint" style="display:none;margin-top:9px;white-space:pre-wrap"></div>
+      <button class="savebtn ghost" id="saveFb">儲存下播復盤</button>
     </div>
     </div>
 
     <div class="card locked" id="afterCard">
     <span class="stage after">③ 下播後 · 運營填</span>
     <div class="flabel">🔚 運營總結</div>
-    <div class="hint">先看上面主播中控的反饋，再下結論。</div>
+    <div class="hint">先看上面的下播復盤，再下結論。</div>
     <div class="lockmsg" id="lockMsg">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
       <div style="margin-top:7px"><label class="lab">總結</label>
@@ -583,7 +584,7 @@ function setPools(data){
 }
 
 function refresh(){
-  var d=readPools(),fails=[],all=[],comp=[];
+  var d=readPools(),all=[],comp=[];
   var bandCount={low:0,mid:0,high:0,gap:0};
   POOLS.forEach(function(p){
     var arr=d[p.k].items,n=arr.length;all=all.concat(arr);
@@ -618,28 +619,29 @@ function refresh(){
   var miss=all.filter(function(x){return !(x.sku&&x.url&&x.cat&&x.price);}).length;
   var kinds=['low','mid','high'].filter(function(k){return bandCount[k]>0;});
 
-  if(!sess)fails.unshift('🎬 還沒選日期和場次');
-  if(!(nm.anchor&&nm.ops&&nm.op))fails.push('👥 主播／中控／運營沒選齊');
-  if(!aim)fails.push('🎯 還沒選主目標');
-  if(nnew<1)fails.push('🆕 新品 '+nnew+' / '+total+'（至少 1 款）');
-  if(!(bandCount.low>=1&&kinds.length>=2))
-    fails.push('💰 價格分佈：低 '+bandCount.low+' · 中 '+bandCount.mid+' · 高 '+bandCount.high+
-               (bandCount.low<1?'（沒有低價帶，留不住人）':'（全擠在同一帶）'));
-  if(miss)fails.push('📝 還有 '+miss+' 品沒填完（貨號／連結／類別／賣場價）');
-  if(BAND_SRC.mode==='builtin')fails.push('📐 讀不到 Sheet「價格帶」分頁，用的是內建備援值');
-  else if(BAND_SRC.mode==='market')fails.push('📐 成交帶還沒填，現在拿市場帶在判');
-  else if(BAND_SRC.days!==null&&BAND_SRC.days>14)fails.push('📐 價格帶 '+BAND_SRC.days+' 天沒更新');
+  /* 只列已完成的，沒完成的不顯示（滿排叉叉會讓人沮喪） */
+  var done=[], need=7;
+  if(sess)done.push('🎬 日期和場次選好了');
+  if(nm.anchor&&nm.ops&&nm.op)done.push('👥 主播／中控／運營選齊了');
+  if(aim)done.push('🎯 主目標選好了');
+  if(nnew>=1)done.push('🆕 新品 '+nnew+' 款');
+  if(bandCount.low>=1&&kinds.length>=2)
+    done.push('💰 價格分佈：低 '+bandCount.low+' · 中 '+bandCount.mid+' · 高 '+bandCount.high);
+  if(total&&!miss)done.push('📝 '+total+' 品都填完了');
+  if(BAND_SRC.mode==='deal'&&!(BAND_SRC.days!==null&&BAND_SRC.days>14))done.push('📐 價格帶讀的是最新成交帶');
+  var ready=done.length===need;
+  if(document.getElementById('fbGood').value.trim()&&document.getElementById('fbStuck').value.trim())
+    done.push('🗣 下播復盤填好了');
 
   var ul=document.getElementById('chkList');ul.innerHTML='';
   var ci=document.createElement('li');ci.className='pass';
   ci.textContent='🧾 本場組成：'+comp.join('　')+'　共 '+total+' 品';
   ul.appendChild(ci);
-  if(!fails.length){
+  done.forEach(function(t){
+    var x=document.createElement('li');x.className='pass';x.textContent='✔ '+t;ul.appendChild(x);});
+  if(ready){
     var li=document.createElement('li');li.className='pass';
-    li.textContent='✔ 全部通過，可以交卡了';ul.appendChild(li);
-  }else{
-    fails.forEach(function(t){
-      var x=document.createElement('li');x.textContent='✘ '+t;ul.appendChild(x);});
+    li.textContent='🎉 開播前項目全部完成，可以交卡了';ul.appendChild(li);
   }
   paintPhase();
 }
@@ -735,8 +737,14 @@ function fill(){
     sa=old.join('\n');
   }
   document.getElementById('sessAct').value=sa;
-  document.getElementById('fbAnchor').value=n.fbAnchor||'';
-  document.getElementById('fbOps').value=n.fbOps||'';
+  document.getElementById('fbGood').value=n.fbGood||'';
+  document.getElementById('fbStuck').value=n.fbStuck||'';
+  keepFb={anchor:n.fbAnchor||'',ops:n.fbOps||''};  /* 舊版主播／中控分開填的反饋，原樣留著 */
+  var fo=document.getElementById('fbOld'), ot=[];
+  if(keepFb.anchor)ot.push('🎤 主播：'+keepFb.anchor);
+  if(keepFb.ops)ot.push('🎛 中控：'+keepFb.ops);
+  fo.style.display=ot.length?'block':'none';
+  fo.textContent=ot.length?('舊版反饋\n'+ot.join('\n')):'';
   var h=jparse(c.hook);
   gate={sub:h.sub||'',anchor:h.anchor||'',ops:h.ops||''};
   var w=jparse(c.who);
@@ -776,7 +784,7 @@ function load(){
 function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
 
 /* ---------- 今日活動 ---------- */
-var keepCost={ad:'',coin:''}, keepAim={text:'',why:''}, keepRes='', keepPools={};
+var keepCost={ad:'',coin:''}, keepAim={text:'',why:''}, keepRes='', keepPools={}, keepFb={anchor:'',ops:''};
 /* 近 3 天的現場反饋與運營總結，收合顯示 */
 function renderLog(){
   var box=document.getElementById('logBox'); if(!box)return;
@@ -786,14 +794,16 @@ function renderLog(){
     if(!ps||ps.seq>=90)return;                       /* 跳過日／週活動那種列 */
     if(c.date<from||c.date>t)return;
     var n=jparse(c.notes), w=jparse(c.who);
-    var has=[n.fbAnchor?'🎤':'',n.fbOps?'🎛':'',n.why?'🔚':''].filter(Boolean).join('');
-    var body=[['🎤 主播'+(w.anchor?'（'+w.anchor+'）':''),n.fbAnchor],
+    /* 只列有填的；舊卡的主播／中控反饋照樣看得到 */
+    var rows=[['👍 最有效的',n.fbGood],['🧱 最卡的',n.fbStuck],
+              ['🎤 主播'+(w.anchor?'（'+w.anchor+'）':''),n.fbAnchor],
               ['🎛 中控'+(w.ops?'（'+w.ops+'）':''),n.fbOps],
-              ['🔚 運營總結',n.why]]
-      .map(function(x){return '<div class="logi"><b>'+esc(x[0])+'</b>：'+
-        (x[1]?esc(x[1]):'<span class="vmiss">未填</span>')+'</div>';}).join('');
+              ['🔚 運營總結',n.why]].filter(function(x){return x[1];});
+    var has=rows.map(function(x){return x[0].split(' ')[0];}).join('');
+    var body=rows.map(function(x){return '<div class="logi"><b>'+esc(x[0])+'</b>：'+esc(x[1])+'</div>';}).join('');
     out.push('<details class="logd"><summary>'+esc(mdOf(c.date)+' 第 '+ps.seq+' 場')+
-      '<span class="logtag">'+(has||'全部未填')+'</span></summary>'+body+'</details>');
+      '<span class="logtag">'+(has||'還沒填')+'</span></summary>'+
+      (body||'<div class="logi">還沒填</div>')+'</details>');
   });
   box.innerHTML=out.length?out.join(''):'<div class="actnone">近 3 天還沒有場次</div>';
 }
@@ -809,8 +819,9 @@ function doSave(quiet,okText){
   var hook=JSON.stringify({sub:gate.sub,anchor:gate.anchor,ops:gate.ops});
   var notes=JSON.stringify({res:keepRes,why:document.getElementById('resWhy').value.trim(),
     ad:keepCost.ad, coin:keepCost.coin,
-    fbAnchor:document.getElementById('fbAnchor').value.trim(),
-    fbOps:document.getElementById('fbOps').value.trim()});
+    fbGood:document.getElementById('fbGood').value.trim(),
+    fbStuck:document.getElementById('fbStuck').value.trim(),
+    fbAnchor:keepFb.anchor, fbOps:keepFb.ops});
   var who=JSON.stringify(readNames());
   var payload={token:TOKEN,action:'card_save',date:sdate,slot:sess,
     strategy:strategy, focus:focus, hook:hook, notes:notes, r1:who, r2:'', r3:''};
@@ -853,6 +864,8 @@ document.getElementById('gOps').onclick=function(){toggleGate('ops');};
 document.getElementById('fDate').addEventListener('change',onSess);
 document.getElementById('fSeq').addEventListener('change',onSess);
 ['nAnchor','nOps','nOp'].forEach(function(id){
+  document.getElementById(id).addEventListener('change',refresh);});
+['fbGood','fbStuck'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
 
 document.getElementById('fSeq').innerHTML=seqOptions();
