@@ -121,6 +121,10 @@
   .live{display:flex;flex-direction:column;justify-content:center;}
   .newbox{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--plum2);cursor:pointer;user-select:none;}
   .newbox input{width:17px;height:17px;accent-color:var(--rose);}
+  .ordrow{display:flex;align-items:center;gap:8px;margin-top:7px;}
+  .ordno{flex:none;width:26px;height:26px;border-radius:50%;background:var(--plum2);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .ordrow select{flex:1 1 auto;min-width:0;}
+  .kindref{font-size:11px;color:var(--ink2);line-height:1.6;margin-top:6px;padding:7px 9px;background:#f7f2ee;border-radius:9px;border-left:3px solid var(--line);}
   .addbtn{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:11px;padding:10px;font-size:13px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:9px;}
   .addbtn:active{background:#fdf4f7;}
   .addbtn:disabled{opacity:.3;cursor:default;}
@@ -273,8 +277,17 @@
     <span class="rotag">🔒 已交卡</span>
     <span class="stage">① 開播前 · 運營填</span>
     <div class="flabel">🛒 本場商品池</div>
-    <div class="hint">引流·品牌·利潤·機會四款都要有。空的款只顯示任務，按 ＋ 才展開。</div>
+    <div class="hint">依品類排，品類越齊越好，主播才不會整場只講兩三個品。每個單品選是什麼款、填利潤率。空的品類按 ＋ 才展開。</div>
     <div id="pools"></div>
+  </div>
+
+  <div class="card" id="orderCard">
+    <span class="stage two">主播 · 中控 · 運營都可以填</span>
+    <div class="flabel">🔢 排品順序</div>
+    <div class="hint">第 1 個講到第 10 個。下一個品不能和上一個同品類（客人買完又看到同品類更好的，會取消重下），同品類的選項會自動變灰不能選。</div>
+    <div id="orderBox"></div>
+    <button class="savebtn ghost" id="saveOrder">儲存排品順序</button>
+    <div id="msgOrder" class="hint" style="display:none;margin-top:8px;text-align:center;font-weight:800"></div>
   </div>
 
   <div class="card">
@@ -314,7 +327,14 @@ var CSV_BAND='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=ou
 
 var AIMS=['拉新粉','測新品','衝GMV','清庫存'];
 var CATS=['內衣','內褲','上衣','下身','塑身','睡衣','其他（非內衣類）'];
-var MARGINS=['低 20~24%','一般 25~30%','高 31~45%'];
+/* 利潤帶：低 20~24／一般 25~30／高 31~45，上下各留 1.5% 空間；低於 18.5% 不能排 */
+var RATE_MIN=18.5;
+function parseRate(v){var x=parseFloat(String(v||'').replace('%',''));return (x>0&&x<100)?x:null;}
+function rateBand(x){
+  if(x===null)return '';
+  if(x<RATE_MIN)return '不能排';
+  return x<24.5?'低':(x<30.5?'一般':'高');
+}
 var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['小羅']};
 var MAXSEQ=3;
 
@@ -335,9 +355,9 @@ var BAND_SRC={mode:'builtin', days:null};
 var BANDNAME={low:'低價帶',mid:'中價帶',high:'高價帶',gap:'跨帶'};
 
 var POOLS=[
-  {k:'lead',  icon:'🎣', name:'引流款', min:2, max:3, want:['low'], act:true, must:true,
-   task:'開場留人，盡量挑非主力品類。', cond:'一句話就講得完的感知價值。主力品類（塑身、內衣）拿來引流，之後正價就賣不動，優先用其他品類。價帶依類別＋直播價自動判定。'},
-  {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, want:['mid'], act:true, must:true, margin:true,
+  {k:'lead',  icon:'🎣', name:'引流款', min:2, max:3, act:true, must:true,
+   task:'開場留人。引流款＝高性價比的商品，不等於低價。', cond:'同樣價位，我們的面料、設計比別人好，也算引流款。一句話就講得完的感知價值。主力品類（塑身、內衣）拿來引流，之後正價就賣不動，優先用其他品類。'},
+  {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, want:['mid'], act:true, must:true,
    task:'撐調性、講技術。', cond:'必須有一個能講滿 30 秒的技術點（涼感qmax／透氣率／抗菌檢測），沒有就不要放。'},
   {k:'profit',icon:'💰', name:'利潤款', min:2, max:3, want:['mid','high'], act:true, must:true,
    task:'中段收割。', cond:'要有組合或贈品把客單拉起來。'}
@@ -492,7 +512,7 @@ function setOpen(item){
   if(u){b.href=u;b.className='openbtn on';}
   else{b.removeAttribute('href');b.className='openbtn';}
 }
-function itemEl(p,data){
+function itemEl(data){
   data=data||{};
   var d=document.createElement('div');d.className='item';
   d.innerHTML=
@@ -502,7 +522,8 @@ function itemEl(p,data){
       '<div class="itfields">'+
         '<div class="it-row">'+
           '<div style="flex:1 1 42%"><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
-          '<div style="flex:1 1 58%"><label class="lab">類別</label><select class="txt f-cat">'+opts(CATS,'選類別')+'</select></div>'+
+          '<div style="flex:1 1 58%"><label class="lab">什麼款</label><select class="txt f-kind"><option value="">選款別</option>'+
+            POOLS.map(function(q){return '<option value="'+q.k+'">'+q.icon+' '+q.name+'</option>';}).join('')+'</select></div>'+
         '</div>'+
         '<div><label class="lab">商品連結</label>'+
           '<div class="linkrow"><input class="txt f-url" inputmode="url">'+
@@ -512,7 +533,11 @@ function itemEl(p,data){
           '<div><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal"></div>'+
           '<div><label class="lab">直播價</label><div class="live"><b class="f-live">—</b></div></div>'+
         '</div>'+
-        (p.margin?'<div><label class="lab">利潤帶</label><select class="txt f-margin">'+opts(MARGINS,'選利潤帶')+'</select></div>':'')+
+        '<div class="it-row">'+
+          '<div><label class="lab">利潤率 %</label><input class="txt f-rate" inputmode="decimal"></div>'+
+          '<div><label class="lab">利潤帶（低20~24・一般25~30・高31~45）</label><div class="live"><b class="f-mband">—</b></div></div>'+
+        '</div>'+
+        '<div class="bandwarn" data-ratewarn style="display:none"></div>'+
         '<div><label class="lab">單品活動</label><input class="txt f-iact"></div>'+
         '<div class="metarow"><div class="bandline" data-band></div>'+
           '<label class="newbox"><input type="checkbox" class="f-new"><span>🆕 新品</span></label></div>'+
@@ -520,12 +545,13 @@ function itemEl(p,data){
     '</div>';
   d.querySelector('.f-sku').value=data.sku||'';
   d.querySelector('.f-url').value=data.url||'';
-  d.querySelector('.f-cat').value=data.cat||'';
+  d.querySelector('.f-kind').value=data.kind||'';
   d.querySelector('.f-price').value=data.price||'';
   d.querySelector('.f-disc').value=data.disc||'';
   d.querySelector('.f-new').checked=!!data.isNew;
   d.querySelector('.f-iact').value=data.act||'';
-  if(d.querySelector('.f-margin'))d.querySelector('.f-margin').value=data.margin||'';
+  d.querySelector('.f-rate').value=data.rate||'';
+  d.setAttribute('data-oldmargin',data.margin||'');   /* 舊卡選的利潤帶，沒填利潤率前照樣顯示 */
   d.querySelector('.it-del').onclick=function(){d.parentNode.removeChild(d);refresh();};
   [].forEach.call(d.querySelectorAll('input,select'),function(el){
     el.addEventListener('input',refresh);el.addEventListener('change',refresh);});
@@ -539,88 +565,137 @@ function livePrice(price,disc){
 }
 function buildPools(){
   var box=document.getElementById('pools');box.innerHTML='';
-  POOLS.forEach(function(p){
-    var s=document.createElement('div');s.className='pool';s.setAttribute('data-k',p.k);
-    var wantTag=p.want?'<span class="bd bd-'+p.want[0]+'">'+p.want.map(function(w){return BANDNAME[w];}).join('/')+'</span>':'';
-    s.innerHTML='<h3>'+p.icon+' '+p.name+' '+wantTag+' <span class="cnt" data-cnt></span></h3>'+
-      '<div class="std" data-std></div>'+
+  var ref=document.createElement('div');
+  ref.innerHTML=POOLS.map(function(q){
+    return '<div class="kindref"><b>'+q.icon+' '+q.name+'</b>：'+q.task+q.cond+'</div>';}).join('');
+  box.appendChild(ref);
+  CATS.forEach(function(cat){
+    var s=document.createElement('div');s.className='pool';s.setAttribute('data-c',cat);
+    s.innerHTML='<h3>'+esc(cat)+' <span class="cnt" data-cnt></span></h3>'+
       '<div class="items" data-items></div>'+
-      '<button type="button" class="addbtn">＋ 加一個'+p.name+'</button>';
+      '<button type="button" class="addbtn">＋ 加一個'+esc(shortCat(cat))+'</button>';
     s.querySelector('.addbtn').onclick=function(){
-      s.querySelector('[data-items]').appendChild(itemEl(p,{}));refresh();
+      s.querySelector('[data-items]').appendChild(itemEl({}));refresh();
     };
     box.appendChild(s);
   });
 }
-function poolEl(k){return document.querySelector('.pool[data-k="'+k+'"]');}
-function poolBox(k){return poolEl(k).querySelector('[data-items]');}
-function readItem(el){
+function shortCat(cat){return String(cat||'').replace(/（.*$/,'');}
+function catEl(cat){
+  var r=null;[].forEach.call(document.querySelectorAll('.pool'),function(g){if(g.getAttribute('data-c')===cat)r=g;});return r;}
+function catBox(cat){return catEl(cat).querySelector('[data-items]');}
+function kindDef(k){var r=null;POOLS.forEach(function(q){if(q.k===k)r=q;});return r;}
+function readItem(el,cat){
   return {sku:el.querySelector('.f-sku').value.trim(),
           url:el.querySelector('.f-url').value.trim(),
-          cat:el.querySelector('.f-cat').value,
+          cat:cat,
+          kind:el.querySelector('.f-kind').value,
           price:el.querySelector('.f-price').value.trim(),
           disc:el.querySelector('.f-disc').value.trim(),
           isNew:el.querySelector('.f-new').checked,
           act:el.querySelector('.f-iact').value.trim(),
-          margin:el.querySelector('.f-margin')?el.querySelector('.f-margin').value:''};
+          rate:el.querySelector('.f-rate').value.trim(),
+          margin:el.getAttribute('data-oldmargin')||''};
 }
+/* 畫面依品類分組，存檔仍照款別分（lead/brand/profit），舊卡照樣打得開；還沒選款的放 unset */
 function readPools(){
-  var o={};
-  POOLS.forEach(function(p){
-    o[p.k]={items:[]};
-    [].forEach.call(poolBox(p.k).children,function(el){
-      var it=readItem(el);
-      if(it.sku||it.url||it.cat||it.price||it.disc||it.act||it.margin)o[p.k].items.push(it);
+  var o={unset:{items:[]}};
+  POOLS.forEach(function(p){o[p.k]={items:[]};});
+  CATS.forEach(function(cat){
+    [].forEach.call(catBox(cat).children,function(el){
+      var it=readItem(el,cat);
+      if(it.sku||it.url||it.kind||it.price||it.disc||it.act||it.rate||it.margin)(o[it.kind]||o.unset).items.push(it);
     });
   });
   return o;
 }
 function setPools(data){
-  POOLS.forEach(function(p){
-    var box=poolBox(p.k);box.innerHTML='';
-    var g=(data&&data[p.k])||{};
-    (g.items||[]).forEach(function(x){box.appendChild(itemEl(p,x));});
+  CATS.forEach(function(cat){catBox(cat).innerHTML='';});
+  if(!data)return;
+  POOLS.map(function(p){return p.k;}).concat(['unset']).forEach(function(k){
+    ((data[k]||{}).items||[]).forEach(function(x){
+      var y={};for(var f in x)y[f]=x[f];
+      y.kind=(k==='unset')?'':k;
+      var cat=CATS.indexOf(y.cat)>=0?y.cat:CATS[CATS.length-1];
+      catBox(cat).appendChild(itemEl(y));
+    });
   });
+}
+
+/* ---------- 排品順序：1~10，下一個品不能和上一個同品類（「其他」品項雜，不受限） ---------- */
+var order=[], FREE_CAT=CATS[CATS.length-1];
+function renderOrder(all){
+  var box=document.getElementById('orderBox'), cand=[], seen={};
+  all.forEach(function(x){
+    if(!x.sku||seen[x.sku])return; seen[x.sku]=1;
+    var q=kindDef(x.kind);
+    cand.push({key:x.sku,cat:x.cat,label:shortCat(x.cat)+'｜'+x.sku+(q?'｜'+q.name:'')});
+  });
+  var byKey={};cand.forEach(function(c){byKey[c.key]=c;});
+  order=order.map(function(k){return byKey[k]?k:'';});
+  var slots=Math.min(10,cand.length);
+  order=order.slice(0,slots);while(order.length<slots)order.push('');
+  box.innerHTML='';
+  if(!slots){box.innerHTML='<div class="actnone">商品池填了貨號，這裡才會出現可以排的品。</div>';return 0;}
+  function catAt(i){var c=byKey[order[i]];return c?c.cat:'';}
+  for(var i=0;i<slots;i++){(function(i){
+    var row=document.createElement('div');row.className='ordrow';
+    var h='<option value="">—</option>';
+    cand.forEach(function(c){
+      var used=order.indexOf(c.key)>=0&&order[i]!==c.key;
+      var clash=c.cat!==FREE_CAT&&(c.cat===catAt(i-1)||c.cat===catAt(i+1));
+      h+='<option value="'+esc(c.key)+'"'+((used||clash)?' disabled':'')+'>'+esc(c.label)+
+         (clash&&!used?'（和前後同品類）':'')+'</option>';
+    });
+    row.innerHTML='<span class="ordno">'+(i+1)+'</span><select class="txt" data-always>'+h+'</select>';
+    var sel=row.querySelector('select');sel.value=order[i]||'';
+    sel.onchange=function(){order[i]=sel.value;refresh();};
+    box.appendChild(row);
+  })(i);}
+  return order.filter(Boolean).length===slots?slots:0;
 }
 
 function refresh(){
   var d=readPools(),all=[],comp=[];
   var bandCount={low:0,mid:0,high:0,gap:0};
-  POOLS.forEach(function(p){
-    var arr=d[p.k].items,n=arr.length;all=all.concat(arr);
-    poolEl(p.k).querySelector('[data-cnt]').textContent=n?(n+' 個'):'還沒排';
-    var std=poolEl(p.k).querySelector('[data-std]');
-    std.innerHTML=n?('<b>任務</b>：'+p.task+p.cond):('<b>任務</b>：'+p.task);
-
-    [].forEach.call(poolBox(p.k).children,function(c,i){
-      c.querySelector('.it-no').textContent=p.name+' '+(i+1);
+  POOLS.forEach(function(p){all=all.concat(d[p.k].items);comp.push(p.icon+p.name+' '+d[p.k].items.length);});
+  all=all.concat(d.unset.items);
+  var ncat=0;
+  CATS.forEach(function(cat){
+    var kids=catBox(cat).children,n=kids.length; if(n)ncat++;
+    catEl(cat).querySelector('[data-cnt]').textContent=n?(n+' 個'):'還沒排';
+    [].forEach.call(kids,function(c,i){
+      c.querySelector('.it-no').textContent=shortCat(cat)+' '+(i+1);
       var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
       c.querySelector('.f-live').textContent=(lp===null)?'—':('$'+lp);
       setThumb(c); setOpen(c);
-      var cat=c.querySelector('.f-cat').value, bk=bandOf(cat,lp), bl=c.querySelector('[data-band]');
+      var rt=parseRate(c.querySelector('.f-rate').value), rb=rateBand(rt), rw=c.querySelector('[data-ratewarn]');
+      c.querySelector('.f-mband').textContent=rb||(c.getAttribute('data-oldmargin')||'—');
+      rw.style.display=(rb==='不能排')?'block':'none';
+      rw.textContent=(rb==='不能排')?('⚠ 利潤率 '+rt+'% 低於 '+RATE_MIN+'%，不能排進這場'):'';
+      var bk=bandOf(cat,lp), bl=c.querySelector('[data-band]');
       if(!bk){bl.innerHTML='';}
       else{
         bandCount[bk]=(bandCount[bk]||0)+1;
         var ref=marketRef(cat,bk);
-        var h='<span class="bd bd-'+bk+'">'+BANDNAME[bk]+'</span><span>'+esc(bandText(cat,bk))+'</span>'+
+        bl.innerHTML='<span class="bd bd-'+bk+'">'+BANDNAME[bk]+'</span><span>'+esc(bandText(cat,bk))+'</span>'+
               (ref?'<span class="bd bd-gap">'+esc(ref)+'</span>':'');
-        if(p.want&&bk!=='gap'&&p.want.indexOf(bk)<0){
-          h+='<div class="bandwarn">⚠ 直播價 $'+lp+' 落在'+BANDNAME[bk]+'，'+p.name+
-             '預期的是'+p.want.map(function(w){return BANDNAME[w];}).join('或')+'</div>';
-        }
-        bl.innerHTML=h;
       }
     });
-    comp.push(p.icon+p.name+' '+n);
   });
+  comp.push('🧩品類 '+ncat+' 種');
+  var ordered=renderOrder(all);
 
   var nm=readNames();
   var total=all.length, nnew=all.filter(function(x){return x.isNew;}).length;
-  var miss=all.filter(function(x){return !(x.sku&&x.url&&x.cat&&x.price);}).length;
+  var miss=all.filter(function(x){return !(x.sku&&x.url&&x.kind&&x.price&&parseRate(x.rate)!==null);}).length;
+  var rates=all.map(function(x){return parseRate(x.rate);}).filter(function(x){return x!==null;});
+  var avg=rates.length?Math.round(rates.reduce(function(a,b){return a+b;},0)/rates.length*10)/10:null;
+  lowRate=all.filter(function(x){var r=parseRate(x.rate);return r!==null&&r<RATE_MIN;}).length;
   var kinds=['low','mid','high'].filter(function(k){return bandCount[k]>0;});
 
   /* 只列已完成的，沒完成的不顯示（滿排叉叉會讓人沮喪） */
-  var done=[], need=7;
+  var done=[], need=8;
   if(sess)done.push('🎬 日期和場次選好了');
   if(nm.anchor&&nm.ops&&nm.op)done.push('👥 主播／中控／運營選齊了');
   if(aim)done.push('🎯 主目標選好了');
@@ -628,8 +703,10 @@ function refresh(){
   if(bandCount.low>=1&&kinds.length>=2)
     done.push('💰 價格分佈：低 '+bandCount.low+' · 中 '+bandCount.mid+' · 高 '+bandCount.high);
   if(total&&!miss)done.push('📝 '+total+' 品都填完了');
+  if(avg!==null)done.push('📊 整場平均利潤率 '+avg+'%（'+rateBand(avg)+'）· 已填 '+rates.length+' / '+total+' 品');
   if(BAND_SRC.mode==='deal'&&!(BAND_SRC.days!==null&&BAND_SRC.days>14))done.push('📐 價格帶讀的是最新成交帶');
-  var ready=done.length===need;
+  var ready=done.length===need&&!lowRate;
+  if(ordered)done.push('🔢 排品順序排好了（'+ordered+' 品）');
   if(document.getElementById('fbGood').value.trim()&&document.getElementById('fbStuck').value.trim())
     done.push('🗣 下播復盤填好了');
 
@@ -722,6 +799,7 @@ function fill(){
   setPools(f.pools);
   var g=jparse(c.strategy);
   aim=g.aim||'';
+  order=Array.isArray(g.order)?g.order.slice(0,10):[];
   keepAim={text:g.text||'',why:g.why||''};        /* 欄位拿掉了，舊卡的值原樣留著 */
   document.getElementById('aimKpi').value=g.kpi||'';
   var n=jparse(c.notes);
@@ -729,7 +807,7 @@ function fill(){
   document.getElementById('resWhy').value=n.why||'';
   keepCost={ad:n.ad||'',coin:n.coin||''};   /* 花費改到直播數據表填，舊值原樣保留 */
   keepPools={};                                    /* 機會款等已移除的池，資料原樣留著 */
-  if(f.pools)for(var pk in f.pools)if(!POOLS.some(function(q){return q.k===pk;}))keepPools[pk]=f.pools[pk];
+  if(f.pools)for(var pk in f.pools)if(pk!=='unset'&&!POOLS.some(function(q){return q.k===pk;}))keepPools[pk]=f.pools[pk];
   var sa=g.sessAct||'';
   if(!sa&&f.pools){                        /* 舊版「款式活動」搬進本場活動，不遺失 */
     var old=[];
@@ -781,9 +859,12 @@ function load(){
   }).catch(function(){renderLog();});
 }
 
-function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;}
+var msgEcho=null;
+function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.textContent=t;
+  if(msgEcho){msgEcho.style.display='block';msgEcho.textContent=t;}}
 
 /* ---------- 今日活動 ---------- */
+var lowRate=0;
 var keepCost={ad:'',coin:''}, keepAim={text:'',why:''}, keepRes='', keepPools={}, keepFb={anchor:'',ops:''};
 /* 近 3 天的現場反饋與運營總結，收合顯示 */
 function renderLog(){
@@ -807,12 +888,14 @@ function renderLog(){
   });
   box.innerHTML=out.length?out.join(''):'<div class="actnone">近 3 天還沒有場次</div>';
 }
-function doSave(quiet,okText){
+function doSave(quiet,okText,echo){
+  msgEcho=echo||null;
   if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
   var strategy=JSON.stringify({aim:aim,
     text:keepAim.text, why:keepAim.why,
     kpi:document.getElementById('aimKpi').value.trim(),
-    sessAct:document.getElementById('sessAct').value.trim()});
+    sessAct:document.getElementById('sessAct').value.trim(),
+    order:order});
   var pools=readPools();
   for(var pk in keepPools)if(!pools[pk])pools[pk]=keepPools[pk];
   var focus=JSON.stringify({v:3,pools:pools});
@@ -842,6 +925,7 @@ document.getElementById('submitBtn').onclick=function(){
   if(!sess){showMsg('warn','先選日期和場次');return;}
   var nm=readNames();
   if(!(nm.anchor&&nm.ops&&nm.op)){showMsg('warn','主播／中控／運營三個都要選');return;}
+  if(lowRate){showMsg('warn','有 '+lowRate+' 品利潤率低於 '+RATE_MIN+'%，不能排進這場，先換掉再交卡');return;}
   gate.sub=stamp();paintPhase();doSave(false,'📤 已交卡');
 };
 document.getElementById('unsubBtn').onclick=function(){
@@ -858,6 +942,10 @@ function saveGated(){
   doSave(false);
 }
 document.getElementById('saveFb').onclick=saveGated;
+document.getElementById('saveOrder').onclick=function(){
+  if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
+  doSave(false,'✅ 排品順序已儲存',document.getElementById('msgOrder'));
+};
 document.getElementById('saveAfter').onclick=saveGated;
 document.getElementById('gAnchor').onclick=function(){toggleGate('anchor');};
 document.getElementById('gOps').onclick=function(){toggleGate('ops');};
