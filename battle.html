@@ -335,7 +335,25 @@ var CSV_BAND='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=ou
 var CATS=['內衣','內褲','上衣','下身','塑身','其他'];
 /* 利潤帶：低 20~24／一般 25~30／高 31~45，上下各留 1.5% 空間；低於 18.5% 不能排 */
 var RATE_MIN=18.5;
-function parseRate(v){var x=parseFloat(String(v||'').replace('%',''));return (x>0&&x<100)?x:null;}
+function parseRate(v){var x=parseFloat(String(v==null?'':v).replace('%',''));return (!isNaN(x)&&x>-1000&&x<100)?x:null;}
+/* 定價2.0：總成本(RMB)=商品成本+4.5+重量kg×12；利潤率=(直播價×0.6−總成本×4.7)÷直播價。成本只拿來算，不顯示 */
+function calcRate(g,lp){
+  var c=g?parseFloat(g.cost):NaN; if(!(c>0)||!(lp>0))return null;
+  var tc=c+4.5+(parseFloat(g.wt)||0)*12;
+  return Math.round((lp*0.6-tc*4.7)/lp*1000)/10;
+}
+var RATE_COLOR={'低':'#bf9000','一般':'#38761d','高':'#674ea7','不能排':'#c0392b'};
+function bandLabel(rb){return rb==='不能排'?'需重新定價':rb;}
+/* 商品庫查得到成本的品：利潤率跟著直播價（賣場價×折數）即時重算，欄位鎖住不用手填 */
+function syncRates(){
+  [].forEach.call(document.querySelectorAll('#pools .item'),function(c){
+    var g=applyGoods(c), f=c.querySelector('.f-rate');
+    var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
+    var cr=calcRate(g,lp);
+    if(cr!==null){f.value=cr;f.readOnly=true;f.style.background='#f4eaf0';}
+    else{f.readOnly=false;f.style.background='';}
+  });
+}
 function rateBand(x){
   if(x===null)return '';
   if(x<RATE_MIN)return '不能排';
@@ -513,6 +531,7 @@ function itemEl(data){
         '<div class="it-row">'+
           '<div style="flex:0 0 96px"><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
           '<div><label class="lab">單品活動</label><input class="txt f-iact"></div>'+
+          '<div style="flex:0 0 72px"><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal"></div>'+
         '</div>'+
         '<div class="autoline" data-auto style="display:none"></div>'+
         '<div data-manual style="display:none">'+
@@ -523,7 +542,6 @@ function itemEl(data){
             '<a class="openbtn" target="_blank" rel="noopener">開 ↗</a></div></div>'+
           '<div class="it-row" style="margin-top:5px">'+
             '<div><label class="lab">賣場價</label><input class="txt f-price" inputmode="decimal"></div>'+
-            '<div><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal"></div>'+
             '<div><label class="lab">直播價</label><div class="live"><b class="f-live">—</b></div></div>'+
           '</div>'+
           '<div class="it-row" style="margin-top:5px">'+
@@ -541,6 +559,7 @@ function itemEl(data){
   d.setAttribute('data-oldkind',data.kind||'');   /* 舊卡選過的款別，原樣留著 */
   d.querySelector('.f-price').value=data.price||'';
   d.querySelector('.f-disc').value=data.disc||'';
+  if(data.disc)d.setAttribute('data-keepdisc',data.disc);
   d.querySelector('.f-new').checked=!!data.isNew;
   d.querySelector('.f-iact').value=data.act||'';
   d.querySelector('.f-rate').value=data.rate||'';
@@ -677,6 +696,7 @@ function renderOrder(all){
 }
 
 function refresh(){
+  syncRates();
   var d=readPools(),all=[],comp=[];
   var bandCount={low:0,mid:0,high:0,gap:0};
   POOLS.forEach(function(p){all=all.concat(d[p.k].items);});
@@ -692,17 +712,20 @@ function refresh(){
       c.querySelector('.f-live').textContent=(lp===null)?'—':('$'+lp);
       setThumb(c); setOpen(c);
       var rt=parseRate(c.querySelector('.f-rate').value), rb=rateBand(rt), rw=c.querySelector('[data-ratewarn]');
-      c.querySelector('.f-mband').textContent=rb||(c.getAttribute('data-oldmargin')||'—');
+      var mb=c.querySelector('.f-mband');
+      mb.textContent=bandLabel(rb)||(c.getAttribute('data-oldmargin')||'—');
+      mb.style.color=RATE_COLOR[rb]||'';
       rw.style.display=(rb==='不能排')?'block':'none';
-      rw.textContent=(rb==='不能排')?('⚠ 利潤率 '+rt+'% 低於 '+RATE_MIN+'%，不能排進這場'):'';
+      rw.textContent=(rb==='不能排')?('⚠ 利潤率 '+rt+'% 低於 '+RATE_MIN+'%，需重新定價，不能排進這場'):'';
       var au=c.querySelector('[data-auto]'), sk=c.querySelector('.f-sku').value.trim();
       if(gd&&c.getAttribute('data-man')!=='1'){
         var lk=safeUrl(gd.url);
         au.style.display='';
         au.innerHTML='<span class="tag">商品庫</span>'+
           (gd.name?'<span>'+esc(gd.name)+'</span>':'')+
-          '<span>$'+esc(gd.price)+(gd.disc?' ×'+esc(gd.disc):'')+' → <b>直播 $'+(lp===null?'—':lp)+'</b></span>'+
-          '<span>利潤率 '+esc(gd.rate)+'%'+(rb?'（'+esc(rb)+'）':'')+'</span>'+
+          '<span>$'+esc(gd.price)+(c.querySelector('.f-disc').value.trim()?' ×'+esc(c.querySelector('.f-disc').value.trim()):'')+' → <b>直播 $'+(lp===null?'—':lp)+'</b></span>'+
+          '<span style="font-weight:800;color:'+(RATE_COLOR[rb]||'inherit')+'">利潤率 '+
+            (rt===null?'—':esc(rt)+'%')+(rb?'（'+esc(bandLabel(rb))+'）':'')+'</span>'+
           (gd.st?'<span>'+esc(gd.st)+'</span>':'')+
           (gd.cat&&gd.cat!==cat?'<span class="warn">商品庫歸在「'+esc(gd.cat)+'」</span>':'')+
           (lk?'<a href="'+esc(lk)+'" target="_blank" rel="noopener">蝦皮 ↗</a>':'')+
@@ -741,7 +764,7 @@ function refresh(){
   if(bandCount.low>=1&&kinds.length>=2)
     done.push('💰 價格分佈：低 '+bandCount.low+' · 中 '+bandCount.mid+' · 高 '+bandCount.high);
   if(total&&!miss)done.push('📝 '+total+' 品都填完了');
-  if(avg!==null)done.push('📊 整場平均利潤率 '+avg+'%（'+rateBand(avg)+'）· 已填 '+rates.length+' / '+total+' 品');
+  if(avg!==null)done.push('📊 整場平均利潤率 '+avg+'%（'+bandLabel(rateBand(avg))+'）· 已填 '+rates.length+' / '+total+' 品');
   if(BAND_SRC.mode==='deal'&&!(BAND_SRC.days!==null&&BAND_SRC.days>14))done.push('📐 價格帶讀的是最新成交帶');
   var ready=done.length===need&&!lowRate;
   if(ordered)done.push('🔢 排品順序排好了（'+ordered+' 品）');
@@ -876,6 +899,8 @@ function goodsRows(cat,rows,map){
     else if(h.indexOf('賣場價')>=0)ix.price=i;
     else if(h.indexOf('折數')>=0)ix.disc=i;
     else if(h.indexOf('利潤率')>=0)ix.rate=i;
+    else if(h.indexOf('商品成本')>=0)ix.cost=i;
+    else if(h.indexOf('重量')>=0)ix.wt=i;
     else if(h.indexOf('狀態')>=0)ix.st=i;
     else if(h.indexOf('主分類')>=0)ix.main=i;
     else if(h.indexOf('款式')>=0)ix.style=i;});
@@ -884,7 +909,7 @@ function goodsRows(cat,rows,map){
     var r=rows[i],sku=numOf(r[ix.sku]).replace(/\.0*$/,'');
     if(!/^[0-9]{3,5}$/.test(sku)||map[sku])continue;
     map[sku]={cat:cat,url:String(r[ix.url]||'').trim(),price:numOf(r[ix.price]),
-      disc:numOf(r[ix.disc]),rate:numOf(r[ix.rate]),st:String(r[ix.st]||'').trim(),
+      disc:numOf(r[ix.disc]),rate:numOf(r[ix.rate]),cost:numOf(r[ix.cost]),wt:numOf(r[ix.wt]),st:String(r[ix.st]||'').trim(),
       name:[String(r[ix.main]||'').trim(),String(r[ix.style]||'').trim()].filter(Boolean).join(' · ')};
   }
 }
@@ -922,7 +947,9 @@ function applyGoods(c){
     if(c.getAttribute('data-gsku')!==key){
       c.querySelector('.f-url').value=g.url||'';
       c.querySelector('.f-price').value=g.price||'';
-      c.querySelector('.f-disc').value=g.disc||'';
+      var kd=c.getAttribute('data-keepdisc');          /* 舊卡存過的折數優先，不被商品庫蓋掉 */
+      c.querySelector('.f-disc').value=kd||g.disc||'';
+      c.removeAttribute('data-keepdisc');
       c.querySelector('.f-rate').value=g.rate||'';
       c.setAttribute('data-gsku',key);
     }
