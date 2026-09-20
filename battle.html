@@ -27,9 +27,6 @@
   .flabel{font-size:13px;font-weight:800;color:var(--plum2);letter-spacing:1px;margin:13px 0 6px;}
   .flabel:first-of-type{margin-top:0;}
   .hint{font-size:11.5px;color:var(--ink2);margin:-2px 0 6px;line-height:1.6;}
-  .optrow{display:flex;flex-wrap:wrap;gap:7px;}
-  .opt{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 15px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink);}
-  .opt.on{border-color:var(--plum2);background:var(--plum2);color:#fff;}
   .opt:disabled{opacity:.45;cursor:default;}
   .txt{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:8px 10px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--ink);}
   select.txt{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink2) 50%),linear-gradient(135deg,var(--ink2) 50%,transparent 50%);
@@ -55,6 +52,9 @@
   .logd summary::before{content:'▸';margin-right:6px;color:var(--ink2);}
   .logd[open] summary::before{content:'▾';}
   .logtag{font-size:11px;font-weight:700;color:var(--ink2);}
+  .logsec{font-size:11px;font-weight:800;color:var(--plum2);letter-spacing:1px;
+    margin:8px 0 3px;padding-top:7px;border-top:1px dashed var(--line);}
+  .logsec:first-child{margin-top:2px;padding-top:0;border-top:none;}
   .logi{font-size:12.5px;line-height:1.7;color:var(--ink);margin-top:6px;white-space:pre-wrap;}
   .logi b{color:var(--plum2);}
   .sheetbtn{display:block;margin-top:12px;text-align:center;text-decoration:none;border:1.5px dashed var(--back);
@@ -89,14 +89,22 @@
   .pool[data-k=profit]>h3{color:var(--profit);} .pool[data-k=profit] .std{border-left-color:var(--profit);}
   .pool[data-k=chance]>h3{color:var(--chance);} .pool[data-k=chance] .std{border-left-color:var(--chance);}
 
-  .item{background:#fff;border:1px solid var(--line);border-radius:11px;padding:9px;margin-top:8px;}
+  .item{background:#fff;border:1px solid var(--line);border-radius:11px;padding:8px;margin-top:7px;}
+  .autoline{display:flex;flex-wrap:wrap;align-items:center;gap:3px 8px;font-size:11.5px;
+    color:var(--ink2);line-height:1.5;}
+  .autoline b{color:var(--plum);font-size:12.5px;}
+  .autoline .tag{background:#eef7f0;color:var(--ok);font-weight:800;border-radius:99px;padding:1px 7px;}
+  .autoline .warn{background:#FCF3D7;color:#8a6a10;font-weight:800;border-radius:99px;padding:1px 7px;}
+  .autoline a{color:var(--rose);font-weight:800;text-decoration:none;}
+  .lnk{border:none;background:none;color:var(--ink2);font-size:11px;cursor:pointer;
+    text-decoration:underline;padding:0;font-family:inherit;}
   .it-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;}
   .it-no{font-size:11px;font-weight:800;color:var(--ink2);letter-spacing:1px;}
   .it-del{border:none;background:none;color:var(--ink2);font-size:11.5px;cursor:pointer;text-decoration:underline;padding:2px 4px;}
   .it-del:disabled{opacity:.3;cursor:default;}
   .itbody{display:flex;gap:10px;align-items:flex-start;}
   .itfields{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px;}
-  .thumb{flex:0 0 44%;aspect-ratio:1/1;border-radius:11px;overflow:hidden;
+  .thumb{flex:0 0 104px;aspect-ratio:1/1;border-radius:11px;overflow:hidden;
     border:1px solid var(--line);background:#f7f2ee;display:none;}
   .thumb.on{display:block;}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -136,13 +144,6 @@
   .savebtn.blue{background:var(--back);}
   .done{background:#E6F4EC;color:var(--ok);border-radius:11px;padding:10px 12px;font-size:13px;font-weight:800;line-height:1.65;margin-top:9px;}
 
-  .gate{display:flex;gap:8px;margin-top:9px;}
-  .gbtn{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 6px;cursor:pointer;
-    font-size:13.5px;font-weight:800;color:var(--ink2);letter-spacing:1px;line-height:1.5;}
-  .gbtn small{display:block;font-size:10px;font-weight:700;letter-spacing:0;margin-top:2px;opacity:.85;}
-  .gbtn.on{border-color:var(--ok);background:#E6F4EC;color:var(--ok);}
-  .locked .lockbody{opacity:.35;pointer-events:none;filter:grayscale(.6);}
-  .lockmsg{font-size:12px;font-weight:800;color:var(--no);background:#FBE4E4;border-radius:9px;padding:8px 11px;margin-top:9px;line-height:1.55;}
   .rotag{position:absolute;top:13px;right:14px;font-size:10px;font-weight:800;letter-spacing:1px;
     background:#E6F4EC;color:var(--ok);border-radius:99px;padding:3px 9px;display:none;}
   .card.ro .rotag{display:block;}
@@ -184,14 +185,14 @@
 
 <div class="top">
   <h1>單場作戰卡<small>MURO</small></h1>
-  <p>運營交卡 · 主播中控確認 · 下播復盤</p>
+  <p>交卡 · 排品順序 · 下播復盤</p>
 </div>
 
 <div class="wrap">
 
   <div class="card">
     <div class="flabel">🗒 近 2 天反饋與總結</div>
-    <div class="hint">點一下展開看內容。</div>
+    <div class="hint">昨天和前天各一列，點一下展開看那天每一場。</div>
     <div id="logBox"></div>
   </div>
 
@@ -212,7 +213,6 @@
     <div class="it-row">
       <div><label class="lab">🎤 主播</label><select class="txt" id="nAnchor"></select></div>
       <div><label class="lab">🎛 中控</label><select class="txt" id="nOps"></select></div>
-      <div><label class="lab">📋 運營</label><select class="txt" id="nOp"></select></div>
     </div>
   </div>
 
@@ -222,8 +222,7 @@
     <div class="card" id="aimCard">
     <span class="rotag">🔒 已交卡</span>
     <span class="stage">① 開播前 · 運營填</span>
-    <div class="flabel">🎯 本場目的</div>
-    <div class="optrow" id="aimRow"></div>
+    <div class="flabel">🎯 本場目標與活動</div>
     <div class="aimgrow">
       <div class="fgrow"><label class="lab">本場目標</label>
         <textarea class="txt" id="aimKpi"></textarea></div>
@@ -234,11 +233,10 @@
     </div>
     <div class="col">
       <div class="colh">下播後</div>
-    <div class="card locked" id="fbCard">
-    <span class="stage two">③ 下播後 · 主播中控一起聊 · 中控填</span>
+    <div class="card" id="fbCard">
+    <span class="stage two">② 下播後 · 主播中控一起聊 · 中控填</span>
     <div class="flabel">🗣 下播復盤</div>
     <div class="hint">下播後主播和中控聊一下，由中控填。每題一句就好。</div>
-    <div class="lockmsg" id="lockMsg0">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
       <div class="aimgrow">
         <div class="fgrow"><label class="lab">① 今天最有效的：哪個商品或哪一招最留得住人</label>
@@ -251,11 +249,10 @@
     </div>
     </div>
 
-    <div class="card locked" id="afterCard">
-    <span class="stage after">③ 下播後 · 運營填</span>
+    <div class="card" id="afterCard">
+    <span class="stage after">② 下播後 · 運營填</span>
     <div class="flabel">🔚 運營總結</div>
     <div class="hint">先看上面的下播復盤，再下結論。</div>
-    <div class="lockmsg" id="lockMsg">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
       <div style="margin-top:7px"><label class="lab">總結</label>
         <textarea class="txt" id="resWhy" rows="2"></textarea></div>
@@ -284,7 +281,7 @@
   </div>
 
   <div class="card" id="openCard">
-    <span class="stage two">主播 · 中控 · 運營都可以填</span>
+    <span class="stage two">主播中控運營</span>
     <div class="flabel">🎬 開場 ・ 🏁 收尾</div>
     <div class="hint">開場選的品＝排品順序第 1 個，收尾選的品＝最後一個，講完就進收尾環節。</div>
     <div class="aimgrow">
@@ -302,7 +299,7 @@
   </div>
 
   <div class="card" id="orderCard">
-    <span class="stage two">主播 · 中控 · 運營都可以填</span>
+    <span class="stage two">主播中控運營</span>
     <div class="flabel">🔢 排品順序</div>
     <div class="hint">第 1 個講到第 10 個，第 1 個和最後一個跟著開場、收尾走。下一個品不能和上一個同品類（客人買完又看到同品類更好的，會取消重下），同品類的選項會自動變灰不能選。</div>
     <div id="orderBox"></div>
@@ -311,23 +308,12 @@
   </div>
 
   <div class="card">
-    <span class="stage">第一階段 · 運營</span>
-    <div class="flabel">📤 運營交卡</div>
+    <div class="flabel">📤 交卡</div>
     <div class="hint">交卡後上面欄位會鎖住，要改按「退回修改」。</div>
-    <button class="savebtn" id="submitBtn">① 運營交卡</button>
+    <button class="savebtn" id="submitBtn">① 交卡</button>
     <div class="done" id="subInfo" style="display:none"></div>
-    <button class="savebtn ghost" id="unsubBtn" style="display:none">↩ 退回修改（會清掉主播中控的確認）</button>
+    <button class="savebtn ghost" id="unsubBtn" style="display:none">↩ 退回修改</button>
     <div id="msg"></div>
-  </div>
-
-  <div class="card">
-    <span class="stage two">第二階段 · 主播 · 中控</span>
-    <div class="flabel">🤝 看完按確認</div>
-    <div class="hint">看完就可以按，不用等運營交卡。兩邊都確認，下播後的欄位才會解鎖。</div>
-    <div class="gate">
-      <button type="button" class="gbtn" id="gAnchor">🎤 主播確認<small>尚未確認</small></button>
-      <button type="button" class="gbtn" id="gOps">🎛 中控確認<small>尚未確認</small></button>
-    </div>
   </div>
 
 
@@ -345,7 +331,6 @@ var TOKEN='muro2026';
 var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('作戰卡');
 var CSV_BAND='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('價格帶');
 
-var AIMS=['拉新粉','測新品','衝GMV','清庫存'];
 /* 其他＝不屬於前面任何一類的都算（睡衣也併進來）；舊卡的「睡衣」「其他（非內衣類）」打開時自動歸到其他 */
 var CATS=['內衣','內褲','上衣','下身','塑身','其他'];
 /* 利潤帶：低 20~24／一般 25~30／高 31~45，上下各留 1.5% 空間；低於 18.5% 不能排 */
@@ -423,18 +408,6 @@ function onSess(){
   fill();
 }
 
-function chipRow(id,list,getv,setv){
-  var r=document.getElementById(id);r.innerHTML='';
-  list.forEach(function(s){
-    var b=document.createElement('button');b.type='button';
-    b.className='opt'+(s===getv()?' on':'');b.textContent=s;
-    b.onclick=function(){
-      if(getv()===s){setv('');b.classList.remove('on');return;}
-      setv(s);[].forEach.call(r.children,function(x){x.classList.remove('on');});b.classList.add('on');
-    };
-    r.appendChild(b);
-  });
-}
 
 function bandsFor(cat,noAlias){
   if(BANDS_DEAL&&BANDS_DEAL[cat])return BANDS_DEAL[cat];
@@ -537,21 +510,28 @@ function itemEl(data){
     '<div class="itbody">'+
       '<a class="thumb" data-thumb target="_blank" rel="noopener"><img alt=""></a>'+
       '<div class="itfields">'+
-        '<div><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
-        '<div><label class="lab">商品連結</label>'+
-          '<div class="linkrow"><input class="txt f-url" inputmode="url">'+
-          '<a class="openbtn" target="_blank" rel="noopener">開 ↗</a></div></div>'+
         '<div class="it-row">'+
-          '<div><label class="lab">賣場價</label><input class="txt f-price" inputmode="decimal"></div>'+
-          '<div><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal"></div>'+
-          '<div><label class="lab">直播價</label><div class="live"><b class="f-live">—</b></div></div>'+
+          '<div style="flex:0 0 96px"><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
+          '<div><label class="lab">單品活動</label><input class="txt f-iact"></div>'+
         '</div>'+
-        '<div class="it-row">'+
-          '<div><label class="lab">利潤率 %</label><input class="txt f-rate" inputmode="decimal"></div>'+
-          '<div><label class="lab">利潤帶（低20~24・一般25~30・高31~45）</label><div class="live"><b class="f-mband">—</b></div></div>'+
+        '<div class="autoline" data-auto style="display:none"></div>'+
+        '<div data-manual style="display:none">'+
+          '<div class="autoline" style="margin-bottom:5px">'+
+            '<button type="button" class="lnk" data-auto-btn style="display:none">↩ 改用商品庫的資料</button></div>'+
+          '<div><label class="lab">商品連結</label>'+
+            '<div class="linkrow"><input class="txt f-url" inputmode="url">'+
+            '<a class="openbtn" target="_blank" rel="noopener">開 ↗</a></div></div>'+
+          '<div class="it-row" style="margin-top:5px">'+
+            '<div><label class="lab">賣場價</label><input class="txt f-price" inputmode="decimal"></div>'+
+            '<div><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal"></div>'+
+            '<div><label class="lab">直播價</label><div class="live"><b class="f-live">—</b></div></div>'+
+          '</div>'+
+          '<div class="it-row" style="margin-top:5px">'+
+            '<div><label class="lab">利潤率 %</label><input class="txt f-rate" inputmode="decimal"></div>'+
+            '<div><label class="lab">利潤帶</label><div class="live"><b class="f-mband">—</b></div></div>'+
+          '</div>'+
         '</div>'+
         '<div class="bandwarn" data-ratewarn style="display:none"></div>'+
-        '<div><label class="lab">單品活動</label><input class="txt f-iact"></div>'+
         '<div class="metarow"><div class="bandline" data-band></div>'+
           '<label class="newbox"><input type="checkbox" class="f-new"><span>🆕 新品</span></label></div>'+
       '</div>'+
@@ -566,6 +546,12 @@ function itemEl(data){
   d.querySelector('.f-rate').value=data.rate||'';
   d.setAttribute('data-oldmargin',data.margin||'');   /* 舊卡選的利潤帶，沒填利潤率前照樣顯示 */
   d.querySelector('.it-del').onclick=function(){d.parentNode.removeChild(d);refresh();};
+  d.addEventListener('click',function(ev){          /* 手動改／改回自動 */
+    var t=ev.target;
+    if(t.closest&&t.closest('[data-man-btn]')){d.setAttribute('data-man','1');refresh();}
+    if(t.closest&&t.closest('[data-auto-btn]')){
+      d.removeAttribute('data-man');d.removeAttribute('data-gsku');refresh();}
+  });
   [].forEach.call(d.querySelectorAll('input,select'),function(el){
     el.addEventListener('input',refresh);el.addEventListener('change',refresh);});
   return d;
@@ -701,6 +687,7 @@ function refresh(){
     catEl(cat).querySelector('[data-cnt]').textContent=n?(n+' 個'):'還沒排';
     [].forEach.call(kids,function(c,i){
       c.querySelector('.it-no').textContent=shortCat(cat)+' '+(i+1);
+      var gd=applyGoods(c);
       var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
       c.querySelector('.f-live').textContent=(lp===null)?'—':('$'+lp);
       setThumb(c); setOpen(c);
@@ -708,6 +695,22 @@ function refresh(){
       c.querySelector('.f-mband').textContent=rb||(c.getAttribute('data-oldmargin')||'—');
       rw.style.display=(rb==='不能排')?'block':'none';
       rw.textContent=(rb==='不能排')?('⚠ 利潤率 '+rt+'% 低於 '+RATE_MIN+'%，不能排進這場'):'';
+      var au=c.querySelector('[data-auto]'), sk=c.querySelector('.f-sku').value.trim();
+      if(gd&&c.getAttribute('data-man')!=='1'){
+        var lk=safeUrl(gd.url);
+        au.style.display='';
+        au.innerHTML='<span class="tag">商品庫</span>'+
+          (gd.name?'<span>'+esc(gd.name)+'</span>':'')+
+          '<span>$'+esc(gd.price)+(gd.disc?' ×'+esc(gd.disc):'')+' → <b>直播 $'+(lp===null?'—':lp)+'</b></span>'+
+          '<span>利潤率 '+esc(gd.rate)+'%'+(rb?'（'+esc(rb)+'）':'')+'</span>'+
+          (gd.st?'<span>'+esc(gd.st)+'</span>':'')+
+          (gd.cat&&gd.cat!==cat?'<span class="warn">商品庫歸在「'+esc(gd.cat)+'」</span>':'')+
+          (lk?'<a href="'+esc(lk)+'" target="_blank" rel="noopener">蝦皮 ↗</a>':'')+
+          '<button type="button" class="lnk" data-man-btn>手動改</button>';
+      }else if(sk&&GOODS&&!gd){
+        au.style.display='';
+        au.innerHTML='<span class="warn">商品庫查不到這個貨號</span><span>下面自己填</span>';
+      }else{au.style.display='none';au.innerHTML='';}
       var bk=bandOf(cat,lp), bl=c.querySelector('[data-band]');
       if(!bk){bl.innerHTML='';}
       else{
@@ -732,7 +735,7 @@ function refresh(){
   /* 只列已完成的，沒完成的不顯示（滿排叉叉會讓人沮喪） */
   var done=[], need=8;
   if(sess)done.push('🎬 日期和場次選好了');
-  if(nm.anchor&&nm.ops&&nm.op)done.push('👥 主播／中控／運營選齊了');
+  if(nm.anchor&&nm.ops)done.push('👥 主播和中控選好了');
   if(aim)done.push('🎯 主目標選好了');
   if(nnew>=1)done.push('🆕 新品 '+nnew+' 款');
   if(bandCount.low>=1&&kinds.length>=2)
@@ -763,12 +766,11 @@ function refresh(){
 function buildRoster(){
   document.getElementById('nAnchor').innerHTML=opts(ROSTER.anchor,'選主播');
   document.getElementById('nOps').innerHTML=opts(ROSTER.ops,'選中控');
-  document.getElementById('nOp').innerHTML=opts(ROSTER.op,'選運營');
 }
 function readNames(){
   return {anchor:document.getElementById('nAnchor').value,
           ops:document.getElementById('nOps').value,
-          op:document.getElementById('nOp').value};
+          op:ROSTER.op[0]};                       /* 運營固定一個人，不用選 */
 }
 
 function stamp(){var d=new Date();return (d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
@@ -782,7 +784,7 @@ function setRO(id,ro){
     el.disabled=ro;el.style.opacity=ro?'.5':'';el.style.cursor=ro?'default':'pointer';});
 }
 function paintPhase(){
-  var nm=readNames(), sub=!!gate.sub, both=!!(gate.anchor&&gate.ops);
+  var nm=readNames(), sub=!!gate.sub;
   ['peopleCard','aimCard','poolCard'].forEach(function(id){setRO(id,sub);});
   document.getElementById('submitBtn').style.display=sub?'none':'block';
   var info=document.getElementById('subInfo');
@@ -790,16 +792,6 @@ function paintPhase(){
   info.textContent=sub?('✅ 已交卡　'+gate.sub+(nm.op?'　by '+nm.op:'')):'';
   document.getElementById('unsubBtn').style.display=sub?'block':'none';
 
-  [['anchor','gAnchor','🎤 主播確認',nm.anchor],['ops','gOps','🎛 中控確認',nm.ops]].forEach(function(x){
-    var b=document.getElementById(x[1]), on=!!gate[x[0]];
-    b.className='gbtn'+(on?' on':'');
-    b.disabled=false;
-    b.innerHTML=x[2]+'<small>'+(x[3]?esc(x[3])+(on?' ✔ '+gate[x[0]]:' · 尚未確認'):(on?'✔ '+gate[x[0]]:'尚未確認'))+'</small>';
-  });
-  ['fbCard','afterCard'].forEach(function(id){
-    document.getElementById(id).className='card'+(both?'':' locked');});
-  ['lockMsg0','lockMsg'].forEach(function(id){
-    document.getElementById(id).style.display=both?'none':'block';});
 }
 
 function jparse(s){try{var o=JSON.parse(s||'{}');return (o&&typeof o==='object')?o:{};}catch(e){return {};}}
@@ -835,7 +827,7 @@ function fill(){
   var f=parseFocus(c.focus||'');
   setPools(f.pools);
   var g=jparse(c.strategy);
-  aim=g.aim||'';
+  aim=g.aim||'';                                  /* 欄位拿掉了，舊卡選的目的原樣留著 */
   order=Array.isArray(g.order)?g.order.slice(0,10):[];
   document.getElementById('openAct').value=g.openAct||'';
   document.getElementById('endAct').value=g.endAct||'';
@@ -867,9 +859,80 @@ function fill(){
   var w=jparse(c.who);
   document.getElementById('nAnchor').value=w.anchor||'';
   document.getElementById('nOps').value=w.ops||'';
-  document.getElementById('nOp').value=w.op||'';
-  chipRow('aimRow',AIMS,function(){return aim;},function(v){aim=v;refresh();});
   refresh();
+}
+/* ---------- 商品庫連動：填貨號就自動帶入蝦皮連結、價格、利潤率 ---------- */
+var GOODS_ID='1WJcHeXKPIrPa95JcyditMIP1fNI-ot1GvJb096Ly-Qc';
+var GOODS_TABS=[['1737075681','內衣'],['886028107','內褲'],['161220253','上衣'],
+  ['1053563914','下身'],['155692727','上衣'],['850304352','其他'],
+  ['628662235','其他'],['1650428550','塑身'],['102520519','其他']];
+var GOODS=null;
+function numOf(v){var x=String(v==null?'':v).replace(/[^0-9.]/g,'');return x||'';}
+function goodsRows(cat,rows,map){
+  var head=rows[0]||[],ix={};
+  head.forEach(function(h,i){h=String(h||'');
+    if(h.indexOf('muro')>=0)ix.sku=i;
+    else if(h.indexOf('蝦皮連結')>=0)ix.url=i;
+    else if(h.indexOf('賣場價')>=0)ix.price=i;
+    else if(h.indexOf('折數')>=0)ix.disc=i;
+    else if(h.indexOf('利潤率')>=0)ix.rate=i;
+    else if(h.indexOf('狀態')>=0)ix.st=i;
+    else if(h.indexOf('主分類')>=0)ix.main=i;
+    else if(h.indexOf('款式')>=0)ix.style=i;});
+  if(ix.sku===undefined)return;
+  for(var i=1;i<rows.length;i++){
+    var r=rows[i],sku=numOf(r[ix.sku]).replace(/\.0*$/,'');
+    if(!/^[0-9]{3,5}$/.test(sku)||map[sku])continue;
+    map[sku]={cat:cat,url:String(r[ix.url]||'').trim(),price:numOf(r[ix.price]),
+      disc:numOf(r[ix.disc]),rate:numOf(r[ix.rate]),st:String(r[ix.st]||'').trim(),
+      name:[String(r[ix.main]||'').trim(),String(r[ix.style]||'').trim()].filter(Boolean).join(' · ')};
+  }
+}
+function loadGoods(){
+  try{var c=JSON.parse(localStorage.getItem('muroGoods')||'null');
+      if(c&&c.map&&(Date.now()-c.at)<6*3600*1000){GOODS=c.map;refresh();}}catch(e){}
+  Promise.all(GOODS_TABS.map(function(t){
+    return fetch('https://docs.google.com/spreadsheets/d/'+GOODS_ID+
+        '/gviz/tq?tqx=out:csv&gid='+t[0]+'&t='+Math.floor(Math.random()*1e9))
+      .then(function(r){if(!r.ok)throw 0;return r.text();})
+      .then(function(x){return [t[1],parseCSV(x)];})
+      .catch(function(){return [t[1],null];});
+  })).then(function(res){
+    var map={},got=0;
+    res.forEach(function(pair){if(!pair[1])return;got++;goodsRows(pair[0],pair[1],map);});
+    if(got&&Object.keys(map).length){
+      GOODS=map;
+      try{localStorage.setItem('muroGoods',JSON.stringify({at:Date.now(),map:map}));}catch(e){}
+    }
+    refresh();
+  });
+}
+function goodsOf(v){
+  if(!GOODS)return null;
+  var l=skuList(v);
+  for(var i=0;i<l.length;i++)if(GOODS[l[i]])return GOODS[l[i]];
+  return null;
+}
+/* 換了貨號就把商品庫的資料帶進欄位（存檔格式不變）；按過「手動改」的不動 */
+function applyGoods(c){
+  var raw=c.querySelector('.f-sku').value, key=(skuList(raw)[0]||''), g=goodsOf(raw);
+  var man=c.getAttribute('data-man')==='1';
+  var mbox=c.querySelector('[data-manual]');
+  if(g&&!man){
+    if(c.getAttribute('data-gsku')!==key){
+      c.querySelector('.f-url').value=g.url||'';
+      c.querySelector('.f-price').value=g.price||'';
+      c.querySelector('.f-disc').value=g.disc||'';
+      c.querySelector('.f-rate').value=g.rate||'';
+      c.setAttribute('data-gsku',key);
+    }
+    mbox.style.display='none';
+  }else{
+    c.removeAttribute('data-gsku');
+    mbox.style.display='';
+  }
+  mbox.querySelector('[data-auto-btn]').style.display=(g&&man)?'':'none';
+  return g;
 }
 function parseCSV(text){
   var rows=[],row=[],cur='',q=false;
@@ -905,27 +968,35 @@ function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.t
 /* ---------- 今日活動 ---------- */
 var lowRate=0;
 var keepCost={ad:'',coin:''}, keepAim={text:'',why:''}, keepRes='', keepPools={}, keepFb={anchor:'',ops:''};
-/* 近 2 天（今天和昨天）的現場反饋與運營總結，收合顯示 */
+/* 昨天、前天各一列，點開才看到那天的第 1~3 場 */
 function renderLog(){
   var box=document.getElementById('logBox'); if(!box)return;
-  var t=todayStr(), from=addDays(t,-1), out=[];
-  Object.keys(cards).sort().reverse().forEach(function(k){
-    var c=cards[k], ps=parseSess(c.sess);
-    if(!ps||ps.seq>=90)return;                       /* 跳過日／週活動那種列 */
-    if(c.date<from||c.date>t)return;
-    var n=jparse(c.notes), w=jparse(c.who);
-    /* 只列有填的；舊卡的主播／中控反饋照樣看得到 */
-    var rows=[['👍 最有效的',n.fbGood],['🧱 最卡的',n.fbStuck],
-              ['🎤 主播'+(w.anchor?'（'+w.anchor+'）':''),n.fbAnchor],
-              ['🎛 中控'+(w.ops?'（'+w.ops+'）':''),n.fbOps],
-              ['🔚 運營總結',n.why]].filter(function(x){return x[1];});
-    var has=rows.map(function(x){return x[0].split(' ')[0];}).join('');
-    var body=rows.map(function(x){return '<div class="logi"><b>'+esc(x[0])+'</b>：'+esc(x[1])+'</div>';}).join('');
-    out.push('<details class="logd"><summary>'+esc(mdOf(c.date))+
-      '<span class="logtag">'+(has||'還沒填')+'</span></summary>'+
-      (body||'<div class="logi">還沒填</div>')+'</details>');
+  var t=todayStr(), out=[];
+  [addDays(t,-1),addDays(t,-2)].forEach(function(d){
+    var list=[];
+    Object.keys(cards).forEach(function(k){
+      var c=cards[k], ps=parseSess(c.sess);
+      if(!ps||ps.seq>=90||c.date!==d)return;                /* 跳過日／週活動那種列 */
+      list.push({seq:ps.seq,n:jparse(c.notes),w:jparse(c.who)});
+    });
+    list.sort(function(a,b){return a.seq-b.seq;});
+    var body='',nfill=0;
+    list.forEach(function(x){
+      /* 只列有填的；舊卡的主播／中控反饋照樣看得到 */
+      var rows=[['👍 最有效的',x.n.fbGood],['🧱 最卡的',x.n.fbStuck],
+                ['🎤 主播'+(x.w.anchor?'（'+x.w.anchor+'）':''),x.n.fbAnchor],
+                ['🎛 中控'+(x.w.ops?'（'+x.w.ops+'）':''),x.n.fbOps],
+                ['🔚 運營總結',x.n.why]].filter(function(r){return r[1];});
+      if(rows.length)nfill++;
+      body+='<div class="logsec">第 '+x.seq+' 場'+(rows.length?'':' · 還沒填')+'</div>'+
+        rows.map(function(r){return '<div class="logi"><b>'+esc(r[0])+'</b>：'+esc(r[1])+'</div>';}).join('');
+    });
+    if(!list.length)body='<div class="logi">這天沒有場次</div>';
+    var tag=list.length?(list.length+' 場'+(nfill?'　'+nfill+' 場有填':'　還沒填')):'沒有場次';
+    out.push('<details class="logd"><summary>'+esc(mdOf(d))+
+      '<span class="logtag">'+esc(tag)+'</span></summary>'+body+'</details>');
   });
-  box.innerHTML=out.length?out.join(''):'<div class="actnone">近 2 天還沒有場次</div>';
+  box.innerHTML=out.join('');
 }
 function doSave(quiet,okText,echo){
   msgEcho=echo||null;
@@ -965,24 +1036,15 @@ function doSave(quiet,okText,echo){
 document.getElementById('submitBtn').onclick=function(){
   if(!sess){showMsg('warn','先選日期和場次');return;}
   var nm=readNames();
-  if(!(nm.anchor&&nm.ops&&nm.op)){showMsg('warn','主播／中控／運營三個都要選');return;}
+  if(!(nm.anchor&&nm.ops)){showMsg('warn','主播和中控都要選');return;}
   if(lowRate){showMsg('warn','有 '+lowRate+' 品利潤率低於 '+RATE_MIN+'%，不能排進這場，先換掉再交卡');return;}
   gate.sub=stamp();paintPhase();doSave(false,'📤 已交卡');
 };
 document.getElementById('unsubBtn').onclick=function(){
-  if(!window.confirm('退回修改會清掉主播和中控已按的確認，確定嗎？'))return;
-  gate.sub='';gate.anchor='';gate.ops='';paintPhase();doSave(false,'↩ 已退回修改');
+  if(!window.confirm('退回修改？上面的欄位會解鎖。'))return;
+  gate.sub='';paintPhase();doSave(false,'↩ 已退回修改');   /* 舊卡的主播／中控確認時間原樣留著 */
 };
-function toggleGate(k){
-  if(!sess){showMsg('warn','先選日期和場次');return;}
-  gate[k]=gate[k]?'':stamp();
-  paintPhase();doSave(true);
-}
-function saveGated(){
-  if(!(gate.anchor&&gate.ops)){showMsg('warn','主播和中控都確認後才能填下播後的項目');return;}
-  doSave(false);
-}
-document.getElementById('saveFb').onclick=saveGated;
+document.getElementById('saveFb').onclick=function(){doSave(false);};
 document.getElementById('saveOrder').onclick=function(){
   if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
   doSave(false,'✅ 排品順序已儲存',document.getElementById('msgOrder'));
@@ -991,12 +1053,10 @@ document.getElementById('saveOpen').onclick=function(){
   if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
   doSave(false,'✅ 開場收尾已儲存',document.getElementById('msgOpen'));
 };
-document.getElementById('saveAfter').onclick=saveGated;
-document.getElementById('gAnchor').onclick=function(){toggleGate('anchor');};
-document.getElementById('gOps').onclick=function(){toggleGate('ops');};
+document.getElementById('saveAfter').onclick=function(){doSave(false);};
 document.getElementById('fDate').addEventListener('change',onSess);
 document.getElementById('fSeq').addEventListener('change',onSess);
-['nAnchor','nOps','nOp'].forEach(function(id){
+['nAnchor','nOps'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
 ['fbGood','fbStuck'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
@@ -1007,10 +1067,10 @@ document.getElementById('sessLabel').textContent='⬆ 選好日期和場次，�
 buildRoster();
 buildPools();
 setPools(null);
-chipRow('aimRow',AIMS,function(){return aim;},function(v){aim=v;refresh();});
 renderLog();
 refresh();
 loadBands();
+loadGoods();
 load();
 </script>
 </body>
