@@ -356,7 +356,7 @@ var BANDNAME={low:'低價帶',mid:'中價帶',high:'高價帶',gap:'跨帶'};
 
 var POOLS=[
   {k:'lead',  icon:'🎣', name:'引流款', min:2, max:3, want:['low'], act:true, must:true,
-   task:'開場留人。', cond:'一句話就講得完的感知價值。價帶依類別＋直播價自動判定。'},
+   task:'開場留人，盡量挑非主力品類。', cond:'一句話就講得完的感知價值。主力品類（塑身、內衣）拿來引流，之後正價就賣不動，優先用其他品類。價帶依類別＋直播價自動判定。'},
   {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, want:['mid'], act:true, must:true, margin:true,
    task:'撐調性、講技術。', cond:'必須有一個能講滿 30 秒的技術點（涼感qmax／透氣率／抗菌檢測），沒有就不要放。'},
   {k:'profit',icon:'💰', name:'利潤款', min:2, max:3, want:['mid','high'], act:true, must:true,
