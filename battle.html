@@ -20,7 +20,7 @@
   .top h1{font-size:21px;font-weight:800;letter-spacing:3px;}
   .top h1 small{font-size:11px;letter-spacing:3px;opacity:.7;margin-left:8px;}
   .top p{font-size:12.5px;opacity:.85;margin-top:5px;}
-  .wrap{max-width:560px;margin:0 auto;padding:14px 14px 40px;}
+  .wrap{max-width:820px;margin:0 auto;padding:14px 14px 40px;}
   .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 6px 18px rgba(74,44,58,.07);margin-top:12px;position:relative;}
   .stage{font-size:10.5px;font-weight:800;letter-spacing:2px;color:#fff;background:var(--rose);border-radius:99px;padding:3px 11px;display:inline-block;margin-bottom:9px;}
   .stage.two{background:var(--ok);} .stage.after{background:var(--plum2);} .stage.back{background:var(--back);}
@@ -40,12 +40,11 @@
   .lab{font-size:11px;font-weight:800;color:var(--plum2);display:block;margin-bottom:3px;letter-spacing:.5px;}
   input[type=date].txt{font-size:15px;}
 
-  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:0 12px;align-items:stretch;}
-  .col{min-width:0;display:flex;flex-direction:column;}
-  .col>.card#aimCard{flex:1 1 auto;display:flex;flex-direction:column;}
-  .aimgrow{flex:1 1 auto;display:flex;flex-direction:column;gap:7px;margin-top:7px;}
-  .fgrow{flex:1 1 0;display:flex;flex-direction:column;min-height:66px;}
-  .fgrow textarea{flex:1 1 auto;min-height:42px;}
+  .cols{display:block;}
+  .col{min-width:0;}
+  .aimgrow{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:7px;}
+  .fgrow{flex:1 1 190px;min-width:0;display:flex;flex-direction:column;}
+  .fgrow textarea{min-height:52px;}
   .colh{font-size:10.5px;font-weight:800;letter-spacing:3px;color:var(--ink2);margin:14px 0 -4px 4px;}
   .actbox.shopee .acth{color:#d0391b;}
   .actnone{font-size:11.5px;color:var(--ink2);margin:2px 0 4px;}
@@ -73,9 +72,11 @@
   .rs.s-ok{border-color:var(--ok);background:#E6F4EC;color:var(--ok);}
 
   .chk{background:#fffdfb;border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-top:10px;}
-  .chk ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
-  .chk li{font-size:13px;line-height:1.5;color:var(--no);font-weight:700;}
-  .chk li.pass{color:var(--ok);}
+  .chk ul{list-style:none;display:flex;flex-wrap:wrap;gap:5px 7px;}
+  .chk li{font-size:12.5px;line-height:1.5;color:var(--no);font-weight:700;
+    background:#f7f2ee;border-radius:8px;padding:3px 9px;}
+  .chk li.pass{color:var(--ok);background:#eef7f0;}
+  .chk li.sum{flex:1 1 100%;background:none;padding:3px 0;}
 
   .pool{border:1px solid var(--line);border-radius:15px;padding:12px;margin-top:12px;background:#fffdfb;}
   .pool>h3{font-size:14.5px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
@@ -124,7 +125,6 @@
   .ordrow{display:flex;align-items:center;gap:8px;margin-top:7px;}
   .ordno{flex:none;width:26px;height:26px;border-radius:50%;background:var(--plum2);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
   .ordrow select{flex:1 1 auto;min-width:0;}
-  .kindref{font-size:11px;color:var(--ink2);line-height:1.6;margin-top:6px;padding:7px 9px;background:#f7f2ee;border-radius:9px;border-left:3px solid var(--line);}
   .addbtn{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:11px;padding:10px;font-size:13px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:9px;}
   .addbtn:active{background:#fdf4f7;}
   .addbtn:disabled{opacity:.3;cursor:default;}
@@ -190,7 +190,7 @@
 <div class="wrap">
 
   <div class="card">
-    <div class="flabel">🗒 近 3 天反饋與總結</div>
+    <div class="flabel">🗒 近 2 天反饋與總結</div>
     <div class="hint">點一下展開看內容。</div>
     <div id="logBox"></div>
   </div>
@@ -240,10 +240,12 @@
     <div class="hint">下播後主播和中控聊一下，由中控填。每題一句就好。</div>
     <div class="lockmsg" id="lockMsg0">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
-      <div style="margin-top:9px"><label class="lab">① 今天最有效的：哪個商品或哪一招最留得住人</label>
-        <textarea class="txt" id="fbGood" rows="2"></textarea></div>
-      <div style="margin-top:7px"><label class="lab">② 今天最卡的：哪裡出狀況、當場怎麼處理</label>
-        <textarea class="txt" id="fbStuck" rows="2"></textarea></div>
+      <div class="aimgrow">
+        <div class="fgrow"><label class="lab">① 今天最有效的：哪個商品或哪一招最留得住人</label>
+          <textarea class="txt" id="fbGood" rows="2"></textarea></div>
+        <div class="fgrow"><label class="lab">② 今天最卡的：哪裡出狀況、當場怎麼處理</label>
+          <textarea class="txt" id="fbStuck" rows="2"></textarea></div>
+      </div>
       <div id="fbOld" class="hint" style="display:none;margin-top:9px;white-space:pre-wrap"></div>
       <button class="savebtn ghost" id="saveFb">儲存下播復盤</button>
     </div>
@@ -256,7 +258,7 @@
     <div class="lockmsg" id="lockMsg">🔒 等主播與中控都按確認後才能填</div>
     <div class="lockbody">
       <div style="margin-top:7px"><label class="lab">總結</label>
-        <textarea class="txt" id="resWhy" rows="3"></textarea></div>
+        <textarea class="txt" id="resWhy" rows="2"></textarea></div>
       <button class="savebtn ghost" id="saveAfter">儲存總結</button>
     </div>
     </div>
@@ -277,14 +279,32 @@
     <span class="rotag">🔒 已交卡</span>
     <span class="stage">① 開播前 · 運營填</span>
     <div class="flabel">🛒 本場商品池</div>
-    <div class="hint">依品類排，品類越齊越好，主播才不會整場只講兩三個品。每個單品選是什麼款、填利潤率。空的品類按 ＋ 才展開。</div>
+    <div class="hint">依品類排，品類越齊越好，主播才不會整場只講兩三個品。每個單品填利潤率。空的品類按 ＋ 才展開。</div>
     <div id="pools"></div>
+  </div>
+
+  <div class="card" id="openCard">
+    <span class="stage two">主播 · 中控 · 運營都可以填</span>
+    <div class="flabel">🎬 開場 ・ 🏁 收尾</div>
+    <div class="hint">開場選的品＝排品順序第 1 個，收尾選的品＝最後一個，講完就進收尾環節。</div>
+    <div class="aimgrow">
+      <div class="fgrow"><label class="lab">🎬 開場環節（見面禮等）</label>
+        <textarea class="txt" id="openAct" rows="2" data-always></textarea>
+        <label class="lab" style="margin-top:6px">第一個品</label>
+        <select class="txt" id="openSku" data-always></select></div>
+      <div class="fgrow"><label class="lab">🏁 收尾環節（孤品、清倉等）</label>
+        <textarea class="txt" id="endAct" rows="2" data-always></textarea>
+        <label class="lab" style="margin-top:6px">最後一個品</label>
+        <select class="txt" id="endSku" data-always></select></div>
+    </div>
+    <button class="savebtn ghost" id="saveOpen">儲存開場收尾</button>
+    <div id="msgOpen" class="hint" style="display:none;margin-top:8px;text-align:center;font-weight:800"></div>
   </div>
 
   <div class="card" id="orderCard">
     <span class="stage two">主播 · 中控 · 運營都可以填</span>
     <div class="flabel">🔢 排品順序</div>
-    <div class="hint">第 1 個講到第 10 個。下一個品不能和上一個同品類（客人買完又看到同品類更好的，會取消重下），同品類的選項會自動變灰不能選。</div>
+    <div class="hint">第 1 個講到第 10 個，第 1 個和最後一個跟著開場、收尾走。下一個品不能和上一個同品類（客人買完又看到同品類更好的，會取消重下），同品類的選項會自動變灰不能選。</div>
     <div id="orderBox"></div>
     <button class="savebtn ghost" id="saveOrder">儲存排品順序</button>
     <div id="msgOrder" class="hint" style="display:none;margin-top:8px;text-align:center;font-weight:800"></div>
@@ -355,14 +375,9 @@ var BANDS_MARKET=null, BANDS_DEAL=null;
 var BAND_SRC={mode:'builtin', days:null};
 var BANDNAME={low:'低價帶',mid:'中價帶',high:'高價帶',gap:'跨帶'};
 
-var POOLS=[
-  {k:'lead',  icon:'🎣', name:'引流款', min:2, max:3, act:true, must:true,
-   task:'開場留人。引流款＝高性價比的商品，不等於低價。', cond:'同樣價位，我們的面料、設計比別人好，也算引流款。一句話就講得完的感知價值。主力品類（塑身、內衣）拿來引流，之後正價就賣不動，優先用其他品類。'},
-  {k:'brand', icon:'💎', name:'品牌款', min:2, max:3, want:['mid'], act:true, must:true,
-   task:'撐調性、講技術。', cond:'必須有一個能講滿 30 秒的技術點（涼感qmax／透氣率／抗菌檢測），沒有就不要放。'},
-  {k:'profit',icon:'💰', name:'利潤款', min:2, max:3, want:['mid','high'], act:true, must:true,
-   task:'中段收割。', cond:'要有組合或贈品把客單拉起來。'}
-];
+/* 款別（引流／品牌／利潤）已經不填了，利潤率一看就知道是什麼品。
+   這裡只留存檔用的鍵，舊卡的款別原樣存回去，資料不會不見。 */
+var POOLS=[{k:'lead',name:'引流款'},{k:'brand',name:'品牌款'},{k:'profit',name:'利潤款'}];
 
 function pad(n){return (n<10?'0':'')+n;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
@@ -522,11 +537,7 @@ function itemEl(data){
     '<div class="itbody">'+
       '<a class="thumb" data-thumb target="_blank" rel="noopener"><img alt=""></a>'+
       '<div class="itfields">'+
-        '<div class="it-row">'+
-          '<div style="flex:1 1 42%"><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
-          '<div style="flex:1 1 58%"><label class="lab">什麼款</label><select class="txt f-kind"><option value="">選款別</option>'+
-            POOLS.map(function(q){return '<option value="'+q.k+'">'+q.icon+' '+q.name+'</option>';}).join('')+'</select></div>'+
-        '</div>'+
+        '<div><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
         '<div><label class="lab">商品連結</label>'+
           '<div class="linkrow"><input class="txt f-url" inputmode="url">'+
           '<a class="openbtn" target="_blank" rel="noopener">開 ↗</a></div></div>'+
@@ -547,7 +558,7 @@ function itemEl(data){
     '</div>';
   d.querySelector('.f-sku').value=data.sku||'';
   d.querySelector('.f-url').value=data.url||'';
-  d.querySelector('.f-kind').value=data.kind||'';
+  d.setAttribute('data-oldkind',data.kind||'');   /* 舊卡選過的款別，原樣留著 */
   d.querySelector('.f-price').value=data.price||'';
   d.querySelector('.f-disc').value=data.disc||'';
   d.querySelector('.f-new').checked=!!data.isNew;
@@ -567,10 +578,6 @@ function livePrice(price,disc){
 }
 function buildPools(){
   var box=document.getElementById('pools');box.innerHTML='';
-  var ref=document.createElement('div');
-  ref.innerHTML=POOLS.map(function(q){
-    return '<div class="kindref"><b>'+q.icon+' '+q.name+'</b>：'+q.task+q.cond+'</div>';}).join('');
-  box.appendChild(ref);
   CATS.forEach(function(cat){
     var s=document.createElement('div');s.className='pool';s.setAttribute('data-c',cat);
     s.innerHTML='<h3>'+esc(cat)+' <span class="cnt" data-cnt></span></h3>'+
@@ -586,12 +593,11 @@ function shortCat(cat){return String(cat||'').replace(/（.*$/,'');}
 function catEl(cat){
   var r=null;[].forEach.call(document.querySelectorAll('.pool'),function(g){if(g.getAttribute('data-c')===cat)r=g;});return r;}
 function catBox(cat){return catEl(cat).querySelector('[data-items]');}
-function kindDef(k){var r=null;POOLS.forEach(function(q){if(q.k===k)r=q;});return r;}
 function readItem(el,cat){
   return {sku:el.querySelector('.f-sku').value.trim(),
           url:el.querySelector('.f-url').value.trim(),
           cat:cat,
-          kind:el.querySelector('.f-kind').value,
+          kind:el.getAttribute('data-oldkind')||'',
           price:el.querySelector('.f-price').value.trim(),
           disc:el.querySelector('.f-disc').value.trim(),
           isNew:el.querySelector('.f-new').checked,
@@ -624,19 +630,46 @@ function setPools(data){
   });
 }
 
+/* 開場＝順序第 1 個，收尾＝順序最後一個；兩邊改哪一邊都同步 */
+function fillEnds(cand,byKey,slots){
+  [['openSku',0,1],['endSku',slots-1,slots-2]].forEach(function(a){
+    var sel=document.getElementById(a[0]),idx=a[1],nb=a[2];
+    if(!sel)return;
+    if(slots<=0||idx<0||(a[0]==='endSku'&&slots<2)){
+      sel.innerHTML='<option value="">—</option>';sel.disabled=true;
+      sel.title=slots<=0?'商品池填了貨號才選得到品':'至少要有 2 個品才分得出收尾';
+      return;
+    }
+    sel.disabled=false;sel.title='';
+    var nc=byKey[order[nb]]?byKey[order[nb]].cat:'';
+    var h='<option value="">—</option>';
+    cand.forEach(function(c){
+      var clash=c.cat!==FREE_CAT&&c.cat===nc;
+      h+='<option value="'+esc(c.key)+'"'+(clash?' disabled':'')+'>'+esc(c.label)+
+         (clash?'（和隔壁同品類）':'')+'</option>';
+    });
+    sel.innerHTML=h;sel.value=order[idx]||'';
+    sel.onchange=function(){
+      var v=sel.value;   /* 已經排在中間的品，選成開場／收尾就直接搬過來，不重複 */
+      if(v)for(var j=0;j<order.length;j++)if(j!==idx&&order[j]===v)order[j]='';
+      order[idx]=v;refresh();
+    };
+  });
+}
+
 /* ---------- 排品順序：1~10，下一個品不能和上一個同品類（「其他」品項雜，不受限） ---------- */
 var order=[], FREE_CAT=CATS[CATS.length-1];
 function renderOrder(all){
   var box=document.getElementById('orderBox'), cand=[], seen={};
   all.forEach(function(x){
     if(!x.sku||seen[x.sku])return; seen[x.sku]=1;
-    var q=kindDef(x.kind);
-    cand.push({key:x.sku,cat:x.cat,label:shortCat(x.cat)+'｜'+x.sku+(q?'｜'+q.name:'')});
+    cand.push({key:x.sku,cat:x.cat,label:shortCat(x.cat)+'｜'+x.sku});
   });
   var byKey={};cand.forEach(function(c){byKey[c.key]=c;});
   order=order.map(function(k){return byKey[k]?k:'';});
   var slots=Math.min(10,cand.length);
   order=order.slice(0,slots);while(order.length<slots)order.push('');
+  fillEnds(cand,byKey,slots);
   box.innerHTML='';
   if(!slots){box.innerHTML='<div class="actnone">商品池填了貨號，這裡才會出現可以排的品。</div>';return 0;}
   function catAt(i){var c=byKey[order[i]];return c?c.cat:'';}
@@ -660,7 +693,7 @@ function renderOrder(all){
 function refresh(){
   var d=readPools(),all=[],comp=[];
   var bandCount={low:0,mid:0,high:0,gap:0};
-  POOLS.forEach(function(p){all=all.concat(d[p.k].items);comp.push(p.icon+p.name+' '+d[p.k].items.length);});
+  POOLS.forEach(function(p){all=all.concat(d[p.k].items);});
   all=all.concat(d.unset.items);
   var ncat=0;
   CATS.forEach(function(cat){
@@ -690,7 +723,7 @@ function refresh(){
 
   var nm=readNames();
   var total=all.length, nnew=all.filter(function(x){return x.isNew;}).length;
-  var miss=all.filter(function(x){return !(x.sku&&x.url&&x.kind&&x.price&&parseRate(x.rate)!==null);}).length;
+  var miss=all.filter(function(x){return !(x.sku&&x.url&&x.price&&parseRate(x.rate)!==null);}).length;
   var rates=all.map(function(x){return parseRate(x.rate);}).filter(function(x){return x!==null;});
   var avg=rates.length?Math.round(rates.reduce(function(a,b){return a+b;},0)/rates.length*10)/10:null;
   lowRate=all.filter(function(x){var r=parseRate(x.rate);return r!==null&&r<RATE_MIN;}).length;
@@ -709,11 +742,13 @@ function refresh(){
   if(BAND_SRC.mode==='deal'&&!(BAND_SRC.days!==null&&BAND_SRC.days>14))done.push('📐 價格帶讀的是最新成交帶');
   var ready=done.length===need&&!lowRate;
   if(ordered)done.push('🔢 排品順序排好了（'+ordered+' 品）');
+  if(document.getElementById('openAct').value.trim()&&order[0])done.push('🎬 開場定好了');
+  if(document.getElementById('endAct').value.trim()&&order.length>1&&order[order.length-1])done.push('🏁 收尾定好了');
   if(document.getElementById('fbGood').value.trim()&&document.getElementById('fbStuck').value.trim())
     done.push('🗣 下播復盤填好了');
 
   var ul=document.getElementById('chkList');ul.innerHTML='';
-  var ci=document.createElement('li');ci.className='pass';
+  var ci=document.createElement('li');ci.className='pass sum';
   ci.textContent='🧾 本場組成：'+comp.join('　')+'　共 '+total+' 品';
   ul.appendChild(ci);
   done.forEach(function(t){
@@ -802,6 +837,8 @@ function fill(){
   var g=jparse(c.strategy);
   aim=g.aim||'';
   order=Array.isArray(g.order)?g.order.slice(0,10):[];
+  document.getElementById('openAct').value=g.openAct||'';
+  document.getElementById('endAct').value=g.endAct||'';
   keepAim={text:g.text||'',why:g.why||''};        /* 欄位拿掉了，舊卡的值原樣留著 */
   document.getElementById('aimKpi').value=g.kpi||'';
   var n=jparse(c.notes);
@@ -868,10 +905,10 @@ function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.t
 /* ---------- 今日活動 ---------- */
 var lowRate=0;
 var keepCost={ad:'',coin:''}, keepAim={text:'',why:''}, keepRes='', keepPools={}, keepFb={anchor:'',ops:''};
-/* 近 3 天的現場反饋與運營總結，收合顯示 */
+/* 近 2 天（今天和昨天）的現場反饋與運營總結，收合顯示 */
 function renderLog(){
   var box=document.getElementById('logBox'); if(!box)return;
-  var t=todayStr(), from=addDays(t,-2), out=[];
+  var t=todayStr(), from=addDays(t,-1), out=[];
   Object.keys(cards).sort().reverse().forEach(function(k){
     var c=cards[k], ps=parseSess(c.sess);
     if(!ps||ps.seq>=90)return;                       /* 跳過日／週活動那種列 */
@@ -884,11 +921,11 @@ function renderLog(){
               ['🔚 運營總結',n.why]].filter(function(x){return x[1];});
     var has=rows.map(function(x){return x[0].split(' ')[0];}).join('');
     var body=rows.map(function(x){return '<div class="logi"><b>'+esc(x[0])+'</b>：'+esc(x[1])+'</div>';}).join('');
-    out.push('<details class="logd"><summary>'+esc(mdOf(c.date)+' 第 '+ps.seq+' 場')+
+    out.push('<details class="logd"><summary>'+esc(mdOf(c.date))+
       '<span class="logtag">'+(has||'還沒填')+'</span></summary>'+
       (body||'<div class="logi">還沒填</div>')+'</details>');
   });
-  box.innerHTML=out.length?out.join(''):'<div class="actnone">近 3 天還沒有場次</div>';
+  box.innerHTML=out.length?out.join(''):'<div class="actnone">近 2 天還沒有場次</div>';
 }
 function doSave(quiet,okText,echo){
   msgEcho=echo||null;
@@ -897,6 +934,8 @@ function doSave(quiet,okText,echo){
     text:keepAim.text, why:keepAim.why,
     kpi:document.getElementById('aimKpi').value.trim(),
     sessAct:document.getElementById('sessAct').value.trim(),
+    openAct:document.getElementById('openAct').value.trim(),
+    endAct:document.getElementById('endAct').value.trim(),
     order:order});
   var pools=readPools();
   for(var pk in keepPools)if(!pools[pk])pools[pk]=keepPools[pk];
@@ -947,6 +986,10 @@ document.getElementById('saveFb').onclick=saveGated;
 document.getElementById('saveOrder').onclick=function(){
   if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
   doSave(false,'✅ 排品順序已儲存',document.getElementById('msgOrder'));
+};
+document.getElementById('saveOpen').onclick=function(){
+  if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
+  doSave(false,'✅ 開場收尾已儲存',document.getElementById('msgOpen'));
 };
 document.getElementById('saveAfter').onclick=saveGated;
 document.getElementById('gAnchor').onclick=function(){toggleGate('anchor');};
