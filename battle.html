@@ -58,6 +58,15 @@
   .acts{font-size:11px;font-weight:800;letter-spacing:1px;color:#d0391b;margin:8px 0 2px;}
   .actnone{font-size:11.5px;color:var(--ink2);margin:2px 0 4px;}
   .actupd{font-size:10.5px;color:var(--ink2);margin-top:4px;}
+  .logd{border:1px solid var(--line);border-radius:11px;padding:8px 11px;margin-top:7px;background:#fffdfb;}
+  .logd summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--plum2);display:flex;
+    justify-content:space-between;align-items:center;gap:8px;list-style:none;}
+  .logd summary::-webkit-details-marker{display:none;}
+  .logd summary::before{content:'▸';margin-right:6px;color:var(--ink2);}
+  .logd[open] summary::before{content:'▾';}
+  .logtag{font-size:11px;font-weight:700;color:var(--ink2);}
+  .logi{font-size:12.5px;line-height:1.7;color:var(--ink);margin-top:6px;white-space:pre-wrap;}
+  .logi b{color:var(--plum2);}
   .actbox .actmeta{max-height:300px;overflow:auto;}
   .actbox.muro .acts{color:var(--plum2);}
   .minibtn{border:1.5px solid var(--plum2);background:#fff;color:var(--plum2);border-radius:9px;
@@ -194,20 +203,29 @@
 <div class="wrap">
 
   <div class="card" id="todayCard">
-    <div class="flabel">📣 今日活動 <span id="todayLabel" style="color:var(--ink2);font-weight:700"></span></div>
+    <div class="flabel">📣 本週活動 <span id="weekLabel" style="color:var(--ink2);font-weight:700"></span></div>
     <div class="actgrid">
       <div class="actbox muro">
-        <div class="acth">MURO 今日活動</div>
-        <textarea class="txt" id="dayActTop" rows="3"></textarea>
-        <button type="button" class="minibtn" id="saveDayTop">儲存今日活動</button>
-        <div class="actmeta" id="dayMetaTop"></div>
+        <div class="acth">MURO 本週活動</div>
+        <textarea class="txt" id="weekActTop" rows="3"></textarea>
+        <button type="button" class="minibtn" id="saveWeekTop">儲存</button>
+        <div class="actmeta" id="weekMetaTop"></div>
         <div class="actmeta" id="muroAuto"></div>
       </div>
       <div class="actbox shopee">
-        <div class="acth">蝦皮今日活動</div>
+        <div class="acth">蝦皮本週活動</div>
+        <textarea class="txt" id="shopeeActTop" rows="3"></textarea>
+        <button type="button" class="minibtn" id="saveShopeeTop">儲存</button>
+        <div class="actmeta" id="shopeeMetaTop"></div>
         <div id="shopeeBox" class="actmeta">讀取中…</div>
       </div>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="flabel">🗒 近 3 天反饋與總結</div>
+    <div class="hint">點一下展開看內容。</div>
+    <div id="logBox"></div>
   </div>
 
   <div class="card" id="whoCard">
@@ -244,10 +262,10 @@
         <textarea class="txt" id="aimKpi"></textarea></div>
       <div class="fgrow"><label class="lab">🎁 本場活動（只限這一場）</label>
         <textarea class="txt" id="sessAct"></textarea></div>
-      <div class="dayline"><label class="lab">📅 當日 MURO 活動（整天共用）</label>
-        <div class="dayrow"><textarea class="txt" id="dayActCard" rows="2" data-always></textarea>
-        <button type="button" class="minibtn" id="saveDayCard" data-always>存</button></div>
-        <div class="actmeta" id="dayMetaCard"></div></div>
+      <div class="dayline"><label class="lab">📅 MURO 本週活動（整週共用）</label>
+        <div class="dayrow"><textarea class="txt" id="weekActCard" rows="2" data-always></textarea>
+        <button type="button" class="minibtn" id="saveWeekCard" data-always>存</button></div>
+        <div class="actmeta" id="weekMetaCard"></div></div>
     </div>
     </div>
     </div>
@@ -758,7 +776,7 @@ function fill(){
     sa=old.join('\n');
   }
   document.getElementById('sessAct').value=sa;
-  showDayAct(sdate,'Card');
+  showWeekAct(sdate,'Card');
   document.getElementById('fbAnchor').value=n.fbAnchor||'';
   document.getElementById('fbOps').value=n.fbOps||'';
   var h=jparse(c.hook);
@@ -802,38 +820,88 @@ function showMsg(cls,t){var m=document.getElementById('msg');m.className=cls;m.t
 /* ---------- 今日活動 ---------- */
 var keepCost={ad:'',coin:''}, keepAim={text:'',why:''}, keepRes='', keepPools={};
 function dayCode(ds){var p=(ds||'').split('-');return p.length<3?'':String(+p[1])+pad(+p[2])+'00';}
-function dayRow(ds){return cards[ds+'|'+dayCode(ds)]||null;}
-function showDayAct(ds,where){
-  var r=dayRow(ds), g=r?jparse(r.strategy):{};
-  var ta=document.getElementById('dayAct'+where), meta=document.getElementById('dayMeta'+where);
+function weekMon(ds){                      /* 該日期所在那週的週一 */
+  var p=(ds||'').split('-'); if(p.length<3)return '';
+  var d=new Date(+p[0],+p[1]-1,+p[2]);
+  d.setDate(d.getDate()-((d.getDay()+6)%7));
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+}
+function weekCode(ds){var m=weekMon(ds),p=m.split('-');return m?String(+p[1])+pad(+p[2])+'90':'';}
+function weekRow(ds){var m=weekMon(ds);return cards[m+'|'+weekCode(ds)]||null;}
+function weekLabelOf(ds){var m=weekMon(ds);return mdOf(m)+'–'+mdOf(addDays(m,6));}
+function showWeekAct(ds,where){
+  var r=weekRow(ds), g=r?jparse(r.strategy):{};
+  var wa=g.weekAct||'';
+  if(!wa){                                  /* 舊的「當日活動」自動併進來，不遺失 */
+    var mon=weekMon(ds),old=[];
+    for(var i=0;i<7;i++){var d=addDays(mon,i),c=cards[d+'|'+dayCode(d)];
+      if(c){var dg=jparse(c.strategy); if(dg.dayAct)old.push(mdOf(d)+'：'+dg.dayAct);}}
+    wa=old.join('\n');
+  }
+  var ta=document.getElementById('weekAct'+where), meta=document.getElementById('weekMeta'+where);
   if(!ta)return;
-  if(document.activeElement!==ta)ta.value=g.dayAct||'';
-  meta.textContent=g.at?('最後更新 '+g.at):'';
+  if(document.activeElement!==ta)ta.value=wa;
+  if(meta)meta.textContent=g.at?('最後更新 '+g.at):'';
+  var sa=document.getElementById('shopeeActTop');
+  if(where==='Top'&&sa&&document.activeElement!==sa){
+    sa.value=g.shopeeAct||'';
+    var sm=document.getElementById('shopeeMetaTop');
+    if(sm)sm.textContent=g.shopeeAt?('最後更新 '+g.shopeeAt):'';
+  }
 }
 function renderToday(){
   var t=todayStr();
-  document.getElementById('todayLabel').textContent='（'+mdOf(t)+'）';
-  showDayAct(t,'Top');
-  if(sdate)showDayAct(sdate,'Card');
+  document.getElementById('weekLabel').textContent='（'+weekLabelOf(t)+'）';
+  showWeekAct(t,'Top');
+  if(sdate)showWeekAct(sdate,'Card');
+  renderLog();
 }
-function saveDayAct(ds,text,btn){
+/* 近 3 天的現場反饋與運營總結，收合顯示 */
+function renderLog(){
+  var box=document.getElementById('logBox'); if(!box)return;
+  var t=todayStr(), from=addDays(t,-2), out=[];
+  Object.keys(cards).sort().reverse().forEach(function(k){
+    var c=cards[k], ps=parseSess(c.sess);
+    if(!ps||ps.seq>=90)return;                       /* 跳過日／週活動那種列 */
+    if(c.date<from||c.date>t)return;
+    var n=jparse(c.notes), w=jparse(c.who);
+    var has=[n.fbAnchor?'🎤':'',n.fbOps?'🎛':'',n.why?'🔚':''].filter(Boolean).join('');
+    var body=[['🎤 主播'+(w.anchor?'（'+w.anchor+'）':''),n.fbAnchor],
+              ['🎛 中控'+(w.ops?'（'+w.ops+'）':''),n.fbOps],
+              ['🔚 運營總結',n.why]]
+      .map(function(x){return '<div class="logi"><b>'+esc(x[0])+'</b>：'+
+        (x[1]?esc(x[1]):'<span class="vmiss">未填</span>')+'</div>';}).join('');
+    out.push('<details class="logd"><summary>'+esc(mdOf(c.date)+' 第 '+ps.seq+' 場')+
+      '<span class="logtag">'+(has||'全部未填')+'</span></summary>'+body+'</details>');
+  });
+  box.innerHTML=out.length?out.join(''):'<div class="actnone">近 3 天還沒有場次</div>';
+}
+function saveWeekAct(ds,btn){
   if(!ds){showMsg('warn','先選日期');return;}
-  var code=dayCode(ds), at=stamp();
-  var strategy=JSON.stringify({dayAct:text,at:at});
-  var payload={token:TOKEN,action:'card_save',date:ds,slot:code,
+  var mon=weekMon(ds), code=weekCode(ds), at=stamp();
+  var old=jparse((weekRow(ds)||{}).strategy);
+  var topA=document.getElementById('weekActTop'), cardA=document.getElementById('weekActCard');
+  var src=(btn&&btn.id==='saveWeekCard')?cardA:topA;
+  var sa=document.getElementById('shopeeActTop');
+  var obj={weekAct:(src?src.value.trim():old.weekAct||''), at:at,
+           shopeeAct:(sa?sa.value.trim():old.shopeeAct||''), shopeeAt:old.shopeeAt||''};
+  if(btn&&btn.id==='saveShopeeTop'){obj.weekAct=old.weekAct||(topA?topA.value.trim():'');obj.at=old.at||at;obj.shopeeAt=at;}
+  var strategy=JSON.stringify(obj);
+  var ds2=mon;
+  var payload={token:TOKEN,action:'card_save',date:ds2,slot:code,
     strategy:strategy, focus:'', hook:'', notes:'', r1:'', r2:'', r3:''};
-  var old=btn.textContent; btn.disabled=true; btn.textContent='儲存中…';
+  var txt=btn.textContent; btn.disabled=true; btn.textContent='儲存中…';
   fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
   .then(function(r){return r.text();})
   .then(function(t){
     if(t==='ok'||t==='updated'){
-      cards[ds+'|'+code]={date:ds,sess:code,strategy:strategy,focus:'',hook:'',notes:'',who:''};
+      cards[ds2+'|'+code]={date:ds2,sess:code,strategy:strategy,focus:'',hook:'',notes:'',who:''};
       btn.textContent='✔ 已存';
       renderToday();
     }else{btn.textContent='失敗，再按一次';}
   })
   .catch(function(){btn.textContent='連不上，再按一次';})
-  .finally(function(){btn.disabled=false;setTimeout(function(){btn.textContent=old;},1800);});
+  .finally(function(){btn.disabled=false;setTimeout(function(){btn.textContent=txt;},1800);});
 }
 function actList(arr,empty){
   if(!arr||!arr.length)return '<div class="actnone">'+empty+'</div>';
@@ -845,17 +913,18 @@ function loadShopee(){
   var sbox=document.getElementById('shopeeBox'), mbox=document.getElementById('muroAuto');
   fetch('shopee-today.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
   .then(function(j){
-    var stale=(j.date&&j.date!==todayStr())
-      ? '<div style="color:var(--no);font-weight:800">⚠ 這是 '+esc(mdOf(j.date))+' 的資料，今天還沒更新</div>' : '';
+    var t=todayStr();
+    var stale=(j.weekStart&&(t<j.weekStart||t>j.weekEnd))
+      ? '<div style="color:var(--no);font-weight:800">⚠ 這是 '+esc(mdOf(j.weekStart))+'–'+esc(mdOf(j.weekEnd))+' 那週的資料，本週還沒更新</div>' : '';
     var upd=j.updated?'<div class="actupd">自動抓取於 '+esc(j.updated)+'</div>':'';
     /* 我們自己設的折扣與券 → 放 MURO 這邊 */
-    mbox.innerHTML=stale+'<div class="acts">賣場折扣活動（自動抓）</div>'+
-      actList(j.shop,'今天沒有進行中的賣場折扣活動')+upd;
+    mbox.innerHTML=stale+'<div class="acts">賣場折扣活動（本週・自動抓）</div>'+
+      actList(j.shop,'本週沒有進行中的賣場折扣活動')+upd;
     /* 蝦皮辦的活動 → 蝦皮這邊，已報名的排前面 */
     var joined=(j.platform||[]).filter(function(x){return /已報名/.test(x.detail||'');});
     var open=(j.platform||[]).filter(function(x){return !/已報名/.test(x.detail||'');});
     sbox.innerHTML=stale+
-      '<div class="acts">我們有參加的</div>'+actList(joined,'今天沒有進行中的蝦皮活動')+
+      '<div class="acts">我們有參加的（本週・自動抓）</div>'+actList(joined,'本週沒有進行中的蝦皮活動')+
       '<div class="acts">開放報名（跟我們品類有關）</div>'+actList(open,'目前沒有可報名的活動')+upd;
   })
   .catch(function(){sbox.textContent='尚未接上蝦皮活動資料';});
@@ -918,10 +987,9 @@ document.getElementById('fDate').addEventListener('change',onSess);
 document.getElementById('fSeq').addEventListener('change',onSess);
 ['nAnchor','nOps','nOp'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
-document.getElementById('saveDayTop').onclick=function(){
-  saveDayAct(todayStr(),document.getElementById('dayActTop').value.trim(),this);};
-document.getElementById('saveDayCard').onclick=function(){
-  saveDayAct(sdate,document.getElementById('dayActCard').value.trim(),this);};
+document.getElementById('saveWeekTop').onclick=function(){saveWeekAct(todayStr(),this);};
+document.getElementById('saveShopeeTop').onclick=function(){saveWeekAct(todayStr(),this);};
+document.getElementById('saveWeekCard').onclick=function(){saveWeekAct(sdate||todayStr(),this);};
 
 document.getElementById('fSeq').innerHTML=seqOptions();
 document.getElementById('fDate').value=todayStr();
