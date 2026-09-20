@@ -326,7 +326,8 @@ var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv
 var CSV_BAND='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('價格帶');
 
 var AIMS=['拉新粉','測新品','衝GMV','清庫存'];
-var CATS=['內衣','內褲','上衣','下身','塑身','睡衣','其他（非內衣類）'];
+/* 其他＝不屬於前面任何一類的都算（睡衣也併進來）；舊卡的「睡衣」「其他（非內衣類）」打開時自動歸到其他 */
+var CATS=['內衣','內褲','上衣','下身','塑身','其他'];
 /* 利潤帶：低 20~24／一般 25~30／高 31~45，上下各留 1.5% 空間；低於 18.5% 不能排 */
 var RATE_MIN=18.5;
 function parseRate(v){var x=parseFloat(String(v||'').replace('%',''));return (x>0&&x<100)?x:null;}
@@ -420,9 +421,10 @@ function chipRow(id,list,getv,setv){
   });
 }
 
-function bandsFor(cat){
+function bandsFor(cat,noAlias){
   if(BANDS_DEAL&&BANDS_DEAL[cat])return BANDS_DEAL[cat];
   if(BANDS_MARKET&&BANDS_MARKET[cat])return BANDS_MARKET[cat];
+  if(cat==='其他'&&!noAlias)return bandsFor('其他（非內衣類）',true);   /* Sheet「價格帶」分頁還是舊名 */
   return BANDS_BUILTIN[cat]||null;
 }
 function bandOf(cat,price){
