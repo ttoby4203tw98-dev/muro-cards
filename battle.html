@@ -58,7 +58,8 @@
   .acts{font-size:11px;font-weight:800;letter-spacing:1px;color:#d0391b;margin:8px 0 2px;}
   .actnone{font-size:11.5px;color:var(--ink2);margin:2px 0 4px;}
   .actupd{font-size:10.5px;color:var(--ink2);margin-top:4px;}
-  .actbox.shopee .actmeta{max-height:360px;overflow:auto;}
+  .actbox .actmeta{max-height:300px;overflow:auto;}
+  .actbox.muro .acts{color:var(--plum2);}
   .minibtn{border:1.5px solid var(--plum2);background:#fff;color:var(--plum2);border-radius:9px;
     padding:6px 12px;font-size:12.5px;font-weight:800;cursor:pointer;margin-top:6px;}
   .dayline{margin-top:2px;padding-top:8px;border-top:1px dashed var(--line);}
@@ -200,6 +201,7 @@
         <textarea class="txt" id="dayActTop" rows="3"></textarea>
         <button type="button" class="minibtn" id="saveDayTop">儲存今日活動</button>
         <div class="actmeta" id="dayMetaTop"></div>
+        <div class="actmeta" id="muroAuto"></div>
       </div>
       <div class="actbox shopee">
         <div class="acth">蝦皮今日活動</div>
@@ -833,22 +835,30 @@ function saveDayAct(ds,text,btn){
   .catch(function(){btn.textContent='連不上，再按一次';})
   .finally(function(){btn.disabled=false;setTimeout(function(){btn.textContent=old;},1800);});
 }
+function actList(arr,empty){
+  if(!arr||!arr.length)return '<div class="actnone">'+empty+'</div>';
+  return '<ul>'+arr.map(function(x){
+    return '<li><b>'+esc(x.title||'')+'</b>'+(x.detail?'<span class="actd">'+esc(x.detail)+'</span>':'')+'</li>';
+  }).join('')+'</ul>';
+}
 function loadShopee(){
-  var box=document.getElementById('shopeeBox');
+  var sbox=document.getElementById('shopeeBox'), mbox=document.getElementById('muroAuto');
   fetch('shopee-today.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();})
   .then(function(j){
-    var t=todayStr();
-    function list(arr,empty){
-      if(!arr||!arr.length)return '<div class="actnone">'+empty+'</div>';
-      return '<ul>'+arr.map(function(x){
-        return '<li><b>'+esc(x.title||'')+'</b>'+(x.detail?'<span class="actd">'+esc(x.detail)+'</span>':'')+'</li>';}).join('')+'</ul>';
-    }
-    box.innerHTML=(j.date&&j.date!==t?'<div style="color:var(--no);font-weight:800">⚠ 這是 '+esc(mdOf(j.date))+' 的資料，今天還沒更新</div>':'')+
-      '<div class="acts">我們賣場</div>'+list(j.shop,'今天沒有進行中的折扣或優惠券')+
-      '<div class="acts">蝦皮平台（我們有參加的）</div>'+list(j.platform,'今天沒有參加中的平台活動')+
-      (j.updated?'<div class="actupd">更新於 '+esc(j.updated)+'</div>':'');
+    var stale=(j.date&&j.date!==todayStr())
+      ? '<div style="color:var(--no);font-weight:800">⚠ 這是 '+esc(mdOf(j.date))+' 的資料，今天還沒更新</div>' : '';
+    var upd=j.updated?'<div class="actupd">自動抓取於 '+esc(j.updated)+'</div>':'';
+    /* 我們自己設的折扣與券 → 放 MURO 這邊 */
+    mbox.innerHTML=stale+'<div class="acts">賣場折扣與優惠券（自動抓）</div>'+
+      actList(j.shop,'今天沒有進行中的折扣或優惠券')+upd;
+    /* 蝦皮辦的活動 → 蝦皮這邊，已報名的排前面 */
+    var joined=(j.platform||[]).filter(function(x){return /已報名/.test(x.detail||'');});
+    var open=(j.platform||[]).filter(function(x){return !/已報名/.test(x.detail||'');});
+    sbox.innerHTML=stale+
+      '<div class="acts">我們有參加的</div>'+actList(joined,'今天沒有進行中的蝦皮活動')+
+      '<div class="acts">開放報名（跟我們品類有關）</div>'+actList(open,'目前沒有可報名的活動')+upd;
   })
-  .catch(function(){box.textContent='尚未接上蝦皮活動資料';});
+  .catch(function(){sbox.textContent='尚未接上蝦皮活動資料';});
 }
 
 function doSave(quiet,okText){
