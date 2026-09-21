@@ -89,22 +89,27 @@
   .pool[data-k=profit]>h3{color:var(--profit);} .pool[data-k=profit] .std{border-left-color:var(--profit);}
   .pool[data-k=chance]>h3{color:var(--chance);} .pool[data-k=chance] .std{border-left-color:var(--chance);}
 
-  .item{background:#fff;border:1px solid var(--line);border-radius:11px;padding:8px;margin-top:7px;}
-  .autoline{display:flex;flex-wrap:wrap;align-items:center;gap:3px 8px;font-size:11.5px;
-    color:var(--ink2);line-height:1.5;}
-  .autoline b{color:var(--plum);font-size:12.5px;}
+  .item{background:#fff;border:1px solid var(--line);border-radius:11px;padding:6px;margin-top:6px;}
+  .item .txt{padding:5px 8px;font-size:13px;border-radius:8px;}
+  .item select.txt{background-position:calc(100% - 12px) 12px,calc(100% - 8px) 12px;}
+  .item .lab{font-size:10px;margin-bottom:1px;letter-spacing:0;}
+  .item .live{min-height:29px;padding:4px;}
+  .item .live b{font-size:13.5px;}
+  .autoline{display:flex;flex-wrap:wrap;align-items:center;gap:2px 7px;font-size:11px;
+    color:var(--ink2);line-height:1.45;}
+  .autoline b{color:var(--plum);font-size:12px;}
   .autoline .tag{background:#eef7f0;color:var(--ok);font-weight:800;border-radius:99px;padding:1px 7px;}
   .autoline .warn{background:#FCF3D7;color:#8a6a10;font-weight:800;border-radius:99px;padding:1px 7px;}
   .autoline a{color:var(--rose);font-weight:800;text-decoration:none;}
   .lnk{border:none;background:none;color:var(--ink2);font-size:11px;cursor:pointer;
     text-decoration:underline;padding:0;font-family:inherit;}
-  .it-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;}
-  .it-no{font-size:11px;font-weight:800;color:var(--ink2);letter-spacing:1px;}
+  .it-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;}
+  .it-no{font-size:10px;font-weight:800;color:var(--ink2);letter-spacing:1px;}
   .it-del{border:none;background:none;color:var(--ink2);font-size:11.5px;cursor:pointer;text-decoration:underline;padding:2px 4px;}
   .it-del:disabled{opacity:.3;cursor:default;}
-  .itbody{display:flex;gap:10px;align-items:flex-start;}
-  .itfields{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px;}
-  .thumb{flex:0 0 104px;aspect-ratio:1/1;border-radius:11px;overflow:hidden;
+  .itbody{display:flex;gap:8px;align-items:flex-start;}
+  .itfields{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;}
+  .thumb{flex:0 0 74px;aspect-ratio:1/1;border-radius:9px;overflow:hidden;
     border:1px solid var(--line);background:#f7f2ee;display:none;}
   .thumb.on{display:block;}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -118,7 +123,7 @@
   .openbtn.on{border-color:var(--rose);color:var(--rose);background:#fdf5f8;pointer-events:auto;}
   .live{background:#f4eaf0;border-radius:9px;padding:6px 6px;text-align:center;min-height:37px;}
   .live b{font-size:15.5px;font-weight:800;color:var(--plum);line-height:1.2;}
-  .bandline{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:10.5px;color:var(--ink2);}
+  .bandline{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:10px;color:var(--ink2);}
   .bd{font-weight:800;border-radius:99px;padding:2px 8px;letter-spacing:.5px;font-size:10.5px;}
   .bd-low{background:#e3f1f4;color:var(--lead);}
   .bd-mid{background:#efe8f7;color:var(--brand);}
@@ -128,10 +133,12 @@
   .metarow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
   .metarow .bandline{flex:1 1 auto;min-width:0;}
   .live{display:flex;flex-direction:column;justify-content:center;}
-  .newbox{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--plum2);cursor:pointer;user-select:none;}
-  .newbox input{width:17px;height:17px;accent-color:var(--rose);}
+  .newbox{flex:0 0 auto;display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;color:var(--plum2);cursor:pointer;user-select:none;}
+  .newbox input{width:15px;height:15px;accent-color:var(--rose);}
   .ordrow{display:flex;align-items:center;gap:8px;margin-top:7px;}
   .ordno{flex:none;width:26px;height:26px;border-radius:50%;background:var(--plum2);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .ordno.end{width:auto;min-width:42px;border-radius:99px;padding:0 9px;font-size:11px;letter-spacing:1px;background:var(--rose);}
+  .orddel{flex:none;border:none;background:none;color:var(--ink2);font-size:11.5px;cursor:pointer;text-decoration:underline;padding:2px 4px;}
   .ordrow select{flex:1 1 auto;min-width:0;}
   .addbtn{width:100%;border:1.5px dashed var(--rose);background:none;color:var(--plum2);border-radius:11px;padding:10px;font-size:13px;font-weight:800;letter-spacing:1px;cursor:pointer;margin-top:9px;}
   .addbtn:active{background:#fdf4f7;}
@@ -213,6 +220,7 @@
     <div class="it-row">
       <div><label class="lab">🎤 主播</label><select class="txt" id="nAnchor"></select></div>
       <div><label class="lab">🎛 中控</label><select class="txt" id="nOps"></select></div>
+      <div><label class="lab">📋 設計者</label><select class="txt" id="nOp"></select></div>
     </div>
   </div>
 
@@ -301,7 +309,7 @@
   <div class="card" id="orderCard">
     <span class="stage two">主播中控運營</span>
     <div class="flabel">🔢 排品順序</div>
-    <div class="hint">第 1 個講到第 10 個，第 1 個和最後一個跟著開場、收尾走。下一個品不能和上一個同品類（客人買完又看到同品類更好的，會取消重下），同品類的選項會自動變灰不能選。</div>
+    <div class="hint">第 1 個是開場、最後 1 個是收尾，跟著上面的開場收尾走；中間要講幾個自己按「＋」加。下一個品不能和上一個同品類（客人買完又看到同品類更好的，會取消重下），同品類的選項會自動變灰不能選。</div>
     <div id="orderBox"></div>
     <button class="savebtn ghost" id="saveOrder">儲存排品順序</button>
     <div id="msgOrder" class="hint" style="display:none;margin-top:8px;text-align:center;font-weight:800"></div>
@@ -359,7 +367,7 @@ function rateBand(x){
   if(x<RATE_MIN)return '不能排';
   return x<24.5?'低':(x<30.5?'一般':'高');
 }
-var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['小羅']};
+var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['思維','小羅']};
 var MAXSEQ=3;
 
 var aim='', res='', sess='', sdate='';
@@ -529,7 +537,7 @@ function itemEl(data){
       '<a class="thumb" data-thumb target="_blank" rel="noopener"><img alt=""></a>'+
       '<div class="itfields">'+
         '<div class="it-row">'+
-          '<div style="flex:0 0 96px"><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
+          '<div style="flex:0 0 84px"><label class="lab">muro 貨號</label><input class="txt f-sku"></div>'+
           '<div><label class="lab">單品活動</label><input class="txt f-iact"></div>'+
           '<div style="flex:0 0 72px"><label class="lab">折數</label><input class="txt f-disc" inputmode="decimal"></div>'+
         '</div>'+
@@ -663,7 +671,7 @@ function fillEnds(cand,byKey,slots){
 }
 
 /* ---------- 排品順序：1~10，下一個品不能和上一個同品類（「其他」品項雜，不受限） ---------- */
-var order=[], FREE_CAT=CATS[CATS.length-1];
+var order=['',''], FREE_CAT=CATS[CATS.length-1];   /* 第 1 個＝開場，最後 1 個＝收尾，中間自己加 */
 function renderOrder(all){
   var box=document.getElementById('orderBox'), cand=[], seen={};
   all.forEach(function(x){
@@ -672,13 +680,15 @@ function renderOrder(all){
   });
   var byKey={};cand.forEach(function(c){byKey[c.key]=c;});
   order=order.map(function(k){return byKey[k]?k:'';});
-  var slots=Math.min(10,cand.length);
-  order=order.slice(0,slots);while(order.length<slots)order.push('');
+  while(order.length<2)order.push('');          /* 開場、收尾兩格一定在 */
+  if(order.length>10)order=order.slice(0,10);
+  var slots=order.length;
   fillEnds(cand,byKey,slots);
   box.innerHTML='';
-  if(!slots){box.innerHTML='<div class="actnone">商品池填了貨號，這裡才會出現可以排的品。</div>';return 0;}
+  if(!cand.length){box.innerHTML='<div class="actnone">商品池填了貨號，這裡才會出現可以排的品。</div>';return 0;}
   function catAt(i){var c=byKey[order[i]];return c?c.cat:'';}
   for(var i=0;i<slots;i++){(function(i){
+    var last=(i===slots-1);
     var row=document.createElement('div');row.className='ordrow';
     var h='<option value="">—</option>';
     cand.forEach(function(c){
@@ -687,11 +697,22 @@ function renderOrder(all){
       h+='<option value="'+esc(c.key)+'"'+((used||clash)?' disabled':'')+'>'+esc(c.label)+
          (clash&&!used?'（和前後同品類）':'')+'</option>';
     });
-    row.innerHTML='<span class="ordno">'+(i+1)+'</span><select class="txt" data-always>'+h+'</select>';
+    var tag=(i===0)?'開場':(last?'收尾':String(i+1));
+    row.innerHTML='<span class="ordno'+((i===0||last)?' end':'')+'">'+tag+'</span>'+
+      '<select class="txt" data-always>'+h+'</select>'+
+      ((i===0||last)?'':'<button type="button" class="orddel" data-always>刪除</button>');
     var sel=row.querySelector('select');sel.value=order[i]||'';
     sel.onchange=function(){order[i]=sel.value;refresh();};
+    var del=row.querySelector('.orddel');
+    if(del)del.onclick=function(){order.splice(i,1);refresh();};
     box.appendChild(row);
   })(i);}
+  var add=document.createElement('button');
+  add.type='button';add.className='addbtn';add.setAttribute('data-always','');
+  add.textContent=(slots>=10)?'最多排 10 個':'＋ 中間加一個';
+  add.disabled=(slots>=10);
+  add.onclick=function(){order.splice(order.length-1,0,'');refresh();};
+  box.appendChild(add);
   return order.filter(Boolean).length===slots?slots:0;
 }
 
@@ -758,7 +779,7 @@ function refresh(){
   /* 只列已完成的，沒完成的不顯示（滿排叉叉會讓人沮喪） */
   var done=[], need=8;
   if(sess)done.push('🎬 日期和場次選好了');
-  if(nm.anchor&&nm.ops)done.push('👥 主播和中控選好了');
+  if(nm.anchor&&nm.ops&&nm.op)done.push('👥 主播／中控／設計者選齊了');
   if(aim)done.push('🎯 主目標選好了');
   if(nnew>=1)done.push('🆕 新品 '+nnew+' 款');
   if(bandCount.low>=1&&kinds.length>=2)
@@ -789,11 +810,12 @@ function refresh(){
 function buildRoster(){
   document.getElementById('nAnchor').innerHTML=opts(ROSTER.anchor,'選主播');
   document.getElementById('nOps').innerHTML=opts(ROSTER.ops,'選中控');
+  document.getElementById('nOp').innerHTML=opts(ROSTER.op,'選設計者');
 }
 function readNames(){
   return {anchor:document.getElementById('nAnchor').value,
           ops:document.getElementById('nOps').value,
-          op:ROSTER.op[0]};                       /* 運營固定一個人，不用選 */
+          op:document.getElementById('nOp').value};
 }
 
 function stamp(){var d=new Date();return (d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
@@ -882,6 +904,7 @@ function fill(){
   var w=jparse(c.who);
   document.getElementById('nAnchor').value=w.anchor||'';
   document.getElementById('nOps').value=w.ops||'';
+  document.getElementById('nOp').value=w.op||'';
   refresh();
 }
 /* ---------- 商品庫連動：填貨號就自動帶入蝦皮連結、價格、利潤率 ---------- */
@@ -1063,7 +1086,7 @@ function doSave(quiet,okText,echo){
 document.getElementById('submitBtn').onclick=function(){
   if(!sess){showMsg('warn','先選日期和場次');return;}
   var nm=readNames();
-  if(!(nm.anchor&&nm.ops)){showMsg('warn','主播和中控都要選');return;}
+  if(!(nm.anchor&&nm.ops&&nm.op)){showMsg('warn','主播／中控／設計者三個都要選');return;}
   if(lowRate){showMsg('warn','有 '+lowRate+' 品利潤率低於 '+RATE_MIN+'%，不能排進這場，先換掉再交卡');return;}
   gate.sub=stamp();paintPhase();doSave(false,'📤 已交卡');
 };
@@ -1083,7 +1106,7 @@ document.getElementById('saveOpen').onclick=function(){
 document.getElementById('saveAfter').onclick=function(){doSave(false);};
 document.getElementById('fDate').addEventListener('change',onSess);
 document.getElementById('fSeq').addEventListener('change',onSess);
-['nAnchor','nOps'].forEach(function(id){
+['nAnchor','nOps','nOp'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
 ['fbGood','fbStuck'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
