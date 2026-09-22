@@ -36,6 +36,10 @@
   .cell.sel{outline:2px solid var(--rose);outline-offset:-2px;border-radius:8px;}
   .chip{display:block;font-size:10px;line-height:1.5;border-radius:4px;padding:0 4px;margin:2px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .more{display:block;font-size:10px;color:var(--ink2);text-align:center;margin-top:1px;}
+  /* 活動圖示：貼在日期數字右側，蝦皮活動 🦐、活動日-禁休 ⛔；不佔人名位 */
+  .bico{position:absolute;top:5px;right:4px;display:flex;gap:1px;font-size:12px;line-height:1;pointer-events:none;}
+  .detail .what.shopee{background:#FFE7DF;color:#C43C1B;}
+  .detail .what.norest{background:#F3DDE5;color:#8E2A4A;}
   /* 手機版迷你標籤：實色底＋白字，顏色跟人走 */
   .mchip{display:none;font-size:10px;line-height:1.6;border-radius:4px;padding:0 3px;margin:2px 1px 0;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;color:#fff;text-align:center;}
@@ -55,6 +59,7 @@
   @media (max-width:640px){
     .cell{min-height:70px;padding:3px 1px;}
     .chip,.more{display:none;}
+    .bico{top:4px;right:1px;font-size:11px;}
     .mchip{display:block;}
     .mmore{display:block;}
     .dnum{font-size:12px;width:22px;height:22px;line-height:22px;}
@@ -177,7 +182,8 @@ var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1b
 var TOKEN='muro2026';
 
 // 預設選項（若試算表有「選項」分頁，會以分頁內容為準，可自行編輯）
-var TYPES=['休假','事假','病假','活動日-禁休'];
+var TYPES=['休假','事假','病假','活動日-禁休','蝦皮活動'];
+var SHOPEE_TYPE='蝦皮活動';
 var PEOPLE=['思維','小羅','曉慧','Naby','諾諾','番茄','安琪','Neveah','全體'];
 var OPT_URL=CSV_URL+'&sheet='+encodeURIComponent('選項');
 
@@ -199,6 +205,17 @@ function renderLegend(){
   PEOPLE.forEach(function(p){
     var s=document.createElement('span');s.className=cls(p);s.textContent=p;lg.appendChild(s);
   });
+}
+// 橫幅事件：蝦皮活動 → shopee；活動日 開頭 → norest；其餘回傳空字串
+function bannerKind(e){
+  var w=(e.what||'');
+  if(w.indexOf(SHOPEE_TYPE)===0)return 'shopee';
+  if(w.indexOf('活動日')===0)return 'norest';
+  return '';
+}
+function bannerText(e){
+  if(e.note)return e.note;
+  return e.what.replace('活動日-','');
 }
 function pad(n){return (n<10?'0':'')+n;}
 function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -266,8 +283,18 @@ function render(){
     var k=key(d);
     var cell=document.createElement('div');
     cell.className='cell'+(d.getMonth()!==mo?' dim':'')+(k===todayKey?' today':'')+(k===selKey?' sel':'');
-    var html='<div class="dnum">'+d.getDate()+'</div>';
-    var evs=events[k]||[];
+    var html='';
+    var all=events[k]||[];
+    var banners=all.filter(function(e){return bannerKind(e);});
+    var evs=all.filter(function(e){return !bannerKind(e);});
+    html+='<div class="dnum">'+d.getDate()+'</div>';
+    if(banners.length){
+      var icos='';
+      banners.forEach(function(e){icos+='<span>'+((bannerKind(e)==='shopee')?'🦐':'⛔')+'</span>';});
+      var tip=banners.map(bannerText).join('、');
+      html+='<span class="bico">'+icos+'</span>';
+      cell.title=tip;
+    }
     var show=evs.slice(0,3);
     for(var j=0;j<show.length;j++){
       html+='<span class="chip '+cls(show[j].name)+'">'+show[j].what+'-'+show[j].name+'</span>';
@@ -300,7 +327,7 @@ function showDetail(k){
   evs.forEach(function(e){
     var row=document.createElement('div');row.className='row';
     row.innerHTML='<span class="who">'+e.name+'</span>'+
-      '<span class="what '+cls(e.name)+'">'+(e.what||'—')+'</span>'+
+      '<span class="what '+(bannerKind(e)||cls(e.name))+'">'+(e.what||'—')+'</span>'+
       (e.note?'<span class="note">'+e.note+'</span>':'');
     if(SCRIPT_URL){
       var del=document.createElement('button');del.className='delbtn';del.textContent='✕';
@@ -316,7 +343,11 @@ function buildOpts(){
   var wr=document.getElementById('whatRow');wr.innerHTML='';
   TYPES.forEach(function(t){
     var b=document.createElement('button');b.className='opt';b.textContent=t;
-    b.onclick=function(){fWhat=t;[].forEach.call(wr.children,function(x){x.classList.remove('on');});b.classList.add('on');};
+    b.onclick=function(){fWhat=t;[].forEach.call(wr.children,function(x){x.classList.remove('on');});b.classList.add('on');
+      var isB=bannerKind({what:t});
+      document.getElementById('fnote').placeholder=isB?'例如：9.9 超級購物節':'例如：晚上8點開播';
+      if(isB&&PEOPLE.indexOf('全體')>-1){fWho='全體';[].forEach.call(document.getElementById('whoRow').children,function(x){x.classList.toggle('on',x.textContent==='全體');});}
+    };
     wr.appendChild(b);
   });
   var pr=document.getElementById('whoRow');pr.innerHTML='';
@@ -407,7 +438,7 @@ function loadOptions(){
       if(a&&!/\d{4}[\/\-]/.test(a)&&types.indexOf(a)===-1)types.push(a);
       if(b&&people.indexOf(b)===-1)people.push(b);
     }
-    if(types.length)TYPES=types;
+    if(types.length){TYPES=types;if(TYPES.indexOf(SHOPEE_TYPE)===-1)TYPES.push(SHOPEE_TYPE);}
     if(people.length)PEOPLE=people;
     renderLegend();render();if(selKey)showDetail(selKey);
   }).catch(function(){});
