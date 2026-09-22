@@ -341,7 +341,7 @@ var CSV_BAND='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=ou
 
 /* 其他＝不屬於前面任何一類的都算（睡衣也併進來）；舊卡的「睡衣」「其他（非內衣類）」打開時自動歸到其他 */
 var CATS=['內衣','內褲','上衣','下身','塑身','其他'];
-/* 利潤帶：低 20~24／一般 25~30／高 31~45，上下各留 1.5% 空間；低於 18.5% 不能排 */
+/* 利潤帶：低 20~24／一般 25~30／高 31~45，上下各留 1.5% 空間；低於 18.5% 只警示不擋交卡（清庫存品也要排）*/
 var RATE_MIN=18.5;
 function parseRate(v){var x=parseFloat(String(v==null?'':v).replace('%',''));return (!isNaN(x)&&x>-1000&&x<100)?x:null;}
 /* 定價2.0：總成本(RMB)=商品成本+4.5+重量kg×12；利潤率=(直播價×0.6−總成本×4.7)÷直播價。成本只拿來算，不顯示 */
@@ -737,7 +737,7 @@ function refresh(){
       mb.textContent=bandLabel(rb)||(c.getAttribute('data-oldmargin')||'—');
       mb.style.color=RATE_COLOR[rb]||'';
       rw.style.display=(rb==='不能排')?'block':'none';
-      rw.textContent=(rb==='不能排')?('⚠ 利潤率 '+rt+'% 低於 '+RATE_MIN+'%，需重新定價，不能排進這場'):'';
+      rw.textContent=(rb==='不能排')?('⚠ 利潤率 '+rt+'% 低於 '+RATE_MIN+'%，需重新定價；清庫存要排的話可以交卡'):'';
       var au=c.querySelector('[data-auto]'), sk=c.querySelector('.f-sku').value.trim();
       if(gd&&c.getAttribute('data-man')!=='1'){
         var lk=safeUrl(gd.url);
@@ -787,7 +787,7 @@ function refresh(){
   if(total&&!miss)done.push('📝 '+total+' 品都填完了');
   if(avg!==null)done.push('📊 整場平均利潤率 '+avg+'%（'+bandLabel(rateBand(avg))+'）· 已填 '+rates.length+' / '+total+' 品');
   if(BAND_SRC.mode==='deal'&&!(BAND_SRC.days!==null&&BAND_SRC.days>14))done.push('📐 價格帶讀的是最新成交帶');
-  var ready=done.length===need&&!lowRate;
+  var ready=done.length===need;
   if(ordered)done.push('🔢 排品順序排好了（'+ordered+' 品）');
   if(document.getElementById('openAct').value.trim()&&order[0])done.push('🎬 開場定好了');
   if(document.getElementById('endAct').value.trim()&&order.length>1&&order[order.length-1])done.push('🏁 收尾定好了');
@@ -1087,8 +1087,8 @@ document.getElementById('submitBtn').onclick=function(){
   if(!sess){showMsg('warn','先選日期和場次');return;}
   var nm=readNames();
   if(!(nm.anchor&&nm.ops&&nm.op)){showMsg('warn','主播／中控／設計者三個都要選');return;}
-  if(lowRate){showMsg('warn','有 '+lowRate+' 品利潤率低於 '+RATE_MIN+'%，不能排進這場，先換掉再交卡');return;}
-  gate.sub=stamp();paintPhase();doSave(false,'📤 已交卡');
+  /* 低於 18.5% 只提醒不擋：有些品是清庫存，運營自己判斷 */
+  gate.sub=stamp();paintPhase();doSave(false,lowRate?('📤 已交卡（有 '+lowRate+' 品利潤率低於 '+RATE_MIN+'%，清庫存品請注意）'):'📤 已交卡');
 };
 document.getElementById('unsubBtn').onclick=function(){
   if(!window.confirm('退回修改？上面的欄位會解鎖。'))return;
