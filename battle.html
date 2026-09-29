@@ -220,7 +220,6 @@
     <div class="it-row">
       <div><label class="lab">🎤 主播</label><select class="txt" id="nAnchor"></select></div>
       <div><label class="lab">🎛 中控</label><select class="txt" id="nOps"></select></div>
-      <div><label class="lab">📋 設計者</label><select class="txt" id="nOp"></select></div>
     </div>
   </div>
 
@@ -229,12 +228,10 @@
       <div class="colh">開播前</div>
     <div class="card" id="aimCard">
     <span class="rotag">🔒 已交卡</span>
-    <span class="stage">① 開播前 · 運營填</span>
-    <div class="flabel">🎯 本場目標與活動</div>
+    <span class="stage">① 開播前 · 大家一起填</span>
+    <div class="flabel">🎁 本場活動</div>
     <div class="aimgrow">
-      <div class="fgrow"><label class="lab">本場目標</label>
-        <textarea class="txt" id="aimKpi"></textarea></div>
-      <div class="fgrow"><label class="lab">🎁 本場活動（只限這一場）</label>
+      <div class="fgrow"><label class="lab">只限這一場的活動</label>
         <textarea class="txt" id="sessAct"></textarea></div>
     </div>
     </div>
@@ -257,16 +254,6 @@
     </div>
     </div>
 
-    <div class="card" id="afterCard">
-    <span class="stage after">② 下播後 · 運營填</span>
-    <div class="flabel">🔚 運營總結</div>
-    <div class="hint">先看上面的下播復盤，再下結論。</div>
-    <div class="lockbody">
-      <div style="margin-top:7px"><label class="lab">總結</label>
-        <textarea class="txt" id="resWhy" rows="2"></textarea></div>
-      <button class="savebtn ghost" id="saveAfter">儲存總結</button>
-    </div>
-    </div>
 
     </div>
     </div>
@@ -282,14 +269,14 @@
 
   <div class="card" id="poolCard">
     <span class="rotag">🔒 已交卡</span>
-    <span class="stage">① 開播前 · 運營填</span>
+    <span class="stage">① 開播前 · 大家一起填</span>
     <div class="flabel">🛒 本場商品池</div>
     <div class="hint">依品類排，品類越齊越好，主播才不會整場只講兩三個品。每個單品填利潤率。空的品類按 ＋ 才展開。</div>
     <div id="pools"></div>
   </div>
 
   <div class="card" id="openCard">
-    <span class="stage two">主播中控運營</span>
+    <span class="stage two">大家都能改</span>
     <div class="flabel">🎬 開場 ・ 🏁 收尾</div>
     <div class="hint">開場選的品＝排品順序第 1 個，收尾選的品＝最後一個，講完就進收尾環節。</div>
     <div class="aimgrow">
@@ -307,7 +294,7 @@
   </div>
 
   <div class="card" id="orderCard">
-    <span class="stage two">主播中控運營</span>
+    <span class="stage two">大家都能改</span>
     <div class="flabel">🔢 排品順序</div>
     <div class="hint">第 1 個是開場、最後 1 個是收尾，跟著上面的開場收尾走；中間要講幾個自己按「＋」加。下一個品不能和上一個同品類（客人買完又看到同品類更好的，會取消重下），同品類的選項會自動變灰不能選。</div>
     <div id="orderBox"></div>
@@ -367,10 +354,10 @@ function rateBand(x){
   if(x<RATE_MIN)return '不能排';
   return x<24.5?'低':(x<30.5?'一般':'高');
 }
-var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安'], op:['思維','小羅']};
+var ROSTER={anchor:['Naby','番茄','小安'], ops:['諾諾','番茄','小安']};
 var MAXSEQ=3;
 
-var aim='', res='', sess='', sdate='';
+var aim='', res='', sess='', sdate='', keepKpi='', keepWhy='', keepOp='';
 var gate={sub:'',anchor:'',ops:''};
 var cards={};
 
@@ -779,7 +766,7 @@ function refresh(){
   /* 只列已完成的，沒完成的不顯示（滿排叉叉會讓人沮喪） */
   var done=[], need=8;
   if(sess)done.push('🎬 日期和場次選好了');
-  if(nm.anchor&&nm.ops&&nm.op)done.push('👥 主播／中控／設計者選齊了');
+  if(nm.anchor&&nm.ops)done.push('👥 主播／中控選齊了');
   if(aim)done.push('🎯 主目標選好了');
   if(nnew>=1)done.push('🆕 新品 '+nnew+' 款');
   if(bandCount.low>=1&&kinds.length>=2)
@@ -810,12 +797,11 @@ function refresh(){
 function buildRoster(){
   document.getElementById('nAnchor').innerHTML=opts(ROSTER.anchor,'選主播');
   document.getElementById('nOps').innerHTML=opts(ROSTER.ops,'選中控');
-  document.getElementById('nOp').innerHTML=opts(ROSTER.op,'選設計者');
 }
 function readNames(){
   return {anchor:document.getElementById('nAnchor').value,
           ops:document.getElementById('nOps').value,
-          op:document.getElementById('nOp').value};
+          op:keepOp};                               /* 設計者欄拿掉了（大家共同協作），舊卡的值原樣留著 */
 }
 
 function stamp(){var d=new Date();return (d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
@@ -834,7 +820,7 @@ function paintPhase(){
   document.getElementById('submitBtn').style.display=sub?'none':'block';
   var info=document.getElementById('subInfo');
   info.style.display=sub?'block':'none';
-  info.textContent=sub?('✅ 已交卡　'+gate.sub+(nm.op?'　by '+nm.op:'')):'';
+  info.textContent=sub?('✅ 已交卡　'+gate.sub):'';
   document.getElementById('unsubBtn').style.display=sub?'block':'none';
 
 }
@@ -877,10 +863,10 @@ function fill(){
   document.getElementById('openAct').value=g.openAct||'';
   document.getElementById('endAct').value=g.endAct||'';
   keepAim={text:g.text||'',why:g.why||''};        /* 欄位拿掉了，舊卡的值原樣留著 */
-  document.getElementById('aimKpi').value=g.kpi||'';
+  keepKpi=g.kpi||'';                               /* 本場目標欄拿掉了，舊值原樣留著 */
   var n=jparse(c.notes);
   keepRes=n.res||'';
-  document.getElementById('resWhy').value=n.why||'';
+  keepWhy=n.why||'';                               /* 運營總結拿掉了，舊值原樣留著 */
   keepCost={ad:n.ad||'',coin:n.coin||''};   /* 花費改到直播數據表填，舊值原樣保留 */
   keepPools={};                                    /* 機會款等已移除的池，資料原樣留著 */
   if(f.pools)for(var pk in f.pools)if(pk!=='unset'&&!POOLS.some(function(q){return q.k===pk;}))keepPools[pk]=f.pools[pk];
@@ -904,7 +890,7 @@ function fill(){
   var w=jparse(c.who);
   document.getElementById('nAnchor').value=w.anchor||'';
   document.getElementById('nOps').value=w.ops||'';
-  document.getElementById('nOp').value=w.op||'';
+  keepOp=w.op||'';
   refresh();
 }
 /* ---------- 商品庫連動：填貨號就自動帶入蝦皮連結、價格、利潤率 ---------- */
@@ -1036,7 +1022,7 @@ function renderLog(){
       var rows=[['👍 最有效的',x.n.fbGood],['🧱 最卡的',x.n.fbStuck],
                 ['🎤 主播'+(x.w.anchor?'（'+x.w.anchor+'）':''),x.n.fbAnchor],
                 ['🎛 中控'+(x.w.ops?'（'+x.w.ops+'）':''),x.n.fbOps],
-                ['🔚 運營總結',x.n.why]].filter(function(r){return r[1];});
+                ['🔚 總結（舊）',x.n.why]].filter(function(r){return r[1];});
       if(rows.length)nfill++;
       body+='<div class="logsec">第 '+x.seq+' 場'+(rows.length?'':' · 還沒填')+'</div>'+
         rows.map(function(r){return '<div class="logi"><b>'+esc(r[0])+'</b>：'+esc(r[1])+'</div>';}).join('');
@@ -1053,7 +1039,7 @@ function doSave(quiet,okText,echo){
   if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
   var strategy=JSON.stringify({aim:aim,
     text:keepAim.text, why:keepAim.why,
-    kpi:document.getElementById('aimKpi').value.trim(),
+    kpi:keepKpi,
     sessAct:document.getElementById('sessAct').value.trim(),
     openAct:document.getElementById('openAct').value.trim(),
     endAct:document.getElementById('endAct').value.trim(),
@@ -1062,7 +1048,7 @@ function doSave(quiet,okText,echo){
   for(var pk in keepPools)if(!pools[pk])pools[pk]=keepPools[pk];
   var focus=JSON.stringify({v:3,pools:pools});
   var hook=JSON.stringify({sub:gate.sub,anchor:gate.anchor,ops:gate.ops});
-  var notes=JSON.stringify({res:keepRes,why:document.getElementById('resWhy').value.trim(),
+  var notes=JSON.stringify({res:keepRes,why:keepWhy,
     ad:keepCost.ad, coin:keepCost.coin,
     fbGood:document.getElementById('fbGood').value.trim(),
     fbStuck:document.getElementById('fbStuck').value.trim(),
@@ -1086,8 +1072,8 @@ function doSave(quiet,okText,echo){
 document.getElementById('submitBtn').onclick=function(){
   if(!sess){showMsg('warn','先選日期和場次');return;}
   var nm=readNames();
-  if(!(nm.anchor&&nm.ops&&nm.op)){showMsg('warn','主播／中控／設計者三個都要選');return;}
-  /* 低於 18.5% 只提醒不擋：有些品是清庫存，運營自己判斷 */
+  if(!(nm.anchor&&nm.ops)){showMsg('warn','主播和中控都要選');return;}
+  /* 低於 18.5% 只提醒不擋：有些品是清庫存，交卡的人自己判斷 */
   gate.sub=stamp();paintPhase();doSave(false,lowRate?('📤 已交卡（有 '+lowRate+' 品利潤率低於 '+RATE_MIN+'%，清庫存品請注意）'):'📤 已交卡');
 };
 document.getElementById('unsubBtn').onclick=function(){
@@ -1103,10 +1089,9 @@ document.getElementById('saveOpen').onclick=function(){
   if(!sess||!sdate){showMsg('warn','先選日期和場次');return;}
   doSave(false,'✅ 開場收尾已儲存',document.getElementById('msgOpen'));
 };
-document.getElementById('saveAfter').onclick=function(){doSave(false);};
 document.getElementById('fDate').addEventListener('change',onSess);
 document.getElementById('fSeq').addEventListener('change',onSess);
-['nAnchor','nOps','nOp'].forEach(function(id){
+['nAnchor','nOps'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
 ['fbGood','fbStuck'].forEach(function(id){
   document.getElementById(id).addEventListener('change',refresh);});
