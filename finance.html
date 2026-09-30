@@ -78,7 +78,7 @@
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbykU6e_J6dX2yrkCQFUx045DqzBr6A0xFbnd1mBxntM9qaJL4gzcEo2rRbwzgikTC4/exec"; // 財會表 Apps Script 網頁應用程式網址（部署後填入）
-const KEY = "muro_fin_pw";
+const KEY = "muro_fin_pw", DKEY = "muro_fin_data"; // 記住裝置時，也存上次的資料讓頁面秒開
 const $ = (s) => document.querySelector(s);
 const fmt = (n) => (typeof n === "number" ? Math.round(n).toLocaleString("zh-TW") : n === "" || n == null ? "" : String(n));
 const cls = (n) => (typeof n === "number" && n < 0 ? "neg" : typeof n === "number" && n > 0 ? "pos" : "");
@@ -92,15 +92,18 @@ async function call(body) {
   const r = await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) });
   return r.json();
 }
-async function enter(pw, remember) {
-  $("#err").textContent = "讀取中…";
+async function enter(pw, remember, fresh) {
+  $("#err").textContent = "讀取中…"; setSync("更新中…");
   try {
-    const d = await call({ action: "overview", pw });
-    if (!d.ok) { $("#err").textContent = d.err || "讀取失敗"; set(KEY, null); return; }
-    if (remember) set(KEY, pw);
-    render(d);
-  } catch (e) { $("#err").textContent = "連不到財會表：" + e.message; }
+    const d = await call({ action: "overview", pw, fresh: !!fresh });
+    if (!d.ok) { if (/密碼|設定/.test(d.err || "")) { set(KEY, null); set(DKEY, null); showGate(); } $("#err").textContent = d.err || "讀取失敗"; setSync(""); return; }
+    if (remember) { set(KEY, pw); set(DKEY, JSON.stringify(d)); }
+    render(d); setSync("");
+  } catch (e) { $("#err").textContent = "連不到財會表：" + e.message;
+    if ($("#sync")) setSync("連不到財會表，顯示的是上次的資料"); else if (!$("#main").hidden) $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">連不到財會表，請稍後重新整理。</p></div>`; }
 }
+function showGate() { $("#gate").hidden = false; $("#main").hidden = true; $("#logout").hidden = true; }
+function setSync(t) { const el = $("#sync"); if (el) el.textContent = t; }
 function pie(items) { // items: [{name, v}] 正數
   const tot = items.reduce((s, x) => s + x.v, 0) || 1; let a = -Math.PI / 2, out = "";
   items.forEach((x, i) => {
@@ -128,14 +131,15 @@ function render(d) {
     <div class="tile"><small>台幣錢包</small><b class="${cls(w[1])}">${fx(w[1], "NT$")}</b></div>
     <div class="tile"><small>公司錢包</small><b class="${cls(w[2])}">${fx(w[2], "NT$")}</b></div>
     <div class="tile all"><small>合計（台幣，人民幣×匯率）</small><b class="${cls(w[3])}">${fx(w[3], "NT$")}</b></div></div></div>
-  <div class="box"><h2>③ 支出結構（累計）</h2><div class="struct">${pie(st.map((r) => ({ name: r[0], v: Math.abs(r[1]) })))}
+  <div class="box" id="expStruct"><h2>③ 支出結構（累計）</h2><div class="struct">${pie(st.map((r) => ({ name: r[0], v: Math.abs(r[1]) })))}
     <table><tbody>${st.map((r, i) => `<tr><td><span class="dot" style="background:${COLORS[i % COLORS.length]}"></span>${esc(r[0])}</td><td class="neg">${fmt(r[1])}</td><td>${pct(r[2])}</td></tr>`).join("")}
     <tr class="sum"><td>合計</td><td class="neg">${fmt(stSum[1])}</td><td>${pct(stSum[2])}</td></tr></tbody></table></div></div>
-  <div class="box"><h2>④ 支出明細（點大類展開）</h2>${groups.map((g) => grpHtml(g, true)).join("")}
+  <div class="box" id="expDetail"><h2>④ 支出明細（點大類展開）</h2>${groups.map((g) => grpHtml(g, true)).join("")}
     <table><tr class="sum"><td>支出合計</td><td class="neg">${detTotal ? fmt(detTotal[2]) : ""}</td><td>${detTotal ? pct(detTotal[3]) : ""}</td></tr></table></div>
   <div class="box"><h2>⑤ 有記帳但不算進損益</h2>${off.map((g) => grpHtml(g, false)).join("")}
     <p class="muted">買貨先變成庫存，賣出後才以「商品成本」計入；充值、內部轉帳、已從蝦皮實收扣過的退款不重複計算。</p></div>
-  <p class="muted" style="text-align:center">更新時間 ${new Date(d.at).toLocaleString("zh-TW")}</p>`;
+  <p class="muted" style="text-align:center">更新時間 ${new Date(d.at).toLocaleString("zh-TW")}　<span id="sync"></span>　<a href="#" id="refresh" style="color:var(--rose)">重新整理</a></p>`;
+  $("#refresh").onclick = (e) => { e.preventDefault(); const pw = get(KEY); if (pw) enter(pw, true, true); else showGate(); };
   renderPeriod(d);
 }
 // ---- 收支總覽：日／月／年，只顯示選到的那一期
@@ -164,13 +168,49 @@ function renderPeriod(d) {
     <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
     <div class="kpi"><div><small>收入</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>損益</small><b class="${cls(pl)}">${fmt(pl)}</b></div></div>
     <p class="muted">${note}</p>`;
+  renderExp(d);
   box.querySelectorAll("[data-m]").forEach((b) => (b.onclick = () => { P.mode = b.dataset.m; renderPeriod(d); }));
   $("#pp").onchange = (e) => { const v = e.target.value; if (!v) return; if (P.mode === "日") P.day = v; else if (P.mode === "月") P.month = v; else P.year = v; renderPeriod(d); };
 }
+// ---- ③④ 支出結構／明細：跟著上面的 日／月／年
+//   月 = 該月；年 = 各月加總；日 = 該天所在月份 ÷ 天數（本月用今天是第幾天）
+const ADCOST = "推估出貨商品成本（出貨件數×進貨單價，不含物流）";
+function renderExp(d) {
+  if (!d.exp) return; // 舊版 API：維持累計
+  const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+  let yms = [], div = 1, label = "";
+  if (P.mode === "月") { yms = [P.month]; label = P.month.replace("-", "/"); }
+  if (P.mode === "年") { yms = Object.keys(d.exp).filter((k) => k.startsWith(P.year)).sort(); label = `${P.year} 年`; }
+  if (P.mode === "日") { const ym = P.day.slice(0, 7); yms = [ym];
+    div = ym === today.slice(0, 7) ? +today.slice(8) : new Date(+ym.slice(0, 4), +ym.slice(5), 0).getDate();
+    label = `${ym.replace("-", "/")} 日平均，÷${div} 天`; }
+  const acc = {};
+  yms.forEach((ym) => Object.entries(d.exp[ym] || {}).forEach(([c, x]) => { const a = acc[c] || (acc[c] = { t: 0, s: {} }); a.t += x.t; Object.entries(x.s).forEach(([k, n]) => (a.s[k] = (a.s[k] || 0) + n)); }));
+  const cats = Object.entries(acc).map(([name, x]) => {
+    const subs = name === "商品成本" ? [[ADCOST, x.t]] : Object.entries(x.s).filter(([, n]) => Math.round(n / div)).sort((a, b) => b[1] - a[1]);
+    const other = x.t - subs.reduce((s, [, n]) => s + n, 0);
+    if (Math.round(other / div)) subs.push(["其他（新科目或未列出）", other]);
+    return { name, t: x.t / div, subs: subs.map(([k, n]) => [k, n / div]) };
+  }).filter((c) => Math.round(c.t)).sort((a, b) => b.t - a.t);
+  const tot = cats.reduce((s, c) => s + c.t, 0), pc = (n) => (tot ? (n / tot * 100).toFixed(1) + "%" : "");
+  const note = P.mode === "日" ? `<p class="muted">日模式看的是這個月平均每天的支出結構（月支出 ÷ 天數），不是當天實際付款。${div < 28 ? "本月還沒結束，薪水等月底／下月才記帳的費用還沒進來，平均會偏低。" : ""}</p>` : "";
+  $("#expStruct").innerHTML = `<h2>③ 支出結構（${esc(label)}）</h2>${cats.length ? `<div class="struct">${pie(cats.map((c) => ({ name: c.name, v: c.t })))}
+    <table><tbody>${cats.map((c, i) => `<tr><td><span class="dot" style="background:${COLORS[i % COLORS.length]}"></span>${esc(c.name)}</td><td class="neg">${fmt(-c.t)}</td><td>${pc(c.t)}</td></tr>`).join("")}
+    <tr class="sum"><td>合計</td><td class="neg">${fmt(-tot)}</td><td>${tot ? "100.0%" : ""}</td></tr></tbody></table></div>` : `<p class="muted">這段期間沒有支出資料。</p>`}${note}`;
+  $("#expDetail").innerHTML = `<h2>④ 支出明細（${esc(label)}，點大類展開）</h2>${cats.map((c) => `<details><summary><span class="l">${esc(c.name)}</span><span class="neg">${fmt(-c.t)}</span><span class="p">${pc(c.t)}</span></summary><table>${c.subs.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="${cls(-n)}">${fmt(-n)}</td><td>${pc(n)}</td></tr>`).join("")}</table></details>`).join("")}
+    <table><tr class="sum"><td>支出合計</td><td class="neg">${fmt(-tot)}</td><td>${tot ? "100.0%" : ""}</td></tr></table>`;
+}
 $("#go").onclick = () => enter($("#pw").value, $("#remember").checked);
 $("#pw").onkeydown = (e) => { if (e.key === "Enter") $("#go").click(); };
-$("#logout").onclick = () => { set(KEY, null); location.reload(); };
-const saved = get(KEY); if (saved) enter(saved, true);
+$("#logout").onclick = () => { set(KEY, null); set(DKEY, null); location.reload(); };
+// 記住的裝置：不顯示密碼框，先秀上次資料，背景更新
+const saved = get(KEY);
+if (saved) {
+  let last = null; try { last = JSON.parse(get(DKEY) || "null"); } catch {}
+  $("#gate").hidden = true; $("#main").hidden = false; $("#logout").hidden = false;
+  if (last && last.ok) render(last); else $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">讀取中…</p></div>`;
+  enter(saved, true);
+}
 </script>
 </body>
 </html>
