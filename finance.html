@@ -77,14 +77,14 @@
 <div class="wrap" id="main" hidden></div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbwKDXAU7oC85uzJMm-PPtgBklGkvQw5p8Qlx26fb1AoPlTcg_S12WVfwoRxzCIUtSU/exec"; // 財會表 Apps Script 網頁應用程式網址（部署後填入）
+const API = "https://script.google.com/macros/s/AKfycbzLo_qUekF345A28WAiQbC1BhxiBA7ufsbw63XczTjXlZv2972bQ4NGmtYPOfnPHZE/exec"; // 財會表 Apps Script 網頁應用程式網址（部署後填入）
 const KEY = "muro_fin_pw", DKEY = "muro_fin_data"; // 記住裝置時，也存上次的資料讓頁面秒開
 const $ = (s) => document.querySelector(s);
 const fmt = (n) => (typeof n === "number" ? Math.round(n).toLocaleString("zh-TW") : n === "" || n == null ? "" : String(n));
 const cls = (n) => (typeof n === "number" && n < 0 ? "neg" : typeof n === "number" && n > 0 ? "pos" : "");
 const pct = (n) => (typeof n === "number" ? (n * 100).toFixed(1) + "%" : "");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const COLORS = ["#4a2c3a", "#9c5c6e", "#d6a680", "#6b8fa3", "#7a9e7e", "#c98b6b", "#8e7cc3", "#b8a99a"];
+const COLORS = ["#4a2c3a", "#9c5c6e", "#d6a680", "#6b8fa3", "#7a9e7e", "#c98b6b", "#8e7cc3", "#b8a99a", "#5f8a8b", "#d4b35f"];
 const get = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const set = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} };
 
@@ -107,7 +107,7 @@ async function enter(pw, remember, fresh) {
 const valid = (d) => !!(d && d.ok && d.wallet && Array.isArray(d.struct) && Array.isArray(d.detail) && Array.isArray(d.offbook));
 function showGate() { $("#gate").hidden = false; $("#main").hidden = true; $("#logout").hidden = true; }
 function setSync(t) { const el = $("#sync"); if (el) el.textContent = t; }
-function pie(items) { // items: [{name, v}] 正數
+function pie(items, center) { // items: [{name, v}] 正數；center = 中間顯示的數字（預設加總）
   const tot = items.reduce((s, x) => s + x.v, 0) || 1; let a = -Math.PI / 2, out = "";
   items.forEach((x, i) => {
     const f = x.v / tot, a2 = a + f * Math.PI * 2, large = f > 0.5 ? 1 : 0, R = 90, r = 52;
@@ -115,7 +115,7 @@ function pie(items) { // items: [{name, v}] 正數
     out += `<path d="M ${p(a, R)} A ${R} ${R} 0 ${large} 1 ${p(a2, R)} L ${p(a2, r)} A ${r} ${r} 0 ${large} 0 ${p(a, r)} Z" fill="${COLORS[i % COLORS.length]}"><title>${esc(x.name)} ${(f * 100).toFixed(1)}%</title></path>`;
     a = a2;
   });
-  return `<svg viewBox="0 0 200 200" role="img" aria-label="支出結構圓餅圖">${out}<text x="100" y="96" text-anchor="middle" font-size="12" fill="#8a7580">總支出</text><text x="100" y="116" text-anchor="middle" font-size="15" font-weight="700" fill="#372a30">${fmt(tot)}</text></svg>`;
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="支出結構圓餅圖">${out}<text x="100" y="96" text-anchor="middle" font-size="12" fill="#8a7580">總支出</text><text x="100" y="116" text-anchor="middle" font-size="15" font-weight="700" fill="#372a30">${fmt(center ?? tot)}</text></svg>`;
 }
 function render(d) {
   $("#gate").hidden = true; $("#main").hidden = false; $("#logout").hidden = false;
@@ -177,7 +177,7 @@ function renderPeriod(d) {
 }
 // ---- ③④ 支出結構／明細：跟著上面的 日／月／年
 //   月 = 該月；年 = 各月加總；日 = 該天所在月份 ÷ 天數（本月用今天是第幾天）
-const ADCOST = "推估出貨商品成本（出貨件數×進貨單價，不含物流）";
+const SUBNAME = { 出貨訂單: "出貨訂單（客人訂單進貨，實際付款）", 囤貨: "囤貨（先買來放庫存）", 退款: "1688 退款（退回的錢，減少支出）" };
 function renderExp(d) {
   if (!d.exp) return; // 舊版 API：維持累計
   const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
@@ -188,19 +188,28 @@ function renderExp(d) {
     div = ym === today.slice(0, 7) ? +today.slice(8) : new Date(+ym.slice(0, 4), +ym.slice(5), 0).getDate();
     label = `${ym.replace("-", "/")} 日平均，÷${div} 天`; }
   const acc = {};
-  yms.forEach((ym) => Object.entries(d.exp[ym] || {}).forEach(([c, x]) => { const a = acc[c] || (acc[c] = { t: 0, s: {} }); a.t += x.t; Object.entries(x.s).forEach(([k, n]) => (a.s[k] = (a.s[k] || 0) + n)); }));
+  yms.forEach((ym) => Object.entries(d.exp[ym] || {}).forEach(([c, x]) => {
+    const a = acc[c] || (acc[c] = { t: 0, s: {}, q: {}, m: {} }); a.t += x.t;
+    Object.entries(x.s).forEach(([k, n]) => (a.s[k] = (a.s[k] || 0) + n));
+    Object.entries(x.q || {}).forEach(([k, n]) => (a.q[k] = (a.q[k] || 0) + n));
+    Object.entries(x.m || {}).forEach(([k, n]) => (a.m[k] = (a.m[k] || 0) + n));
+  }));
+  // 囤貨：款號後面加件數與平均單價（件數沒填齊就標示；日平均不顯示件數）
+  const stockLabel = (x, k) => { if (P.mode === "日") return k; const q = x.q[k] || 0, miss = x.m[k] || 0;
+    return miss ? `${k}（${q ? fmt(q) + " 件＋" : ""}${miss} 筆沒填件數）` : q ? `${k}（${fmt(q)} 件，均價 ${fmt(x.s[k] / q)}）` : k; };
   const cats = Object.entries(acc).map(([name, x]) => {
-    const subs = name === "商品成本" ? [[ADCOST, x.t]] : Object.entries(x.s).filter(([, n]) => Math.round(n / div)).sort((a, b) => b[1] - a[1]);
+    const subs = Object.entries(x.s).filter(([, n]) => Math.round(n / div)).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).map(([k, n]) => [name === "囤貨" ? stockLabel(x, k) : SUBNAME[k] || k, n]);
     const other = x.t - subs.reduce((s, [, n]) => s + n, 0);
     if (Math.round(other / div)) subs.push(["其他（新科目或未列出）", other]);
     return { name, t: x.t / div, subs: subs.map(([k, n]) => [k, n / div]) };
   }).filter((c) => Math.round(c.t)).sort((a, b) => b.t - a.t);
   const tot = cats.reduce((s, c) => s + c.t, 0), pc = (n) => (tot ? (n / tot * 100).toFixed(1) + "%" : "");
+  const basis = `<p class="muted">商品成本＝1688 出貨訂單實際付款；囤貨＝付款當月就算支出；退款單獨一行（退回的錢，減少支出）。</p>`;
   const note = P.mode === "日" ? `<p class="muted">日模式看的是這個月平均每天的支出結構（月支出 ÷ 天數），不是當天實際付款。${div < 28 ? "本月還沒結束，薪水等月底／下月才記帳的費用還沒進來，平均會偏低。" : ""}</p>` : "";
-  $("#expStruct").innerHTML = `<h2>③ 支出結構（${esc(label)}）</h2>${cats.length ? `<div class="struct">${pie(cats.map((c) => ({ name: c.name, v: c.t })))}
-    <table><tbody>${cats.map((c, i) => `<tr><td><span class="dot" style="background:${COLORS[i % COLORS.length]}"></span>${esc(c.name)}</td><td class="neg">${fmt(-c.t)}</td><td>${pc(c.t)}</td></tr>`).join("")}
-    <tr class="sum"><td>合計</td><td class="neg">${fmt(-tot)}</td><td>${tot ? "100.0%" : ""}</td></tr></tbody></table></div>` : `<p class="muted">這段期間沒有支出資料。</p>`}${note}`;
-  $("#expDetail").innerHTML = `<h2>④ 支出明細（${esc(label)}，點大類展開）</h2>${cats.map((c) => `<details><summary><span class="l">${esc(c.name)}</span><span class="neg">${fmt(-c.t)}</span><span class="p">${pc(c.t)}</span></summary><table>${c.subs.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="${cls(-n)}">${fmt(-n)}</td><td>${pc(n)}</td></tr>`).join("")}</table></details>`).join("")}
+  $("#expStruct").innerHTML = `<h2>③ 支出結構（${esc(label)}）</h2>${cats.length ? `<div class="struct">${pie(cats.filter((c) => c.t > 0).map((c) => ({ name: c.name, v: c.t })), tot)}
+    <table><tbody>${cats.map((c, i) => `<tr><td><span class="dot" style="${c.t > 0 ? "background:" + COLORS[i % COLORS.length] : "border:2px solid var(--pos)"}"></span>${esc(c.name)}</td><td class="${cls(-c.t)}">${fmt(-c.t)}</td><td>${pc(c.t)}</td></tr>`).join("")}
+    <tr class="sum"><td>合計</td><td class="neg">${fmt(-tot)}</td><td>${tot ? "100.0%" : ""}</td></tr></tbody></table></div>` : `<p class="muted">這段期間沒有支出資料。</p>`}${note}${basis}`;
+  $("#expDetail").innerHTML = `<h2>④ 支出明細（${esc(label)}，點大類展開）</h2>${cats.map((c) => `<details><summary><span class="l">${esc(c.name)}</span><span class="${cls(-c.t)}">${fmt(-c.t)}</span><span class="p">${pc(c.t)}</span></summary><table>${c.subs.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="${cls(-n)}">${fmt(-n)}</td><td>${pc(n)}</td></tr>`).join("")}</table></details>`).join("")}
     <table><tr class="sum"><td>支出合計</td><td class="neg">${fmt(-tot)}</td><td>${tot ? "100.0%" : ""}</td></tr></table>`;
 }
 $("#go").onclick = () => enter($("#pw").value, $("#remember").checked);
