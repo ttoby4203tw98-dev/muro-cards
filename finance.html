@@ -178,6 +178,9 @@ function renderPeriod(d) {
 // ---- ③④ 支出結構／明細：跟著上面的 日／月／年
 //   月 = 該月；年 = 各月加總；日 = 該天所在月份 ÷ 天數（本月用今天是第幾天）
 const SUBNAME = { 出貨訂單: "出貨訂單（客人訂單進貨，實際付款）", 囤貨: "囤貨（先買來放庫存）", 退款: "1688 退款（退回的錢，減少支出）" };
+// 薪資和獎金已拆開：人事底下的「薪資獎金」叫薪資、獎金底下的叫獎金
+const SUBNAME_BY = { 人事: { 薪資獎金: "薪資" }, 獎金: { 薪資獎金: "獎金", 人事: "獎金（記在人事科目）" } };
+const subName = (cat, k) => (SUBNAME_BY[cat] || {})[k] || SUBNAME[k] || k;
 function renderExp(d) {
   if (!d.exp) return; // 舊版 API：維持累計
   const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
@@ -198,11 +201,13 @@ function renderExp(d) {
   const stockLabel = (x, k) => { if (P.mode === "日") return k; const q = x.q[k] || 0, miss = x.m[k] || 0;
     return miss ? `${k}（${q ? fmt(q) + " 件＋" : ""}${miss} 筆沒填件數）` : q ? `${k}（${fmt(q)} 件，均價 ${fmt(x.s[k] / q)}）` : k; };
   const cats = Object.entries(acc).map(([name, x]) => {
-    const subs = Object.entries(x.s).filter(([, n]) => Math.round(n / div)).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).map(([k, n]) => [name === "囤貨" ? stockLabel(x, k) : SUBNAME[k] || k, n]);
+    const subs = Object.entries(x.s).filter(([, n]) => Math.round(n / div)).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).map(([k, n]) => [name === "囤貨" ? stockLabel(x, k) : subName(name, k), n]);
     const other = x.t - subs.reduce((s, [, n]) => s + n, 0);
     if (Math.round(other / div)) subs.push(["其他（新科目或未列出）", other]);
     return { name, t: x.t / div, subs: subs.map(([k, n]) => [k, n / div]) };
   }).filter((c) => Math.round(c.t)).sort((a, b) => b.t - a.t);
+  const bi = cats.findIndex((c) => c.name === "獎金"); // 獎金固定排在人事下面
+  if (bi >= 0 && cats.some((c) => c.name === "人事")) { const [b] = cats.splice(bi, 1); cats.splice(cats.findIndex((c) => c.name === "人事") + 1, 0, b); }
   const tot = cats.reduce((s, c) => s + c.t, 0), pc = (n) => (tot ? (n / tot * 100).toFixed(1) + "%" : "");
   const basis = `<p class="muted">商品成本＝1688 出貨訂單實際付款；囤貨＝付款當月就算支出；退款單獨一行（退回的錢，減少支出）。</p>`;
   const note = P.mode === "日" ? `<p class="muted">日模式看的是這個月平均每天的支出結構（月支出 ÷ 天數），不是當天實際付款。${div < 28 ? "本月還沒結束，薪水等月底／下月才記帳的費用還沒進來，平均會偏低。" : ""}</p>` : "";
