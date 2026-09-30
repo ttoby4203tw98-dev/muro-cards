@@ -95,13 +95,16 @@ async function call(body) {
 async function enter(pw, remember, fresh) {
   $("#err").textContent = "讀取中…"; setSync("更新中…");
   try {
-    const d = await call({ action: "overview", pw, fresh: !!fresh });
+    let d = await call({ action: "overview", pw, fresh: !!fresh });
+    if (d.ok && !valid(d)) d = await call({ action: "overview", pw, fresh: true }); // 偶爾回到非財務資料 → 重抓一次
+    if (d.ok && !valid(d)) throw new Error("財會表回應格式不對，請按重新整理");
     if (!d.ok) { if (/密碼|設定/.test(d.err || "")) { set(KEY, null); set(DKEY, null); showGate(); } $("#err").textContent = d.err || "讀取失敗"; setSync(""); return; }
     if (remember) { set(KEY, pw); set(DKEY, JSON.stringify(d)); }
     render(d); setSync("");
   } catch (e) { $("#err").textContent = "連不到財會表：" + e.message;
     if ($("#sync")) setSync("連不到財會表，顯示的是上次的資料"); else if (!$("#main").hidden) $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">連不到財會表，請稍後重新整理。</p></div>`; }
 }
+const valid = (d) => !!(d && d.ok && d.wallet && Array.isArray(d.struct) && Array.isArray(d.detail) && Array.isArray(d.offbook));
 function showGate() { $("#gate").hidden = false; $("#main").hidden = true; $("#logout").hidden = true; }
 function setSync(t) { const el = $("#sync"); if (el) el.textContent = t; }
 function pie(items) { // items: [{name, v}] 正數
@@ -208,7 +211,9 @@ const saved = get(KEY);
 if (saved) {
   let last = null; try { last = JSON.parse(get(DKEY) || "null"); } catch {}
   $("#gate").hidden = true; $("#main").hidden = false; $("#logout").hidden = false;
-  if (last && last.ok) render(last); else $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">讀取中…</p></div>`;
+  let shown = false;
+  if (valid(last)) { try { render(last); shown = true; } catch (e) { set(DKEY, null); } } else set(DKEY, null);
+  if (!shown) $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">讀取中…</p></div>`;
   enter(saved, true);
 }
 </script>
