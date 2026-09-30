@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>財務總覽｜暮若</title>
+<meta name="theme-color" content="#4a2c3a">
+<meta name="robots" content="noindex">
+<style>
+  :root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--card:#fff;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--neg:#b3261e;--pos:#1e7a46}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 26px;border-radius:0 0 24px 24px}
+  header a{color:#f6eee8;text-decoration:none;font-size:14px;opacity:.8}
+  header h1{font-size:24px;letter-spacing:1px;margin-top:8px}
+  header p{font-size:12px;opacity:.75;margin-top:4px}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px 40px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:16px;box-shadow:0 6px 18px rgba(74,44,58,.06)}
+  .box h2{font-size:16px;color:var(--plum);margin-bottom:10px;letter-spacing:.5px}
+  table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+  th{background:var(--plum);color:#fff;font-weight:600;padding:8px 6px;font-size:13px}
+  td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right}
+  td:first-child,th:first-child{text-align:left}
+  tr.sum td{font-weight:700;background:#f6eef0}
+  .neg{color:var(--neg)} .pos{color:var(--pos)}
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .tile{background:#f8f2ef;border-radius:14px;padding:12px}
+  .tile small{display:block;font-size:12px;color:var(--ink2)}
+  .tile b{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums}
+  .tile.all{grid-column:1/-1;background:#efe6ea}
+  .struct{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .struct svg{flex:0 0 190px;max-width:190px}
+  .struct table{flex:1 1 260px}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  details{border-bottom:1px solid var(--line)}
+  details summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:10px 4px;cursor:pointer;font-weight:600;font-size:14px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"›";display:inline-block;margin-right:8px;color:var(--ink2);transition:transform .15s}
+  details[open] summary::before{transform:rotate(90deg)}
+  details summary .l{flex:1}
+  details summary .p{color:var(--ink2);font-weight:400;font-size:12px;margin-left:8px;min-width:46px;text-align:right}
+  details table{margin:0 0 10px}
+  details td{font-size:13px;color:#4c3d44}
+  .muted{color:var(--ink2);font-size:12px;margin-top:8px;line-height:1.6}
+  #gate{max-width:360px;margin:60px auto;padding:0 16px}
+  #gate input{width:100%;font-size:17px;padding:12px;border:1px solid var(--line);border-radius:12px;margin-top:12px}
+  #gate button{width:100%;margin-top:12px;font-size:16px;padding:12px;border:0;border-radius:12px;background:var(--plum);color:#fff;font-weight:600}
+  #gate label{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--ink2)}
+  #gate label input{width:auto;margin:0}
+  #err{color:var(--neg);font-size:13px;margin-top:10px;min-height:18px}
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .seg{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .seg button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 16px;font-size:14px;color:var(--ink)}
+  .seg button.on{background:var(--plum);color:#fff;border-color:var(--plum)}
+  .seg input,.seg select{margin-left:auto;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .kpi div{background:#f8f2ef;border-radius:14px;padding:12px 8px;text-align:center}
+  .kpi small{display:block;font-size:12px;color:var(--ink2)}
+  .kpi b{display:block;font-size:19px;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .pl{background:#efe6ea}
+  .top button{background:none;border:1px solid rgba(255,255,255,.4);color:#f6eee8;border-radius:99px;padding:4px 12px;font-size:12px}
+</style>
+</head>
+<body>
+<header><div class="wrap" style="padding-bottom:0">
+  <div class="top"><a href="team.html">‹ 團隊首頁</a><button id="logout" hidden>登出</button></div>
+  <h1>財務總覽</h1><p id="sub">2026/1 ~ 2026/9・資料即時讀自財會表</p>
+</div></header>
+
+<div id="gate">
+  <div class="box"><h2>🔒 請輸入財務密碼</h2>
+    <input id="pw" type="password" inputmode="text" autocomplete="current-password" placeholder="密碼">
+    <label><input id="remember" type="checkbox" checked> 記住這台裝置</label>
+    <button id="go">進入</button><div id="err"></div>
+  </div>
+</div>
+<div class="wrap" id="main" hidden></div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbykU6e_J6dX2yrkCQFUx045DqzBr6A0xFbnd1mBxntM9qaJL4gzcEo2rRbwzgikTC4/exec"; // 財會表 Apps Script 網頁應用程式網址（部署後填入）
+const KEY = "muro_fin_pw";
+const $ = (s) => document.querySelector(s);
+const fmt = (n) => (typeof n === "number" ? Math.round(n).toLocaleString("zh-TW") : n === "" || n == null ? "" : String(n));
+const cls = (n) => (typeof n === "number" && n < 0 ? "neg" : typeof n === "number" && n > 0 ? "pos" : "");
+const pct = (n) => (typeof n === "number" ? (n * 100).toFixed(1) + "%" : "");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const COLORS = ["#4a2c3a", "#9c5c6e", "#d6a680", "#6b8fa3", "#7a9e7e", "#c98b6b", "#8e7cc3", "#b8a99a"];
+const get = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+const set = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} };
+
+async function call(body) {
+  const r = await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) });
+  return r.json();
+}
+async function enter(pw, remember) {
+  $("#err").textContent = "讀取中…";
+  try {
+    const d = await call({ action: "overview", pw });
+    if (!d.ok) { $("#err").textContent = d.err || "讀取失敗"; set(KEY, null); return; }
+    if (remember) set(KEY, pw);
+    render(d);
+  } catch (e) { $("#err").textContent = "連不到財會表：" + e.message; }
+}
+function pie(items) { // items: [{name, v}] 正數
+  const tot = items.reduce((s, x) => s + x.v, 0) || 1; let a = -Math.PI / 2, out = "";
+  items.forEach((x, i) => {
+    const f = x.v / tot, a2 = a + f * Math.PI * 2, large = f > 0.5 ? 1 : 0, R = 90, r = 52;
+    const p = (ang, rad) => [100 + rad * Math.cos(ang), 100 + rad * Math.sin(ang)].map((n) => n.toFixed(2)).join(" ");
+    out += `<path d="M ${p(a, R)} A ${R} ${R} 0 ${large} 1 ${p(a2, R)} L ${p(a2, r)} A ${r} ${r} 0 ${large} 0 ${p(a, r)} Z" fill="${COLORS[i % COLORS.length]}"><title>${esc(x.name)} ${(f * 100).toFixed(1)}%</title></path>`;
+    a = a2;
+  });
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="支出結構圓餅圖">${out}<text x="100" y="96" text-anchor="middle" font-size="12" fill="#8a7580">總支出</text><text x="100" y="116" text-anchor="middle" font-size="15" font-weight="700" fill="#372a30">${fmt(tot)}</text></svg>`;
+}
+function render(d) {
+  $("#gate").hidden = true; $("#main").hidden = false; $("#logout").hidden = false;
+  if (d.title) $("#sub").textContent = String(d.title).replace(/^財務總覽2｜/, "") + "・資料即時讀自財會表";
+  const w = d.wallet.val, fx = (x, cur) => (typeof x === "number" ? (x < 0 ? "-" : "") + cur + Math.abs(Math.round(x)).toLocaleString("zh-TW") : x);
+  const st = d.struct.filter((r) => r[0] && r[0] !== "合計"), stSum = d.struct.find((r) => r[0] === "合計") || [];
+  // 支出明細：依大類分組（大類列 A 有字、科目列 A 空白 B 有字）
+  const groups = []; d.detail.forEach((r) => { if (!r[0] && !r[1]) return; if (r[0] && r[0] !== "支出合計") groups.push({ r, subs: [] }); else if (!r[0] && groups.length) groups[groups.length - 1].subs.push(r); });
+  const detTotal = d.detail.find((r) => r[0] === "支出合計");
+  const grpHtml = (g, withPct) => `<details><summary><span class="l">${esc(g.r[0])}</span><span class="${cls(g.r[2])}">${fmt(g.r[2])}</span>${withPct ? `<span class="p">${pct(g.r[3])}</span>` : ""}</summary><table>${g.subs.filter((s) => !(String(s[1]).startsWith("其他") && Math.round(s[2]) === 0)).map((s) => `<tr><td>${esc(s[1])}</td><td class="${cls(s[2])}">${fmt(s[2])}</td>${withPct ? `<td>${pct(s[3])}</td>` : ""}</tr>`).join("")}</table></details>`;
+  const off = []; d.offbook.forEach((r) => { if (!r[0] && !r[1]) return; if (r[0]) off.push({ r, subs: [] }); else if (off.length) off[off.length - 1].subs.push(r); });
+  $("#main").innerHTML = `
+  <div class="box"><h2>① 收支總覽</h2><div id="period"></div></div>
+  <div class="box"><h2>② 錢包餘額（最新）</h2><div class="tiles">
+    <div class="tile"><small>人民幣錢包</small><b class="${cls(w[0])}">${fx(w[0], "¥")}</b></div>
+    <div class="tile"><small>台幣錢包</small><b class="${cls(w[1])}">${fx(w[1], "NT$")}</b></div>
+    <div class="tile"><small>公司錢包</small><b class="${cls(w[2])}">${fx(w[2], "NT$")}</b></div>
+    <div class="tile all"><small>合計（台幣，人民幣×匯率）</small><b class="${cls(w[3])}">${fx(w[3], "NT$")}</b></div></div></div>
+  <div class="box"><h2>③ 支出結構（累計）</h2><div class="struct">${pie(st.map((r) => ({ name: r[0], v: Math.abs(r[1]) })))}
+    <table><tbody>${st.map((r, i) => `<tr><td><span class="dot" style="background:${COLORS[i % COLORS.length]}"></span>${esc(r[0])}</td><td class="neg">${fmt(r[1])}</td><td>${pct(r[2])}</td></tr>`).join("")}
+    <tr class="sum"><td>合計</td><td class="neg">${fmt(stSum[1])}</td><td>${pct(stSum[2])}</td></tr></tbody></table></div></div>
+  <div class="box"><h2>④ 支出明細（點大類展開）</h2>${groups.map((g) => grpHtml(g, true)).join("")}
+    <table><tr class="sum"><td>支出合計</td><td class="neg">${detTotal ? fmt(detTotal[2]) : ""}</td><td>${detTotal ? pct(detTotal[3]) : ""}</td></tr></table></div>
+  <div class="box"><h2>⑤ 有記帳但不算進損益</h2>${off.map((g) => grpHtml(g, false)).join("")}
+    <p class="muted">買貨先變成庫存，賣出後才以「商品成本」計入；充值、內部轉帳、已從蝦皮實收扣過的退款不重複計算。</p></div>
+  <p class="muted" style="text-align:center">更新時間 ${new Date(d.at).toLocaleString("zh-TW")}</p>`;
+  renderPeriod(d);
+}
+// ---- 收支總覽：日／月／年，只顯示選到的那一期
+const P = { mode: "月", day: "", month: "", year: "" };
+function renderPeriod(d) {
+  const box = $("#period");
+  if (!d.months || !d.days) { box.innerHTML = `<p class="muted">財會表 API 還是舊版，請到 Apps Script「管理部署作業」更新成新版本。</p>`; return; }
+  const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+  const days = d.days.filter((r) => r[0] <= today), hasDay = days.filter((r) => r[1] || r[2]);
+  const months = d.months.map((r, i) => ({ ym: `2026-${String(i + 1).padStart(2, "0")}`, inc: r[1], exp: r[2], pl: r[3] })).filter((m) => m.inc || m.exp);
+  if (!P.month) P.month = months.some((m) => m.ym === today.slice(0, 7)) ? today.slice(0, 7) : (months[months.length - 1] || {}).ym || today.slice(0, 7);
+  if (!P.day) { const y = new Date(Date.now() + 8 * 3600e3 - 864e5).toISOString().slice(0, 10); P.day = (hasDay.filter((r) => r[0] <= y).pop() || hasDay[hasDay.length - 1] || [y])[0]; }
+  if (!P.year) P.year = "2026";
+  let inc = 0, exp = 0, pl = 0, label = "", note = "";
+  if (P.mode === "日") { const r = d.days.find((x) => x[0] === P.day) || [P.day, 0, 0, 0]; [inc, exp, pl] = [r[1], r[2], r[3]]; label = P.day.replace(/-/g, "/");
+    note = "日收入 = 當天訂單的蝦皮實收，要等撥款（約 1～38 天）才會出現，所以最近幾天的收入偏低或是 0，之後會陸續補上。日支出 = 當天出貨的商品成本（推估）＋ 當天付款的費用；薪水、房租依實際付款日，發薪那天支出會特別大。"; }
+  if (P.mode === "月") { const m = months.find((x) => x.ym === P.month) || { inc: 0, exp: 0, pl: 0 }; [inc, exp, pl] = [m.inc, m.exp, m.pl]; label = P.month.replace("-", "/");
+    note = "月支出依歸屬月（例如 9 月薪水 10 月發，仍算 9 月）。收入 = 蝦皮實收，當月訂單撥款要到下個月才完整。"; }
+  if (P.mode === "年") { months.filter((m) => m.ym.startsWith(P.year)).forEach((m) => { inc += m.inc; exp += m.exp; pl += m.pl; }); label = `${P.year} 年（1 月至 ${months.length ? +months[months.length - 1].ym.slice(5) : 0} 月）`;
+    note = "年 = 各月加總。"; }
+  const picker = P.mode === "日" ? `<input type="date" id="pp" value="${P.day}" min="2026-01-01" max="${today}">`
+    : P.mode === "月" ? `<select id="pp">${months.map((m) => `<option value="${m.ym}" ${m.ym === P.month ? "selected" : ""}>${m.ym.replace("-", "/")}</option>`).join("")}</select>`
+    : `<select id="pp"><option value="2026">2026</option></select>`;
+  const rate = inc && P.mode !== "日" ? ` <span style="font-size:12px;color:var(--ink2)">淨利率 ${(pl / inc * 100).toFixed(1)}%</span>` : "";
+  box.innerHTML = `<div class="seg">${["日", "月", "年"].map((k) => `<button data-m="${k}" class="${P.mode === k ? "on" : ""}">${k}</button>`).join("")}${picker}</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
+    <div class="kpi"><div><small>收入</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>損益</small><b class="${cls(pl)}">${fmt(pl)}</b></div></div>
+    <p class="muted">${note}</p>`;
+  box.querySelectorAll("[data-m]").forEach((b) => (b.onclick = () => { P.mode = b.dataset.m; renderPeriod(d); }));
+  $("#pp").onchange = (e) => { const v = e.target.value; if (!v) return; if (P.mode === "日") P.day = v; else if (P.mode === "月") P.month = v; else P.year = v; renderPeriod(d); };
+}
+$("#go").onclick = () => enter($("#pw").value, $("#remember").checked);
+$("#pw").onkeydown = (e) => { if (e.key === "Enter") $("#go").click(); };
+$("#logout").onclick = () => { set(KEY, null); location.reload(); };
+const saved = get(KEY); if (saved) enter(saved, true);
+</script>
+</body>
+</html>

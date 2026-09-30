@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>支出審批｜暮若</title>
+<meta name="theme-color" content="#4a2c3a">
+<meta name="robots" content="noindex">
+<style>
+  :root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--card:#fff;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--neg:#b3261e;--pos:#1e7a46;--wait:#b0813f}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 26px;border-radius:0 0 24px 24px}
+  header a{color:#f6eee8;text-decoration:none;font-size:14px;opacity:.8}
+  header h1{font-size:24px;letter-spacing:1px;margin-top:8px}
+  header p{font-size:12px;opacity:.75;margin-top:4px}
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .top button{background:none;border:1px solid rgba(255,255,255,.4);color:#f6eee8;border-radius:99px;padding:4px 12px;font-size:12px}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px 40px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:16px;box-shadow:0 6px 18px rgba(74,44,58,.06)}
+  .box h2{font-size:16px;color:var(--plum);margin-bottom:10px}
+  .tabs{display:flex;gap:8px;margin-top:16px;overflow-x:auto}
+  .tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:99px;padding:8px 14px;font-size:14px;color:var(--ink)}
+  .tabs button.on{background:var(--plum);color:#fff;border-color:var(--plum)}
+  .tabs .n{display:inline-block;min-width:18px;margin-left:4px;font-size:11px;background:var(--gold);color:#fff;border-radius:99px;padding:0 5px}
+  input,select,textarea{font:inherit;font-size:15px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%;color:var(--ink)}
+  textarea{min-height:60px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 140px}
+  label.f{display:block;font-size:12px;color:var(--ink2);margin:10px 0 4px}
+  .btn{border:0;border-radius:12px;padding:11px 16px;font-size:15px;font-weight:600;background:var(--plum);color:#fff}
+  .btn.ghost{background:#fff;color:var(--plum);border:1px solid var(--plum)}
+  .btn.ok{background:var(--pos)}.btn.no{background:var(--neg)}
+  .btn:disabled{opacity:.5}
+  .cats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .cats button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 4px;font-size:15px}
+  .cats button.on{border-color:var(--plum);background:#f4e7ee;color:var(--plum);font-weight:700}
+  table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+  th{background:#f3ebee;color:var(--plum);font-weight:600;padding:7px 5px;text-align:left;font-size:12px}
+  td{padding:6px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.r,th.r{text-align:right}
+  .lines input{padding:6px 7px;font-size:14px}
+  .lines td{padding:4px 3px}
+  .x{background:none;border:0;color:var(--ink2);font-size:18px;padding:4px}
+  .total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:16px}
+  .total b{font-size:22px;font-variant-numeric:tabular-nums}
+  .card{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:#fff}
+  .card .h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .card .h b{font-size:16px}
+  .card .meta{font-size:12px;color:var(--ink2);margin-top:3px}
+  .card .amt{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pill{display:inline-block;font-size:12px;border-radius:99px;padding:2px 9px;font-weight:600}
+  .pill.待審{background:#faeeda;color:var(--wait)}.pill.核准{background:#e3f1e8;color:var(--pos)}.pill.退回{background:#f8e1df;color:var(--neg)}
+  .tag{display:inline-block;font-size:12px;border-radius:6px;padding:1px 7px;background:#efe6ea;color:var(--plum);margin-right:6px}
+  .acts{display:flex;gap:8px;margin-top:10px}.acts .btn{flex:1}
+  .muted{color:var(--ink2);font-size:12px;line-height:1.6}
+  .empty{text-align:center;color:var(--ink2);padding:30px 0;font-size:14px}
+  #gate{max-width:380px;margin:40px auto;padding:0 16px}
+  .who{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+  .who button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 4px;font-size:15px}
+  .who button.on{border-color:var(--plum);background:#f4e7ee;color:var(--plum);font-weight:700}
+  #err,#ferr{color:var(--neg);font-size:13px;margin-top:10px;min-height:18px}
+  details summary{cursor:pointer;font-size:13px;color:var(--plum);margin-top:8px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.on{opacity:.92}
+</style>
+</head>
+<body>
+<header><div class="wrap" style="padding-bottom:0">
+  <div class="top"><a href="team.html">‹ 團隊首頁</a><button id="logout" hidden>登出</button></div>
+  <h1>支出審批</h1><p id="sub">薪水・獎金・樣品・房租</p>
+</div></header>
+
+<div id="gate"><div class="box"><h2>🔒 請輸入財務密碼</h2>
+  <p class="muted">跟「財務總覽」同一組密碼</p>
+  <input id="pin" type="password" autocomplete="current-password" placeholder="密碼" style="margin-top:10px">
+  <label class="f" style="display:flex;gap:8px;align-items:center"><input id="remember" type="checkbox" checked style="width:auto"> 記住這台裝置</label>
+  <button class="btn" id="go" style="width:100%;margin-top:8px">登入</button><div id="err"></div>
+</div></div>
+
+<div class="wrap" id="main" hidden>
+  <div class="tabs" id="tabs"></div>
+  <div id="view"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbykU6e_J6dX2yrkCQFUx045DqzBr6A0xFbnd1mBxntM9qaJL4gzcEo2rRbwzgikTC4/exec"; // 財會表 Apps Script 網頁應用程式網址（部署後填入）
+const KEY = "muro_fin_pw"; // 與 finance.html 共用，輸入一次兩頁都記住
+const CATS = ["薪水", "獎金", "樣品", "房租"];
+const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const n = (x) => { const v = parseFloat(String(x ?? "").replace(/,/g, "")); return isFinite(v) ? v : 0; };
+const r2 = (x) => Math.round(x * 100) / 100;
+const money = (x, cur = "¥") => cur + r2(n(x)).toLocaleString("zh-TW", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const get = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+const set = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} };
+const toast = (t) => { const el = $("#toast"); el.textContent = t; el.classList.add("on"); setTimeout(() => el.classList.remove("on"), 2200); };
+let S = { pw: null, data: null, tab: "wait", form: null };
+
+async function call(body) {
+  const r = await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ ...body, pw: S.pw }) });
+  const d = await r.json(); if (!d.ok) throw new Error(d.err || "失敗"); return d;
+}
+async function load() { S.data = await call({ action: "list" }); render(); }
+
+// ---- 登入
+$("#go").onclick = async () => {
+  S.pw = $("#pin").value; $("#err").textContent = "登入中…";
+  try { await load(); if ($("#remember").checked) set(KEY, S.pw); enterMain(); }
+  catch (e) { $("#err").textContent = e.message; }
+};
+$("#pin").onkeydown = (e) => { if (e.key === "Enter") $("#go").click(); };
+$("#logout").onclick = () => { set(KEY, null); location.reload(); };
+function enterMain() { $("#gate").hidden = true; $("#main").hidden = false; $("#logout").hidden = false; }
+
+// ---- 畫面
+function render() {
+  const apps = S.data.apps, wait = apps.filter((a) => a["狀態"] === "待審");
+  const tabs = [["wait", `待審<span class="n">${wait.length}</span>`], ["all", "全部紀錄"]];
+  tabs.push(["new", "＋ 送出申請"]);
+  $("#tabs").innerHTML = tabs.map(([k, t]) => `<button data-t="${k}" class="${S.tab === k ? "on" : ""}">${t}</button>`).join("");
+  $$("#tabs button").forEach((b) => (b.onclick = () => { S.tab = b.dataset.t; render(); }));
+  if (S.tab === "new") return renderForm();
+  const list = S.tab === "wait" ? wait : apps;
+  $("#view").innerHTML = list.length ? list.map(cardHtml).join("") : `<div class="empty">${S.tab === "wait" ? "沒有待審的申請 🎉" : "還沒有紀錄"}</div>`;
+  $$("#view [data-act]").forEach((b) => (b.onclick = () => decide(b.dataset.id, b.dataset.act)));
+}
+function linesTable(cat, lines, cur) {
+  if (cat === "薪水") return `<table><tr><th>姓名</th><th class="r">底薪</th><th class="r">補助</th><th class="r">社保代繳</th><th class="r">扣款</th><th class="r">公司支出</th></tr>${lines.map((l) => `<tr><td>${esc(l["品名／姓名"])}${l["說明"] ? `<div class="muted">${esc(l["說明"])}</div>` : ""}</td><td class="r">${money(l["底薪"], "")}</td><td class="r">${money(l["社保補助"], "")}</td><td class="r">${money(l["社保代繳"], "")}</td><td class="r">${n(l["扣款"]) ? "-" + money(l["扣款"], "") : "0"}</td><td class="r"><b>${money(l["金額"], "")}</b></td></tr>`).join("")}</table>`;
+  if (cat === "樣品") return `<table><tr><th>品名</th><th>顏色</th><th>尺碼</th><th class="r">數量</th><th class="r">單價</th><th class="r">金額</th></tr>${lines.map((l) => `<tr><td>${esc(l["品名／姓名"])}${l["說明"] ? `<div class="muted">${linkify(l["說明"])}</div>` : ""}</td><td>${esc(l["顏色"])}</td><td>${esc(l["尺碼"])}</td><td class="r">${esc(l["數量"])}</td><td class="r">${money(l["單價"], "")}</td><td class="r"><b>${money(l["金額"], "")}</b></td></tr>`).join("")}</table>`;
+  return `<table><tr><th>${cat === "獎金" ? "姓名" : "對象／房號"}</th><th>說明</th><th class="r">金額</th></tr>${lines.map((l) => `<tr><td>${esc(l["品名／姓名"])}</td><td>${esc(l["說明"])}</td><td class="r"><b>${money(l["金額"], cur)}</b></td></tr>`).join("")}</table>`;
+}
+const linkify = (s) => esc(s).replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">連結</a>');
+function cardHtml(a) {
+  const id = a["申請編號"], st = a["狀態"], cur = a["幣別"] || "¥";
+  const lines = S.data.lines.filter((l) => l["申請編號"] === id);
+  const canDecide = st === "待審";
+  return `<div class="card"><div class="h"><div><span class="tag">${esc(a["類別"])}</span><b>${esc(a["歸屬月"])}</b>
+    <div class="meta">${esc(id)}・${esc(a["申請日"])}</div></div>
+    <div style="text-align:right"><div class="amt">${money(a["總金額"], cur)}</div><span class="pill ${esc(st)}">${esc(st)}</span></div></div>
+    ${a["摘要"] ? `<div style="margin-top:8px;font-size:14px">${esc(a["摘要"])}</div>` : ""}
+    ${a["備註"] ? `<div class="muted">備註：${esc(a["備註"])}</div>` : ""}
+    ${st !== "待審" ? `<div class="muted">${esc(st)}・${esc(a["審批時間"])}${a["退回原因"] ? `｜原因：${esc(a["退回原因"])}` : ""}</div>` : ""}
+    <details ${canDecide ? "open" : ""}><summary>明細（${lines.length} 項）</summary>${linesTable(a["類別"], lines, cur)}</details>
+    ${canDecide ? `<div class="acts"><button class="btn no" data-act="退回" data-id="${esc(id)}">退回</button><button class="btn ok" data-act="核准" data-id="${esc(id)}">核准</button></div>` : ""}</div>`;
+}
+async function decide(id, act) {
+  let reason = "";
+  if (act === "退回") { reason = prompt("退回原因（必填）") || ""; if (!reason.trim()) return; }
+  else if (!confirm(`確定核准 ${id}？`)) return;
+  try { await call({ action: "decide", id, decision: act, reason }); toast(`已${act}`); await load(); } catch (e) { alert(e.message); }
+}
+
+// ---- 送出申請（提交人）
+const lastMonth = () => { const d = new Date(), late = d.getDate() >= 20; d.setDate(1); if (!late) d.setMonth(d.getMonth() - 1); // 20 號以後預設當月，之前預設上個月
+  return d.getFullYear() + "/" + String(d.getMonth() + 1).padStart(2, "0"); };
+function salaryLines() { // 實發 = 底薪 + 補助 − 代扣別人的個人負擔；公司支出 = 實發 + 社保代繳
+  const ppl = S.data.salary;
+  return ppl.map((p) => {
+    const payer = ppl.filter((q) => q["個人負擔由誰扣"] === p["姓名"] && n(q["個人負擔(元)"]));
+    const deduct = r2(payer.reduce((s, q) => s + n(q["個人負擔(元)"]), 0));
+    const memo = [payer.length ? `代扣 ${payer.map((q) => q["姓名"] + " 社保個人負擔 " + n(q["個人負擔(元)"])).join("、")}` : "", n(p["個人負擔(元)"]) ? `社保個人負擔 ${n(p["個人負擔(元)"])} 不扣本人，由${p["個人負擔由誰扣"]}代扣` : ""].filter(Boolean).join("；");
+    return { name: p["姓名"], base: n(p["底薪"]), allow: n(p["社保補助"]), ss: n(p["社保代繳(公司付款總額)"]), deduct, memo };
+  });
+}
+function newForm(cat) {
+  const f = { cat, month: lastMonth(), currency: cat === "房租" ? "NT$" : "¥", note: "", lines: [] };
+  if (cat === "薪水") f.lines = salaryLines();
+  if (cat === "獎金") f.lines = [{ name: "", amount: "", memo: "" }];
+  if (cat === "樣品") f.lines = [{ name: "", color: "", size: "", qty: 1, price: "", memo: "" }];
+  if (cat === "房租") f.lines = [{ name: "", amount: "", memo: "" }];
+  return f;
+}
+const lineAmt = (cat, l) => cat === "薪水" ? r2(n(l.base) + n(l.allow) - n(l.deduct) + n(l.ss)) : cat === "樣品" ? r2(n(l.qty) * n(l.price)) : r2(n(l.amount));
+function renderForm() {
+  const f = S.form; const people = S.data.salary.map((p) => p["姓名"]);
+  const catBtns = `<div class="cats">${CATS.map((c) => `<button data-c="${c}" class="${f && f.cat === c ? "on" : ""}">${c}</button>`).join("")}</div>`;
+  if (!f) { $("#view").innerHTML = `<div class="box"><h2>要送哪一種？</h2>${catBtns}</div>`; bindCats(); return; }
+  const c = f.cat; let head, rows;
+  if (c === "薪水") {
+    head = `<tr><th>姓名</th><th class="r">底薪</th><th class="r">補助</th><th class="r">社保代繳</th><th class="r">扣款</th><th class="r">公司支出</th></tr>`;
+    rows = f.lines.map((l, i) => `<tr><td>${esc(l.name)}<div class="muted">實發 ${money(n(l.base) + n(l.allow) - n(l.deduct))}${l.memo ? "・" + esc(l.memo) : ""}</div></td>${["base", "allow", "ss", "deduct"].map((k) => `<td><input data-i="${i}" data-k="${k}" inputmode="decimal" value="${esc(l[k])}" style="text-align:right;min-width:64px"></td>`).join("")}<td class="r"><b>${money(lineAmt(c, l), "")}</b></td></tr>`).join("");
+  } else if (c === "樣品") {
+    head = `<tr><th>品名</th><th>顏色</th><th>尺碼</th><th class="r">數量</th><th class="r">單價¥</th><th class="r">金額</th><th></th></tr>`;
+    rows = f.lines.map((l, i) => `<tr><td><input data-i="${i}" data-k="name" value="${esc(l.name)}" placeholder="品名／貨號" style="min-width:120px"><input data-i="${i}" data-k="memo" value="${esc(l.memo)}" placeholder="連結或備註（選填）" style="margin-top:4px;font-size:12px"></td><td><input data-i="${i}" data-k="color" value="${esc(l.color)}" style="min-width:56px"></td><td><input data-i="${i}" data-k="size" value="${esc(l.size)}" style="min-width:48px"></td><td><input data-i="${i}" data-k="qty" inputmode="numeric" value="${esc(l.qty)}" style="text-align:right;min-width:44px"></td><td><input data-i="${i}" data-k="price" inputmode="decimal" value="${esc(l.price)}" style="text-align:right;min-width:60px"></td><td class="r"><b>${money(lineAmt(c, l), "")}</b></td><td><button class="x" data-del="${i}">×</button></td></tr>`).join("");
+  } else {
+    const isBonus = c === "獎金";
+    head = `<tr><th>${isBonus ? "姓名" : "對象／房號"}</th><th>說明</th><th class="r">金額</th><th></th></tr>`;
+    rows = f.lines.map((l, i) => `<tr><td>${isBonus ? `<select data-i="${i}" data-k="name"><option value="">選人</option>${people.map((p) => `<option ${p === l.name ? "selected" : ""}>${esc(p)}</option>`).join("")}</select>` : `<input data-i="${i}" data-k="name" value="${esc(l.name)}" placeholder="例：房東-2004">`}</td><td><input data-i="${i}" data-k="memo" value="${esc(l.memo)}" placeholder="${isBonus ? "原因" : "例：10月租金"}"></td><td><input data-i="${i}" data-k="amount" inputmode="decimal" value="${esc(l.amount)}" style="text-align:right;min-width:80px"></td><td><button class="x" data-del="${i}">×</button></td></tr>`).join("");
+  }
+  const total = r2(f.lines.reduce((s, l) => s + lineAmt(c, l), 0));
+  $("#view").innerHTML = `<div class="box"><h2>送出申請</h2>${catBtns}
+    <div class="row"><div><label class="f">歸屬月</label><input id="fm" value="${esc(f.month)}" placeholder="YYYY/MM"></div>
+    <div><label class="f">幣別</label><select id="fc">${["¥", "NT$"].map((x) => `<option ${x === f.currency ? "selected" : ""}>${x}</option>`).join("")}</select></div></div>
+    <label class="f">明細</label><div style="overflow-x:auto"><table class="lines">${head}${rows}</table></div>
+    ${c === "薪水" ? `<p class="muted" style="margin-top:6px">人員與底薪讀自財會表「薪資設定」；這個月有請假、加班等可直接改數字。公司支出 = 底薪 + 補助 − 扣款 + 社保代繳。</p>` : `<button class="btn ghost" id="add" style="margin-top:8px">＋ 加一列</button>`}
+    <label class="f">備註（選填）</label><textarea id="fn">${esc(f.note)}</textarea>
+    <div class="total"><span>總金額</span><b>${money(total, f.currency)}</b></div>
+    <button class="btn" id="send" style="width:100%;margin-top:12px">送出審批</button><div id="ferr"></div></div>`;
+  bindCats();
+  $$("#view [data-k]").forEach((el) => (el.oninput = el.onchange = () => { f.lines[+el.dataset.i][el.dataset.k] = el.value; if (["qty", "price", "amount", "base", "allow", "ss", "deduct"].includes(el.dataset.k)) refreshTotals(); }));
+  $$("#view [data-del]").forEach((b) => (b.onclick = () => { f.lines.splice(+b.dataset.del, 1); if (!f.lines.length) f.lines = newForm(c).lines; renderForm(); }));
+  $("#fm").oninput = (e) => (f.month = e.target.value.trim()); $("#fc").onchange = (e) => { f.currency = e.target.value; renderForm(); }; $("#fn").oninput = (e) => (f.note = e.target.value);
+  if ($("#add")) $("#add").onclick = () => { f.lines.push({ ...newForm(c).lines[0], name: "" }); renderForm(); };
+  $("#send").onclick = send;
+}
+function refreshTotals() { // 只更新金額文字，不重畫（保留輸入焦點）
+  const f = S.form, c = f.cat, bs = $$("#view table.lines tr td.r b");
+  f.lines.forEach((l, i) => { if (bs[i]) bs[i].textContent = money(lineAmt(c, l), ""); });
+  $("#view .total b").textContent = money(f.lines.reduce((s, l) => s + lineAmt(c, l), 0), f.currency);
+}
+function bindCats() { $$("#view .cats button").forEach((b) => (b.onclick = () => { S.form = newForm(b.dataset.c); renderForm(); })); }
+async function send() {
+  const f = S.form, c = f.cat;
+  if (!/^\d{4}\/\d{2}$/.test(f.month)) return ($("#ferr").textContent = "歸屬月格式要 YYYY/MM，例如 2026/09");
+  const lines = f.lines.map((l) => ({ ...l, amount: lineAmt(c, l) })).filter((l) => l.name && (l.amount || c === "薪水"));
+  if (!lines.length) return ($("#ferr").textContent = "請至少填一列（品名／姓名＋金額）");
+  if (c === "樣品" && lines.some((l) => !n(l.qty) || !n(l.price))) return ($("#ferr").textContent = "樣品每列都要有數量和單價");
+  const total = r2(lines.reduce((s, l) => s + l.amount, 0));
+  const summary = c === "薪水" ? `${f.month} 薪水 ${lines.length} 人` : c === "樣品" ? `樣品 ${lines.length} 款 ${lines.reduce((s, l) => s + n(l.qty), 0)} 件：${lines.slice(0, 3).map((l) => l.name).join("、")}${lines.length > 3 ? "…" : ""}` : `${c}：${lines.map((l) => l.name).join("、")}`;
+  if (!confirm(`送出 ${c} 審批，總金額 ${money(total, f.currency)}？`)) return;
+  $("#send").disabled = true; $("#ferr").textContent = "送出中…";
+  try {
+    const d = await call({ action: "submit", app: { cat: c, month: f.month, currency: f.currency, summary, note: f.note, lines } });
+    toast(`已送出 ${d.id}`); S.form = null; S.tab = "wait"; await load();
+  } catch (e) { $("#ferr").textContent = e.message; $("#send").disabled = false; }
+}
+
+const saved = get(KEY);
+if (saved) { S.pw = saved; load().then(enterMain).catch(() => set(KEY, null)); }
+</script>
+</body>
+</html>
