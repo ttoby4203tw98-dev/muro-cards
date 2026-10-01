@@ -61,6 +61,7 @@
   .kpi div small:last-child:not(:first-child){display:block;margin-top:2px}
   .bbar{height:8px;border-radius:99px;background:#eee2da;margin:10px 0 0;overflow:hidden}.bbar i{display:block;height:100%;background:var(--pos)}.bbar i.over{background:var(--neg)}
   #budget th.r,#budget td{text-align:right}#budget td:first-child{text-align:left}
+  .bscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.btab{font-size:13px}.btab th,.btab td{padding:7px 5px;white-space:nowrap}.btab td small{display:block;font-size:11px;color:var(--ink2)}
   .top button{background:none;border:1px solid rgba(255,255,255,.4);color:#f6eee8;border-radius:99px;padding:4px 12px;font-size:12px}
 </style>
 </head>
@@ -192,8 +193,8 @@ function renderBudget(d) {
   let html;
   if (P.mode === "年") {
     const ks = Object.keys(ms).filter((k) => k.startsWith(P.year)).sort();
-    html = ks.length ? `<table><tr><th>月份</th><th class="r">預算</th><th class="r">樣品支出</th><th class="r">退款</th><th class="r">已花</th><th class="r">剩餘</th></tr>${ks.map((k) => { const b = ms[k];
-      return `<tr><td>${k}${b.est ? " <small>暫估</small>" : ""}</td><td>${nt(b.avail)}</td><td>${nt(b.spent)}</td><td class="pos">${nt(Math.abs(b.refund))}</td><td>${nt(b.used)}</td><td class="${b.remain < 0 ? "neg" : "pos"}">${nt(b.remain)}</td></tr>`; }).join("")}</table>`
+    html = ks.length ? `<div class="bscroll"><table class="btab"><tr><th>月份</th><th class="r">預算</th><th class="r">樣品</th><th class="r">退款</th><th class="r">已花</th><th class="r">剩餘</th></tr>${ks.map((k) => { const b = ms[k];
+      return `<tr><td>${k.slice(5)} 月${b.est ? "<small>暫估</small>" : ""}</td><td>${fmt(b.avail)}</td><td>${fmt(b.spent)}</td><td class="pos">${fmt(Math.abs(b.refund))}</td><td>${fmt(b.used)}</td><td class="${b.remain < 0 ? "neg" : "pos"}">${fmt(b.remain)}</td></tr>`; }).join("")}</table></div><p class="muted">單位：NT$（台幣）；已花 = 樣品 − 退款。</p>`
       : `<p class="muted">${P.year} 年還沒有樣品預算（從 2026/10 起算）。</p>`;
   } else {
     const b = ms[ym];
