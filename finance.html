@@ -53,10 +53,10 @@
   .seg button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 16px;font-size:14px;color:var(--ink)}
   .seg button.on{background:var(--plum);color:#fff;border-color:var(--plum)}
   .seg input,.seg select{margin-left:auto;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
-  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
   .kpi div{background:#f8f2ef;border-radius:14px;padding:12px 8px;text-align:center}
   .kpi small{display:block;font-size:12px;color:var(--ink2)}
-  .kpi b{display:block;font-size:19px;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi b{display:block;font-size:clamp(14px,4.4vw,19px);margin-top:4px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
   .kpi .pl{background:#efe6ea}
   .kpi div small:last-child:not(:first-child){display:block;margin-top:2px}
   .bbar{height:8px;border-radius:99px;background:#eee2da;margin:10px 0 0;overflow:hidden}.bbar i{display:block;height:100%;background:var(--pos)}.bbar i.over{background:var(--neg)}
