@@ -26,7 +26,7 @@
   .optrow{display:flex;flex-wrap:wrap;gap:9px;}
   .opt{border:none;border-radius:99px;padding:9px 18px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;opacity:.45;}
   .opt.on{opacity:1;box-shadow:0 3px 10px rgba(74,44,58,.25);transform:scale(1.05);}
-  .s-p0{background:#C2185B;}.s-p1{background:#1E56C9;}.s-p2{background:#7B3FBF;}.s-p3{background:#37474F;}
+  .s-p0{background:#C2185B;}.s-p1{background:#00838F;}.s-p2{background:#7B3FBF;}.s-p3{background:#37474F;}
   .s-p4{background:#148F62;}.s-p5{background:#D6308A;}.s-p6{background:#C77800;}.s-p7{background:#E05716;}
   .s-p8{background:#33698C;}.s-p9{background:#A08A00;}.s-p10{background:#0E7C9E;}.s-p11{background:#7A6F52;}
   .btnrow{display:flex;gap:12px;margin-top:16px;}
@@ -96,7 +96,7 @@ var TOKEN='muro2026';
 var PUNCH_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('打卡');
 var MAIN_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv';
 
-var PEOPLE=['思維','小羅','曉慧','Naby','諾諾','番茄','安琪','Neveah'];
+var PEOPLE=['思維','麗敏','曉慧','Naby','諾諾','番茄','安琪','Neveah'];
 var who=null;
 
 function pidx(n){var i=PEOPLE.indexOf(n);if(i<0){i=0;for(var j=0;j<n.length;j++)i=(i*31+n.charCodeAt(j))>>>0;}return i%12;}
