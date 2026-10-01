@@ -131,7 +131,8 @@ function render(d) {
   const groups = []; d.detail.forEach((r) => { if (!r[0] && !r[1]) return; if (r[0] && r[0] !== "支出合計") groups.push({ r, subs: [] }); else if (!r[0] && groups.length) groups[groups.length - 1].subs.push(r); });
   const detTotal = d.detail.find((r) => r[0] === "支出合計");
   const grpHtml = (g, withPct) => `<details><summary><span class="l">${esc(g.r[0])}</span><span class="${cls(g.r[2])}">${fmt(g.r[2])}</span>${withPct ? `<span class="p">${pct(g.r[3])}</span>` : ""}</summary><table>${g.subs.filter((s) => !(String(s[1]).startsWith("其他") && Math.round(s[2]) === 0)).map((s) => `<tr><td>${esc(s[1])}</td><td class="${cls(s[2])}">${fmt(s[2])}</td>${withPct ? `<td>${pct(s[3])}</td>` : ""}</tr>`).join("")}</table></details>`;
-  const off = []; d.offbook.forEach((r) => { if (!r[0] && !r[1]) return; if (r[0]) off.push({ r, subs: [] }); else if (off.length) off[off.length - 1].subs.push(r); });
+  // ⑤ 只顯示蝦幣充值、廣告充值（其餘內部轉帳、蝦皮客人退款留在財會表）
+  const OFF_SHOW = ["蝦幣充值", "廣告充值"], offShow = d.offbook.filter((r) => !r[0] && OFF_SHOW.includes(r[1])), offSum = offShow.reduce((s, r) => s + (Number(r[2]) || 0), 0);
   $("#main").innerHTML = `
   <div class="box"><h2>① 收支總覽</h2><div id="period"></div></div>
   <div class="box"><h2>② 錢包餘額（最新）</h2><div class="tiles">
@@ -145,8 +146,9 @@ function render(d) {
     <tr class="sum"><td>合計</td><td class="neg">${fmt(stSum[1])}</td><td>${pct(stSum[2])}</td></tr></tbody></table></div></div>
   <div class="box" id="expDetail"><h2>④ 支出明細（點大類展開）</h2>${groups.map((g) => grpHtml(g, true)).join("")}
     <table><tr class="sum"><td>支出合計</td><td class="neg">${detTotal ? fmt(detTotal[2]) : ""}</td><td>${detTotal ? pct(detTotal[3]) : ""}</td></tr></table></div>
-  <div class="box"><h2>⑤ 有記帳但不算進損益</h2>${off.map((g) => grpHtml(g, false)).join("")}
-    <p class="muted">充值、內部轉帳、已從蝦皮實收扣過的退款不重複計算（囤貨已改成付款當月算支出，在上面 ③④）。</p></div>
+  <div class="box"><h2>⑤ 有記帳但不算進損益</h2><table>${offShow.map((s) => `<tr><td>${esc(s[1])}</td><td class="${cls(s[2])}">${fmt(s[2])}</td></tr>`).join("")}
+    <tr class="sum"><td>合計</td><td class="${cls(offSum)}">${fmt(offSum)}</td></tr></table>
+    <p class="muted">充值是先把錢放進蝦皮，實際花掉時才以「廣告蝦幣」算進上面的支出，所以這裡不重複計算。</p></div>
   <p class="muted" style="text-align:center">更新時間 ${new Date(d.at).toLocaleString("zh-TW")}　<span id="sync"></span>　<a href="#" id="refresh" style="color:var(--rose)">重新整理</a></p>`;
   $("#refresh").onclick = (e) => { e.preventDefault(); const pw = get(KEY); if (pw) enter(pw, true, true); else showGate(); };
   renderPeriod(d);
