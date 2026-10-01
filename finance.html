@@ -113,6 +113,8 @@ function setSync(t) { const el = $("#sync"); if (el) el.textContent = t; }
 function pie(items, center) { // items: [{name, v}] 正數；center = 中間顯示的數字（預設加總）
   const tot = items.reduce((s, x) => s + x.v, 0) || 1; let a = -Math.PI / 2, out = "";
   items.forEach((x, i) => {
+    if (x.v / tot > 0.9999) { // 只有一類：SVG 弧線起點＝終點畫不出來，改畫整圈
+      out += `<circle cx="100" cy="100" r="71" fill="none" stroke="${COLORS[i % COLORS.length]}" stroke-width="38"><title>${esc(x.name)} 100%</title></circle>`; return; }
     const f = x.v / tot, a2 = a + f * Math.PI * 2, large = f > 0.5 ? 1 : 0, R = 90, r = 52;
     const p = (ang, rad) => [100 + rad * Math.cos(ang), 100 + rad * Math.sin(ang)].map((n) => n.toFixed(2)).join(" ");
     out += `<path d="M ${p(a, R)} A ${R} ${R} 0 ${large} 1 ${p(a2, R)} L ${p(a2, r)} A ${r} ${r} 0 ${large} 0 ${p(a, r)} Z" fill="${COLORS[i % COLORS.length]}"><title>${esc(x.name)} ${(f * 100).toFixed(1)}%</title></path>`;
@@ -189,7 +191,7 @@ function renderBudget(d) {
   if (P.mode === "年") {
     const ks = Object.keys(ms).filter((k) => k.startsWith(P.year)).sort();
     html = ks.length ? `<table><tr><th>月份</th><th class="r">預算</th><th class="r">樣品支出</th><th class="r">退款</th><th class="r">已花</th><th class="r">剩餘</th></tr>${ks.map((k) => { const b = ms[k];
-      return `<tr><td>${k}${b.est ? " <small>暫估</small>" : ""}</td><td>${nt(b.avail)}</td><td>${nt(b.spent)}</td><td class="pos">${nt(-b.refund)}</td><td>${nt(b.used)}</td><td class="${b.remain < 0 ? "neg" : "pos"}">${nt(b.remain)}</td></tr>`; }).join("")}</table>`
+      return `<tr><td>${k}${b.est ? " <small>暫估</small>" : ""}</td><td>${nt(b.avail)}</td><td>${nt(b.spent)}</td><td class="pos">${nt(Math.abs(b.refund))}</td><td>${nt(b.used)}</td><td class="${b.remain < 0 ? "neg" : "pos"}">${nt(b.remain)}</td></tr>`; }).join("")}</table>`
       : `<p class="muted">${P.year} 年還沒有樣品預算（從 2026/10 起算）。</p>`;
   } else {
     const b = ms[ym];
@@ -197,7 +199,7 @@ function renderBudget(d) {
     else { const pct = b.avail ? Math.round(b.used / b.avail * 100) : 0;
       html = `<div class="kpi"><div><small>可用預算</small><b>${nt(b.avail)}</b><small>${rmb(b.avail)}</small></div><div><small>已花</small><b>${nt(b.used)}</b><small>${pct}%</small></div><div class="pl"><small>${b.remain < 0 ? "已超過" : "剩餘"}</small><b class="${b.remain < 0 ? "neg" : "pos"}">${nt(Math.abs(b.remain))}</b><small>${rmb(Math.abs(b.remain))}</small></div></div>
       <div class="bbar"><i class="${b.remain < 0 ? "over" : ""}" style="width:${Math.min(100, pct)}%"></i></div>
-      <p class="muted">預算 = ${b.sales[0]}＋${b.sales[1]} 下單總額 × 1% = ${nt(b.base)}${b.carry ? `，加上月累積 ${nt(b.carry)}` : ""}（最多累積到 2 倍）。已花 = 樣品支出 ${nt(b.spent)} − 1688 退款 ${nt(-b.refund)}（錢包記帳，依歸屬月）。${b.est ? `<br>${b.sales[1]} 還沒結束，預算是暫估。` : ""}</p>`; }
+      <p class="muted">預算 = ${b.sales[0]}＋${b.sales[1]} 下單總額 × 1% = ${nt(b.base)}${b.carry ? `，加上月累積 ${nt(b.carry)}` : ""}（最多累積到 2 倍）。已花 = 樣品支出 ${nt(b.spent)} − 1688 退款 ${nt(Math.abs(b.refund))}（錢包記帳，依歸屬月）。${b.est ? `<br>${b.sales[1]} 還沒結束，預算是暫估。` : ""}</p>`; }
   }
   box.hidden = false;
   box.innerHTML = `<h2>樣品預算（${P.mode === "年" ? P.year + " 年" : ym}）</h2>${html}`;
