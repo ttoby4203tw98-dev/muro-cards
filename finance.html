@@ -58,6 +58,9 @@
   .kpi small{display:block;font-size:12px;color:var(--ink2)}
   .kpi b{display:block;font-size:19px;margin-top:4px;font-variant-numeric:tabular-nums}
   .kpi .pl{background:#efe6ea}
+  .kpi div small:last-child:not(:first-child){display:block;margin-top:2px}
+  .bbar{height:8px;border-radius:99px;background:#eee2da;margin:10px 0 0;overflow:hidden}.bbar i{display:block;height:100%;background:var(--pos)}.bbar i.over{background:var(--neg)}
+  #budget th.r,#budget td{text-align:right}#budget td:first-child{text-align:left}
   .top button{background:none;border:1px solid rgba(255,255,255,.4);color:#f6eee8;border-radius:99px;padding:4px 12px;font-size:12px}
 </style>
 </head>
@@ -134,6 +137,7 @@ function render(d) {
     <div class="tile"><small>台幣錢包</small><b class="${cls(w[1])}">${fx(w[1], "NT$")}</b></div>
     <div class="tile"><small>公司錢包</small><b class="${cls(w[2])}">${fx(w[2], "NT$")}</b></div>
     <div class="tile all"><small>合計（台幣，人民幣×匯率）</small><b class="${cls(w[3])}">${fx(w[3], "NT$")}</b></div></div></div>
+  <div class="box" id="budget" hidden></div>
   <div class="box" id="expStruct"><h2>③ 支出結構（累計）</h2><div class="struct">${pie(st.map((r) => ({ name: r[0], v: Math.abs(r[1]) })))}
     <table><tbody>${st.map((r, i) => `<tr><td><span class="dot" style="background:${COLORS[i % COLORS.length]}"></span>${esc(r[0])}</td><td class="neg">${fmt(r[1])}</td><td>${pct(r[2])}</td></tr>`).join("")}
     <tr class="sum"><td>合計</td><td class="neg">${fmt(stSum[1])}</td><td>${pct(stSum[2])}</td></tr></tbody></table></div></div>
@@ -152,7 +156,7 @@ function renderPeriod(d) {
   if (!d.months || !d.days) { box.innerHTML = `<p class="muted">財會表 API 還是舊版，請到 Apps Script「管理部署作業」更新成新版本。</p>`; return; }
   const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
   const days = d.days.filter((r) => r[0] <= today), hasDay = days.filter((r) => r[1] || r[2]);
-  const months = d.months.map((r, i) => ({ ym: `2026-${String(i + 1).padStart(2, "0")}`, inc: r[1], exp: r[2], pl: r[3] })).filter((m) => m.inc || m.exp);
+  const months = d.months.map((r, i) => ({ ym: `2026-${String(i + 1).padStart(2, "0")}`, inc: r[1], exp: r[2], pl: r[3] })).filter((m) => m.inc || m.exp || m.ym === today.slice(0, 7)); // 當月一定列出（月初還沒數字也能看樣品預算）
   if (!P.month) P.month = months.some((m) => m.ym === today.slice(0, 7)) ? today.slice(0, 7) : (months[months.length - 1] || {}).ym || today.slice(0, 7);
   if (!P.day) { const y = new Date(Date.now() + 8 * 3600e3 - 864e5).toISOString().slice(0, 10); P.day = (hasDay.filter((r) => r[0] <= y).pop() || hasDay[hasDay.length - 1] || [y])[0]; }
   if (!P.year) P.year = "2026";
@@ -171,9 +175,32 @@ function renderPeriod(d) {
     <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
     <div class="kpi"><div><small>收入</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>損益</small><b class="${cls(pl)}">${fmt(pl)}</b></div></div>
     <p class="muted">${note}</p>`;
-  renderExp(d);
+  renderExp(d); renderBudget(d);
   box.querySelectorAll("[data-m]").forEach((b) => (b.onclick = () => { P.mode = b.dataset.m; renderPeriod(d); }));
   $("#pp").onchange = (e) => { const v = e.target.value; if (!v) return; if (P.mode === "日") P.day = v; else if (P.mode === "月") P.month = v; else P.year = v; renderPeriod(d); };
+}
+// ---- 樣品預算：當月預算 = 前兩個月總銷售額(下單)加總 × 1%，沒用完累積（最多 2 倍）；已花 = 帳上樣品支出 − 1688 退款（依歸屬月）
+//   月／日 → 顯示該月；年 → 列出該年每個月
+function renderBudget(d) {
+  const box = $("#budget"), B = d.budget; if (!B || !B.months) { box.hidden = true; return; }
+  const ms = B.months, fx = B.fx || 0, nt = (x) => "NT$" + fmt(x), rmb = (x) => (fx ? `≈¥${fmt(x / fx)}` : "");
+  const ym = (P.mode === "日" ? P.day : P.month).slice(0, 7).replace("-", "/");
+  let html;
+  if (P.mode === "年") {
+    const ks = Object.keys(ms).filter((k) => k.startsWith(P.year)).sort();
+    html = ks.length ? `<table><tr><th>月份</th><th class="r">預算</th><th class="r">樣品支出</th><th class="r">退款</th><th class="r">已花</th><th class="r">剩餘</th></tr>${ks.map((k) => { const b = ms[k];
+      return `<tr><td>${k}${b.est ? " <small>暫估</small>" : ""}</td><td>${nt(b.avail)}</td><td>${nt(b.spent)}</td><td class="pos">${nt(-b.refund)}</td><td>${nt(b.used)}</td><td class="${b.remain < 0 ? "neg" : "pos"}">${nt(b.remain)}</td></tr>`; }).join("")}</table>`
+      : `<p class="muted">${P.year} 年還沒有樣品預算（從 2026/10 起算）。</p>`;
+  } else {
+    const b = ms[ym];
+    if (!b) html = `<p class="muted">${ym} 沒有樣品預算（從 2026/10 起算）。</p>`;
+    else { const pct = b.avail ? Math.round(b.used / b.avail * 100) : 0;
+      html = `<div class="kpi"><div><small>可用預算</small><b>${nt(b.avail)}</b><small>${rmb(b.avail)}</small></div><div><small>已花</small><b>${nt(b.used)}</b><small>${pct}%</small></div><div class="pl"><small>${b.remain < 0 ? "已超過" : "剩餘"}</small><b class="${b.remain < 0 ? "neg" : "pos"}">${nt(Math.abs(b.remain))}</b><small>${rmb(Math.abs(b.remain))}</small></div></div>
+      <div class="bbar"><i class="${b.remain < 0 ? "over" : ""}" style="width:${Math.min(100, pct)}%"></i></div>
+      <p class="muted">預算 = ${b.sales[0]}＋${b.sales[1]} 下單總額 × 1% = ${nt(b.base)}${b.carry ? `，加上月累積 ${nt(b.carry)}` : ""}（最多累積到 2 倍）。已花 = 樣品支出 ${nt(b.spent)} − 1688 退款 ${nt(-b.refund)}（錢包記帳，依歸屬月）。${b.est ? `<br>${b.sales[1]} 還沒結束，預算是暫估。` : ""}</p>`; }
+  }
+  box.hidden = false;
+  box.innerHTML = `<h2>樣品預算（${P.mode === "年" ? P.year + " 年" : ym}）</h2>${html}`;
 }
 // ---- ③④ 支出結構／明細：跟著上面的 日／月／年
 //   月 = 該月；年 = 各月加總；日 = 該天所在月份 ÷ 天數（本月用今天是第幾天）
