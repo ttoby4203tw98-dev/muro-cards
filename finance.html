@@ -64,6 +64,69 @@
   #budget th.r,#budget td{text-align:right}#budget td:first-child{text-align:left}
   .bscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.btab{font-size:13px}.btab th,.btab td{padding:7px 5px;white-space:nowrap}.btab td small{display:block;font-size:11px;color:var(--ink2)}
   .top button{background:none;border:1px solid rgba(255,255,255,.4);color:#f6eee8;border-radius:99px;padding:4px 12px;font-size:12px}
+  /* 分頁 */
+  .tabs{display:flex;gap:6px;margin-top:16px;position:sticky;top:0;z-index:5;background:var(--cream);padding:8px 0}
+  .tabs button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 4px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer}
+  .tabs button.on{background:var(--plum);color:#fff;border-color:var(--plum)}
+  .tabs button:focus-visible,.drv input:focus-visible,.bn-btn:focus-visible,.crow input:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
+  /* 預算分佈 */
+  .drivers{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+  .drv{background:#f8f2ef;border-radius:14px;padding:10px 12px;display:grid;gap:4px;min-width:0}
+  .drv label,.drv .k{font-size:13px;font-weight:700;color:var(--plum)}
+  .drv small{font-size:11px;color:var(--ink2)}
+  .drv .in{display:flex;align-items:center;gap:4px}
+  .drv input[type=number]{width:100%;min-width:0;font:inherit;font-size:18px;font-variant-numeric:tabular-nums;color:var(--plum);background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 8px}
+  .drv input[type=range]{width:100%;accent-color:var(--plum)}
+  .drv .v{font-size:18px;font-weight:700;color:var(--plum);font-variant-numeric:tabular-nums}
+  .bud-derived{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--ink2);margin-top:10px}
+  .bud-derived b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .bud-derived button{margin-left:auto;border:1px solid var(--line);background:#fff;border-radius:99px;padding:4px 12px;font-size:12px;color:var(--ink2);cursor:pointer}
+  .be{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .be div{background:#f8f2ef;border-radius:14px;padding:12px}
+  .be div.main{grid-column:1/-1;background:#efe6ea}
+  .be small{display:block;font-size:12px;color:var(--ink2)}
+  .be b{display:block;font-size:20px;margin-top:2px;font-variant-numeric:tabular-nums}
+  .be div.main b{font-size:24px;color:var(--plum)}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin-bottom:10px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  .brow{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;margin-bottom:12px}
+  .brow b{font-size:13px}
+  .bline{display:grid;grid-template-columns:1fr 76px;gap:6px;align-items:center;font-size:12px;font-variant-numeric:tabular-nums;text-align:right}
+  .bline i{display:block;height:11px;border-radius:2px;transition:width .25s}
+  .bline i.o{background:#d9c9cf}.bline i.n{background:var(--plum)}
+  .btbl td,.btbl th{white-space:nowrap}.btbl th{text-align:right}.btbl th:first-child{text-align:left}
+  .btbl tr.cat td{font-weight:700;background:#f6eef0}.btbl tr.sub td:first-child{padding-left:16px}
+  .btbl td.t,.btbl th.t{background:#fdf6e3}.btbl tr.cat td.t{background:#f3ead9}
+  .btbl .var{font-size:10px;color:var(--rose);margin-left:4px}
+  /* 獎金表 */
+  .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+  .rule{background:#f8f2ef;border-left:4px solid var(--plum);border-radius:10px;padding:10px 12px}
+  .rule small{display:block;font-size:12px;color:var(--ink2)}
+  .rule b{display:block;font-size:15px;margin-top:2px}
+  .tier td:first-child{font-weight:600;white-space:nowrap}.tier td:first-child em{font-style:normal;font-weight:400;color:var(--ink2);font-size:11px;margin-left:5px}
+  .tier tr.zero td{color:var(--ink2)}.tier tr.open td{background:#fbf1dd;color:#9a6416;font-weight:700}
+  .notes{margin:10px 0 0 18px;color:var(--ink2);font-size:13px;line-height:1.6}
+  .example{margin-top:10px;border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.7}
+  .example span{color:var(--ink2);font-variant-numeric:tabular-nums}
+  .calcbox{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+  .calcbox h3{font-size:15px;color:var(--plum)}
+  .crow{display:grid;grid-template-columns:1fr 1fr minmax(120px,1.1fr) 30px;gap:8px;align-items:end;margin-top:8px}
+  .crow.tom{grid-template-columns:1fr 1fr 30px}
+  .crow label{font-size:12px;color:var(--ink2)}
+  .crow input{display:block;width:100%;margin-top:3px;font:inherit;font-size:16px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font-variant-numeric:tabular-nums}
+  .crow input.bad{border-color:var(--neg)}
+  .crow .out{font-size:13px;font-variant-numeric:tabular-nums;padding-bottom:6px}
+  .crow .out .dim{color:var(--ink2)}
+  .crow .x{width:30px;height:34px;border:0;background:none;color:var(--ink2);font-size:20px;cursor:pointer}
+  @media (max-width:560px){.crow{grid-template-columns:1fr 1fr 30px}.crow .out{grid-column:1/3;padding-bottom:0}}
+  .bn-act{display:flex;gap:8px;margin-top:10px}
+  .bn-btn{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:13px;color:var(--ink);cursor:pointer}
+  .result{margin-top:12px;background:#fbf1dd;border-radius:12px;padding:10px 12px;font-size:14px;font-variant-numeric:tabular-nums}
+  .result .line{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+  .result .line span:first-child{color:var(--ink2)}
+  .result .big{font-size:17px;font-weight:700;color:#9a6416}
+  .result .warn{color:var(--neg);font-size:13px}
+  @media (prefers-reduced-motion:reduce){.bline i{transition:none}}
 </style>
 </head>
 <body>
@@ -109,7 +172,7 @@ async function enter(pw, remember, fresh = true) { // 一律跳過伺服器 5 �
     if (remember) { set(KEY, pw); set(DKEY, JSON.stringify(d)); }
     render(d); setSync(""); lastAt = Date.now();
   } catch (e) { $("#err").textContent = "連不到財會表：" + e.message;
-    if ($("#sync")) setSync("連不到財會表，顯示的是上次的資料"); else if (!$("#main").hidden) $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">連不到財會表，請稍後重新整理。</p></div>`; }
+    if ($("#sync")) setSync("連不到財會表，顯示的是上次的資料"); else if (!$("#main").hidden) { shell(); $("#finPane").innerHTML = `<div class="box"><p class="muted" style="text-align:center">連不到財會表，請稍後重新整理。</p></div>`; } }
   finally { busy = false; }
 }
 const valid = (d) => !!(d && d.ok && d.wallet && Array.isArray(d.struct) && Array.isArray(d.detail) && Array.isArray(d.offbook));
@@ -138,7 +201,8 @@ function render(d) {
   const grpHtml = (g, withPct) => `<details><summary><span class="l">${esc(g.r[0])}</span><span class="${cls(g.r[2])}">${fmt(g.r[2])}</span>${withPct ? `<span class="p">${pct(g.r[3])}</span>` : ""}</summary><table>${g.subs.filter((s) => !(String(s[1]).startsWith("其他") && Math.round(s[2]) === 0)).map((s) => `<tr><td>${esc(s[1])}</td><td class="${cls(s[2])}">${fmt(s[2])}</td>${withPct ? `<td>${pct(s[3])}</td>` : ""}</tr>`).join("")}</table></details>`;
   // ⑤ 只顯示蝦幣充值、廣告充值（其餘內部轉帳、蝦皮客人退款留在財會表）
   const OFF_SHOW = ["蝦幣充值", "廣告充值"], offShow = d.offbook.filter((r) => !r[0] && OFF_SHOW.includes(r[1])), offSum = offShow.reduce((s, r) => s + (Number(r[2]) || 0), 0);
-  $("#main").innerHTML = `
+  shell(); renderPlan(d);
+  $("#finPane").innerHTML = `
   <div class="box"><h2>① 收支總覽</h2><div id="period"></div></div>
   <div class="box"><h2>② 錢包餘額（最新）</h2><div class="tiles">
     <div class="tile"><small>人民幣錢包</small><b class="${cls(w[0])}">${fx(w[0], "¥")}</b></div>
@@ -255,6 +319,141 @@ function renderExp(d) {
   $("#expDetail").innerHTML = `<h2>④ 支出明細（${esc(label)}，點大類展開）</h2>${cats.map((c) => `<details><summary><span class="l">${esc(c.name)}</span><span class="${cls(-c.t)}">${fmt(-c.t)}</span><span class="p">${pc(c.t)}</span></summary><table>${c.subs.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="${cls(-n)}">${fmt(-n)}</td><td>${pc(n)}</td></tr>`).join("")}</table></details>`).join("")}
     <table><tr class="sum"><td>支出合計</td><td class="neg">${fmt(-tot)}</td><td>${tot ? "100.0%" : ""}</td></tr></table>`;
 }
+// ---- 分頁：財務總覽／預算分佈／獎金表（都在財務密碼後面）
+const TABS = [["fin", "財務總覽"], ["bud", "預算分佈"], ["bon", "獎金表"]];
+let TAB = get("muro_fin_tab") || "fin";
+function shell() {
+  if ($("#tabs")) return;
+  $("#main").innerHTML = `<nav class="tabs" id="tabs" role="tablist">${TABS.map(([k, n]) => `<button type="button" role="tab" data-t="${k}">${n}</button>`).join("")}</nav>
+    <div id="finPane"></div><div id="budPane" hidden></div><div id="bonPane" hidden></div>`;
+  $("#tabs").querySelectorAll("button").forEach((b) => (b.onclick = () => { TAB = b.dataset.t; set("muro_fin_tab", TAB); showTab(); }));
+  renderBonus(); showTab();
+}
+function showTab() {
+  if (!TABS.some(([k]) => k === TAB)) TAB = "fin";
+  $("#tabs").querySelectorAll("button").forEach((b) => { const on = b.dataset.t === TAB; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
+  TABS.forEach(([k]) => ($("#" + k + "Pane").hidden = k !== TAB));
+}
+
+// ---- 預算分佈：數字來自 Apps Script（d.plan）；上方可調數字，試算欄跟著變
+//   變動項：商品成本＝成立×(1−毛利率)、運費／包材＝單數×每單、獎金＝成立×獎金率；成立＝總銷售額×(1−不成立率)
+const PLAN_IDS = [["gross", "總銷售額", 10000, 600000, 2500000, ""], ["aov", "客單價", 10, 500, 1500, ""], ["gm", "毛利率（商品）", 0.5, 50, 90, "%"],
+  ["bonus", "獎金率", 0.1, 0, 10, "%"], ["fail", "不成立率", 0.5, 0, 40, "%"], ["fee", "蝦皮抽成", 0.1, 0, 40, "%"]];
+let PV = null;
+function renderPlan(d) {
+  const box = $("#budPane"), PL = d.plan;
+  if (!PL) { box.innerHTML = `<div class="box"><p class="muted">財會表 API 還是舊版，請到 Apps Script「管理部署作業」更新成新版本後，才看得到預算分佈。</p></div>`; return; }
+  if (!PV) { PV = { ...PL.defaults }; try { const s = JSON.parse(get("muro_fin_plan") || "null"); if (s) PLAN_IDS.forEach(([k]) => { if (typeof s[k] === "number" && s[k] >= 0) PV[k] = s[k]; }); } catch {} if (!(PV.aov > 0)) PV.aov = PL.defaults.aov; }
+  box.innerHTML = `<div class="box"><h2>可調整的數字</h2><div class="drivers">${PLAN_IDS.map(([k, n, st, mn, mx, u]) => `<div class="drv"><label for="pv-${k}">${n}</label><small>現況 ${esc(PL.now[k] || "")}</small>
+      <div class="in"><input type="number" id="pv-${k}" step="${st}" min="0"><span style="font-size:13px;color:var(--ink2)">${u}</span></div><input type="range" id="pv-${k}-r" min="${mn}" max="${mx}" step="${st}" aria-label="${n}"></div>`).join("")}</div>
+    <div class="bud-derived"><span>成立銷售額 <b id="pv-net"></b></span><span>實收 <b id="pv-inc"></b></span><span>單數 <b id="pv-ord"></b>（現況 ${esc(PL.now.orders || "")}）</span><button type="button" id="pv-reset">回到新預算設定</button></div></div>
+    <div class="box"><h2>損益兩平</h2><div class="be"><div class="main"><small>損益兩平 實收</small><b id="be-inc"></b><small id="be-gap"></small></div>
+      <div><small>損益兩平 總銷售額</small><b id="be-gross"></b></div><div><small>損益兩平 成立銷售額</small><b id="be-net"></b></div>
+      <div class="main" style="background:#f8f2ef"><small>試算損益（試算實收 − 試算支出合計）</small><b id="be-pl"></b></div></div></div>
+    <div class="box"><h2>新舊對比</h2><div class="legend"><span><i style="background:#d9c9cf"></i>現況（7~9 月平均）</span><span><i style="background:var(--plum)"></i>試算</span></div><div id="pv-chart"></div></div>
+    <div class="box"><h2>明細</h2><div class="bscroll"><table class="btbl"><thead><tr><th>大類 / 小類</th><th>現況</th><th>新預算</th><th class="t">試算</th><th>試算 − 現況</th></tr></thead><tbody id="pv-tbl"></tbody></table></div>
+      <p class="muted">單位：新台幣。標「隨上方」的是依上方數字計算的變動項，其餘是固定預算。</p></div>`;
+  const sync = () => PLAN_IDS.forEach(([k]) => { $("#pv-" + k).value = PV[k]; $("#pv-" + k + "-r").value = PV[k]; });
+  PLAN_IDS.forEach(([k]) => {
+    const n = $("#pv-" + k), r = $("#pv-" + k + "-r");
+    n.oninput = () => { const x = parseFloat(n.value); if (isNaN(x) || x < 0 || (k === "aov" && x === 0)) return; PV[k] = x; r.value = x; calcPlan(PL); };
+    r.oninput = () => { PV[k] = parseFloat(r.value); n.value = PV[k]; calcPlan(PL); };
+  });
+  $("#pv-reset").onclick = () => { PV = { ...PL.defaults }; sync(); calcPlan(PL); };
+  sync(); calcPlan(PL);
+}
+function calcPlan(PL) {
+  set("muro_fin_plan", JSON.stringify(PV));
+  const net = (v) => v.gross * (1 - v.fail / 100);
+  const VAR = { goods: (v) => net(v) * (1 - v.gm / 100), ship: (v) => net(v) / v.aov * PL.ship, pack: (v) => net(v) / v.aov * PL.pack, bonus: (v) => net(v) * v.bonus / 100 };
+  const val = (x, v) => (typeof x === "string" ? VAR[x](v) : x);
+  const cats = PL.rows.map(([c, rows]) => { const rs = rows.map(([k, o, p]) => [k, o, val(p, PL.defaults), val(p, PV), typeof p === "string"]);
+    return [c, ...[1, 2, 3].map((i) => rs.reduce((a, x) => a + x[i], 0)), rs]; });
+  const to = cats.reduce((a, c) => a + c[1], 0), tp = cats.reduce((a, c) => a + c[2], 0), tt = cats.reduce((a, c) => a + c[3], 0);
+  const n0 = (x) => fmt(Math.round(x)), dd = (x) => { x = Math.round(x); return x ? `<span class="${x < 0 ? "pos" : "neg"}">${x > 0 ? "+" : "−"}${fmt(Math.abs(x))}</span>` : "0"; };
+  const max = Math.max(...cats.map((c) => Math.max(c[1], c[3])));
+  const bar = (x, c) => `<div class="bline"><div><i class="${c}" style="width:${(x / max * 100).toFixed(1)}%"></i></div><span>${n0(x)}</span></div>`;
+  $("#pv-chart").innerHTML = cats.map(([c, o, , t]) => `<div class="brow"><b>${esc(c)}</b><div>${bar(o, "o")}${bar(t, "n")}</div></div>`).join("") +
+    `<div class="brow" style="border-top:2px solid var(--ink);padding-top:10px"><b>合計</b><div class="bline" style="grid-template-columns:1fr auto"><span style="text-align:left">${n0(to)} → <b style="color:var(--plum)">${n0(tt)}</b></span><span>${dd(tt - to)}</span></div></div>`;
+  $("#pv-tbl").innerHTML = cats.map(([c, o, p, t, rs]) => `<tr class="cat"><td>${esc(c)}</td><td>${n0(o)}</td><td>${n0(p)}</td><td class="t">${n0(t)}</td><td>${dd(t - o)}</td></tr>` +
+    rs.map(([k, a, b, x, v]) => `<tr class="sub"><td>${esc(k)}${v ? '<span class="var">隨上方</span>' : ""}</td><td>${n0(a)}</td><td>${n0(b)}</td><td class="t">${n0(x)}</td><td>${dd(x - a)}</td></tr>`).join("")).join("") +
+    `<tr class="sum"><td>合計</td><td>${n0(to)}</td><td>${n0(tp)}</td><td class="t">${n0(tt)}</td><td>${dd(tt - to)}</td></tr>`;
+  const fixed = tt - Object.values(VAR).reduce((a, f) => a + f(PV), 0);
+  const prof = (g) => { const v = { ...PV, gross: g }; return net(v) * (1 - v.fee / 100) - fixed - Object.values(VAR).reduce((a, f) => a + f(v), 0); };
+  const inc = net(PV) * (1 - PV.fee / 100), pl = inc - tt;
+  $("#pv-net").textContent = n0(net(PV)); $("#pv-inc").textContent = n0(inc); $("#pv-ord").textContent = n0(net(PV) / PV.aov);
+  let be = null; if (prof(2e7) > 0) { let lo = 0, hi = 2e7; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (prof(m) >= 0) hi = m; else lo = m; } be = hi; }
+  if (be === null) { ["#be-inc", "#be-gross", "#be-net"].forEach((k) => ($(k).textContent = "—")); $("#be-gap").textContent = "每賣一筆都虧，無法打平"; }
+  else { const bn = be * (1 - PV.fail / 100), bi = bn * (1 - PV.fee / 100);
+    $("#be-inc").textContent = n0(bi); $("#be-gross").textContent = n0(be); $("#be-net").textContent = n0(bn);
+    $("#be-gap").textContent = bi > inc ? `比試算實收多 ${n0(bi - inc)}` : `已超過 ${n0(inc - bi)}`; }
+  $("#be-pl").textContent = (pl < 0 ? "−" : "+") + n0(Math.abs(pl)); $("#be-pl").className = pl < 0 ? "neg" : "pos";
+}
+
+// ---- 獎金表（2026-10 新制）：級距＋試算
+const NABY_T = [[10000, 48, 12, "1萬"], [15000, 80, 20, "1萬5"], [20000, 180, 45, "2萬"], [25000, 220, 55, "2萬5"], [30000, 400, 100, "3萬"], [35000, 460, 115, "3萬5"], [40000, 520, 130, "4萬"], [45000, 600, 150, "4萬5"], [50000, 880, 220, "5萬"], [55000, 960, 240, "5萬5"],
+  [60000, 1080, 270, "6萬"], [65000, 1150, 290, "6萬5"], [70000, 1550, 360, "7萬"], [75000, 1650, 420, "7萬5"], [80000, 1750, 440, "8萬"], [85000, 1850, 470, "8萬5"], [90000, 1960, 490, "9萬"], [95000, 2070, 520, "9萬5"], [100000, 2650, 660, "10萬"]];
+const TOM_T = [["未達 8千", "0%"], ["8千至1萬", "1%"], ["1萬至3萬", "2%"], ["3萬至6萬", "3%"], ["6萬至10萬", "4%"], ["大於 10.01萬", "5%"], ["15萬以上", "8%"]];
+function nabyBonus(sales, fail) {
+  const base = Math.round((sales - fail) * 0.7);
+  if (base >= 105000) return { base, host: Math.round(base * 0.12), ctrl: Math.round(base * 0.03), tier: "10萬5以上（抽成）" };
+  let hit = null; NABY_T.forEach((t) => { if (base >= t[0]) hit = t; });
+  return hit ? { base, host: hit[1], ctrl: hit[2], tier: hit[3] + "級" } : { base, host: 0, ctrl: 0, tier: "未達 1 萬" };
+}
+function tomBonus(sales, fail) {
+  const base = Math.round((sales - fail) * 0.7 * 100) / 100;
+  const [rate, tier] = base >= 150000 ? [0.08, "15萬以上"] : base > 100000 ? [0.05, "大於 10.01萬"] : base >= 60000 ? [0.04, "6萬至10萬"] : base >= 30000 ? [0.03, "3萬至6萬"] : base >= 10000 ? [0.02, "1萬至3萬"] : base >= 8000 ? [0.01, "8千至1萬"] : [0, "未達 8千"];
+  const host = Math.round(base * rate); return { base, rate, tier, host, ctrl: Math.round(host * 0.25) };
+}
+function renderBonus() {
+  $("#bonPane").innerHTML = `<div class="box"><h2>直播獎金表（2026/10 起）</h2><div class="rules">
+      <div class="rule"><small>兩組共用的核算基準</small><b>（銷售額 − 不成立金額）× 0.7</b><small>算出來的就是對照級距用的「實際銷售額」。</small></div>
+      <div class="rule"><small>Naby ＆ 諾諾</small><b>逐場計算</b><small>每一場各自對照級距，領固定獎金。</small></div>
+      <div class="rule"><small>番茄 ＆ 小安</small><b>同一天合併計算</b><small>同一天、同一位主播的場次加總後，乘上提成%。</small></div></div>
+      <p class="muted">發放月份：N 月份獎金，用 N−1 月 1 日至月底的直播數據計算。</p></div>
+    <div class="box"><h2>Naby ＆ 諾諾　單場直播獎金</h2><p class="muted" style="margin:0 0 8px">以該場實際銷售額取不超過它的最高級距；未達 1 萬不發。</p>
+      <div class="bscroll"><table class="tier"><thead><tr><th>實際銷售額</th><th style="text-align:right">主播</th><th style="text-align:right">中控</th></tr></thead><tbody>
+      <tr class="zero"><td>未達 1 萬</td><td>0</td><td>0</td></tr>${NABY_T.map((t) => `<tr><td>${t[3]}<em>${fmt(t[0])}</em></td><td>${fmt(t[1])}</td><td>${fmt(t[2])}</td></tr>`).join("")}
+      <tr class="open"><td>10萬5以上<em>105,000+</em></td><td>12%</td><td>3%</td></tr></tbody></table></div>
+      <ul class="notes"><li>10 萬 5 以上改為抽成：主播拿實際銷售額的 12%，中控 3%。</li><li>落在兩個級距之間以較低一級為準（例如 36,400 算 3 萬 5 級）。</li></ul>
+      <div class="example"><b>範例</b>　某場銷售額 60,000，不成立 8,000<br><span>(60,000 − 8,000) × 0.7 = 36,400 → 3萬5 級 → 主播 460、中控 115</span></div>
+      <div class="calcbox"><h3>獎金試算</h3><p class="muted" style="margin:2px 0 0">一列填一場的銷售額與不成立金額。</p><div id="naby-rows"></div>
+        <div class="bn-act"><button type="button" class="bn-btn" id="naby-add">新增一場</button><button type="button" class="bn-btn" id="naby-clear">清除全部</button></div><div class="result" id="naby-result" aria-live="polite"></div></div></div>
+    <div class="box"><h2>番茄 ＆ 小安　單日提成</h2><p class="muted" style="margin:0 0 8px">同一天、同一位主播的所有場次加總，算出當日實際銷售額，整包乘上提成%（非累進）。</p>
+      <table class="tier"><thead><tr><th>當日實際銷售額</th><th style="text-align:right">提成%</th></tr></thead><tbody>${TOM_T.map((t, i) => `<tr class="${i === 0 ? "zero" : i === TOM_T.length - 1 ? "open" : ""}"><td>${t[0]}</td><td>${t[1]}</td></tr>`).join("")}</tbody></table>
+      <div class="rules" style="margin-top:10px"><div class="rule"><small>主播獎金</small><b>當日實際銷售額 × 提成%</b></div><div class="rule"><small>中控獎金</small><b>當日主播獎金 × 25%</b><small>發給當天搭配的中控。</small></div></div>
+      <ul class="notes"><li>各級距含下限，例如剛好 8,000 算 1%。</li><li>同一天兩位主播各自計算，不互相加總。</li><li>當日合計獎金記在該主播當天最後一場，同日其他場次填 0。</li></ul>
+      <div class="example"><b>範例</b>　安琪當天兩場合計 20,000，不成立合計 2,000<br><span>(20,000 − 2,000) × 0.7 = 12,600 → 1萬至3萬 2% → 主播 252；當天中控番茄 252 × 25% = 63</span></div>
+      <div class="calcbox"><h3>獎金試算</h3><p class="muted" style="margin:2px 0 0">把同一位主播「同一天」的每一場都填進來，會自動加總後套用提成%。</p><div id="tom-rows"></div>
+        <div class="bn-act"><button type="button" class="bn-btn" id="tom-add">新增一場</button><button type="button" class="bn-btn" id="tom-clear">清除全部</button></div><div class="result" id="tom-result" aria-live="polite"></div></div></div>`;
+  const num = (v) => { const n = parseFloat(String(v).replace(/,/g, "")); return isNaN(n) ? 0 : n; };
+  const makeRow = (box, tom, onChange) => { const row = document.createElement("div"); row.className = "crow" + (tom ? " tom" : "");
+    row.innerHTML = `<label>銷售額<input type="text" inputmode="numeric" autocomplete="off" placeholder="例如 60000"></label><label>不成立金額<input type="text" inputmode="numeric" autocomplete="off" placeholder="沒有就留空"></label>${tom ? "" : '<div class="out"><span class="dim">—</span></div>'}<button type="button" class="x" aria-label="刪除這一場">×</button>`;
+    row.addEventListener("input", onChange);
+    row.querySelector(".x").onclick = () => { box.removeChild(row); if (!box.children.length) makeRow(box, tom, onChange); onChange(); };
+    box.appendChild(row); return row; };
+  const readRow = (row) => { const [a, b] = row.querySelectorAll("input"); a.classList.remove("bad"); b.classList.remove("bad");
+    return { f: b, empty: !a.value.trim() && !b.value.trim(), sv: num(a.value), fv: num(b.value) }; };
+  const nR = $("#naby-rows"), nOut = $("#naby-result"), tR = $("#tom-rows"), tOut = $("#tom-result");
+  const upN = () => { let th = 0, tc = 0, cnt = 0, warn = false;
+    [...nR.children].forEach((row) => { const r = readRow(row), out = row.querySelector(".out");
+      if (r.empty) { out.innerHTML = '<span class="dim">—</span>'; return; }
+      if (r.fv > r.sv) { r.f.classList.add("bad"); warn = true; out.innerHTML = '<span class="dim">不成立大於銷售額</span>'; return; }
+      const c = nabyBonus(r.sv, r.fv); th += c.host; tc += c.ctrl; cnt++;
+      out.innerHTML = `<span class="dim">${fmt(c.base)}・${c.tier}</span><br>主播 <b>${fmt(c.host)}</b>　中控 <b>${fmt(c.ctrl)}</b>`; });
+    nOut.innerHTML = !cnt ? (warn ? '<p class="warn">不成立金額不能大於銷售額。</p>' : '<span style="color:var(--ink2)">填入銷售額後，合計會顯示在這裡。</span>')
+      : `<div class="line"><span>計算場數</span><span>${cnt} 場</span></div><div class="line"><span>主播獎金合計</span><span class="big">${fmt(th)}</span></div><div class="line"><span>中控獎金合計</span><span class="big">${fmt(tc)}</span></div>${warn ? '<p class="warn">有一列的不成立金額大於銷售額，沒有計入。</p>' : ""}`; };
+  const upT = () => { let S = 0, F = 0, cnt = 0, warn = false;
+    [...tR.children].forEach((row) => { const r = readRow(row); if (r.empty) return; if (r.fv > r.sv) { r.f.classList.add("bad"); warn = true; return; } S += r.sv; F += r.fv; cnt++; });
+    if (!cnt) { tOut.innerHTML = warn ? '<p class="warn">不成立金額不能大於銷售額。</p>' : '<span style="color:var(--ink2)">填入銷售額後，當日獎金會顯示在這裡。</span>'; return; }
+    const c = tomBonus(S, F);
+    tOut.innerHTML = `<div class="line"><span>當日 ${cnt} 場　銷售額合計</span><span>${fmt(S)}</span></div><div class="line"><span>不成立合計</span><span>${fmt(F)}</span></div><div class="line"><span>當日實際銷售額（×0.7）</span><span>${fmt(c.base)}</span></div>
+      <div class="line"><span>適用級距</span><span>${c.tier}　${Math.round(c.rate * 100)}%</span></div><div class="line"><span>主播獎金</span><span class="big">${fmt(c.host)}</span></div><div class="line"><span>當天中控（主播 × 25%）</span><span class="big">${fmt(c.ctrl)}</span></div>${warn ? '<p class="warn">有一列的不成立金額大於銷售額，沒有計入。</p>' : ""}`; };
+  const resetN = () => { nR.innerHTML = ""; makeRow(nR, false, upN); upN(); }, resetT = () => { tR.innerHTML = ""; makeRow(tR, true, upT); makeRow(tR, true, upT); upT(); };
+  $("#naby-add").onclick = () => makeRow(nR, false, upN).querySelector("input").focus(); $("#naby-clear").onclick = resetN;
+  $("#tom-add").onclick = () => makeRow(tR, true, upT).querySelector("input").focus(); $("#tom-clear").onclick = resetT;
+  resetN(); resetT();
+}
 $("#go").onclick = () => enter($("#pw").value, $("#remember").checked);
 $("#pw").onkeydown = (e) => { if (e.key === "Enter") $("#go").click(); };
 $("#logout").onclick = () => { set(KEY, null); set(DKEY, null); location.reload(); };
@@ -265,7 +464,7 @@ if (saved) {
   $("#gate").hidden = true; $("#main").hidden = false; $("#logout").hidden = false;
   let shown = false;
   if (valid(last)) { try { render(last); shown = true; } catch (e) { set(DKEY, null); } } else set(DKEY, null);
-  if (!shown) $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">讀取中…</p></div>`;
+  if (!shown) { shell(); $("#finPane").innerHTML = `<div class="box"><p class="muted" style="text-align:center">讀取中…</p></div>`; }
   enter(saved, true);
 }
 // 手機切回來（App 沒被關掉、只是放背景）也重抓：超過 30 秒沒更新就讀最新
