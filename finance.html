@@ -97,7 +97,9 @@ async function call(body) {
   const r = await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) });
   return r.json();
 }
-async function enter(pw, remember, fresh) {
+let busy = false, lastAt = 0; // 背景更新中不重複送；lastAt＝上次成功抓到的時間
+async function enter(pw, remember, fresh = true) { // 一律跳過伺服器 5 分鐘暫存，讀財會表最新
+  if (busy) return; busy = true;
   $("#err").textContent = "讀取中…"; setSync("更新中…");
   try {
     let d = await call({ action: "overview", pw, fresh: !!fresh });
@@ -105,9 +107,10 @@ async function enter(pw, remember, fresh) {
     if (d.ok && !valid(d)) throw new Error("財會表回應格式不對，請按重新整理");
     if (!d.ok) { if (/密碼|設定/.test(d.err || "")) { set(KEY, null); set(DKEY, null); showGate(); } $("#err").textContent = d.err || "讀取失敗"; setSync(""); return; }
     if (remember) { set(KEY, pw); set(DKEY, JSON.stringify(d)); }
-    render(d); setSync("");
+    render(d); setSync(""); lastAt = Date.now();
   } catch (e) { $("#err").textContent = "連不到財會表：" + e.message;
     if ($("#sync")) setSync("連不到財會表，顯示的是上次的資料"); else if (!$("#main").hidden) $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">連不到財會表，請稍後重新整理。</p></div>`; }
+  finally { busy = false; }
 }
 const valid = (d) => !!(d && d.ok && d.wallet && Array.isArray(d.struct) && Array.isArray(d.detail) && Array.isArray(d.offbook));
 function showGate() { $("#gate").hidden = false; $("#main").hidden = true; $("#logout").hidden = true; }
@@ -265,6 +268,10 @@ if (saved) {
   if (!shown) $("#main").innerHTML = `<div class="box"><p class="muted" style="text-align:center">讀取中…</p></div>`;
   enter(saved, true);
 }
+// 手機切回來（App 沒被關掉、只是放背景）也重抓：超過 30 秒沒更新就讀最新
+const again = () => { const pw = get(KEY); if (pw && !document.hidden && Date.now() - lastAt > 30000) enter(pw, true); };
+document.addEventListener("visibilitychange", again);
+window.addEventListener("pageshow", (e) => { if (e.persisted) again(); });
 </script>
 </body>
 </html>
