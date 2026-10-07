@@ -2,6 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <script src="gate.js"></script>
+<script src="battle-goods.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>暮若作戰卡</title>
@@ -895,52 +896,12 @@ function fill(){
   refresh();
 }
 /* ---------- 商品庫連動：填貨號就自動帶入蝦皮連結、價格、利潤率 ---------- */
-var GOODS_ID='1WJcHeXKPIrPa95JcyditMIP1fNI-ot1GvJb096Ly-Qc';
-var GOODS_TABS=[['1737075681','內衣'],['886028107','內褲'],['161220253','上衣'],
-  ['1053563914','下身'],['155692727','上衣'],['850304352','其他'],
-  ['628662235','其他'],['1650428550','塑身'],['102520519','其他']];
 var GOODS=null;
-function numOf(v){var x=String(v==null?'':v).replace(/[^0-9.]/g,'');return x||'';}
-function goodsRows(cat,rows,map){
-  var head=rows[0]||[],ix={};
-  head.forEach(function(h,i){h=String(h||'');
-    if(h.indexOf('muro')>=0)ix.sku=i;
-    else if(h.indexOf('蝦皮連結')>=0)ix.url=i;
-    else if(h.indexOf('賣場價')>=0)ix.price=i;
-    else if(h.indexOf('折數')>=0)ix.disc=i;
-    else if(h.indexOf('利潤率')>=0)ix.rate=i;
-    else if(h.indexOf('商品成本')>=0)ix.cost=i;
-    else if(h.indexOf('重量')>=0)ix.wt=i;
-    else if(h.indexOf('狀態')>=0)ix.st=i;
-    else if(h.indexOf('主分類')>=0)ix.main=i;
-    else if(h.indexOf('款式')>=0)ix.style=i;});
-  if(ix.sku===undefined)return;
-  for(var i=1;i<rows.length;i++){
-    var r=rows[i],sku=numOf(r[ix.sku]).replace(/\.0*$/,'');
-    if(!/^[0-9]{3,5}$/.test(sku)||map[sku])continue;
-    map[sku]={cat:cat,url:String(r[ix.url]||'').trim(),price:numOf(r[ix.price]),
-      disc:numOf(r[ix.disc]),rate:numOf(r[ix.rate]),cost:numOf(r[ix.cost]),wt:numOf(r[ix.wt]),st:String(r[ix.st]||'').trim(),
-      name:[String(r[ix.main]||'').trim(),String(r[ix.style]||'').trim()].filter(Boolean).join(' · ')};
-  }
-}
+/* 商品庫 2026-10-01 改不公開：資料由 暮若ai\battle_goods_build.mjs 產生成 battle-goods.js（商品庫有變動就重跑再 push） */
 function loadGoods(){
-  try{var c=JSON.parse(localStorage.getItem('muroGoods')||'null');
-      if(c&&c.map&&(Date.now()-c.at)<6*3600*1000){GOODS=c.map;refresh();}}catch(e){}
-  Promise.all(GOODS_TABS.map(function(t){
-    return fetch('https://docs.google.com/spreadsheets/d/'+GOODS_ID+
-        '/gviz/tq?tqx=out:csv&gid='+t[0]+'&t='+Math.floor(Math.random()*1e9))
-      .then(function(r){if(!r.ok)throw 0;return r.text();})
-      .then(function(x){return [t[1],parseCSV(x)];})
-      .catch(function(){return [t[1],null];});
-  })).then(function(res){
-    var map={},got=0;
-    res.forEach(function(pair){if(!pair[1])return;got++;goodsRows(pair[0],pair[1],map);});
-    if(got&&Object.keys(map).length){
-      GOODS=map;
-      try{localStorage.setItem('muroGoods',JSON.stringify({at:Date.now(),map:map}));}catch(e){}
-    }
-    refresh();
-  });
+  if(window.BATTLE_GOODS&&BATTLE_GOODS.map){GOODS=BATTLE_GOODS.map;
+    try{localStorage.removeItem('muroGoods');}catch(e){}}
+  refresh();
 }
 function goodsOf(v){
   if(!GOODS)return null;
