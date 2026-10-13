@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<script src="gate.js"></script>
+<script src="new-goods.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暮若本週新品</title>
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;
+    --card:#fff;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--orange:#c75b2a;--orbg:#fbeee6;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  .hant .s,.hans .t{display:none}
+  .hero{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px 16px;border-radius:0 0 22px 22px}
+  .hero-top{display:flex;align-items:center;gap:10px}
+  .back{color:#f0e3da;text-decoration:none;font-size:13px;opacity:.85}
+  .lang{margin-left:auto;display:flex;background:rgba(255,255,255,.15);border-radius:99px;padding:2px}
+  .lang button{border:none;background:transparent;color:#f6eee8;font-size:12px;padding:4px 12px;border-radius:99px;font-family:inherit;cursor:pointer}
+  .lang button.act{background:#fff;color:var(--plum)}
+  .hero h1{font-size:21px;font-weight:800;letter-spacing:1.5px;margin-top:8px}
+  .hero .date{font-size:12px;opacity:.75;margin-top:3px}
+  .wrap{max-width:640px;margin:0 auto;padding:14px 14px 44px}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:11px;box-shadow:0 3px 12px rgba(74,44,58,.05)}
+  .sec h2{font-size:15px;color:var(--orange);margin-bottom:6px}
+  .sec h2.plum{color:var(--plum2)}
+  footer{margin-top:16px;font-size:11px;color:var(--ink2);text-align:center;line-height:1.7}
+.nwhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(90deg,#fdf3e9,#fff);border:1px solid var(--gold);border-radius:12px;padding:10px 13px;margin-bottom:10px}
+.nwlbl{font-size:12.5px;font-weight:800;color:var(--plum2)}
+.nwhead .big{font-size:30px;font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px}
+.nwhead .unit{font-size:12px;font-weight:700;color:var(--orange);margin-left:-3px}
+.nwrange{margin-left:auto;font-size:12.5px;font-weight:800;color:#fff;background:var(--plum2);border-radius:99px;padding:4px 12px;white-space:nowrap}
+.nwgrp{margin-top:12px}
+.nwgrp h4{font-size:13px;color:var(--plum2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.nwgrp h4 .n{background:var(--plum2);color:#fff;border-radius:99px;font-size:10.5px;padding:1px 7px}
+.nw{display:flex;gap:10px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:9px 11px;margin-bottom:8px;background:#fff}
+.nw-img{flex:0 0 78px;width:78px;height:78px;border-radius:9px;object-fit:cover;background:var(--cream);border:1px solid var(--line)}
+.nw-ph{flex:0 0 78px;width:78px;height:78px;border-radius:9px;background:var(--cream);border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--plum2);font-size:13px;font-weight:700}
+.nw-main{flex:1;min-width:0}
+.nw-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px}
+.nw-code{font-weight:800;color:var(--plum2);font-size:12.5px}
+.nw-pos,.nw-st{border-radius:99px;padding:1px 8px;background:var(--orbg);color:#a3491f;font-weight:600}
+.nw-st.off{background:#eee;color:#888}
+.nw-date{margin-left:auto;font-weight:800;color:var(--rose)}
+.nw-name{font-size:13px;margin:4px 0 5px;line-height:1.5;word-break:break-word}
+.nw-bot{display:flex;align-items:center;gap:8px;font-size:12px}
+.nw-price{font-weight:800;color:var(--orange);font-size:14px}
+.nw-was{color:var(--ink2);text-decoration:line-through;font-size:11px}
+.nw-go{margin-left:auto;color:var(--rose);font-weight:700;text-decoration:none}
+.nwempty{font-size:12.5px;color:var(--ink2);padding:10px 2px}
+</style>
+</head>
+<body class="hant">
+<div class="hero">
+  <div class="hero-top">
+    <a class="back" href="team.html"><span class="t">‹ 返回團隊</span><span class="s">‹ 返回团队</span></a>
+    <div class="lang">
+      <button id="l-t" class="act" onclick="setLang('hant')">繁體</button>
+      <button id="l-s" onclick="setLang('hans')">简体</button>
+    </div>
+  </div>
+  <h1><span class="t">本週新品</span><span class="s">本周新品</span></h1>
+  <div class="date" id="nwUpd"></div>
+</div>
+
+<div class="wrap">
+  <div class="sec">
+    <h2>&#127381; <span class="t">本週新品</span><span class="s">本周新品</span></h2>
+    <div class="nwhead"><span class="nwlbl"><span class="t">本週新品數</span><span class="s">本周新品数</span></span><span class="big" id="nwN1">–</span><span class="unit">件</span><span class="nwrange" id="nwR1">–</span></div>
+    <div id="nwB1" class="nwempty"></div>
+  </div>
+  <div class="sec">
+    <h2 class="plum">&#128230; <span class="t">上週新品</span><span class="s">上周新品</span></h2>
+    <div class="nwhead"><span class="nwlbl"><span class="t">上週新品數</span><span class="s">上周新品数</span></span><span class="big" id="nwN2">–</span><span class="unit">件</span><span class="nwrange" id="nwR2">–</span></div>
+    <div id="nwB2" class="nwempty"></div>
+  </div>
+  <footer><span class="t">依商品庫各品類分頁的「日期」判定，一週以週一到週日計算</span><span class="s">依商品库各品类分页的「日期」判定，一周以周一到周日计算</span></footer>
+</div>
+
+<script>
+function setLang(l){document.body.className=l;document.getElementById('l-t').classList.toggle('act',l==='hant');document.getElementById('l-s').classList.toggle('act',l==='hans');try{localStorage.setItem('muroLang',l)}catch(e){}}
+try{var sv=localStorage.getItem('muroLang');if(sv)setLang(sv)}catch(e){}
+
+/* ===== 資料來自 new-goods.js（暮若ai\battle_goods_build.mjs 產生；品類＝商品庫分頁，改名/新增自動跟上）===== */
+var NW_WD=['日','一','二','三','四','五','六'];
+function nwDate(s){ s=(s||'').trim().replace(/[.\-]/g,'/');
+ var m=s.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+function nwMon(d){ var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); x.setDate(x.getDate()-(x.getDay()+6)%7); return x; }
+function nwFull(d){ return (d.getMonth()+1)+'/'+d.getDate()+'（'+NW_WD[d.getDay()]+'）'; }
+function nwEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function nwCard(it){
+  var code=nwEsc(it.code), name=[it.main,it.style].filter(Boolean).join(' · ');
+  var price=+it.live>0?it.live:it.list;
+  var h='<div class="nw"><img class="nw-img" loading="lazy" src="img/'+encodeURIComponent(it.code)+'.jpg" alt="'+code+'" onerror="this.outerHTML=\'<div class=&quot;nw-ph&quot;>'+code+'</div>\'">';
+  h+='<div class="nw-main"><div class="nw-top"><span class="nw-code">'+code+'</span>';
+  if(it.pos) h+='<span class="nw-pos">'+nwEsc(it.pos)+'</span>';
+  if(it.st) h+='<span class="nw-st'+(it.st.indexOf('已上架')>=0?'':' off')+'">'+nwEsc(it.st)+'</span>';
+  h+='<span class="nw-date">'+nwFull(it.dt)+'</span></div>';
+  if(name) h+='<div class="nw-name">'+nwEsc(name)+'</div>';
+  h+='<div class="nw-bot">';
+  if(price) h+='<span class="nw-price">NT$'+nwEsc(Math.round(+price))+'</span>';
+  if(it.list&&+it.list!==+price) h+='<span class="nw-was">NT$'+nwEsc(it.list)+'</span>';
+  if(/^https?:/.test(it.url)) h+='<a class="nw-go" href="'+nwEsc(it.url)+'" target="_blank" rel="noopener">蝦皮 ›</a>';
+  return h+'</div></div></div>'; }
+function nwRender(n,a,b){
+  var t0=a.getTime(), t1=b.getTime()+864e5-1, tot=0, h='';
+  (window.NEW_GOODS?NEW_GOODS.cats:[]).forEach(function(c){
+    var g=c.items.map(function(it){it.dt=nwDate(it.d);return it;}).filter(function(it){return it.dt&&it.dt>=t0&&it.dt<=t1;});
+    if(!g.length) return; tot+=g.length;
+    h+='<div class="nwgrp"><h4>'+nwEsc(c.name)+'<span class="n">'+g.length+'</span></h4>';
+    g.sort(function(x,y){return y.dt-x.dt;}).forEach(function(it){h+=nwCard(it);});
+    h+='</div>'; });
+  document.getElementById('nwR'+n).textContent=nwFull(a)+' – '+nwFull(b);
+  document.getElementById('nwN'+n).textContent=tot;
+  var el=document.getElementById('nwB'+n);
+  if(tot){ el.className=''; el.innerHTML=h; }
+  else el.innerHTML=window.NEW_GOODS?'<span class="t">這一週沒有新增品項。</span><span class="s">这一周没有新增品项。</span>':'<span class="t">商品資料讀取失敗。</span><span class="s">商品资料读取失败。</span>'; }
+(function(){
+  var mon=nwMon(new Date()), sun=new Date(mon); sun.setDate(sun.getDate()+6);
+  var pmon=new Date(mon); pmon.setDate(pmon.getDate()-7); var psun=new Date(mon); psun.setDate(psun.getDate()-1);
+  nwRender(1,mon,sun); nwRender(2,pmon,psun);
+  var u=(window.NEW_GOODS&&NEW_GOODS.updated)||'—';
+  document.getElementById('nwUpd').innerHTML='<span class="t">商品庫資料時間 '+u+'</span><span class="s">商品库资料时间 '+u+'</span>';
+})();
+</script>
+</body>
+</html>

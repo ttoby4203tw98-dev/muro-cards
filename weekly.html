@@ -67,31 +67,20 @@
 .know{font-size:11.5px;color:var(--ink2);background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin-top:8px;line-height:1.65}.know b{color:var(--gold)}.ksrc{display:block;margin-top:3px;opacity:.85}
 .rpt{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:800;color:var(--plum2);text-decoration:none;background:linear-gradient(90deg,#fdf3e9,#fff);border:1px solid var(--gold);border-radius:10px;padding:9px 11px}.rpt .ar{margin-left:auto;color:var(--gold)}
 .sw{display:inline-block;font-size:9.5px;font-weight:700;color:#fff;background:var(--rose);border-radius:4px;padding:0 4px;margin-right:4px;vertical-align:1px}
-.nwhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(90deg,#fdf3e9,#fff);border:1px solid var(--gold);border-radius:12px;padding:10px 13px;margin-bottom:10px}
-.nwlbl{font-size:12.5px;font-weight:800;color:var(--plum2)}
-.nwhead .big{font-size:30px;font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px}
-.nwhead .unit{font-size:12px;font-weight:700;color:var(--orange);margin-left:-3px}
-.nwrange{margin-left:auto;font-size:12.5px;font-weight:800;color:#fff;background:var(--plum2);border-radius:99px;padding:4px 12px;white-space:nowrap}
-.nwgrp{margin-top:12px}
-.nwgrp h4{font-size:13px;color:var(--plum2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.nwgrp h4 .n{background:var(--plum2);color:#fff;border-radius:99px;font-size:10.5px;padding:1px 7px}
-.nw{display:flex;gap:10px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:9px 11px;margin-bottom:8px;background:#fff}
-.nw-img{flex:0 0 78px;width:78px;height:78px;border-radius:9px;object-fit:cover;background:var(--cream);border:1px solid var(--line)}
-.nw-ph{flex:0 0 78px;width:78px;height:78px;border-radius:9px;background:var(--cream);border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink2);font-size:10px;text-align:center;line-height:1.3}
-.nw-ph b{font-size:13px;color:var(--plum2)}
-.nw-main{flex:1;min-width:0}
-.nw-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px}
-.nw-code{font-weight:800;color:var(--plum2);font-size:12.5px}
-.nw-pos,.nw-st{border-radius:99px;padding:1px 8px;background:var(--orbg);color:#a3491f;font-weight:600}
-.nw-st.off{background:#eee;color:#888}
-.nw-date{margin-left:auto;font-weight:800;color:var(--rose)}
-.nw-name{font-size:12.5px;margin:4px 0 5px;line-height:1.5;word-break:break-word}
-.nw-bot{display:flex;align-items:center;gap:8px;font-size:12px}
-.nw-price{font-weight:800;color:var(--orange);font-size:14px}
-.nw-was{color:var(--ink2);text-decoration:line-through;font-size:11px}
-.nw-go{margin-left:auto;color:var(--rose);font-weight:700;text-decoration:none}
-.nwempty{font-size:12.5px;color:var(--ink2);padding:10px 2px}
 
+.dy{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:11px;overflow:hidden;box-shadow:0 3px 12px rgba(74,44,58,.05)}
+.dy-h{display:flex;align-items:center;gap:6px;padding:9px 14px;background:#f6ece6;color:var(--plum2);font-size:13px;font-weight:700}
+.dy-h b{font-size:17px;font-weight:900;color:var(--plum)}
+.dy-h .ar{color:var(--gold);font-weight:900}
+.dy-h .now{margin-left:auto;background:var(--orange);color:#fff;border-radius:99px;font-size:11px;padding:2px 10px}
+.dy.today{border-color:var(--plum2);box-shadow:0 5px 18px rgba(74,44,58,.16)}
+.dy.today .dy-h{background:linear-gradient(120deg,var(--plum),var(--plum2));color:#f0e3da}
+.dy.today .dy-h b{color:#fff}
+.dy.past{opacity:.55}
+.dy-r{display:flex;gap:10px;padding:8px 14px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.55}
+.dy-r .k{flex:0 0 42px;font-size:12px;font-weight:800;color:var(--rose);padding-top:1px}
+.dy-r ol{margin:0;padding-left:18px}
+.dy-r .chip{display:inline-block;background:var(--orbg);color:#a3491f;border-radius:99px;font-size:12.5px;font-weight:700;padding:2px 10px;margin:1px 5px 3px 0}
 .hot{border:1px solid var(--line);border-left:4px solid var(--live);border-radius:0 10px 10px 0;padding:10px 13px;margin-bottom:9px;background:#fff}
 .hot h4{font-size:14.5px;color:var(--plum2);margin-bottom:5px}
 .hot .pz{display:inline-block;font-weight:800;color:var(--orange);font-size:13px;margin-top:3px}
@@ -115,15 +104,22 @@
   <h1><span class="t">暮若每週資訊</span><span class="s">暮若每周资讯</span></h1>
   <div class="date"><span class="t">2026/10/11（日）· 鎖定 10/19–10/25 · 每週一 07:00 更新</span><span class="s">2026/10/11（日）· 锁定 10/19–10/25 · 每周一 07:00 更新</span></div>
   <div class="tabs">
-    <button class="tab act" data-p="p1" onclick="setTab('p1',this)"><span class="t">市場痛點</span><span class="s">市场痛点</span></button>
-    <button class="tab" data-p="p2" onclick="setTab('p2',this)"><span class="t">商品情報</span><span class="s">商品情报</span></button><button class="tab" data-p="p3" onclick="setTab('p3',this)"><span class="t">本週新品</span><span class="s">本周新品</span></button>
+    <button class="tab act" data-p="p0" onclick="setTab('p0',this)"><span class="t">每日對照</span><span class="s">每日对照</span></button>
+    <button class="tab" data-p="p1" onclick="setTab('p1',this)"><span class="t">市場痛點</span><span class="s">市场痛点</span></button>
+    <button class="tab" data-p="p2" onclick="setTab('p2',this)"><span class="t">商品情報</span><span class="s">商品情报</span></button>
   </div>
 </div>
 
 <div class="wrap">
 
+<!-- ============ 分頁0 每日對照（今天播 → 下週同一天到貨）============ -->
+<div class="pane act" id="p0">
+  <div class="note"><span class="t">今天播的貨，<b>下週同一天</b>到她手上。每格是「到貨那天」她會遇到的事。氣候是趨勢，不是當日預報。</span><span class="s">今天播的货，<b>下周同一天</b>到她手上。每格是「到货那天」她会遇到的事。气候是趋势，不是当日预报。</span></div>
+  <div id="dyBox"></div>
+</div>
+
 <!-- ============ 分頁1 市場痛點 ============ -->
-<div class="pane act" id="p1">
+<div class="pane" id="p1">
   <div class="sec"><h2>🔥 <span class="t">台灣熱搜</span><span class="s">台湾热搜</span></h2>
     <p><b>①</b> <span class="t">物價漲到兩年半最高。主計總處 10/7 公布：9 月 CPI 年增 2.73%，連 5 個月超過 2% 警戒線。外食費漲 3.04%、連 4 個月超過 3%；雞蛋年漲 10.67%；8 月中南部豪雨後蔬菜也貴。以每月開銷 8 萬的家庭來算，一個月比去年多花 2,184 元。主計總處估 10 月漲幅會收斂，但還是在 2% 以上。</span><span class="s">物价涨到两年半最高。主计总处 10/7 公布：9 月 CPI 年增 2.73%，连 5 个月超过 2% 警戒线。外食费涨 3.04%、连 4 个月超过 3%；鸡蛋年涨 10.67%；8 月中南部豪雨后蔬菜也贵。以每月开销 8 万的家庭来算，一个月比去年多花 2,184 元。主计总处估 10 月涨幅会收敛，但还是在 2% 以上。</span><br><b><span class="t">跟我們的關係</span><span class="s">跟我们的关系</span></b>：<span class="t">下週她打開手機買東西，腦袋裡是帶著這個數字的。她不是不買，是每一筆都要有理由。所以下週到貨的東西，這禮拜就要先幫她把帳算好：多件組算下來一件多少、一件可以穿幾個場合。喊「便宜」沒用，喊「划算在哪」才有用。</span><span class="s">下周她打开手机买东西，脑袋里是带著这个数字的。她不是不买，是每一笔都要有理由。所以下周到货的东西，这礼拜就要先帮她把帐算好：多件组算下来一件多少、一件可以穿几个场合。喊「便宜」没用，喊「划算在哪」才有用。</span></p>
     <p class="src"><span class="t">來源：聯合新聞網 2026/10/7、中時新聞網 2026/10/7（主計總處 9 月 CPI）</span><span class="s">来源：联合新闻网 2026/10/7、中时新闻网 2026/10/7（主计总处 9 月 CPI）</span></p>
@@ -256,23 +252,7 @@
   <a class="full" href="market-intel.html"><span class="t">看商品情報完整版 ›</span><span class="s">看商品情报完整版 ›</span></a>
 </div>
 
-<!-- ============ 分頁3 本週新品 ============ -->
-<div class="pane" id="p3">
-  <div class="note"><span class="t">直接讀取 <b>MURO 商品庫</b>試算表，依各品類分頁第一欄的「日期」判定。一週以<b>週一到週日</b>計算，每次打開都是即時資料。圖片取自商品庫該列的圖片網址；沒有填網址的會顯示貨號方塊。日期只填到月份（例如 2026/06）的舊品項無法判定週次，不會出現在這裡。</span><span class="s">直接读取 <b>MURO 商品库</b>试算表，依各品类分页第一栏的「日期」判定。一周以<b>周一到周日</b>计算，每次打开都是即时资料。图片取自商品库该列的图片网址；没有填网址的会显示货号方块。日期只填到月份（例如 2026/06）的旧品项无法判定周次，不会出现在这里。</span></div>
-  <div class="sec">
-    <h2>&#127381; <span class="t">本週新品</span><span class="s">本周新品</span></h2>
-    <div class="nwhead"><span class="nwlbl"><span class="t">本週新品數</span><span class="s">本周新品数</span></span><span class="big" id="nwN1">–</span><span class="unit"><span class="t">件</span><span class="s">件</span></span><span class="nwrange" id="nwR1">–</span></div>
-    <div id="nwB1" class="nwempty"><span class="t">讀取中…</span><span class="s">读取中…</span></div>
-  </div>
-  <div class="sec">
-    <h2 class="plum">&#128230; <span class="t">上週新品</span><span class="s">上周新品</span></h2>
-    <div class="nwhead"><span class="nwlbl"><span class="t">上週新品數</span><span class="s">上周新品数</span></span><span class="big" id="nwN2">–</span><span class="unit"><span class="t">件</span><span class="s">件</span></span><span class="nwrange" id="nwR2">–</span></div>
-    <div id="nwB2" class="nwempty"></div>
-  </div>
-  <div class="note" id="nwNote"></div>
-</div>
-
-<footer><span class="t">MURO 暮若每週資訊 · 市場痛點/商品情報/本週新品 · 每週一 07:00 更新</span><span class="s">MURO 暮若每周资讯 · 市场痛点/商品情报/本周新品 · 每周一 07:00 更新</span></footer>
+<footer><span class="t">MURO 暮若每週資訊 · 每日對照/市場痛點/商品情報 · 每週一 07:00 更新</span><span class="s">MURO 暮若每周资讯 · 每日对照/市场痛点/商品情报 · 每周一 07:00 更新</span></footer>
 </div>
 
 <script>
@@ -280,108 +260,39 @@ function setLang(l){document.body.className=l;document.getElementById('l-t').cla
 function setTab(p,btn){document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('act')});document.getElementById(p).classList.add('act');document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('act')});btn.classList.add('act');window.scrollTo(0,0)}
 try{var sv=localStorage.getItem('muroLang');if(sv)setLang(sv)}catch(e){}
 
-/* ===== 本週新品：即時讀取商品庫 ===== */
-var NW_ID='1WJcHeXKPIrPa95JcyditMIP1fNI-ot1GvJb096Ly-Qc';
-var NW_SHEETS=[['內衣','1-內衣'],['內褲','2-內褲 '],['塑身','8-塑身'],['睡衣','9-睡衣'],['上衣','3-上衣'],['下身','4-下身'],['外搭','5-外搭'],['連裝','6-連裝'],['襪子','S-襪子'],['其他','7-其他']];
-var NW_WD=['日','一','二','三','四','五','六'];
-function nwCSV(t){var rows=[],row=[],cur='',q=false;for(var i=0;i<t.length;i++){var c=t[i];
- if(q){ if(c==='"'){ if(t[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
- else { if(c==='"')q=true; else if(c===','){row.push(cur);cur='';}
- else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur='';}
- else if(c!=='\r')cur+=c; } }
- if(cur||row.length){row.push(cur);rows.push(row);} return rows;}
-function nwDate(s){ s=(s||'').trim(); if(!s) return null; s=s.replace(/[.\-]/g,'/');
- var m=s.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/); if(m) return new Date(+m[1],+m[2]-1,+m[3]);
- m=s.match(/^(\d{1,2})\/(\d{1,2})$/);
- if(m){ var n=new Date(), y=n.getFullYear(), d=new Date(y,+m[1]-1,+m[2]);
-   if(d-n>1000*60*60*24*200) d=new Date(y-1,+m[1]-1,+m[2]); return d; }
- return null; }
-function nwMon(d){ var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); var w=(x.getDay()+6)%7; x.setDate(x.getDate()-w); return x; }
-function nwFmt(d){ return (d.getMonth()+1)+'/'+d.getDate(); }
-function nwFull(d){ return (d.getMonth()+1)+'/'+d.getDate()+'（'+NW_WD[d.getDay()]+'）'; }
-function nwName(u){ if(!u) return ''; var s=u; try{s=decodeURIComponent(u);}catch(e){}
- var m=s.match(/shopee\.tw\/(.+?)-i\.\d+\.\d+/); if(!m) return '';
- var n=m[1].replace(/-/g,' ').replace(/\s+/g,' ').trim();
- n=n.replace(/^[^一-龥A-Za-z]*/,''); return n.length>80?n.slice(0,80)+'…':n; }
-function nwIsImg(u){ if(!u||!/^https?:\/\//.test(u)) return false;
- return /\.(jpe?g|png|webp|gif|avif)(\?|$)/i.test(u) || /(susercontent|alicdn|googleusercontent|imgur|cloudinary|shopeemobile|gstatic)\./i.test(u); }
-function nwPickImg(row,skip){ for(var i=0;i<row.length;i++){ if(i===skip) continue;
-  var v=(row[i]||'').trim(); if(nwIsImg(v)) return v; } return ''; }
-function nwEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function nwCard(it){
-  var st=(it.st||'').indexOf('下架')>=0?' off':'';
-  var h='<div class="nw">';
-  if(it.img) h+='<img class="nw-img" loading="lazy" referrerpolicy="no-referrer" src="'+nwEsc(it.img)+'" alt="'+nwEsc(it.code)+'" onerror="this.outerHTML=\'<div class=&quot;nw-ph&quot;><b>'+nwEsc(it.code||'—')+'</b>無圖</div>\'">';
-  else h+='<div class="nw-ph"><b>'+nwEsc(it.code||'—')+'</b>無圖</div>';
-  h+='<div class="nw-main"><div class="nw-top"><span class="nw-code">'+nwEsc(it.code||'—')+'</span>';
-  if(it.pos) h+='<span class="nw-pos">'+nwEsc(it.pos)+'</span>';
-  if(it.st) h+='<span class="nw-st'+st+'">'+nwEsc(it.st)+'</span>';
-  h+='<span class="nw-date">'+nwFull(it.d)+'</span></div>';
-  if(it.name) h+='<div class="nw-name">'+nwEsc(it.name)+'</div>';
-  h+='<div class="nw-bot">';
-  if(it.price) h+='<span class="nw-price">NT$'+nwEsc(it.price)+'</span>';
-  if(it.list&&it.list!==it.price) h+='<span class="nw-was">NT$'+nwEsc(it.list)+'</span>';
-  if(it.url&&/^https?:/.test(it.url)) h+='<a class="nw-go" href="'+nwEsc(it.url)+'" target="_blank" rel="noopener">蝦皮 ›</a>';
-  h+='</div></div></div>'; return h; }
-function nwRender(box,cnt,rng,items,a,b){
-  document.getElementById(rng).textContent=nwFull(a)+' – '+nwFull(b);
-  document.getElementById(cnt).textContent=items.length;
-  var el=document.getElementById(box);
-  if(!items.length){ el.className='nwempty'; el.textContent='這一週沒有新增品項。'; return; }
-  el.className='';
-  var g={},order=[];
-  items.forEach(function(it){ if(!g[it.cat]){g[it.cat]=[];order.push(it.cat);} g[it.cat].push(it); });
+/* ===== 每日對照：每週更新這一包。week=這週週一；cells 依序是週一～週日「播的那天」，內容寫的是 +7 天到貨那天。每個字串 [繁,簡]；痛點固定 3 件 ===== */
+var DAILY={"week":"2026-10-12","cells":[
+ {"fest":["離光復節連假還 5 天","离光复节连假还 5 天"],"wx":["中南部白天 31–33°、清晨 23–25°；北部季風到就濕涼","中南部白天 31–33°、清晨 23–25°；北部季风到就湿凉"],"pain":[["換上薄長袖，內衣勒痕比夏天明顯","换上薄长袖，内衣勒痕比夏天明显"],["腰間那一圈，貼身布料藏不住","腰间那一圈，贴身布料藏不住"],["連假要見人、會被拍照","连假要见人、会被拍照"]],"push":[["高腰收腹塑身褲","高腰收腹塑身裤"],["無痕無鋼圈內衣","无痕无钢圈内衣"]]},
+ {"fest":["離光復節連假還 4 天","离光复节连假还 4 天"],"wx":["中南部白天 31–33°、清晨 23–25°；北部季風到就濕涼","中南部白天 31–33°、清晨 23–25°；北部季风到就湿凉"],"pain":[["針織衫一貼身，背後兩條勒痕","针织衫一贴身，背后两条勒痕"],["小腹在合身長袖下很明顯","小腹在合身长袖下很明显"],["翻出去年的內衣，下圍往上跑","翻出去年的内衣，下围往上跑"]],"push":[["無痕無鋼圈內衣","无痕无钢圈内衣"],["無痕高腰內褲","无痕高腰内裤"],["雕塑背心","雕塑背心"]]},
+ {"fest":["離光復節連假還 3 天","离光复节连假还 3 天"],"wx":["白天短袖、清晨只剩 23–25°，日夜像兩個季節","白天短袖、清晨只剩 23–25°，日夜像两个季节"],"pain":[["睡前開電扇，半夜涼醒找被子","睡前开电扇，半夜凉醒找被子"],["短袖睡衣不夠、厚的又穿不住","短袖睡衣不够、厚的又穿不住"],["早上起來肩頸緊","早上起来肩颈紧"]],"push":[["薄長袖睡衣套裝","薄长袖睡衣套装"],["純棉長袖家居服","纯棉长袖家居服"]]},
+ {"fest":["離光復節連假還 2 天","离光复节连假还 2 天"],"wx":["北部東部季風一到就濕涼，衣服晾不乾","北部东部季风一到就湿凉，衣服晾不干"],"pain":[["家裡有人感冒，睡衣一套不夠換","家里有人感冒，睡衣一套不够换"],["洗了等不到乾，同一套一直穿","洗了等不到干，同一套一直穿"],["去年的長袖睡衣起毛球、褲頭鬆","去年的长袖睡衣起毛球、裤头松"]],"push":[["睡衣兩套輪替","睡衣两套轮替"],["速乾家居服","速干家居服"],["背心式睡眠內衣","背心式睡眠内衣"]]},
+ {"fest":["霜降・明天開始連假","霜降・明天开始连假"],"wx":["霜降，早晚更涼；中南部白天仍 31–33°","霜降，早晚更凉；中南部白天仍 31–33°"],"pain":[["物價兩年半最高，每一筆都在算","物价两年半最高，每一笔都在算"],["內褲鬆了還在穿，因為「還能穿」","内裤松了还在穿，因为「还能穿」"],["怕買貴、怕買了不耐穿","怕买贵、怕买了不耐穿"]],"push":[["內褲多件組","内裤多件组"],["純棉中腰內褲","纯棉中腰内裤"]]},
+ {"fest":["光復節連假第 1 天","光复节连假第 1 天"],"wx":["早晚涼、白天還熱；天氣開始變乾","早晚凉、白天还热；天气开始变干"],"pain":[["內衣變形了還捨不得換","内衣变形了还舍不得换"],["天氣一乾，皮膚對粗布料有感","天气一干，皮肤对粗布料有感"],["想換，但不知道先換哪一件","想换，但不知道先换哪一件"]],"push":[["內衣多件組","内衣多件组"],["無鋼圈內衣","无钢圈内衣"]]},
+ {"fest":["光復節・連假第 2 天・蝦皮商城日","光复节・连假第 2 天・虾皮商城日"],"wx":["早晚涼、白天還熱；北部季風到就有雨","早晚凉、白天还热；北部季风到就有雨"],"pain":[["連假聚餐拍照，長袖貼身藏不住線條","连假聚餐拍照，长袖贴身藏不住线条"],["白天短袖、半夜涼醒","白天短袖、半夜凉醒"],["在等商城日和雙 11，怕現在買貴","在等商城日和双 11，怕现在买贵"]],"push":[["高腰收腹塑身褲","高腰收腹塑身裤"],["無痕內衣","无痕内衣"],["薄長袖睡衣","薄长袖睡衣"]]}
+]};
+(function(){
+  var WD=['日','一','二','三','四','五','六'];
+  var K={fest:['節日','节日'],wx:['氣候','气候'],pain:['痛點','痛点'],push:['主推','主推']};
+  function bi(p){return '<span class="t">'+p[0]+'</span><span class="s">'+p[1]+'</span>';}
+  function md(d){return (d.getMonth()+1)+'/'+d.getDate();}
+  function wd(d){return '（'+WD[d.getDay()]+'）';}
+  var w=DAILY.week.split('-'), mon=new Date(+w[0],+w[1]-1,+w[2]), n=new Date(), today=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  var ti=Math.round((today-mon)/864e5), inWeek=ti>=0&&ti<7, order=[];
+  for(var i=0;i<7;i++) order.push(inWeek?(ti+i)%7:i);   /* 今天排最上面，過去的日子排到後面 */
   var h='';
-  order.forEach(function(c){
-    h+='<div class="nwgrp"><h4>'+nwEsc(c)+'<span class="n">'+g[c].length+'</span></h4>';
-    g[c].sort(function(x,y){return y.d-x.d;}).forEach(function(it){h+=nwCard(it);});
-    h+='</div>'; });
-  el.innerHTML=h; }
-function nwLoad(){
-  var mon=nwMon(new Date()), sun=new Date(mon); sun.setDate(sun.getDate()+6);
-  var pmon=new Date(mon); pmon.setDate(pmon.getDate()-7); var psun=new Date(mon); psun.setDate(psun.getDate()-1);
-  var cur=[],prev=[],bad=0,withImg=0;
-  var jobs=NW_SHEETS.map(function(p){
-    var u='https://docs.google.com/spreadsheets/d/'+NW_ID+'/gviz/tq?tqx=out:csv&headers=0&sheet='+encodeURIComponent(p[1]);
-    return fetch(u).then(function(r){return r.text();}).then(function(t){
-      var rows=nwCSV(t),hi=-1;
-      for(var i=0;i<Math.min(rows.length,6);i++){ var j=rows[i].map(function(x){return x.trim();}); if(j.indexOf('狀態')>=0){hi=i;break;} }
-      if(hi<0){bad++;return;}
-      var H=rows[hi].map(function(x){return x.trim();});
-      var iSt=H.indexOf('狀態'), iPos=H.indexOf('定位');
-      var iLink=H.indexOf('商品連結'); if(iLink<0) iLink=H.indexOf('廠商連結');
-      var iSp=H.indexOf('蝦皮連結');
-      var iCode=iLink>0?iLink-1:-1;
-      var iImg=-1; for(var z=0;z<H.length;z++){ if(H[z].indexOf('圖')>=0){iImg=z;break;} }
-      for(var k=hi+1;k<rows.length;k++){
-        var r2=rows[k]; if(!r2||!r2.length) continue;
-        var d=nwDate(r2[0]); if(!d) continue;
-        var t0=d.getTime(); var inCur=t0>=mon.getTime()&&t0<=sun.getTime()+864e5-1;
-        var inPrev=t0>=pmon.getTime()&&t0<=psun.getTime()+864e5-1;
-        if(!inCur&&!inPrev) continue;
-        var it={cat:p[0],d:d,
-          st:iSt>=0?(r2[iSt]||'').trim():'',
-          pos:iPos>=0?(r2[iPos]||'').trim():'',
-          code:iCode>=0?(r2[iCode]||'').trim():'',
-          url:iSp>=0?(r2[iSp]||'').trim():'',
-          list:iSp>=0?(r2[iSp+1]||'').trim():'',
-          price:iSp>=0?(r2[iSp+3]||'').trim():''};
-        var im=(iImg>=0?(r2[iImg]||'').trim():'');
-        it.img=nwIsImg(im)?im:nwPickImg(r2,iSp);
-        if(it.img) withImg++;
-        it.name=nwName(it.url);
-        (inCur?cur:prev).push(it); } })
-    .catch(function(){bad++;}); });
-  Promise.all(jobs).then(function(){
-    nwRender('nwB1','nwN1','nwR1',cur,mon,sun);
-    nwRender('nwB2','nwN2','nwR2',prev,pmon,psun);
-    var n=document.getElementById('nwNote');
-    var tot=cur.length+prev.length;
-    n.innerHTML='更新時間：'+new Date().toLocaleString('zh-TW')+'　·　資料來源：MURO 商品庫試算表'
-      +(tot?'　·　有圖片 '+withImg+'／'+tot+' 件':'')
-      +(bad?'　·　<b>有 '+bad+' 個品類分頁讀取失敗</b>':'');
-  }); }
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',nwLoad); else nwLoad();
+  order.forEach(function(i){
+    var c=DAILY.cells[i], a=new Date(mon), b=new Date(mon); a.setDate(a.getDate()+i); b.setDate(b.getDate()+i+7);
+    var cls=inWeek?(i===ti?' today':(i<ti?' past':'')):'';
+    h+='<div class="dy'+cls+'"><div class="dy-h">'+md(a)+wd(a)+'播<span class="ar">→</span><b>'+md(b)+'</b>'+wd(b)+'到'
+      +(i===ti&&inWeek?'<span class="now">今天</span>':'')+'</div>'
+      +'<div class="dy-r"><span class="k">'+bi(K.fest)+'</span><div>'+bi(c.fest)+'</div></div>'
+      +'<div class="dy-r"><span class="k">'+bi(K.wx)+'</span><div>'+bi(c.wx)+'</div></div>'
+      +'<div class="dy-r"><span class="k">'+bi(K.pain)+'</span><ol>'+c.pain.map(function(p){return '<li>'+bi(p)+'</li>';}).join('')+'</ol></div>'
+      +'<div class="dy-r"><span class="k">'+bi(K.push)+'</span><div>'+c.push.map(function(p){return '<span class="chip">'+bi(p)+'</span>';}).join('')+'</div></div></div>';
+  });
+  document.getElementById('dyBox').innerHTML=h;
+})();
+
 </script>
 </body>
 </html>
