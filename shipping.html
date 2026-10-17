@@ -158,7 +158,8 @@ var SHIP_CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=ou
 var DMB='https://www.damaibb.com';
 var SECTIONS=[
  {name:'先查昨天有沒有漏',steps:[
-  {id:'s17',t:'已打包訂單 → 打包中：有「待出貨」沒袋號、又沒標記已處理的單嗎？',h:'每天出貨<b>第一件事</b>。到<b>已打包訂單</b>的<b>打包中</b>，找<b>待出貨</b>、<b>沒有袋號</b>、又<b>沒有標記已處理</b>的單：有 ＝ 昨天漏了，<b>優先處理</b>。處理好的要標記<b>已處理</b>',tools:[{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}]}
+  {id:'s16',t:'部分入庫的單：訂單狀態選「待出貨」→ 按貨號對部分入庫區',h:'每天出貨<b>第一件事</b>。部分入庫的單，訂單狀態選<b>待出貨</b>，<b>按貨號</b>跟<b>現場部分入庫區</b>逐一對：<br><b>有多的</b> → 退貨。<br><b>有少的</b> → 叫貨',tools:[{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}]},
+  {id:'s17',t:'已打包訂單 → 打包中：有「待出貨」沒袋號、又沒標記已處理的單嗎？',h:'到<b>已打包訂單</b>的<b>打包中</b>，找<b>待出貨</b>、<b>沒有袋號</b>、又<b>沒有標記已處理</b>的單：有 ＝ 昨天漏了，<b>優先處理</b>。處理好的要標記<b>已處理</b>',tools:[{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}]}
  ]},
  {name:'同步與對單（台灣倉先剔除）',steps:[
   {id:'s1',t:'大邁寶 同步蝦皮訂單',h:'按<b>店鋪</b>同步，日期選<b>前天 → 現在</b>，同步後訂單<b>備註</b>才會更新',tools:[{l:'大邁寶 訂單處理',u:DMB+'/trade/flow/todo',k:'link'}]},
@@ -179,8 +180,7 @@ var SECTIONS=[
  {name:'收尾追蹤',steps:[
   {id:'s13',t:'昨日隔離訂單：廠商都出貨了嗎？',h:'翻昨天隔離的單，逐筆確認<b>廠商已出貨</b>；還沒出的<b>跟廠商確認</b>',tools:[{l:'1688 已買到的貨',u:'https://trade.1688.com/order/buyer_order_list.htm',k:'link'}]},
   {id:'s15',t:'已打包訂單 → 待入庫：有 2 天前的單嗎？',h:'待入庫裡如果還有 <b>2 天前</b>的單，一樣要追蹤到底卡在哪'},
-  {id:'s16',t:'部分入庫的單：SKU 跟現場未到齊的對得上嗎？',h:'系統顯示部分入庫的 SKU，要跟<b>現場部分入庫區的 SKU</b> 一致；對不上就是有東西漏掃或放錯籃'},
-  {id:'s14',t:'完成出貨',h:'上面三項追蹤都確認正常，今日出貨才算完成'}
+  {id:'s14',t:'完成出貨',h:'上面兩項追蹤都確認正常，今日出貨才算完成'}
  ]}
 ];
 var ALL=[];SECTIONS.forEach(function(s){s.steps.forEach(function(x){ALL.push(x);});});
