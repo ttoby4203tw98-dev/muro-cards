@@ -229,20 +229,21 @@ function renderPeriod(d) {
   if (!d.months || !d.days) { box.innerHTML = `<p class="muted">財會表 API 還是舊版，請到 Apps Script「管理部署作業」更新成新版本。</p>`; return; }
   const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
   const days = d.days.filter((r) => r[0] <= today), hasDay = days.filter((r) => r[1] || r[2]);
-  const months = d.months.map((r, i) => ({ ym: `2026-${String(i + 1).padStart(2, "0")}`, inc: r[1], exp: r[2], pl: r[3] })).filter((m) => m.inc || m.exp || m.ym === today.slice(0, 7)); // 當月一定列出（月初還沒數字也能看樣品預算）
+  const months = d.months.map((r, i) => ({ ym: /^\d{4}\/\d{2}$/.test(r[0]) ? r[0].replace("/", "-") : `2026-${String(i + 1).padStart(2, "0")}`, inc: r[1], exp: r[2], pl: r[3] })).filter((m) => m.inc || m.exp || m.ym === today.slice(0, 7)); // 新版 API 第一欄是「2025/10」、舊版是「1月」；當月一定列出（月初還沒數字也能看樣品預算）
   if (!P.month) P.month = months.some((m) => m.ym === today.slice(0, 7)) ? today.slice(0, 7) : (months[months.length - 1] || {}).ym || today.slice(0, 7);
   if (!P.day) { const y = new Date(Date.now() + 8 * 3600e3 - 864e5).toISOString().slice(0, 10); P.day = (hasDay.filter((r) => r[0] <= y).pop() || hasDay[hasDay.length - 1] || [y])[0]; }
-  if (!P.year) P.year = "2026";
+  const years = [...new Set(months.map((m) => m.ym.slice(0, 4)))];
+  if (!P.year) P.year = years.includes(today.slice(0, 4)) ? today.slice(0, 4) : years[years.length - 1] || today.slice(0, 4);
   let inc = 0, exp = 0, pl = 0, label = "", note = "";
   if (P.mode === "日") { const r = d.days.find((x) => x[0] === P.day) || [P.day, 0, 0, 0]; [inc, exp, pl] = [r[1], r[2], r[3]]; label = P.day.replace(/-/g, "/");
     note = "日收入 = 當天訂單的蝦皮實收，要等撥款（約 1～38 天）才會出現，所以最近幾天的收入偏低或是 0，之後會陸續補上。日支出 = 當天出貨的商品成本（推估）＋ 當天付款的費用；薪水、房租依實際付款日，發薪那天支出會特別大。"; }
   if (P.mode === "月") { const m = months.find((x) => x.ym === P.month) || { inc: 0, exp: 0, pl: 0 }; [inc, exp, pl] = [m.inc, m.exp, m.pl]; label = P.month.replace("-", "/");
     note = "月支出依歸屬月（例如 9 月薪水 10 月發，仍算 9 月）。收入 = 蝦皮實收，當月訂單撥款要到下個月才完整。"; }
-  if (P.mode === "年") { months.filter((m) => m.ym.startsWith(P.year)).forEach((m) => { inc += m.inc; exp += m.exp; pl += m.pl; }); label = `${P.year} 年（1 月至 ${months.length ? +months[months.length - 1].ym.slice(5) : 0} 月）`;
+  if (P.mode === "年") { const ym = months.filter((m) => m.ym.startsWith(P.year)); ym.forEach((m) => { inc += m.inc; exp += m.exp; pl += m.pl; }); label = `${P.year} 年（${ym.length ? `${+ym[0].ym.slice(5)} 月至 ${+ym[ym.length - 1].ym.slice(5)}` : "0"} 月）`;
     note = "年 = 各月加總。"; }
   const picker = P.mode === "日" ? `<input type="date" id="pp" value="${P.day}" min="2026-01-01" max="${today}">`
     : P.mode === "月" ? `<select id="pp">${months.map((m) => `<option value="${m.ym}" ${m.ym === P.month ? "selected" : ""}>${m.ym.replace("-", "/")}</option>`).join("")}</select>`
-    : `<select id="pp"><option value="2026">2026</option></select>`;
+    : `<select id="pp">${years.map((y) => `<option value="${y}" ${y === P.year ? "selected" : ""}>${y}</option>`).join("")}</select>`;
   const rate = inc && P.mode !== "日" ? ` <span style="font-size:12px;color:var(--ink2)">淨利率 ${(pl / inc * 100).toFixed(1)}%</span>` : "";
   box.innerHTML = `<div class="seg">${["日", "月", "年"].map((k) => `<button data-m="${k}" class="${P.mode === k ? "on" : ""}">${k}</button>`).join("")}${picker}</div>
     <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
