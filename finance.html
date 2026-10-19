@@ -228,15 +228,17 @@ function renderPeriod(d) {
   const box = $("#period");
   if (!d.months || !d.days) { box.innerHTML = `<p class="muted">財會表 API 還是舊版，請到 Apps Script「管理部署作業」更新成新版本。</p>`; return; }
   const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
-  const days = d.days.filter((r) => r[0] <= today), hasDay = days.filter((r) => r[1] || r[2]);
   const months = d.months.map((r, i) => ({ ym: /^\d{4}\/\d{2}$/.test(r[0]) ? r[0].replace("/", "-") : `2026-${String(i + 1).padStart(2, "0")}`, inc: r[1], exp: r[2], pl: r[3], gross: r[4], fail: r[5], fee: r[6] })).filter((m) => m.inc || m.exp || m.ym === today.slice(0, 7)); // 新版 API 第一欄是「2025/10」、舊版是「1月」；當月一定列出（月初還沒數字也能看樣品預算）
   if (!P.month) P.month = months.some((m) => m.ym === today.slice(0, 7)) ? today.slice(0, 7) : (months[months.length - 1] || {}).ym || today.slice(0, 7);
-  if (!P.day) { const y = new Date(Date.now() + 8 * 3600e3 - 864e5).toISOString().slice(0, 10); P.day = (hasDay.filter((r) => r[0] <= y).pop() || hasDay[hasDay.length - 1] || [y])[0]; }
+  if (!P.day) P.day = today; // 日 = 當天實際進出的錢，預設看今天（每 15 分鐘更新）
   const years = [...new Set(months.map((m) => m.ym.slice(0, 4)))];
   if (!P.year) P.year = years.includes(today.slice(0, 4)) ? today.slice(0, 4) : years[years.length - 1] || today.slice(0, 4);
   let inc = 0, exp = 0, pl = 0, label = "", note = "", gross, fail, fee; // 總銷售額／不成立金額／蝦皮抽成：舊版 API 或「日」沒有的就是 undefined，顯示「—」
   if (P.mode === "日") { const r = d.days.find((x) => x[0] === P.day) || [P.day, 0, 0, 0]; [inc, exp, pl, gross] = [r[1], r[2], r[3], r[4]]; label = P.day.replace(/-/g, "/");
-    note = "日收入 = 當天訂單的蝦皮實收，要等撥款（約 1～38 天）才會出現，所以最近幾天的收入偏低或是 0，之後會陸續補上。日支出 = 當天出貨的商品成本（推估）＋ 當天付款的費用；薪水、房租依實際付款日，發薪那天支出會特別大。"; }
+    const b = r[5] && typeof r[5] === "object" ? r[5] : null; // 舊版 API 沒有支出拆分
+    const parts = b ? ["商品", "物流", "廣告", "蝦幣", "獎金"].filter((k) => b[k]).map((k) => `${k} ${fmt(b[k])}`).join("、") : "";
+    note = (r[6] ? `更新於 ${esc(String(r[6]).slice(5).replace("-", "/"))}（每 15 分鐘自動更新）。<br>` : "") + (parts ? `支出：${parts}。<br>` : "")
+      + "日收入 = 當天蝦皮實際撥進錢包的錢（不管是哪天的訂單）。日支出 = 當天付出去、跟業績有關的錢：商品貨款（含 1688 退款）、物流、獎金、廣告扣款、蝦幣；薪水、房租等固定開銷看月。總銷售額 = 當天下單金額。"; }
   if (P.mode === "月") { const m = months.find((x) => x.ym === P.month) || { inc: 0, exp: 0, pl: 0 }; [inc, exp, pl, gross, fail, fee] = [m.inc, m.exp, m.pl, m.gross, m.fail, m.fee]; label = P.month.replace("-", "/");
     note = "月支出依歸屬月（例如 9 月薪水 10 月發，仍算 9 月）。收入 = 蝦皮實收，當月訂單撥款要到下個月才完整。總銷售額 = 下單金額；不成立金額、蝦皮抽成（成交手續費＋服務費＋金流費）依訂單月，當月訂單還沒撥完前是估計。"; }
   if (P.mode === "年") { const ym = months.filter((m) => m.ym.startsWith(P.year)); ym.forEach((m) => { inc += m.inc; exp += m.exp; pl += m.pl; }); if (ym.some((m) => m.gross !== undefined)) [gross, fail, fee] = ["gross", "fail", "fee"].map((k) => ym.reduce((s, m) => s + (m[k] || 0), 0)); label = `${P.year} 年（${ym.length ? `${+ym[0].ym.slice(5)} 月至 ${+ym[ym.length - 1].ym.slice(5)}` : "0"} 月）`;
