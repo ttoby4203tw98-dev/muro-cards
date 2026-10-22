@@ -240,9 +240,12 @@ function renderPeriod(d) {
     note = (r[6] ? `更新於 ${esc(String(r[6]).slice(5).replace("-", "/"))}（每 15 分鐘自動更新）。<br>` : "") + (parts ? `支出：${parts}。<br>` : "")
       + "日收入 = 當天蝦皮實際撥進錢包的錢（不管是哪天的訂單）。日支出 = 當天付出去、跟業績有關的錢：商品貨款（含 1688 退款）、物流、獎金、廣告扣款、蝦幣；薪水、房租等固定開銷看月。總銷售額 = 當天下單金額。"; }
   if (P.mode === "月") { const m = months.find((x) => x.ym === P.month) || { inc: 0, exp: 0, pl: 0 }; [inc, exp, pl, gross, fail, fee] = [m.inc, m.exp, m.pl, m.gross, m.fail, m.fee]; label = P.month.replace("-", "/");
-    note = "月支出依歸屬月（例如 9 月薪水 10 月發，仍算 9 月）。收入 = 蝦皮實收，當月訂單撥款要到下個月才完整。總銷售額 = 下單金額；不成立金額、蝦皮抽成（成交手續費＋服務費＋金流費）依訂單月，當月訂單還沒撥完前是估計。"; }
+    note = "月支出依歸屬月（例如 9 月薪水 10 月發，仍算 9 月）。收入 = 當月訂單的蝦皮實收（依訂單月），當月訂單撥款要到下個月才完整；實際入帳 = 這個月真的撥進錢包的錢（多半是上個月的訂單），跟蝦皮進帳報表對得起來。總銷售額 = 下單金額；不成立金額、蝦皮抽成（成交手續費＋服務費＋金流費）依訂單月，當月訂單還沒撥完前是估計。"; }
   if (P.mode === "年") { const ym = months.filter((m) => m.ym.startsWith(P.year)); ym.forEach((m) => { inc += m.inc; exp += m.exp; pl += m.pl; }); if (ym.some((m) => m.gross !== undefined)) [gross, fail, fee] = ["gross", "fail", "fee"].map((k) => ym.reduce((s, m) => s + (m[k] || 0), 0)); label = `${P.year} 年（${ym.length ? `${+ym[0].ym.slice(5)} 月至 ${+ym[ym.length - 1].ym.slice(5)}` : "0"} 月）`;
     note = "年 = 各月加總。"; }
+  // 月／年另外顯示「實際入帳」= 日層（現金制，依撥款日）加總；舊版 API 的日層不是現金制就不顯示
+  const pre = P.mode === "月" ? P.month : P.mode === "年" ? P.year : null;
+  const cash = pre && d.days.some((r) => r[5] && typeof r[5] === "object") ? d.days.filter((r) => r[0].startsWith(pre)).reduce((t, r) => t + (r[1] || 0), 0) : undefined;
   const amt = (x) => (x === undefined ? "—" : fmt(x)), ofG = (x) => (x !== undefined && gross ? `<small>佔總銷售額 ${(x / gross * 100).toFixed(1)}%</small>` : "");
   const picker = P.mode === "日" ? `<input type="date" id="pp" value="${P.day}" min="2026-01-01" max="${today}">`
     : P.mode === "月" ? `<select id="pp">${months.map((m) => `<option value="${m.ym}" ${m.ym === P.month ? "selected" : ""}>${m.ym.replace("-", "/")}</option>`).join("")}</select>`
@@ -252,6 +255,7 @@ function renderPeriod(d) {
     <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
     <div class="kpi" style="margin-bottom:8px"><div><small>總銷售額</small><b>${amt(gross)}</b></div><div><small>不成立金額</small><b>${amt(fail)}</b>${ofG(fail)}</div><div><small>蝦皮抽成</small><b>${amt(fee)}</b>${ofG(fee)}</div></div>
     <div class="kpi"><div><small>收入</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>損益</small><b class="${cls(pl)}">${fmt(pl)}</b></div></div>
+    ${cash === undefined ? "" : `<div class="kpi" style="grid-template-columns:1fr;margin-top:8px"><div><small>${P.mode === "年" ? "全年" : "本月"}實際入帳（依撥款日，不管哪個月的訂單）</small><b class="${cls(cash)}">${fmt(cash)}</b></div></div>`}
     <p class="muted">${note}</p>`;
   renderExp(d); renderBudget(d);
   box.querySelectorAll("[data-m]").forEach((b) => (b.onclick = () => { P.mode = b.dataset.m; renderPeriod(d); }));
