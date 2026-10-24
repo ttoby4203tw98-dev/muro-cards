@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<script src="gate.js"></script>
+<script src="battle-goods.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>週作戰卡｜暮若</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{--plum:#4a2c3a;--plum2:#6b3f52;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--card:#fff;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--pos:#2e7d32;--neg:#c0392b}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(160deg,var(--plum),var(--plum2) 55%,var(--rose));color:#f6eee8;padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 30px;border-radius:0 0 24px 24px}
+  header h1{font-size:20px;letter-spacing:1px}
+  .wk{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+  .wk button{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:99px;width:36px;height:36px;font-size:18px;cursor:pointer}
+  .wk b{font-size:16px}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px 40px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:12px;box-shadow:0 6px 18px rgba(74,44,58,.06)}
+  .box:first-child{margin-top:-18px}
+  h2{font-size:15px;color:var(--plum);margin-bottom:10px;letter-spacing:.5px}
+  h3{font-size:13px;color:var(--ink2);margin:12px 0 6px;font-weight:600}
+  h3:first-of-type{margin-top:0}
+  .row{display:flex;justify-content:space-between;gap:8px;font-size:14px;font-variant-numeric:tabular-nums}
+  .row span:last-child{font-weight:700}
+  .bar{height:8px;border-radius:99px;background:#eee2da;margin:6px 0 10px;overflow:hidden}.bar i{display:block;height:100%;background:var(--plum2)}
+  .muted{font-size:12px;color:var(--ink2);line-height:1.6}
+  .big{font-size:28px;font-weight:800;color:var(--plum);font-variant-numeric:tabular-nums}
+  ul.items{list-style:none;display:flex;flex-direction:column;gap:6px}
+  ul.items li{display:flex;align-items:center;gap:10px;background:#f8f2ef;border-radius:12px;padding:8px 10px;font-size:14px}
+  ul.items img{width:40px;height:40px;border-radius:8px;object-fit:cover;background:#eee2da;flex:0 0 40px}
+  ul.items .t{flex:1;min-width:0}
+  ul.items .t small{display:block;font-size:12px;color:var(--ink2)}
+  ul.items a{color:var(--rose);font-size:12px;white-space:nowrap;text-decoration:none}
+  .txt{font-size:14px;line-height:1.7;white-space:pre-wrap}
+  .empty{font-size:13px;color:#b9a8b0}
+  textarea{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:70px;resize:vertical;background:#fff;color:var(--ink)}
+  textarea:focus-visible,button:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
+  .act{display:flex;gap:8px;margin-top:14px}
+  .act button{flex:1;border:1px solid var(--plum);background:#fff;color:var(--plum);border-radius:12px;padding:11px;font-size:15px;font-weight:600;cursor:pointer}
+  .act button.pri{background:var(--plum);color:#fff}
+  #msg{font-size:13px;margin-top:8px;min-height:18px;text-align:center}
+  #msg.good{color:var(--pos)}#msg.bad{color:var(--neg)}
+  footer{text-align:center;margin-top:22px;font-size:13px}footer a{color:var(--rose);text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎯 週作戰卡</h1>
+  <div class="wk"><button id="prev" aria-label="上一週">‹</button><b id="wkLabel"></b><button id="next" aria-label="下一週">›</button></div>
+</header>
+<div class="wrap">
+  <div id="view"></div>
+  <div class="act" id="viewAct"><button id="edit">編輯（後端人員）</button></div>
+  <div id="editor" hidden></div>
+  <div id="msg"></div>
+  <footer><a href="team.html">← 回團隊首頁</a></footer>
+</div>
+<script>
+/* 週作戰卡（2026-10-24 使用者）：一週一張（週一~週日），後端人員填、主播中控看
+   核心商品／延伸商品（貨號自動帶商品庫）、贈品（MURO 通用＋主播專屬）、送禮機制、活動優惠；本週會看週目標進度
+   存在作戰卡 Sheet（同單場作戰卡的寫入服務 card_save）：日期＝該週週一、場次欄＝"W"，內容整包 JSON 放 C 欄 */
+var SHEET_ID='1SsIRULQjX5dQJgnEzfijQuZV5lfJKHmwHy2CJvG_XwE';
+var SCRIPT_URL='https://script.google.com/macros/s/AKfycbxujluuIzHbqtxJJtssliT1bOiU8Q8J0NWhAbYJzGTueqUWaEKFhzraBMapcGLBq95QMg/exec';
+var TOKEN='muro2026';
+var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('作戰卡');
+var FIN_API='https://script.google.com/macros/s/AKfycbzLo_qUekF345A28WAiQbC1BhxiBA7ufsbw63XczTjXlZv2972bQ4NGmtYPOfnPHZE/exec';
+var HOSTS=['Naby','番茄','安琪']; /* 主播專屬贈品，人員異動改這裡 */
+var GOODS=(window.BATTLE_GOODS&&BATTLE_GOODS.map)||{};
+var cards={}, mon=mondayOf(todayStr()), prog=null;
+
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function pad(n){return (n<10?'0':'')+n;}
+function todayStr(){var d=new Date(Date.now()+8*3600e3);return d.toISOString().slice(0,10);} /* 台北日期 */
+function addDays(s,n){var d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+function mondayOf(s){var w=(new Date(s+'T00:00:00Z').getUTCDay()+6)%7;return addDays(s,-w);}
+function md(s){return (+s.slice(5,7))+'/'+(+s.slice(8));}
+function fmt(n){return Math.round(n).toLocaleString('zh-TW');}
+function lines(t){return String(t||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);}
+function skuOf(line){var m=String(line).match(/^([A-Za-z]?\d{3,5})\b/);return m&&GOODS[m[1]]?m[1]:null;}
+function parseCSV(text){var rows=[],row=[],cur='',q=false;
+  for(var i=0;i<text.length;i++){var c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=c;}
+    else{if(c==='"')q=true;else if(c===','){row.push(cur);cur='';}
+      else if(c==='\n'||c==='\r'){if(cur!==''||row.length){row.push(cur);rows.push(row);row=[];cur='';}}
+      else cur+=c;}}
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows;}
+function normDate(s){var m=String(s||'').match(/(\d{4})[\/\-年.](\d{1,2})[\/\-月.](\d{1,2})/);return m?m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]):null;}
+function card(){return cards[mon]||{core:'',ext:'',giftMuro:'',giftHost:{},gift:'',promo:''};}
+
+/* 一行一個：開頭是商品庫貨號就帶出品名、賣場價、圖、連結；不是就照打的字顯示 */
+function itemList(text){
+  var ls=lines(text); if(!ls.length)return '<div class="empty">還沒填</div>';
+  return '<ul class="items">'+ls.map(function(l){var k=skuOf(l),g=k&&GOODS[k];
+    if(!g)return '<li><div class="t">'+esc(l)+'</div></li>';
+    var rest=l.slice(k.length).trim();
+    return '<li><img src="img/'+esc(k)+'.jpg" alt="" onerror="this.style.visibility=\'hidden\'"><div class="t">'+esc(k)+'　'+esc(g.name||'')+
+      '<small>賣場價 '+esc(g.price||'—')+(rest?'・'+esc(rest):'')+'</small></div>'+(g.url?'<a href="'+esc(g.url)+'" target="_blank" rel="noopener">蝦皮 ›</a>':'')+'</li>';}).join('')+'</ul>';
+}
+function txt(t){return String(t||'').trim()?'<div class="txt">'+esc(t)+'</div>':'<div class="empty">還沒填</div>';}
+
+function render(){
+  $('wkLabel').textContent=md(mon)+'（一）～ '+md(addDays(mon,6))+'（日）'+(mon===mondayOf(todayStr())?'　本週':'');
+  var c=card(), h='';
+  if(mon===mondayOf(todayStr())&&prog&&prog.wkGoal){
+    var left=7-(new Date(todayStr()+'T00:00:00Z').getUTCDay()+6)%7, gap=Math.max(0,prog.wkGoal-prog.wk), p=Math.min(100,Math.round(prog.wk/prog.wkGoal*100));
+    h+='<div class="box"><h2>週目標進度</h2><div class="row"><span>本週 '+fmt(prog.wk)+' ／ 週目標 '+(prog.wkGoal/10000)+' 萬</span><span>'+p+'%</span></div><div class="bar"><i style="width:'+p+'%"></i></div>'+
+      (gap?'<div class="row"><span>還差 '+fmt(gap)+'，剩 '+left+' 天（含今天）</span></div><div class="muted" style="margin-top:6px">平均每天要賣</div><div class="big">'+fmt(gap/left)+'</div>':'<div class="row"><span style="color:var(--pos)">✔ 已達成週目標</span></div>')+
+      '<div class="muted" style="margin-top:6px">總銷售額（下單）每 15 分鐘更新，更新於 '+esc(String(prog.at).slice(6))+'</div></div>';
+  }
+  h+='<div class="box"><h2>核心商品</h2>'+itemList(c.core)+'</div>';
+  h+='<div class="box"><h2>延伸商品</h2>'+itemList(c.ext)+'</div>';
+  h+='<div class="box"><h2>贈品</h2><h3>MURO（每位主播都可以送）</h3>'+itemList(c.giftMuro)+
+    HOSTS.map(function(n){return '<h3>'+esc(n)+' 專屬</h3>'+itemList((c.giftHost||{})[n]);}).join('')+'</div>';
+  h+='<div class="box"><h2>送禮機制</h2>'+txt(c.gift)+'</div>';
+  h+='<div class="box"><h2>活動優惠</h2>'+txt(c.promo)+'</div>';
+  $('view').innerHTML=h;
+}
+function openEditor(){
+  var c=card(), ta=function(id,label,val,ph){return '<h3>'+label+'</h3><textarea id="'+id+'" placeholder="'+ph+'">'+esc(val||'')+'</textarea>';};
+  $('editor').innerHTML='<div class="box"><h2>編輯 '+md(mon)+' 這週</h2>'+
+    ta('eCore','核心商品（一行一個貨號）',c.core,'')+ta('eExt','延伸商品（一行一個貨號）',c.ext,'')+
+    ta('eGiftMuro','MURO 贈品（一行一個，可以填貨號或直接打字）',c.giftMuro,'')+
+    HOSTS.map(function(n,i){return ta('eHost'+i,n+' 專屬贈品',(c.giftHost||{})[n],'');}).join('')+
+    ta('eGift','送禮機制',c.gift,'')+ta('ePromo','活動優惠',c.promo,'')+
+    '<div class="act"><button id="cancel">取消</button><button class="pri" id="save">儲存</button></div></div>';
+  $('editor').hidden=false; $('view').hidden=true; $('viewAct').hidden=true;
+  $('cancel').onclick=closeEditor; $('save').onclick=save;
+}
+function closeEditor(){$('editor').hidden=true;$('view').hidden=false;$('viewAct').hidden=false;render();}
+function save(){
+  var v=function(id){return $(id).value.trim();}, gh={};
+  HOSTS.forEach(function(n,i){gh[n]=v('eHost'+i);});
+  var c={v:'week',core:v('eCore'),ext:v('eExt'),giftMuro:v('eGiftMuro'),giftHost:gh,gift:v('eGift'),promo:v('ePromo')};
+  var payload={token:TOKEN,action:'card_save',date:mon,slot:'W',strategy:JSON.stringify(c),focus:'',hook:'',notes:'',r1:'',r2:'',r3:''};
+  $('msg').className='';$('msg').textContent='儲存中…';$('save').disabled=true;
+  fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
+    .then(function(r){return r.text();}).then(function(t){
+      if(t==='ok'||t==='updated'){cards[mon]=c;$('msg').className='good';$('msg').textContent='✅ 已儲存 '+md(mon)+' 這週';closeEditor();}
+      else{$('msg').className='bad';$('msg').textContent='儲存失敗：'+t;$('save').disabled=false;}
+    }).catch(function(){$('msg').className='bad';$('msg').textContent='儲存失敗，請檢查網路';$('save').disabled=false;});
+}
+function load(){
+  fetch(CSV+'&t='+Math.floor(Math.random()*1e9)).then(function(r){return r.text();}).then(function(t){
+    parseCSV(t).slice(1).forEach(function(r){var d=normDate(r[0]);if(!d||String(r[1]).trim()!=='W')return;
+      try{var c=JSON.parse(r[2]);if(c&&c.v==='week')cards[d]=c;}catch(e){}});
+    if($('editor').hidden)render();
+  }).catch(function(){});
+}
+function loadProg(){
+  fetch(FIN_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'progress'})})
+    .then(function(r){return r.json();}).then(function(p){if(p&&p.ok){prog=p;if($('editor').hidden)render();}}).catch(function(){});
+}
+$('prev').onclick=function(){if(!$('editor').hidden)return;mon=addDays(mon,-7);$('msg').textContent='';render();};
+$('next').onclick=function(){if(!$('editor').hidden)return;mon=addDays(mon,7);$('msg').textContent='';render();};
+$('edit').onclick=openEditor;
+render(); load(); loadProg();
+</script>
+</body>
+</html>
