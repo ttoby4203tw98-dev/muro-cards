@@ -333,11 +333,20 @@ var CATS=['內衣','內褲','上衣','下身','塑身','其他'];
 /* 利潤帶：低 20~24／一般 25~30／高 31~45，上下各留 1.5% 空間；低於 18.5% 只警示不擋交卡（清庫存品也要排）*/
 var RATE_MIN=18.5;
 function parseRate(v){var x=parseFloat(String(v==null?'':v).replace('%',''));return (!isNaN(x)&&x>-1000&&x<100)?x:null;}
-/* 定價2.0：總成本(RMB)=商品成本+4.5+重量kg×12；利潤率=(直播價×0.6−總成本×4.7)÷直播價。成本只拿來算，不顯示 */
-function calcRate(g,lp){
+/* 定價3.0（跟商品庫利潤率公式一致）：總成本(RMB)=商品成本+固定費+重量kg×12；
+   利潤率=(直播價×0.6−總成本×匯率÷(1−退貨率))÷直播價。數字讀 battle-goods.js 的 rules(商品庫「定價規則」)。成本只拿來算，不顯示。
+   折數沒改＝直接用商品庫的直播價與利潤率；改了折數才重算 */
+function sameDisc(g,disc){return !!g&&String(parseFloat(disc))===String(parseFloat(g.disc));}
+function calcRate(g,lp,disc){
+  if(sameDisc(g,disc)&&parseRate(g.rate)!==null)return parseRate(g.rate);
   var c=g?parseFloat(g.cost):NaN; if(!(c>0)||!(lp>0))return null;
-  var tc=c+4.5+(parseFloat(g.wt)||0)*12;
-  return Math.round((lp*0.6-tc*4.7)/lp*1000)/10;
+  var R=(window.BATTLE_GOODS&&BATTLE_GOODS.rules)||{}, fx=R.fx||4.9, ret=R.ret>=0?R.ret:0.1;
+  var tc=c+(R.fixed||3.5)+(parseFloat(g.wt)||0)*12;
+  return Math.round((lp*(R.keep||0.6)-tc*fx/(1-ret))/lp*1000)/10;
+}
+function cardLive(g,price,disc){
+  if(sameDisc(g,disc)&&parseFloat(g.live)>0&&String(parseFloat(price))===String(parseFloat(g.price)))return Math.round(parseFloat(g.live));
+  return livePrice(price,disc);
 }
 var RATE_COLOR={'低':'#bf9000','一般':'#38761d','高':'#674ea7','不能排':'#c0392b'};
 function bandLabel(rb){return rb==='不能排'?'需重新定價':rb;}
@@ -345,8 +354,8 @@ function bandLabel(rb){return rb==='不能排'?'需重新定價':rb;}
 function syncRates(){
   [].forEach.call(document.querySelectorAll('#pools .item'),function(c){
     var g=applyGoods(c), f=c.querySelector('.f-rate');
-    var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
-    var cr=calcRate(g,lp);
+    var dv=c.querySelector('.f-disc').value, lp=cardLive(g,c.querySelector('.f-price').value,dv);
+    var cr=calcRate(g,lp,dv);
     if(cr!==null){f.value=cr;f.readOnly=true;f.style.background='#f4eaf0';}
     else{f.readOnly=false;f.style.background='';}
   });
@@ -718,7 +727,7 @@ function refresh(){
     [].forEach.call(kids,function(c,i){
       c.querySelector('.it-no').textContent=shortCat(cat)+' '+(i+1);
       var gd=applyGoods(c);
-      var lp=livePrice(c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
+      var lp=cardLive(gd,c.querySelector('.f-price').value,c.querySelector('.f-disc').value);
       c.querySelector('.f-live').textContent=(lp===null)?'—':('$'+lp);
       setThumb(c); setOpen(c);
       var rt=parseRate(c.querySelector('.f-rate').value), rb=rateBand(rt), rw=c.querySelector('[data-ratewarn]');
