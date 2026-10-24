@@ -66,6 +66,18 @@
   .howto li{font-size:14px;line-height:1.65;color:var(--ink)}
   .howto li b{color:var(--plum2)}
   footer{text-align:center;margin-top:26px;font-size:12px;color:#b9a8b0;letter-spacing:1px}
+  /* 本月進度卡（2026-10-24）：資料來自財會 Apps Script progress，不用密碼 */
+  .prog{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 6px 18px rgba(74,44,58,.07)}
+  .prog .hd{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2)}
+  .prog .need{margin-top:6px;font-size:13px;color:var(--ink2)}
+  .prog .need b{display:block;font-size:34px;color:var(--plum);letter-spacing:.5px;font-variant-numeric:tabular-nums;line-height:1.2}
+  .prog .row{margin-top:12px;font-size:14px;display:flex;justify-content:space-between;gap:8px;font-variant-numeric:tabular-nums}
+  .prog .row span:last-child{font-weight:700}
+  .prog .bar{height:8px;border-radius:99px;background:#eee2da;margin-top:6px;overflow:hidden}
+  .prog .bar i{display:block;height:100%;background:var(--rose)}
+  .prog .bar.be i{background:var(--gold)}
+  .prog .bar.wk i{background:var(--plum2)}
+  .prog .bar.day i{background:var(--plum)}
 </style>
 </head>
 <body>
@@ -79,6 +91,7 @@
 
 <div class="wrap">
   <nav class="grid">
+    <section class="prog" id="prog" hidden></section>
     <a class="card" href="https://ttoby4203tw98-dev.github.io/muro-cards/punch.html">
       <div class="ico c1">⏰</div>
       <div><b>暮若打卡</b><small>上班・下班打卡・今日狀況・打卡紀錄</small></div>
@@ -142,6 +155,26 @@
   var w=['日','一','二','三','四','五','六'];
   document.getElementById('today').textContent=
     d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日（星期'+w[d.getDay()]+'）';
+</script>
+<script>
+  // 本月進度：今日目標銷售額（月目標＝160／200／250／300 萬裡還沒達到的那一級）；先顯示上次的數字再更新
+  (function(){
+    var API='https://script.google.com/macros/s/AKfycbzLo_qUekF345A28WAiQbC1BhxiBA7ufsbw63XczTjXlZv2972bQ4NGmtYPOfnPHZE/exec', K='muro_prog';
+    var f=function(n){return Math.round(n).toLocaleString('zh-TW')}, pc=function(a,b){return Math.min(100,Math.round(a/b*100))};
+    function show(p){
+      if(!p||!p.ok)return; var el=document.getElementById('prog');
+      el.innerHTML='<div class="hd"><span>'+(+p.ym.slice(5))+' 月進度</span><span>剩 '+p.left+' 天・更新 '+p.at.slice(6)+'</span></div>'
+        +'<div class="need">今日目標銷售額<b>'+f(p.need)+'</b></div>'
+        +(p.now!=null?'<div class="row"><span>今天目前 '+f(p.now)+'</span><span>'+(p.need?pc(p.now,p.need):100)+'%</span></div><div class="bar day"><i style="width:'+(p.need?pc(p.now,p.need):100)+'%"></i></div>':'')
+        +'<div class="row"><span>目前 '+f(p.got)+' ／ 月目標 '+(p.goal/10000)+' 萬</span><span>'+pc(p.got,p.goal)+'%</span></div><div class="bar"><i style="width:'+pc(p.got,p.goal)+'%"></i></div>'
+        +(p.wkGoal?'<div class="row"><span>本週 '+f(p.wk)+' ／ 週目標 '+(p.wkGoal/10000)+' 萬</span><span>'+pc(p.wk,p.wkGoal)+'%</span></div><div class="bar wk"><i style="width:'+pc(p.wk,p.wkGoal)+'%"></i></div>':'')
+        +(p.be?'<div class="row"><span>損益平衡 '+f(p.be)+'・今天要 '+f(p.beNeed)+'</span><span>'+pc(p.got,p.be)+'%</span></div><div class="bar be"><i style="width:'+pc(p.got,p.be)+'%"></i></div>':'');
+      el.hidden=false;
+    }
+    try{show(JSON.parse(localStorage.getItem(K)||'null'))}catch(e){}
+    fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'progress'})})
+      .then(function(r){return r.json()}).then(function(p){show(p);try{localStorage.setItem(K,JSON.stringify(p))}catch(e){}}).catch(function(){});
+  })();
 </script>
 </body>
 </html>
