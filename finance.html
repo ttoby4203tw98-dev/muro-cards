@@ -62,6 +62,7 @@
   .kpi div small:last-child:not(:first-child){display:block;margin-top:2px}
   .bbar{height:8px;border-radius:99px;background:#eee2da;margin:10px 0 0;overflow:hidden}.bbar i{display:block;height:100%;background:var(--pos)}.bbar i.over{background:var(--neg)}
   #budget th.r,#budget td{text-align:right}#budget td:first-child{text-align:left}
+  #prog th.r,#prog td{text-align:right}#prog td:first-child{text-align:left}#prog .btab{width:100%}
   .bscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.btab{font-size:13px}.btab th,.btab td{padding:7px 5px;white-space:nowrap}.btab td small{display:block;font-size:11px;color:var(--ink2)}
   .top button{background:none;border:1px solid rgba(255,255,255,.4);color:#f6eee8;border-radius:99px;padding:4px 12px;font-size:12px}
   /* 分頁 */
@@ -203,6 +204,7 @@ function render(d) {
   const OFF_SHOW = ["蝦幣充值", "廣告充值"], offShow = d.offbook.filter((r) => !r[0] && OFF_SHOW.includes(r[1])), offSum = offShow.reduce((s, r) => s + (Number(r[2]) || 0), 0);
   shell(); renderPlan(d);
   $("#finPane").innerHTML = `
+  <div class="box" id="prog" hidden></div>
   <div class="box"><h2>① 收支總覽</h2><div id="period"></div></div>
   <div class="box"><h2>② 錢包餘額（最新）</h2><div class="tiles">
     <div class="tile"><small>人民幣錢包</small><b class="${cls(w[0])}">${fx(w[0], "¥")}</b></div>
@@ -220,7 +222,37 @@ function render(d) {
     <p class="muted">充值是先把錢放進蝦皮，實際花掉時才以「廣告蝦幣」算進上面的支出，所以這裡不重複計算。</p></div>
   <p class="muted" style="text-align:center">更新時間 ${new Date(d.at).toLocaleString("zh-TW")}　<span id="sync"></span>　<a href="#" id="refresh" style="color:var(--rose)">重新整理</a></p>`;
   $("#refresh").onclick = (e) => { e.preventDefault(); const pw = get(KEY); if (pw) enter(pw, true, true); else showGate(); };
-  renderPeriod(d);
+  renderPeriod(d); renderProgress(d);
+}
+// ---- 本月進度（2026-10-24 使用者）：總銷售額 對 損益平衡、團隊目標（＝月獎金門檻 160／200／250／300 萬）
+//   損益平衡 = 預算分佈的預設數字（不是頁面上調過的）解出來的總銷售額，App總覽分頁用同一個算法
+//   應到 = 目標 × 到昨天的天數 ÷ 當月天數；每天要賣 = (目標 − 目前) ÷ 剩下天數（含今天）
+const GOALS = [1600000, 2000000, 2500000, 3000000];
+function breakEven(PL) {
+  const v = PL.defaults, fixed = PL.rows.reduce((t, [, rs]) => t + rs.reduce((a, x) => a + (typeof x[2] === "number" ? x[2] : 0), 0), 0);
+  const k = (1 - v.fail / 100) * ((1 - v.fee / 100) - (1 - v.gm / 100) - (PL.ship + PL.pack) / v.aov - v.bonus / 100); // 每 1 元總銷售額留下的錢
+  return k > 0 ? Math.round(fixed / k) : null;
+}
+function renderProgress(d) {
+  const box = $("#prog"); if (!d.plan || !d.days) return;
+  const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10), ym = today.slice(0, 7), dn = +today.slice(8);
+  const dim = new Date(+ym.slice(0, 4), +ym.slice(5), 0).getDate(), left = dim - dn + 1;
+  const rows = d.days.filter((r) => r[0].startsWith(ym) && r[0] <= today), got = rows.reduce((t, r) => t + (r[4] || 0), 0);
+  const be = breakEven(d.plan), goals = (be ? [["損益平衡", be]] : []).concat(GOALS.map((g) => [`${g / 10000} 萬`, g]));
+  const pace = (g, n) => g * n / dim;
+  const tr = ([k, g]) => { const due = pace(g, dn - 1), gap = got - due;
+    return got >= g ? `<tr><td>${k}<small>${fmt(g)}</small></td><td colspan="3" class="pos">✔ 已達成</td></tr>`
+      : `<tr><td>${k}<small>${fmt(g)}</small></td><td>${fmt(due)}</td><td class="${gap < 0 ? "neg" : "pos"}">${gap < 0 ? "" : "+"}${fmt(gap)}</td><td><b>${fmt((g - got) / left)}</b></td></tr>`; };
+  let cum = 0; const daily = rows.map((r) => { cum += r[4] || 0; const n = +r[0].slice(8);
+    const p = (g) => { if (r[0] === today) return `<td class="muted">進行中</td>`; const x = cum / pace(g, n); return `<td class="${x >= 1 ? "pos" : ""}">${Math.round(x * 100)}%</td>`; };
+    return `<tr><td>${+r[0].slice(5, 7)}/${n}</td><td>${fmt(r[4] || 0)}</td><td>${fmt(cum)}</td>${be ? p(be) : ""}${p(GOALS[0])}</tr>`; }).reverse().join("");
+  box.hidden = false;
+  box.innerHTML = `<h2>本月進度（${ym.replace("-", "/")}）</h2>
+    <div class="kpi" style="margin-bottom:10px"><div><small>本月總銷售額</small><b>${fmt(got)}</b></div><div><small>平均每天</small><b>${fmt(dn > 1 ? got / (dn - 1) : got)}</b><small>到昨天</small></div><div><small>剩下</small><b>${left} 天</b><small>含今天</small></div></div>
+    <div class="bscroll"><table class="btab" id="goalTbl"><tr><th>目標</th><th class="r">應到（到昨天）</th><th class="r">差距</th><th class="r">每天要賣</th></tr>${goals.map(tr).join("")}</table></div>
+    <details style="margin-top:8px"><summary style="display:block;text-align:left;font-size:13px;font-weight:600;cursor:pointer;color:var(--rose)">▸ 每日進度</summary><div class="bscroll"><table class="btab" id="dayTbl"><tr><th>日期</th><th class="r">當天</th><th class="r">累計</th>${be ? '<th class="r">損益平衡</th>' : ""}<th class="r">160 萬</th></tr>${daily}</table></div>
+    <p class="muted">% = 累計 ÷ 照天數應該到的金額，100% 以上就是跟上進度。</p></details>
+    <p class="muted">總銷售額 = 下單金額（今天每 15 分鐘更新）。損益平衡 = 用「預算分佈」的預設數字算出要賣多少總銷售額才打平；團隊目標 160／200／250／300 萬，同月獎金門檻。</p>`;
 }
 // ---- 收支總覽：日／月／年，只顯示選到的那一期
 const P = { mode: "月", day: "", month: "", year: "" };
@@ -249,21 +281,32 @@ function renderPeriod(d) {
   const cash = cashRows.length ? cashRows.reduce((t, r) => t + (r[1] || 0), 0) : undefined; // 2025 沒有日層資料 → 維持依訂單月
   // 2026-10-22 使用者：月／年的損益改用實際入帳算（收入格換成實際入帳，原本依訂單月的收入移到下面那格）
   const orderInc = inc; if (cash !== undefined) { inc = cash; pl = cash + exp; }
-  // 固定開支（2026-10-22）：每月固定金額（API fixed）；變動支出 = 支出 + 帳上已記的固定開支(扣掉避免重複)；損益 = 實際入帳 + 變動支出 − 固定開支
-  const F = cash !== undefined && d.fixed ? d.fixed : null; let fixedAmt, varExp;
-  if (F) { const yms = P.mode === "月" ? [P.month] : months.filter((m) => m.ym.startsWith(P.year)).map((m) => m.ym);
-    varExp = exp + yms.reduce((t, k) => t + (F.booked[k.replace("-", "/")] || 0), 0); fixedAmt = -F.total * yms.length; pl = cash + varExp + fixedAmt;
-    note = `固定開支${yms.length > 1 ? `（每月 ${fmt(F.total)} × ${yms.length} 個月，以目前的固定開支估）` : ""}：${F.items.map((x) => `${esc(x[0])} ${fmt(x[1])}`).join("、")}。變動支出 = 支出扣掉帳上已記的薪資、社保、房租、專線、VPN（避免重複扣）。<br>` + note; }
+  // 2026-10-24 使用者：分兩種損益
+  //   現金損益 = 實際入帳 − 帳上已記的支出（薪資房租真的記帳了才算）
+  //   經營損益 = 訂單收入 − 變動支出 − 固定開支（當月按已過天數攤，不再月初整筆先扣）；變動支出 = 支出 + 帳上已記的固定開支(扣掉避免重複)
+  const F = cash !== undefined && d.fixed ? d.fixed : null; let fixedAmt, varExp, cashPl, opPl, fixedLbl = "固定開支";
+  if (F) { const yms = P.mode === "月" ? [P.month] : months.filter((m) => m.ym.startsWith(P.year)).map((m) => m.ym), cur = today.slice(0, 7);
+    const dim = (k) => new Date(+k.slice(0, 4), +k.slice(5), 0).getDate(), share = (k) => (k < cur ? 1 : k === cur ? +today.slice(8) / dim(k) : 0);
+    varExp = exp + yms.reduce((t, k) => t + (F.booked[k.replace("-", "/")] || 0), 0); fixedAmt = -Math.round(F.total * yms.reduce((t, k) => t + share(k), 0));
+    cashPl = cash + exp; opPl = orderInc + varExp + fixedAmt;
+    if (yms.includes(cur)) fixedLbl = P.mode === "月" ? `固定開支（${+today.slice(8)}/${dim(cur)} 天）` : "固定開支（攤到今天）";
+    note = `固定開支每月 ${fmt(F.total)}：${F.items.map((x) => `${esc(x[0])} ${fmt(x[1])}`).join("、")}。當月按已過天數攤（不是月初整筆先扣）。<br>`
+      + "現金損益 = 實際入帳（這個月真的撥進錢包的錢）− 帳上已記的支出，薪水房租要真的記帳了才算。<br>"
+      + "經營損益 = 訂單收入（這個月下單、已撥款的部分，撥款要到下個月才完整，月中會偏低）− 變動支出 − 固定開支；變動支出 = 支出扣掉帳上已記的薪資、社保、房租、專線、VPN（改用上面的固定開支，避免重複扣）。<br>"
+      + "月支出依歸屬月（例如 9 月薪水 10 月發，仍算 9 月）。總銷售額 = 下單金額；不成立金額、蝦皮抽成（成交手續費＋服務費＋金流費）依訂單月，當月訂單還沒撥完前是估計。" + (P.mode === "年" ? "<br>年 = 各月加總。" : ""); }
   const amt = (x) => (x === undefined ? "—" : fmt(x)), ofG = (x) => (x !== undefined && gross ? `<small>佔總銷售額 ${(x / gross * 100).toFixed(1)}%</small>` : "");
   const picker = P.mode === "日" ? `<input type="date" id="pp" value="${P.day}" min="2026-01-01" max="${today}">`
     : P.mode === "月" ? `<select id="pp">${months.map((m) => `<option value="${m.ym}" ${m.ym === P.month ? "selected" : ""}>${m.ym.replace("-", "/")}</option>`).join("")}</select>`
     : `<select id="pp">${years.map((y) => `<option value="${y}" ${y === P.year ? "selected" : ""}>${y}</option>`).join("")}</select>`;
-  const rate = inc && P.mode !== "日" ? ` <span style="font-size:12px;color:var(--ink2)">淨利率 ${(pl / inc * 100).toFixed(1)}%</span>` : "";
+  const rate = inc && P.mode !== "日" && !F ? ` <span style="font-size:12px;color:var(--ink2)">淨利率 ${(pl / inc * 100).toFixed(1)}%</span>` : "";
   box.innerHTML = `<div class="seg">${["日", "月", "年"].map((k) => `<button data-m="${k}" class="${P.mode === k ? "on" : ""}">${k}</button>`).join("")}${picker}</div>
     <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
     <div class="kpi" style="margin-bottom:8px"><div><small>總銷售額</small><b>${amt(gross)}</b></div><div><small>不成立金額</small><b>${amt(fail)}</b>${ofG(fail)}</div><div><small>蝦皮抽成</small><b>${amt(fee)}</b>${ofG(fee)}</div></div>
-    ${F ? `<div class="kpi"><div><small>實際入帳</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>變動支出</small><b class="${cls(varExp)}">${fmt(varExp)}</b></div><div><small>固定開支</small><b class="${cls(fixedAmt)}">${fmt(fixedAmt)}</b></div></div>
-    <div class="kpi" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px"><div class="pl"><small>損益</small><b class="${cls(pl)}">${fmt(pl)}</b></div><div><small>${P.mode === "年" ? "全年" : "本月"}訂單收入（參考）</small><b class="${cls(orderInc)}">${fmt(orderInc)}</b></div></div>`
+    ${F ? `<div style="font-size:13px;font-weight:600;margin:12px 0 6px">現金損益<span class="muted" style="font-weight:400">　錢真的進出多少</span></div>
+    <div class="kpi"><div><small>實際入帳</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>已記支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>現金損益</small><b class="${cls(cashPl)}">${fmt(cashPl)}</b></div></div>
+    <div style="font-size:13px;font-weight:600;margin:12px 0 6px">經營損益<span class="muted" style="font-weight:400">　這${P.mode === "年" ? "年" : "個月"}的生意賺不賺</span></div>
+    <div class="kpi"><div><small>${P.mode === "年" ? "全年" : "本月"}訂單收入</small><b class="${cls(orderInc)}">${fmt(orderInc)}</b></div><div><small>變動支出</small><b class="${cls(varExp)}">${fmt(varExp)}</b></div><div><small>${fixedLbl}</small><b class="${cls(fixedAmt)}">${fmt(fixedAmt)}</b></div></div>
+    <div class="kpi" style="grid-template-columns:1fr;margin-top:8px"><div class="pl"><small>經營損益</small><b class="${cls(opPl)}">${fmt(opPl)}</b></div></div>`
     : `<div class="kpi"><div><small>${cash === undefined ? "收入" : "實際入帳"}</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>損益</small><b class="${cls(pl)}">${fmt(pl)}</b></div></div>
     ${cash === undefined ? "" : `<div class="kpi" style="grid-template-columns:1fr;margin-top:8px"><div><small>${P.mode === "年" ? "全年" : "本月"}訂單收入</small><b class="${cls(orderInc)}">${fmt(orderInc)}</b></div></div>`}`}
     <p class="muted">${note}</p>`;
