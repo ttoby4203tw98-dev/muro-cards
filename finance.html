@@ -282,18 +282,24 @@ function renderPeriod(d) {
   // 2026-10-22 使用者：月／年的損益改用實際入帳算（收入格換成實際入帳，原本依訂單月的收入移到下面那格）
   const orderInc = inc; if (cash !== undefined) { inc = cash; pl = cash + exp; }
   // 2026-10-24 使用者：分兩種損益
-  //   現金損益 = 實際入帳 − 帳上已記的支出（薪資房租真的記帳了才算）
-  //   經營損益 = 訂單收入 − 變動支出 − 固定開支（當月按已過天數攤，不再月初整筆先扣）；變動支出 = 支出 + 帳上已記的固定開支(扣掉避免重複)
-  const F = cash !== undefined && d.fixed ? d.fixed : null; let fixedAmt, varExp, cashPl, opPl, fixedLbl = "固定開支";
+  //   現金損益 = 實際入帳 − 實際支出（2026-10-25 改：三錢包付出去的錢，依付款月，d.fixed.cash；舊版 API 沒有就用帳上已記支出）
+  //   預估經營損益（2026-10-25）= 有效銷售額 × 80% − 有效銷售額 × 成本率 − 其他變動支出 − 固定開支；比率在 d.fixed.est
+  //   實際經營損益 = 訂單收入 − 變動支出 − 固定開支（當月按已過天數攤，不再月初整筆先扣）；變動支出 = 支出 + 帳上已記的固定開支(扣掉避免重複)
+  const F = cash !== undefined && d.fixed ? d.fixed : null; let fixedAmt, varExp, cashExp, cashPl, opPl, est, estHow = "", fixedLbl = "固定開支";
   if (F) { const yms = P.mode === "月" ? [P.month] : months.filter((m) => m.ym.startsWith(P.year)).map((m) => m.ym), cur = today.slice(0, 7);
     const dim = (k) => new Date(+k.slice(0, 4), +k.slice(5), 0).getDate(), share = (k) => (k < cur ? 1 : k === cur ? +today.slice(8) / dim(k) : 0);
     varExp = exp + yms.reduce((t, k) => t + (F.booked[k.replace("-", "/")] || 0), 0); fixedAmt = -Math.round(F.total * yms.reduce((t, k) => t + share(k), 0));
-    cashPl = cash + exp; opPl = orderInc + varExp + fixedAmt;
+    cashExp = F.cash ? -yms.reduce((t, k) => t + (F.cash[k.replace("-", "/")] || 0), 0) : exp; cashPl = cash + cashExp; opPl = orderInc + varExp + fixedAmt;
+    if (F.est) { est = { inc: 0, cost: 0, other: varExp };
+      months.filter((m) => yms.includes(m.ym)).forEach((m) => { const e = F.est[m.ym.replace("-", "/")] || [0, 0, 0], net = (m.gross || 0) * (1 - e[0]);
+        est.inc += net * (1 - F.fee); est.cost -= net * e[1]; est.other += e[2]; });
+      est.inc = Math.round(est.inc); est.cost = Math.round(est.cost); est.pl = est.inc + est.cost + est.other + fixedAmt;
+      const e1 = P.mode === "月" ? F.est[P.month.replace("-", "/")] : null, keep = `${Math.round((1 - F.fee) * 100)}%`;
+      estHow = e1 ? `預估收入 = 總銷售額 ${fmt(gross)} ×（1 − 不成立率 ${(e1[0] * 100).toFixed(1)}%）× ${keep}（蝦皮抽成抓 ${Math.round(F.fee * 100)}%）；預估商品成本 = 有效銷售額 × 成本率 ${(e1[1] * 100).toFixed(1)}%（已撥款訂單的商品成本＋估計物流 ÷ 銷售額）；其他變動支出 = 變動支出扣掉出貨訂單貨款、囤貨、物流共 ${fmt(e1[2])}（依歸屬月）。`
+        : `預估收入 = 總銷售額 ×（1 − 不成立率）× ${keep}；預估商品成本 = 有效銷售額 × 成本率（已撥款訂單的商品成本＋估計物流 ÷ 銷售額）；其他變動支出 = 變動支出扣掉出貨訂單貨款、囤貨、物流（依歸屬月）。各月分開算再加總。`; }
     if (yms.includes(cur)) fixedLbl = P.mode === "月" ? `固定開支（${+today.slice(8)}/${dim(cur)} 天）` : "固定開支（攤到今天）";
     note = `固定開支每月 ${fmt(F.total)}：${F.items.map((x) => `${esc(x[0])} ${fmt(x[1])}`).join("、")}。當月按已過天數攤（不是月初整筆先扣）。<br>`
-      + "現金損益 = 實際入帳（這個月真的撥進錢包的錢）− 帳上已記的支出，薪水房租要真的記帳了才算。<br>"
-      + "經營損益 = 訂單收入（這個月下單、已撥款的部分，撥款要到下個月才完整，月中會偏低）− 變動支出 − 固定開支；變動支出 = 支出扣掉帳上已記的薪資、社保、房租、專線、VPN（改用上面的固定開支，避免重複扣）。<br>"
-      + "月支出依歸屬月（例如 9 月薪水 10 月發，仍算 9 月）。總銷售額 = 下單金額；不成立金額、蝦皮抽成（成交手續費＋服務費＋金流費）依訂單月，當月訂單還沒撥完前是估計。" + (P.mode === "年" ? "<br>年 = 各月加總。" : ""); }
+      + "總銷售額 = 下單金額；不成立金額、蝦皮抽成（成交手續費＋服務費＋金流費）依訂單月，當月訂單還沒撥完前是估計。" + (P.mode === "年" ? "<br>年 = 各月加總。" : ""); }
   const amt = (x) => (x === undefined ? "—" : fmt(x)), ofG = (x) => (x !== undefined && gross ? `<small>佔總銷售額 ${(x / gross * 100).toFixed(1)}%</small>` : "");
   const picker = P.mode === "日" ? `<input type="date" id="pp" value="${P.day}" min="2026-01-01" max="${today}">`
     : P.mode === "月" ? `<select id="pp">${months.map((m) => `<option value="${m.ym}" ${m.ym === P.month ? "selected" : ""}>${m.ym.replace("-", "/")}</option>`).join("")}</select>`
@@ -302,11 +308,17 @@ function renderPeriod(d) {
   box.innerHTML = `<div class="seg">${["日", "月", "年"].map((k) => `<button data-m="${k}" class="${P.mode === k ? "on" : ""}">${k}</button>`).join("")}${picker}</div>
     <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
     <div class="kpi" style="margin-bottom:8px"><div><small>總銷售額</small><b>${amt(gross)}</b></div><div><small>不成立金額</small><b>${amt(fail)}</b>${ofG(fail)}</div><div><small>蝦皮抽成</small><b>${amt(fee)}</b>${ofG(fee)}</div></div>
-    ${F ? `<div style="font-size:13px;font-weight:600;margin:12px 0 6px">現金損益<span class="muted" style="font-weight:400">　錢真的進出多少</span></div>
-    <div class="kpi"><div><small>實際入帳</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>已記支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>現金損益</small><b class="${cls(cashPl)}">${fmt(cashPl)}</b></div></div>
-    <div style="font-size:13px;font-weight:600;margin:12px 0 6px">經營損益<span class="muted" style="font-weight:400">　這${P.mode === "年" ? "年" : "個月"}的生意賺不賺</span></div>
+    ${F ? `<div style="font-size:13px;font-weight:600;margin:12px 0 6px">現金損益<span class="muted" style="font-weight:400">　錢包真的進出多少</span></div>
+    <div class="kpi"><div><small>實際入帳</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>${F.cash ? "實際支出" : "已記支出"}</small><b class="${cls(cashExp)}">${fmt(cashExp)}</b></div><div class="pl"><small>現金損益</small><b class="${cls(cashPl)}">${fmt(cashPl)}</b></div></div>
+    <p class="muted">${F.cash ? "現金損益 = 實際入帳（撥進錢包的錢，依撥款日）− 實際支出（三個錢包付出去的錢，依付款日，例如 9 月薪水 10 月發就算 10 月；廣告、蝦幣算充值；不含內部轉帳、匯去大陸的錢）。" : "現金損益 = 實際入帳 − 帳上已記的支出。"}</p>
+    ${est ? `<div style="font-size:13px;font-weight:600;margin:12px 0 6px">預估經營損益<span class="muted" style="font-weight:400">　用下單金額先估這${P.mode === "年" ? "年" : "個月"}賺不賺</span></div>
+    <div class="kpi"><div><small>預估收入</small><b class="${cls(est.inc)}">${fmt(est.inc)}</b></div><div><small>預估商品成本（含物流）</small><b class="${cls(est.cost)}">${fmt(est.cost)}</b></div><div><small>其他變動支出</small><b class="${cls(est.other)}">${fmt(est.other)}</b></div></div>
+    <div class="kpi" style="grid-template-columns:1fr 1fr;margin-top:8px"><div><small>${fixedLbl}</small><b class="${cls(fixedAmt)}">${fmt(fixedAmt)}</b></div><div class="pl"><small>預估經營損益</small><b class="${cls(est.pl)}">${fmt(est.pl)}</b></div></div>
+    <p class="muted">預估經營損益 = 預估收入 − 預估商品成本 − 其他變動支出 − 固定開支。${estHow}</p>` : ""}
+    <div style="font-size:13px;font-weight:600;margin:12px 0 6px">實際經營損益<span class="muted" style="font-weight:400">　用蝦皮真的撥下來的錢算，下個月中才完整</span></div>
     <div class="kpi"><div><small>${P.mode === "年" ? "全年" : "本月"}訂單收入</small><b class="${cls(orderInc)}">${fmt(orderInc)}</b></div><div><small>變動支出</small><b class="${cls(varExp)}">${fmt(varExp)}</b></div><div><small>${fixedLbl}</small><b class="${cls(fixedAmt)}">${fmt(fixedAmt)}</b></div></div>
-    <div class="kpi" style="grid-template-columns:1fr;margin-top:8px"><div class="pl"><small>經營損益</small><b class="${cls(opPl)}">${fmt(opPl)}</b></div></div>`
+    <div class="kpi" style="grid-template-columns:1fr;margin-top:8px"><div class="pl"><small>實際經營損益</small><b class="${cls(opPl)}">${fmt(opPl)}</b></div></div>
+    <p class="muted">實際經營損益 = 訂單收入（這${P.mode === "年" ? "年" : "個月"}下單、已撥款的部分）− 變動支出（帳上已記的支出、依歸屬月，扣掉薪資、社保、房租、專線、VPN，改用固定開支避免重複）− 固定開支。</p>`
     : `<div class="kpi"><div><small>${cash === undefined ? "收入" : "實際入帳"}</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>支出</small><b class="${cls(exp)}">${fmt(exp)}</b></div><div class="pl"><small>損益</small><b class="${cls(pl)}">${fmt(pl)}</b></div></div>
     ${cash === undefined ? "" : `<div class="kpi" style="grid-template-columns:1fr;margin-top:8px"><div><small>${P.mode === "年" ? "全年" : "本月"}訂單收入</small><b class="${cls(orderInc)}">${fmt(orderInc)}</b></div></div>`}`}
     <p class="muted">${note}</p>`;
