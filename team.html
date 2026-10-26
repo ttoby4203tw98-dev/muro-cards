@@ -159,7 +159,7 @@
         +(p.now!=null?'<div class="row"><span>今天目前 '+f(p.now)+'</span><span>'+(p.need?pc(p.now,p.need):100)+'%</span></div><div class="bar day"><i style="width:'+(p.need?pc(p.now,p.need):100)+'%"></i></div>':'')
         +'<div class="row"><span>目前 '+f(p.got)+' ／ 月目標 '+(p.goal/10000)+' 萬</span><span>'+pc(p.got,p.goal)+'%</span></div><div class="bar"><i style="width:'+pc(p.got,p.goal)+'%"></i></div>'
         +(p.wkGoal?'<div class="row"><span>本週 '+f(p.wk)+' ／ 週目標 '+(p.wkGoal/10000)+' 萬</span><span>'+pc(p.wk,p.wkGoal)+'%</span></div><div class="bar wk"><i style="width:'+pc(p.wk,p.wkGoal)+'%"></i></div>':'')
-        +(p.be?'<div class="row"><span>損益平衡 '+f(p.be)+'</span><span>'+pc(p.got,p.be)+'%</span></div><div class="bar be"><i style="width:'+pc(p.got,p.be)+'%"></i></div>'
+        +(p.be?'<div class="row"><span>目前 '+f(p.got)+' ／ 損益平衡 '+f(p.be)+'</span><span>'+pc(p.got,p.be)+'%</span></div><div class="bar be"><i style="width:'+pc(p.got,p.be)+'%"></i></div>'
           +(p.now!=null?'<div class="row"><span>今天目前 '+f(p.now)+' ／ 要 '+f(p.beNeed)+'</span><span>'+(p.beNeed?pc(p.now,p.beNeed):100)+'%</span></div><div class="bar be"><i style="width:'+(p.beNeed?pc(p.now,p.beNeed):100)+'%"></i></div>':''):'');
       el.hidden=false;
     }
