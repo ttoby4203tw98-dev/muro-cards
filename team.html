@@ -79,6 +79,8 @@
   .prog .bar.be i{background:var(--gold)}
   .prog .bar.wk i{background:var(--plum2)}
   .prog .bar.day i{background:var(--plum)}
+  .prog .rf{border:1px solid var(--line);background:none;border-radius:99px;padding:1px 9px;margin-left:6px;font:inherit;color:var(--rose);cursor:pointer}
+  .prog .rf:disabled{opacity:.5}
 </style>
 </head>
 <body>
@@ -154,7 +156,7 @@
     var f=function(n){return Math.round(n).toLocaleString('zh-TW')}, pc=function(a,b){return Math.min(100,Math.round(a/b*100))};
     function show(p){
       if(!p||!p.ok)return; var el=document.getElementById('prog');
-      el.innerHTML='<div class="hd"><span>'+(+p.ym.slice(5))+' 月進度</span><span>剩 '+p.left+' 天・更新 '+p.at.slice(6)+'</span></div>'
+      el.innerHTML='<div class="hd"><span>'+(+p.ym.slice(5))+' 月進度</span><span>剩 '+p.left+' 天・更新 '+p.at.slice(6)+'<button class="rf" type="button">↻ 更新</button></span></div>'
         +'<div class="need">今日目標銷售額<b>'+f(p.need)+(p.now!=null?'<small>目前 '+f(p.now)+'</small>':'')+'</b></div>'
         +(p.now!=null?'<div class="row"><span>今天目前 '+f(p.now)+'</span><span>'+(p.need?pc(p.now,p.need):100)+'%</span></div><div class="bar day"><i style="width:'+(p.need?pc(p.now,p.need):100)+'%"></i></div>':'')
         +'<div class="row"><span>目前 '+f(p.got)+' ／ 月目標 '+(p.goal/10000)+' 萬</span><span>'+pc(p.got,p.goal)+'%</span></div><div class="bar"><i style="width:'+pc(p.got,p.goal)+'%"></i></div>'
@@ -171,9 +173,18 @@
       return '<div class="row"><span>目前 '+f(p.got)+' ／ 獎金門檻 130 萬</span><span>'+pc(p.got,B)+'%</span></div><div class="bar be"><i style="width:'+pc(p.got,B)+'%"></i></div>'
         +(p.now!=null?'<div class="row"><span>今天目前 '+f(p.now)+' ／ 要 '+f(need)+'</span><span>'+(need?pc(p.now,need):100)+'%</span></div><div class="bar be"><i style="width:'+(need?pc(p.now,need):100)+'%"></i></div>':'');
     }
+    function load(){
+      return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'progress'})})
+        .then(function(r){return r.json()}).then(function(p){show(p);try{localStorage.setItem(K,JSON.stringify(p))}catch(e){}});
+    }
+    // 更新鍵：不用重開 App 就能重抓
+    document.getElementById('prog').addEventListener('click',function(e){
+      var b=e.target.closest('.rf'); if(!b||b.disabled)return;
+      b.disabled=true; b.textContent='更新中…';
+      load().catch(function(){b.disabled=false;b.textContent='↻ 重試'});
+    });
     try{show(JSON.parse(localStorage.getItem(K)||'null'))}catch(e){}
-    fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'progress'})})
-      .then(function(r){return r.json()}).then(function(p){show(p);try{localStorage.setItem(K,JSON.stringify(p))}catch(e){}}).catch(function(){});
+    load().catch(function(){});
   })();
 </script>
 </body>
