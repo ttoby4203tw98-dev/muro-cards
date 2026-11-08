@@ -171,12 +171,17 @@
     }
     function td(need){return '<em>今天要 '+f(need)+'</em>'}
     // 獎金（2026-11-02 使用者）：月銷售 130 萬起才有獎金池＝整月銷售額 × 所在級距 %
-    var BONUS=[[2500000,4],[2000000,3],[1600000,2],[1300000,0.5]];
+    // 不成立率（2026-11-08 使用者，蝦皮後台口徑 p.cr＝本月不成立金額÷總銷售額，到昨天）：超過 20% 門檻要補齊
+    //   ＝銷售額×(1−不成立率) 要 ≥ 門檻×80%。例：門檻 160 萬、不成立 22% → 要賣 160×0.8÷0.78≈164 萬；≤20% 照原門檻
+    var BONUS=[[2500000,4],[2000000,3],[1600000,2],[1300000,0.5]], CR=0.2;
+    function adj(T,p){return p.cr>CR?T*(1-CR)/(1-p.cr):T}
+    function wan(n){return Math.round(n/1000)/10}
     function bonus(p){
-      var B=1300000, t=BONUS.filter(function(b){return p.got>=b[0]})[0];
-      if(t)return '<div class="row"><span>獎金池 '+t[1]+'%（已過 130 萬）</span><span>'+f(p.got*t[1]/100)+' 元</span></div><div class="bar be"><i style="width:100%"></i></div>';
+      var B=adj(1300000,p), t=BONUS.filter(function(b){return p.got>=adj(b[0],p)})[0];
+      var cr=p.cr!=null?'<div class="row"><span>本月不成立率 ／ 上限 20%</span><span>'+(Math.round(p.cr*1000)/10)+'%</span></div>':'';
+      if(t)return cr+'<div class="row"><span>獎金池 '+t[1]+'%（已過 '+wan(adj(t[0],p))+' 萬）</span><span>'+f(p.got*t[1]/100)+' 元</span></div><div class="bar be"><i style="width:100%"></i></div>';
       var need=p.now!=null&&p.left?Math.max(0,(B-(p.got-p.now))/p.left):0;
-      return '<div class="row"><span>目前 '+f(p.got)+' ／ 獎金門檻 130 萬</span><span>'+(p.now!=null?td(need):'')+pc(p.got,B)+'%</span></div><div class="bar be"><i style="width:'+pc(p.got,B)+'%"></i></div>';
+      return cr+'<div class="row"><span>目前 '+f(p.got)+' ／ 獎金門檻 '+wan(B)+' 萬</span><span>'+(p.now!=null?td(need):'')+pc(p.got,B)+'%</span></div><div class="bar be"><i style="width:'+pc(p.got,B)+'%"></i></div>';
     }
     function load(){
       return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'progress'})})
