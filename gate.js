@@ -38,7 +38,7 @@
     inp.focus();
     form.onsubmit = function (e) {
       e.preventDefault();
-      sha("muro-gate|" + inp.value.trim()).then(function (h) {
+      sha("muro-gate|" + inp.value.normalize("NFKC").trim().toLowerCase()).then(function (h) {
         if (h !== HASH) { msg.textContent = "密碼不對，請再試一次。"; inp.select(); return; }
         try { localStorage.setItem(KEY, HASH); } catch (err) {}
         box.remove(); st.remove();
