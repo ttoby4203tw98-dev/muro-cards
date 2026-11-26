@@ -210,7 +210,7 @@ function render(d) {
     <div class="tile"><small>公司錢包</small><b class="${cls(w[2])}">${fx(w[2], "NT$")}</b></div>
     <div class="tile all"><small>合計（台幣，人民幣×匯率）</small><b class="${cls(w[3])}">${fx(w[3], "NT$")}</b></div></div></div>
   <div class="box" id="budget" hidden></div>
-  <div class="box" id="expStruct"><h2>③ 支出結構（累計）</h2><div class="struct">${pie(st.map((r) => ({ name: r[0], v: Math.abs(r[1]) })))}
+  <div class="box" id="expStruct"><h2>③ 支出結構（累計）<span class="muted" style="font-size:13px;font-weight:400">　本月份真實支出</span></h2><div class="struct">${pie(st.map((r) => ({ name: r[0], v: Math.abs(r[1]) })))}
     <table><tbody>${st.map((r, i) => `<tr><td><span class="dot" style="background:${COLORS[i % COLORS.length]}"></span>${esc(r[0])}</td><td class="neg">${fmt(r[1])}</td><td>${pct(r[2])}</td></tr>`).join("")}
     <tr class="sum"><td>合計</td><td class="neg">${fmt(stSum[1])}</td><td>${pct(stSum[2])}</td></tr></tbody></table></div></div>
   <div class="box" id="expDetail"><h2>④ 支出明細（點大類展開）</h2>${groups.map((g) => grpHtml(g, true)).join("")}
@@ -273,7 +273,7 @@ function renderPeriod(d) {
   box.innerHTML = `<div class="seg">${["日", "月", "年"].map((k) => `<button data-m="${k}" class="${P.mode === k ? "on" : ""}">${k}</button>`).join("")}${picker}</div>
     <div style="font-size:14px;font-weight:600;margin-bottom:8px">${esc(label)}${rate}</div>
     <div class="kpi" style="margin-bottom:8px"><div><small>總銷售額</small><b>${amt(gross)}</b></div><div><small>不成立金額</small><b>${amt(fail)}</b>${failPct}</div><div><small>蝦皮抽成</small><b>${amt(fee)}</b>${feePct}</div></div>
-    ${F ? `<div style="font-size:13px;font-weight:600;margin:12px 0 6px">現金損益<span class="muted" style="font-weight:400">　錢包真的進出多少</span></div>
+    ${F ? `<div style="font-size:13px;font-weight:600;margin:12px 0 6px">現金損益<span class="muted" style="font-weight:400">　錢包實際付出去的錢，會包含上個月的支出（例如上月薪水這月發）</span></div>
     <div class="kpi"><div><small>實際入帳</small><b class="${cls(inc)}">${fmt(inc)}</b></div><div><small>${F.cash ? "實際支出" : "已記支出"}</small><b class="${cls(cashExp)}">${fmt(cashExp)}</b></div><div class="pl"><small>現金損益</small><b class="${cls(cashPl)}">${fmt(cashPl)}</b></div></div>
     <p class="muted">${F.cash ? "現金損益 = 實際入帳（撥進錢包的錢，依撥款日）− 實際支出（三個錢包付出去的錢，依付款日，例如 9 月薪水 10 月發就算 10 月；廣告、蝦幣算充值；不含內部轉帳、匯去大陸的錢）。" : "現金損益 = 實際入帳 − 帳上已記的支出。"}</p>
     <div style="font-size:13px;font-weight:600;margin:12px 0 6px">實際經營損益<span class="muted" style="font-weight:400">　用蝦皮真的撥下來的錢算，下個月中才完整</span></div>
@@ -348,7 +348,7 @@ function renderExp(d) {
   const tot = cats.reduce((s, c) => s + c.t, 0), pc = (n) => (tot ? (n / tot * 100).toFixed(1) + "%" : "");
   const basis = `<p class="muted">商品成本＝1688 出貨訂單實際付款；囤貨＝付款當月就算支出；退款單獨一行（退回的錢，減少支出）。</p>`;
   const note = P.mode === "日" ? `<p class="muted">日模式看的是這個月平均每天的支出結構（月支出 ÷ 天數），不是當天實際付款。${div < 28 ? "本月還沒結束，薪水等月底／下月才記帳的費用還沒進來，平均會偏低。" : ""}</p>` : "";
-  $("#expStruct").innerHTML = `<h2>③ 支出結構（${esc(label)}）</h2>${cats.length ? `<div class="struct">${pie(cats.filter((c) => c.t > 0).map((c) => ({ name: c.name, v: c.t })), tot)}
+  $("#expStruct").innerHTML = `<h2>③ 支出結構（${esc(label)}）<span class="muted" style="font-size:13px;font-weight:400">　本月份真實支出</span></h2>${cats.length ? `<div class="struct">${pie(cats.filter((c) => c.t > 0).map((c) => ({ name: c.name, v: c.t })), tot)}
     <table><tbody>${cats.map((c, i) => `<tr><td><span class="dot" style="${c.t > 0 ? "background:" + COLORS[i % COLORS.length] : "border:2px solid var(--pos)"}"></span>${esc(c.name)}</td><td class="${cls(-c.t)}">${fmt(-c.t)}</td><td>${pc(c.t)}</td></tr>`).join("")}
     <tr class="sum"><td>合計</td><td class="neg">${fmt(-tot)}</td><td>${tot ? "100.0%" : ""}</td></tr></tbody></table></div>` : `<p class="muted">這段期間沒有支出資料。</p>`}${note}${basis}`;
   $("#expDetail").innerHTML = `<h2>④ 支出明細（${esc(label)}，點大類展開）</h2>${cats.map((c) => `<details><summary><span class="l">${esc(c.name)}</span><span class="${cls(-c.t)}">${fmt(-c.t)}</span><span class="p">${pc(c.t)}</span></summary><table>${c.subs.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="${cls(-n)}">${fmt(-n)}</td><td>${pc(n)}</td></tr>`).join("")}</table></details>`).join("")}
