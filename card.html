@@ -2,8 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <script src="gate.js"></script>
-<script src="battle-goods.js"></script>
-<script src="card-data.js"></script>
+<script src="card-goods.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>暮若商品資訊卡</title>
@@ -13,29 +12,37 @@
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;padding:16px 16px 40px}
   .wrap{max-width:560px;margin:0 auto}
+  .back{font-size:13px;color:var(--ink2);text-decoration:none;display:inline-block;margin-bottom:8px}
   .head{display:flex;gap:14px;align-items:center;background:var(--plum);color:#fff;border-radius:14px;padding:14px}
-  .head img{width:88px;height:88px;object-fit:cover;border-radius:10px;background:#fff;flex:none}
+  .head img{width:84px;height:84px;object-fit:cover;border-radius:10px;background:#fff;flex:none}
   .code{font-size:12px;letter-spacing:2px;color:var(--gold)}
-  .head h1{font-size:19px;line-height:1.35;margin:2px 0 6px}
+  .head h1{font-size:18px;line-height:1.35;margin:2px 0 6px}
   .tags{display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
   .tags span{background:rgba(255,255,255,.14);border-radius:20px;padding:2px 9px}
+  .tags .off{background:var(--gold);color:var(--plum)}
   .tags a{color:#fff}
-  h2{font-size:15px;color:var(--plum);margin:22px 0 8px;display:flex;align-items:center;gap:6px}
+  h2{font-size:15px;color:var(--plum);margin:20px 0 8px;display:flex;align-items:center;gap:6px}
   h2 small{font-weight:400;color:var(--ink2);font-size:12px}
-  .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 14px}
-  .item{padding:11px 0;border-bottom:1px solid var(--line)}
-  .item:last-child{border-bottom:0}
-  .item b{display:block;font-size:15px}
-  .why{font-size:14px;color:var(--ink);margin-top:2px}
-  .shot{font-size:13px;color:var(--rose);margin-top:4px}
-  .shot::before{content:"🎬 拍法：";color:var(--ink2)}
-  ol.box{padding:4px 14px 4px 34px}
-  ol.box li{padding:6px 0;font-size:14px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:2px 14px}
+  .sc{padding:10px 0;border-bottom:1px solid var(--line)}
+  .sc:last-child{border-bottom:0}
+  .sc b{font-size:15px}
+  .sc .k{font-size:13px;color:var(--ink);margin-top:2px}
+  .sc .k i{font-style:normal;color:var(--ink2)}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:15px}
+  ol.box{padding:4px 14px 4px 32px}
+  ol.box li{padding:5px 0;font-size:14px}
   .avoid{background:var(--warnbg);border:1px solid #f1d3c4;border-radius:12px;padding:10px 14px;font-size:14px;color:var(--warn)}
-  .none{text-align:center;color:var(--ink2);padding:60px 0}
-  .pick{display:flex;gap:8px;margin-top:14px}
-  .pick input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:16px}
+  .empty{color:var(--ink2);font-size:14px;padding:12px 0}
+  .pick{display:flex;gap:8px;margin-top:8px}
+  .pick input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:16px}
   .pick button{border:0;background:var(--plum);color:#fff;border-radius:10px;padding:0 16px;font-size:15px}
+  .li{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:14px}
+  .li:last-child{border-bottom:0}
+  .li b{color:var(--rose);font-size:13px;flex:none;width:52px}
+  .li span{flex:1;min-width:0}
+  .li i{font-style:normal;font-size:12px;color:var(--ink2);flex:none}
+  .season{font-size:13px;color:var(--ink2);margin-top:6px}
 </style>
 </head>
 <body>
@@ -43,51 +50,81 @@
 <script>
 (function(){
   var app=document.getElementById('app');
-  var code=decodeURIComponent((location.search||'').replace(/^\?/,'').split('&')[0]).trim().toUpperCase();
+  var D=window.CARD_GOODS||{goods:{},scenes:[]}, G=D.goods||{}, SC=D.scenes||[];
+  var m=new Date().getMonth()+1, NOW=(m>=4&&m<=10)?'春夏':'秋冬';   // 台灣：4~10 月春夏、11~3 月秋冬
+  var LV=['輕','中','強'];
+  // 依主分類大類帶保養與不能講
+  var CARE_BASE=['冷水手洗，或裝洗衣袋用輕柔模式','不用熱水、不烘乾——彈性纖維遇熱會鬆，壓力就跑掉','不漂白、不加柔軟精——柔軟精會讓彈性變差','陰乾，避免直接曝曬','2~3 件輪流穿，讓布料有時間回彈，比較耐穿'];
+  var CARE_HOSE=['冷水手洗，輕壓不搓揉','不擰乾、不烘乾，平放陰乾','不漂白、不加柔軟精','穿之前先整理指甲、拿掉戒指，避免勾絲'];
+  var RULE={
+    '塑身褲':{care:CARE_BASE,avoid:['瘦身、燃脂','矯正骨盆／體態','產後修復']},
+    '塑身上衣':{care:CARE_BASE.concat(['有罩杯的不對折、不擰乾，洗完順好杯型再晾']),avoid:['瘦身、燃脂','豐胸、防下垂','矯正駝背／體態']},
+    '連身塑身衣':{care:CARE_BASE.concat(['排扣／拉鍊先扣好再洗，避免勾到布面']),avoid:['瘦身、燃脂','豐胸、防下垂','產後修復','矯正體態']},
+    '壓力襪':{care:CARE_HOSE,avoid:['治療靜脈曲張','消水腫、促進循環（醫療功效）','瘦腿']}
+  };
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-  function picker(msg){
-    app.innerHTML='<div class="none">'+esc(msg)+'</div><div class="pick"><input id="q" placeholder="輸入貨號，例 A8001"><button id="go">查看</button></div>';
+  function big(main){return String(main||'').split(/\s*-\s*/)[0].trim()}
+  function lv(x){var p=LV.filter(function(c){return String(x).indexOf(c)>=0});return p.length?LV.slice(LV.indexOf(p[0]),LV.indexOf(p[p.length-1])+1):LV}
+  function imgOf(code,g){var short=code.replace(/^[A-D](?=[A-Z]?\d)/,'');return g.img||('img/'+short+'.jpg')}
+  var code=decodeURIComponent((location.search||'').replace(/^\?/,'').split('&')[0]).trim().toUpperCase();
+  var g=G[code];
+
+  if(!g){
+    var groups={},keys=Object.keys(G);
+    keys.forEach(function(k){(groups[G[k].tab]=groups[G[k].tab]||[]).push(k)});
+    var h='<div class="pick"><input id="q" placeholder="輸入貨號，例 A8001" value="'+esc(code)+'"><button id="go">查看</button></div>';
+    if(code)h+='<div class="empty">找不到「'+esc(code)+'」（下架或貨號打錯）</div>';
+    h+='<div class="season">現在是 '+NOW+'，卡片顯示當季場景</div>';
+    Object.keys(groups).forEach(function(t){
+      h+='<h2>'+esc(t)+' <small>'+groups[t].length+' 款</small></h2><div class="box">';
+      groups[t].forEach(function(k){var x=G[k];h+='<a class="li" href="card.html?'+encodeURIComponent(k)+'"><b>'+esc(k)+'</b><span>'+esc([x.main,x.style].filter(Boolean).join(' · '))+'</span><i>'+esc([x.series,x.pres&&('壓力'+x.pres)].filter(Boolean).join('・'))+'</i></a>'});
+      h+='</div>';
+    });
+    app.innerHTML=h;
     var go=function(){var v=document.getElementById('q').value.trim();if(v)location.search='?'+encodeURIComponent(v)};
     document.getElementById('go').onclick=go;
     document.getElementById('q').onkeydown=function(e){if(e.key==='Enter')go()};
+    return;
   }
-  var d=(window.CARD_DATA||{})[code];
-  if(!code){picker('輸入貨號查看資訊卡');return}
-  if(!d){picker('「'+code+'」還沒有資訊卡');return}
-  var map=(window.BATTLE_GOODS||{}).map||{};
-  var short=code.replace(/^[A-D](?=[A-Z]?\d)/,'');   // 商品庫貨號有層級字母，舊產生檔/圖片沒有
-  var g=map[code]||map[short]||{};
+
+  var cat=big(g.main), rule=RULE[cat];
+  var season=(g.season==='春夏'||g.season==='秋冬')?g.season:NOW;   // 四季或空白 → 跟著當季
+  var off=season!==NOW;
   var tags=[];
-  if(g.cat)tags.push(esc(g.cat));
-  if(d.pressure)tags.push('壓力 '+esc(d.pressure));
-  if(g.price)tags.push('賣場 $'+esc(g.price));
+  if(g.series)tags.push(esc(g.series));
+  tags.push(esc(g.season||'季節未填'));
+  if(g.pres)tags.push('壓力 '+esc(g.pres));
+  if(g.list)tags.push('賣場 $'+esc(g.list));
   if(g.live)tags.push('直播 $'+esc(g.live));
   if(g.url)tags.push('<a href="'+esc(g.url)+'" target="_blank">蝦皮頁 ↗</a>');
-  var h='';
-  h+='<div class="head"><img src="img/'+esc(short)+'.jpg" onerror="this.src=\'img/'+esc(code)+'.jpg\';this.onerror=function(){this.style.display=\'none\'}" alt="">'
-    +'<div><div class="code">'+esc(code)+'</div><h1>'+esc(d.title||g.name||'')+'</h1><div class="tags"><span>'+tags.join('</span><span>')+'</span></div></div></div>';
-  if(d.scenes&&d.scenes.length){
-    h+='<h2>📍 台灣使用場景</h2><div class="box">';
-    d.scenes.forEach(function(s){h+='<div class="item"><b>'+esc(s.t)+'</b>'+(s.why?'<div class="why">'+esc(s.why)+'</div>':'')+(s.shot?'<div class="shot">'+esc(s.shot)+'</div>':'')+'</div>'});
-    h+='</div>';
+  var h='<a class="back" href="card.html">← 全部商品</a>';
+  h+='<div class="head"><img src="'+esc(imgOf(code,g))+'" onerror="this.style.display=\'none\'" alt="">'
+    +'<div><div class="code">'+esc(code)+'</div><h1>'+esc([g.main,g.style].filter(Boolean).join(' · '))+'</h1><div class="tags"><span>'+tags.join('</span><span>')+'</span>'
+    +(off?'<span class="off">非當季</span>':'')+'</div></div></div>';
+
+  h+='<h2>📍 適合場景'+(g.series?' <small>'+esc(g.series)+' × '+esc(season)+'</small>':'')+'</h2>';
+  if(!g.series){h+='<div class="empty">商品庫還沒填「系列」，填了就會出現場景</div>'}
+  else{
+    var pl=g.pres?lv(g.pres)[0]:null;
+    var list=SC.filter(function(s){
+      return s.series===g.series && (s.season===season||s.season==='四季')
+        && (!pl||lv(s.pres).indexOf(pl)>=0)
+        && s.cats.split(/[、,，\s]+/).indexOf(cat)>=0;
+    });
+    if(!list.length)h+='<div class="empty">場景庫沒有對得上的場景</div>';
+    else{
+      h+='<div class="box">';
+      list.forEach(function(s){h+='<div class="sc"><b>'+esc(s.name)+'</b><div class="k"><i>想修</i> '+esc(s.fix)+'　<i>怕</i> '+esc(s.fear)+'</div><div class="k"><i>外衣</i> '+esc(s.wear)+'</div></div>'});
+      h+='</div>';
+    }
   }
-  if(d.points&&d.points.length){
-    h+='<h2>✨ 賣點</h2><div class="box">';
-    d.points.forEach(function(p,i){h+='<div class="item"><b>'+(i+1)+'. '+esc(p.t)+'</b>'+(p.shot?'<div class="shot">'+esc(p.shot)+'</div>':'')+'</div>'});
-    h+='</div>';
-  }
-  var tpl=(window.CARE_TPL||{})[d.care];
-  var care=(tpl?tpl.items:[]).concat(d.extra||[]);
-  if(care.length){
-    h+='<h2>🧺 保養須知'+(tpl?' <small>'+esc(tpl.label)+'</small>':'')+'</h2><ol class="box">';
-    care.forEach(function(c){h+='<li>'+esc(c)+'</li>'});
-    h+='</ol>';
-  }
-  if(d.avoid&&d.avoid.length){
-    h+='<h2>🚫 不能講</h2><div class="avoid">'+d.avoid.map(esc).join('・')+'</div>';
+  if(g.note)h+='<h2>✨ 重點</h2><div class="note">'+esc(g.note)+'</div>';
+  if(rule){
+    h+='<h2>🧺 保養須知</h2><ol class="box">'+rule.care.map(function(c){return '<li>'+esc(c)+'</li>'}).join('')+'</ol>';
+    h+='<h2>🚫 不能講</h2><div class="avoid">'+rule.avoid.map(esc).join('・')+'</div>';
   }
   app.innerHTML=h;
-  document.title=code+' '+(d.title||'')+'｜暮若資訊卡';
+  document.title=code+'｜暮若資訊卡';
 })();
 </script>
 </body>
