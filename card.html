@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<script src="gate.js"></script>
+<script src="battle-goods.js"></script>
+<script src="card-data.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>暮若商品資訊卡</title>
+<meta name="theme-color" content="#4a2c3a">
+<style>
+  :root{--plum:#4a2c3a;--rose:#9c5c6e;--gold:#d6a680;--cream:#faf6f2;--card:#fff;--ink:#372a30;--ink2:#8a7580;--line:#eee2da;--warn:#b5452f;--warnbg:#fbeee6}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;padding:16px 16px 40px}
+  .wrap{max-width:560px;margin:0 auto}
+  .head{display:flex;gap:14px;align-items:center;background:var(--plum);color:#fff;border-radius:14px;padding:14px}
+  .head img{width:88px;height:88px;object-fit:cover;border-radius:10px;background:#fff;flex:none}
+  .code{font-size:12px;letter-spacing:2px;color:var(--gold)}
+  .head h1{font-size:19px;line-height:1.35;margin:2px 0 6px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
+  .tags span{background:rgba(255,255,255,.14);border-radius:20px;padding:2px 9px}
+  .tags a{color:#fff}
+  h2{font-size:15px;color:var(--plum);margin:22px 0 8px;display:flex;align-items:center;gap:6px}
+  h2 small{font-weight:400;color:var(--ink2);font-size:12px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 14px}
+  .item{padding:11px 0;border-bottom:1px solid var(--line)}
+  .item:last-child{border-bottom:0}
+  .item b{display:block;font-size:15px}
+  .why{font-size:14px;color:var(--ink);margin-top:2px}
+  .shot{font-size:13px;color:var(--rose);margin-top:4px}
+  .shot::before{content:"🎬 拍法：";color:var(--ink2)}
+  ol.box{padding:4px 14px 4px 34px}
+  ol.box li{padding:6px 0;font-size:14px}
+  .avoid{background:var(--warnbg);border:1px solid #f1d3c4;border-radius:12px;padding:10px 14px;font-size:14px;color:var(--warn)}
+  .none{text-align:center;color:var(--ink2);padding:60px 0}
+  .pick{display:flex;gap:8px;margin-top:14px}
+  .pick input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:16px}
+  .pick button{border:0;background:var(--plum);color:#fff;border-radius:10px;padding:0 16px;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+(function(){
+  var app=document.getElementById('app');
+  var code=decodeURIComponent((location.search||'').replace(/^\?/,'').split('&')[0]).trim().toUpperCase();
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function picker(msg){
+    app.innerHTML='<div class="none">'+esc(msg)+'</div><div class="pick"><input id="q" placeholder="輸入貨號，例 A8001"><button id="go">查看</button></div>';
+    var go=function(){var v=document.getElementById('q').value.trim();if(v)location.search='?'+encodeURIComponent(v)};
+    document.getElementById('go').onclick=go;
+    document.getElementById('q').onkeydown=function(e){if(e.key==='Enter')go()};
+  }
+  var d=(window.CARD_DATA||{})[code];
+  if(!code){picker('輸入貨號查看資訊卡');return}
+  if(!d){picker('「'+code+'」還沒有資訊卡');return}
+  var map=(window.BATTLE_GOODS||{}).map||{};
+  var short=code.replace(/^[A-D](?=[A-Z]?\d)/,'');   // 商品庫貨號有層級字母，舊產生檔/圖片沒有
+  var g=map[code]||map[short]||{};
+  var tags=[];
+  if(g.cat)tags.push(esc(g.cat));
+  if(d.pressure)tags.push('壓力 '+esc(d.pressure));
+  if(g.price)tags.push('賣場 $'+esc(g.price));
+  if(g.live)tags.push('直播 $'+esc(g.live));
+  if(g.url)tags.push('<a href="'+esc(g.url)+'" target="_blank">蝦皮頁 ↗</a>');
+  var h='';
+  h+='<div class="head"><img src="img/'+esc(short)+'.jpg" onerror="this.src=\'img/'+esc(code)+'.jpg\';this.onerror=function(){this.style.display=\'none\'}" alt="">'
+    +'<div><div class="code">'+esc(code)+'</div><h1>'+esc(d.title||g.name||'')+'</h1><div class="tags"><span>'+tags.join('</span><span>')+'</span></div></div></div>';
+  if(d.scenes&&d.scenes.length){
+    h+='<h2>📍 台灣使用場景</h2><div class="box">';
+    d.scenes.forEach(function(s){h+='<div class="item"><b>'+esc(s.t)+'</b>'+(s.why?'<div class="why">'+esc(s.why)+'</div>':'')+(s.shot?'<div class="shot">'+esc(s.shot)+'</div>':'')+'</div>'});
+    h+='</div>';
+  }
+  if(d.points&&d.points.length){
+    h+='<h2>✨ 賣點</h2><div class="box">';
+    d.points.forEach(function(p,i){h+='<div class="item"><b>'+(i+1)+'. '+esc(p.t)+'</b>'+(p.shot?'<div class="shot">'+esc(p.shot)+'</div>':'')+'</div>'});
+    h+='</div>';
+  }
+  var tpl=(window.CARE_TPL||{})[d.care];
+  var care=(tpl?tpl.items:[]).concat(d.extra||[]);
+  if(care.length){
+    h+='<h2>🧺 保養須知'+(tpl?' <small>'+esc(tpl.label)+'</small>':'')+'</h2><ol class="box">';
+    care.forEach(function(c){h+='<li>'+esc(c)+'</li>'});
+    h+='</ol>';
+  }
+  if(d.avoid&&d.avoid.length){
+    h+='<h2>🚫 不能講</h2><div class="avoid">'+d.avoid.map(esc).join('・')+'</div>';
+  }
+  app.innerHTML=h;
+  document.title=code+' '+(d.title||'')+'｜暮若資訊卡';
+})();
+</script>
+</body>
+</html>
