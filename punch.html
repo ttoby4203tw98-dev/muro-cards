@@ -202,8 +202,36 @@ function renderToday(rec){
   }).join('');
 }
 
+// 公司位置：雁田天安数码城（OSM 園區中心，WGS84）。手機有的回 WGS84、有的回 GCJ-02（國內偏移約 500m），兩種都比
+var OFFICE={lat:22.6944557,lng:114.1737560},RADIUS=300;
+function gcj(lat,lng){
+  var a=6378245,ee=0.00669342162296594323,x=lng-105,y=lat-35,PI=Math.PI;
+  var dLat=-100+2*x+3*y+0.2*y*y+0.1*x*y+0.2*Math.sqrt(Math.abs(x))+(20*Math.sin(6*x*PI)+20*Math.sin(2*x*PI))*2/3+(20*Math.sin(y*PI)+40*Math.sin(y/3*PI))*2/3+(160*Math.sin(y/12*PI)+320*Math.sin(y*PI/30))*2/3;
+  var dLng=300+x+2*y+0.1*x*x+0.1*x*y+0.1*Math.sqrt(Math.abs(x))+(20*Math.sin(6*x*PI)+20*Math.sin(2*x*PI))*2/3+(20*Math.sin(x*PI)+40*Math.sin(x/3*PI))*2/3+(150*Math.sin(x/12*PI)+300*Math.sin(x/30*PI))*2/3;
+  var r=lat/180*PI,m=Math.sin(r);m=1-ee*m*m;var s=Math.sqrt(m);
+  return {lat:lat+dLat*180/((a*(1-ee))/(m*s)*PI),lng:lng+dLng*180/(a/s*Math.cos(r)*PI)};
+}
+function dist(a,b){var R=6371000,t=Math.PI/180,dl=(b.lat-a.lat)*t,dn=(b.lng-a.lng)*t;
+  var h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dn/2)*Math.sin(dn/2);
+  return 2*R*Math.asin(Math.sqrt(h));}
+function checkPlace(ok){
+  if(!navigator.geolocation){showMsg('bad','這支手機無法定位，不能打卡');return;}
+  showMsg('warn','確認位置中…');
+  navigator.geolocation.getCurrentPosition(function(p){
+    var me={lat:p.coords.latitude,lng:p.coords.longitude};
+    var d=Math.min(dist(me,OFFICE),dist(me,gcj(OFFICE.lat,OFFICE.lng)));
+    if(d<=RADIUS)ok();
+    else showMsg('bad','📍 你目前離公司約 '+(d>=1000?(d/1000).toFixed(1)+' 公里':Math.round(d)+' 公尺')+'，請到公司再打卡');
+  },function(e){
+    showMsg('bad',e.code===1?'📍 要允許「位置」權限才能打卡（到手機設定 → 瀏覽器 → 位置 打開）':'📍 定位失敗，請到窗邊或稍後再試');
+  },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+}
+
 function punch(type){
   if(!who){showMsg('warn','先選一下你是誰再打卡喔');return;}
+  checkPlace(function(){doPunch(type);});
+}
+function doPunch(type){
   document.getElementById('btnIn').disabled=true;
   document.getElementById('btnOut').disabled=true;
   showMsg('warn','打卡中…');
